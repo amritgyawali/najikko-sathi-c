@@ -105,10 +105,11 @@ function Hero() {
       <section className="hero" id="home">
         <Image
           className="hero-image"
-          src="/images/hero.jpg"
-          alt="Himalayan skyline above Kathmandu at twilight"
+          src="/images/nepal-himalayas-dawn-4k.jpg"
+          alt="Sunrise behind snow-covered Himalayan peaks in Nepal"
           fill
           sizes="100vw"
+          quality={88}
           priority
         />
         <div className="hero-overlay" />

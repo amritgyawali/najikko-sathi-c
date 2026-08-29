@@ -4,6 +4,7 @@ const nextConfig: NextConfig = {
   agentRules: false,
   images: {
     formats: ["image/avif", "image/webp"],
+    qualities: [75, 88],
   },
 };
 
