@@ -14,12 +14,9 @@ import type {
   SiteSetting,
 } from "@/payload-types";
 import {
-  brandPillars as fallbackPillars,
   business as fallbackBusiness,
   footerGroups as fallbackFooterGroups,
   navigation as fallbackNavigation,
-  rightSancharTopics as fallbackTopics,
-  services as fallbackServices,
 } from "@/app/(frontend)/_data/site";
 
 /**
@@ -210,13 +207,6 @@ export const getFooter = cache(async (): Promise<FooterConfig> => {
 });
 
 export const getHomepage = cache(async (): Promise<Homepage | null> => readGlobal<Homepage>("homepage"));
-
-/** Defaults for the homepage lists, used until the CMS is populated. */
-export const homepageFallback = {
-  brandPillars: [...fallbackPillars],
-  services: [...fallbackServices],
-  sancharTopics: [...fallbackTopics],
-};
 
 type CollectionMap = {
   posts: Post;

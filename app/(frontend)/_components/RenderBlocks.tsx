@@ -11,12 +11,12 @@ type Block = NonNullable<Page["layout"]>[number];
 function Hero({ block }: { block: Extract<Block, { blockType: "hero" }> }) {
   const src = mediaUrl(block.background);
   return (
-    <section className="page-hero">
+    <section className="cms-hero">
       {src ? (
-        <Image className="page-hero-image" src={src} alt={mediaAlt(block.background)} fill sizes="100vw" priority />
+        <Image className="cms-hero-image" src={src} alt={mediaAlt(block.background)} fill sizes="100vw" priority />
       ) : null}
-      <div className="page-hero-overlay" />
-      <div className="site-container page-hero-content">
+      <div className="cms-hero-overlay" />
+      <div className="site-container cms-hero-content">
         {block.kicker ? <span className="hero-kicker"><i /> {block.kicker}</span> : null}
         <h1>{block.heading}</h1>
         {block.subheading ? <p>{block.subheading}</p> : null}
@@ -40,12 +40,12 @@ function Hero({ block }: { block: Extract<Block, { blockType: "hero" }> }) {
 
 function CardGrid({ block }: { block: Extract<Block, { blockType: "cardGrid" }> }) {
   return (
-    <section className="page-section">
+    <section className="cms-section">
       <div className="site-container">
         {block.kicker ? <span className="section-kicker">{block.kicker}</span> : null}
         {block.heading ? <h2>{block.heading}</h2> : null}
-        {block.intro ? <p className="page-lead">{block.intro}</p> : null}
-        <div className="page-card-grid">
+        {block.intro ? <p className="cms-lead">{block.intro}</p> : null}
+        <div className="cms-card-grid">
           {block.cards?.map((cardItem) => {
             const src = mediaUrl(cardItem.image);
             const inner = (
@@ -58,9 +58,9 @@ function CardGrid({ block }: { block: Extract<Block, { blockType: "cardGrid" }> 
               </>
             );
             return cardItem.href ? (
-              <a className="page-card" href={cardItem.href} key={cardItem.title}>{inner}</a>
+              <a className="cms-card" href={cardItem.href} key={cardItem.title}>{inner}</a>
             ) : (
-              <div className="page-card" key={cardItem.title}>{inner}</div>
+              <div className="cms-card" key={cardItem.title}>{inner}</div>
             );
           })}
         </div>
@@ -71,10 +71,10 @@ function CardGrid({ block }: { block: Extract<Block, { blockType: "cardGrid" }> 
 
 function Gallery({ block }: { block: Extract<Block, { blockType: "gallery" }> }) {
   return (
-    <section className="page-section">
+    <section className="cms-section">
       <div className="site-container">
         {block.heading ? <h2>{block.heading}</h2> : null}
-        <div className="page-gallery">
+        <div className="cms-gallery">
           {block.images?.map((row, index) => {
             const src = mediaUrl(row.image);
             if (!src) return null;
@@ -102,13 +102,13 @@ async function Reviews({ block }: { block: Extract<Block, { blockType: "reviewsB
   if (reviews.length === 0) return null;
 
   return (
-    <section className="page-section">
+    <section className="cms-section">
       <div className="site-container">
         {block.heading ? <h2>{block.heading}</h2> : null}
-        <div className="page-card-grid">
+        <div className="cms-card-grid">
           {reviews.map((review) => (
-            <blockquote className="page-review" key={review.id}>
-              <div className="page-review-stars" aria-label={`${review.rating} out of 5`}>
+            <blockquote className="cms-review" key={review.id}>
+              <div className="cms-review-stars" aria-label={`${review.rating} out of 5`}>
                 {Array.from({ length: review.rating }, (_, index) => (
                   <Star key={index} aria-hidden="true" />
                 ))}
@@ -138,14 +138,14 @@ async function Posts({ block }: { block: Extract<Block, { blockType: "postsBlock
   if (posts.length === 0) return null;
 
   return (
-    <section className="page-section">
+    <section className="cms-section">
       <div className="site-container">
         {block.heading ? <h2>{block.heading}</h2> : null}
-        <div className="page-card-grid">
+        <div className="cms-card-grid">
           {posts.map((post) => {
             const src = mediaUrl(post.coverImage);
             return (
-              <a className="page-card" href={`/posts/${post.slug}`} key={post.id}>
+              <a className="cms-card" href={`/posts/${post.slug}`} key={post.id}>
                 {src ? <Image src={src} alt={mediaAlt(post.coverImage)} width={640} height={400} /> : null}
                 <strong>{post.title}</strong>
                 {post.excerpt ? <p>{post.excerpt}</p> : null}
@@ -166,16 +166,16 @@ async function Offers({ block }: { block: Extract<Block, { blockType: "offersBlo
   if (offers.length === 0) return null;
 
   return (
-    <section className="page-section">
+    <section className="cms-section">
       <div className="site-container">
         {block.heading ? <h2>{block.heading}</h2> : null}
-        <div className="page-card-grid">
+        <div className="cms-card-grid">
           {offers.map((offer) => {
             const src = mediaUrl(offer.image);
             return (
-              <div className="page-card" key={offer.id}>
+              <div className="cms-card" key={offer.id}>
                 {src ? <Image src={src} alt={mediaAlt(offer.image)} width={640} height={400} /> : null}
-                {offer.badge ? <span className="page-badge">{offer.badge}</span> : null}
+                {offer.badge ? <span className="cms-badge">{offer.badge}</span> : null}
                 <strong>{offer.title}</strong>
                 <p>{offer.summary}</p>
                 {offer.ctaHref ? (
@@ -204,8 +204,8 @@ export function RenderBlocks({ layout }: { layout: Page["layout"] }) {
             return <Hero block={block} key={key} />;
           case "richText":
             return (
-              <section className="page-section" key={key}>
-                <div className="site-container page-prose">
+              <section className="cms-section" key={key}>
+                <div className="site-container cms-prose">
                   {block.heading ? <h2>{block.heading}</h2> : null}
                   <RichText data={block.content} />
                 </div>
@@ -217,7 +217,7 @@ export function RenderBlocks({ layout }: { layout: Page["layout"] }) {
             return <Gallery block={block} key={key} />;
           case "cta":
             return (
-              <section className="page-cta" key={key}>
+              <section className="cms-cta" key={key}>
                 <div className="site-container">
                   <h2>{block.heading}</h2>
                   {block.body ? <p>{block.body}</p> : null}

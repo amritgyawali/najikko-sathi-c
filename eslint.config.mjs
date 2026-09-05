@@ -10,6 +10,8 @@ export default defineConfig([
     ".next/**",
     "node_modules/**",
     "next-env.d.ts",
+    "tmp/**",
+    "graphify-out/**",
     "migrations/**",
     "payload-types.ts",
     "app/(payload)/admin/importMap.js",

@@ -4,6 +4,7 @@
  * Source priority:
  * 1. User-provided legal and contact details.
  * 2. Najik.docx for services, mission, and product descriptions.
+ *    Service_Portfolio_Overview.pdf expands the scope in services.ts.
  * 3. No unverified statistics, partners, people, or social links.
  */
 export const business = {
@@ -21,13 +22,13 @@ export const business = {
 } as const;
 
 export const navigation = [
-  { label: "Home", href: "#home" },
-  { label: "About Us", href: "#about" },
-  { label: "Services", href: "#services" },
-  { label: "Production", href: "#production" },
-  { label: "Training", href: "#services" },
-  { label: "Right Sanchar", href: "#right-sanchar" },
-  { label: "Contact", href: "#contact" },
+  { label: "Home", href: "/" },
+  { label: "About Us", href: "/about" },
+  { label: "Services", href: "/services" },
+  { label: "Production", href: "/production" },
+  { label: "Training", href: "/training" },
+  { label: "Right Sanchar", href: "/right-sanchar" },
+  { label: "Contact", href: "/contact" },
 ] as const;
 
 export const brandPillars = [
@@ -37,21 +38,6 @@ export const brandPillars = [
   "Media production",
   "Skill development",
   "Social responsibility",
-] as const;
-
-export const services = [
-  "Right Sanchar",
-  "News Reporting",
-  "Commentary",
-  "Investigations",
-  "Biography Videos",
-  "Documentaries",
-  "Advertising",
-  "Video Production",
-  "Research",
-  "Scriptwriting",
-  "Cinematic Editing",
-  "Media Training",
 ] as const;
 
 export const rightSancharTopics = [
@@ -71,17 +57,19 @@ export const footerGroups = [
   {
     title: "Media",
     links: [
-      { label: "Right Sanchar", href: "#right-sanchar" },
-      { label: "Fact-based News", href: "#right-sanchar" },
-      { label: "Investigative Content", href: "#right-sanchar" },
+      { label: "Right Sanchar", href: "/right-sanchar" },
+      { label: "Social Media", href: "/services#social-media" },
+      { label: "Media Training", href: "/training" },
+      { label: "Research & Development", href: "/services#research" },
     ],
   },
   {
     title: "Production",
     links: [
-      { label: "Biography Videos", href: "#production" },
-      { label: "Documentaries", href: "#production" },
-      { label: "Advertising", href: "#production" },
+      { label: "Biography Videos", href: "/services/biography-videos" },
+      { label: "Documentaries", href: "/services/documentary-film-production" },
+      { label: "Advertising", href: "/services/advertisements-commercials" },
+      { label: "Company Profiles", href: "/services/corporate-profile-making" },
     ],
   },
 ] as const;

@@ -8,7 +8,6 @@ import {
   footerGroups,
   navigation,
   rightSancharTopics,
-  services,
 } from "../app/(frontend)/_data/site";
 
 /**
@@ -30,11 +29,6 @@ for (const key of ["PAYLOAD_SECRET", "DATABASE_URI"]) {
     process.exit(1);
   }
 }
-
-const serviceIcons = [
-  "newspaper", "fileText", "messageSquare", "search", "camera", "film",
-  "megaphone", "video", "aperture", "clapperboard", "scissors", "graduationCap",
-] as const;
 
 async function seed() {
   const { default: config } = await import("@payload-config");
@@ -83,7 +77,7 @@ async function seed() {
     overrideAccess: true,
     data: {
       items: navigation.map((item) => ({ label: item.label, href: item.href })),
-      cta: { label: "Start a conversation", href: "#contact", enabled: true },
+      cta: { label: "Start a conversation", href: "/contact", enabled: true },
       showUtilityBar: true,
     },
   });
@@ -112,7 +106,7 @@ async function seed() {
         "Honest information, meaningful entertainment, and socially responsible media - " +
         "created in Nepal for people, organizations, and communities.",
       heroCtaLabel: "Explore our services",
-      heroCtaHref: "#services",
+      heroCtaHref: "/services",
       brandPillars: brandPillars.map((label) => ({ label })),
       aboutEyebrow: "Who We Are",
       aboutHeading: business.legalName,
@@ -133,14 +127,12 @@ async function seed() {
         { label: "Skill development" },
       ],
       servicesKicker: "Our Services",
+      // Homepage -> Services is deliberately left empty: the homepage grid then
+      // shows the full service portfolio, with each card linking to its own
+      // service page. Filling it in from the dashboard overrides that grid.
       servicesIntro:
         "From verified information to cinematic storytelling, every service is built around " +
         "clarity, truth, and impact.",
-      services: services.map((name, index) => ({
-        name,
-        icon: serviceIcons[index] ?? "newspaper",
-        href: index < 4 ? "#right-sanchar" : "#production",
-      })),
       productionChip: "Production",
       productionBody:
         "We turn ideas, lives, and real events into compelling visual experiences. Our team " +

@@ -3,7 +3,6 @@ import { notFound } from "next/navigation";
 
 import { getBySlug, getCollection } from "@/lib/content";
 import { RenderBlocks } from "../_components/RenderBlocks";
-import { SiteFooter, SiteHeader } from "../_components/SiteChrome";
 
 type Args = { params: Promise<{ slug: string }> };
 
@@ -35,13 +34,5 @@ export default async function CmsPage({ params }: Args) {
   const page = await getBySlug("pages", slug);
   if (!page) notFound();
 
-  return (
-    <>
-      <SiteHeader />
-      <main>
-        <RenderBlocks layout={page.layout} />
-      </main>
-      <SiteFooter />
-    </>
-  );
+  return <RenderBlocks layout={page.layout} />;
 }

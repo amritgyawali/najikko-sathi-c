@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import {
   Aperture,
   ArrowRight,
@@ -18,9 +19,24 @@ import {
 } from "lucide-react";
 
 import type { Homepage } from "@/payload-types";
-import { getBusiness, getHomepage, homepageFallback, type BusinessInfo } from "@/lib/content";
+import { getBusiness, getHomepage, type BusinessInfo } from "@/lib/content";
 import { mediaUrl } from "@/lib/media";
-import { SiteFooter, SiteHeader } from "./_components/SiteChrome";
+import { MediaShowcase } from "./_components/page-content";
+import { servicePortfolio } from "./_data/services";
+import { brandPillars, rightSancharTopics } from "./_data/site";
+import { pageMetadata } from "./_lib/seo";
+
+export const metadata = pageMetadata(
+  "Media House in Kathmandu, Nepal",
+  "Najikko Sathi Media offers documentary and video production, social media management, media training, and research from Anamnagar, Kathmandu, Nepal.",
+  "/",
+);
+
+const serviceIcons = [
+  Camera, Film, Megaphone, Aperture, FileText, MessageSquareText, Megaphone, Video,
+  Clapperboard, GraduationCap, Camera, Newspaper, Scissors, GraduationCap, Search,
+  MessageSquareText,
+] as const;
 
 const iconByName = {
   newspaper: Newspaper,
@@ -37,30 +53,6 @@ const iconByName = {
   graduationCap: GraduationCap,
 } as const;
 
-/** Icon order used when the service list still comes from the static fallback. */
-const defaultServiceIcons = [
-  Newspaper, FileText, MessageSquareText, Search, Camera, Film,
-  Megaphone, Video, Aperture, Clapperboard, Scissors, GraduationCap,
-] as const;
-
-type Service = { name: string; Icon: (typeof defaultServiceIcons)[number]; href: string };
-
-function resolveServices(home: Homepage | null): Service[] {
-  const fromCms = home?.services?.filter((row) => row.name);
-  if (fromCms && fromCms.length > 0) {
-    return fromCms.map((row) => ({
-      name: row.name,
-      Icon: iconByName[(row.icon ?? "newspaper") as keyof typeof iconByName] ?? Newspaper,
-      href: row.href || "#production",
-    }));
-  }
-  return homepageFallback.services.map((name, index) => ({
-    name,
-    Icon: defaultServiceIcons[index] ?? Newspaper,
-    href: index < 4 ? "#right-sanchar" : "#production",
-  }));
-}
-
 const labels = (rows: { label: string }[] | null | undefined, fallback: readonly string[]): string[] =>
   rows && rows.length > 0 ? rows.map((row) => row.label) : [...fallback];
 
@@ -70,7 +62,6 @@ function Hero({ business, home }: { business: BusinessInfo; home: Homepage | nul
     typeof home?.heroImage === "object" && home?.heroImage?.alt
       ? home.heroImage.alt
       : "Sunrise behind snow-covered Himalayan peaks in Nepal";
-  const pillars = labels(home?.brandPillars, homepageFallback.brandPillars);
 
   return (
     <>
@@ -95,9 +86,9 @@ function Hero({ business, home }: { business: BusinessInfo; home: Homepage | nul
               "Honest information, meaningful entertainment, and socially responsible media - created in Nepal for people, organizations, and communities."}
           </p>
           <div className="hero-actions">
-            <a className="hero-cta" href={home?.heroCtaHref || "#services"}>
+            <Link className="hero-cta" href={home?.heroCtaHref || "/services"}>
               {home?.heroCtaLabel || "Explore our services"} <ArrowRight aria-hidden="true" />
-            </a>
+            </Link>
             <a className="hero-secondary" href={business.rightSanchar} target="_blank" rel="noreferrer">
               Visit Right Sanchar <ArrowUpRight aria-hidden="true" />
             </a>
@@ -112,7 +103,9 @@ function Hero({ business, home }: { business: BusinessInfo; home: Homepage | nul
               <strong>{business.initials}</strong>
               <span>Six disciplines.<br />One close companion.</span>
             </div>
-            {pillars.map((pillar) => <span className="overview-pillar" key={pillar}>{pillar}</span>)}
+            {labels(home?.brandPillars, brandPillars).map((pillar) => (
+              <span className="overview-pillar" key={pillar}>{pillar}</span>
+            ))}
           </div>
         </div>
       </section>
@@ -164,7 +157,7 @@ function About({ business, home }: { business: BusinessInfo; home: Homepage | nu
           <div className="about-capabilities" aria-label="Core capabilities">
             {capabilities.map((item) => <span key={item}>{item}</span>)}
           </div>
-          <a className="text-link" href="#services">Explore Our Services <ArrowRight aria-hidden="true" /></a>
+          <Link className="text-link" href="/services">Explore Our Services <ArrowRight aria-hidden="true" /></Link>
         </div>
       </div>
     </section>
@@ -172,7 +165,10 @@ function About({ business, home }: { business: BusinessInfo; home: Homepage | nu
 }
 
 function Services({ home }: { home: Homepage | null }) {
-  const services = resolveServices(home);
+  // The service portfolio drives this grid by default, so each card links to a
+  // real service page. Filling in Homepage → Services in the dashboard replaces
+  // the grid with that custom list instead.
+  const custom = home?.services?.filter((row) => row.name) ?? [];
 
   return (
     <section className="verticals-section" id="services">
@@ -197,16 +193,30 @@ function Services({ home }: { home: Homepage | null }) {
                 "From verified information to cinematic storytelling, every service is built around clarity, truth, and impact."}
             </p>
           </div>
-          <a className="outline-button" href="#production">Explore Production <ArrowUpRight aria-hidden="true" /></a>
+          <Link className="outline-button" href="/production">Explore Production <ArrowUpRight aria-hidden="true" /></Link>
         </div>
         <div className="verticals-grid">
-          {services.map(({ name, Icon, href }) => (
-            <a className="vertical-card" href={href} key={name}>
-              <Icon aria-hidden="true" />
-              <strong>{name}</strong>
-              <ArrowRight className="card-arrow" aria-hidden="true" />
-            </a>
-          ))}
+          {custom.length > 0
+            ? custom.map((row) => {
+                const Icon = iconByName[(row.icon ?? "newspaper") as keyof typeof iconByName] ?? Newspaper;
+                return (
+                  <Link className="vertical-card" href={row.href || "/services"} key={row.name}>
+                    <Icon aria-hidden="true" />
+                    <strong>{row.name}</strong>
+                    <ArrowRight className="card-arrow" aria-hidden="true" />
+                  </Link>
+                );
+              })
+            : servicePortfolio.map((service, index) => {
+                const Icon = serviceIcons[index] ?? Camera;
+                return (
+                  <Link className="vertical-card" href={`/services/${service.slug}`} key={service.slug}>
+                    <Icon aria-hidden="true" />
+                    <strong>{service.shortTitle}</strong>
+                    <ArrowRight className="card-arrow" aria-hidden="true" />
+                  </Link>
+                );
+              })}
         </div>
       </div>
     </section>
@@ -251,7 +261,7 @@ function Production({ business, home }: { business: BusinessInfo; home: Homepage
 }
 
 function RightSanchar({ business, home }: { business: BusinessInfo; home: Homepage | null }) {
-  const topics = labels(home?.sancharTopics, homepageFallback.sancharTopics);
+  const topics = labels(home?.sancharTopics, rightSancharTopics);
 
   return (
     <section className="value-section" id="right-sanchar">
@@ -292,7 +302,7 @@ function RightSanchar({ business, home }: { business: BusinessInfo; home: Homepa
             <strong>Call Us</strong>
             <small className="connection-phone-links">
               {business.phones.map((phone, index) => (
-                <a href={`tel:${phone}`} key={phone}>{index > 0 ? " / " : ""}{phone}</a>
+                <a href={`tel:+977${phone}`} key={phone}>{index > 0 ? " / " : ""}{phone}</a>
               ))}
             </small>
           </span>
@@ -308,15 +318,12 @@ export default async function Home() {
 
   return (
     <>
-      <SiteHeader />
-      <main>
-        <Hero business={business} home={home} />
-        <About business={business} home={home} />
-        <Services home={home} />
-        <Production business={business} home={home} />
-        <RightSanchar business={business} home={home} />
-      </main>
-      <SiteFooter />
+      <Hero business={business} home={home} />
+      <About business={business} home={home} />
+      <Services home={home} />
+      <Production business={business} home={home} />
+      <RightSanchar business={business} home={home} />
+      <MediaShowcase mediaKey="home" title={business.shortName} />
     </>
   );
 }

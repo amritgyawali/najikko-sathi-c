@@ -5,7 +5,6 @@ import { notFound } from "next/navigation";
 
 import { getBySlug, getCollection } from "@/lib/content";
 import { mediaAlt, mediaUrl } from "@/lib/media";
-import { SiteFooter, SiteHeader } from "../../_components/SiteChrome";
 
 type Args = { params: Promise<{ slug: string }> };
 
@@ -37,21 +36,18 @@ export default async function PostPage({ params }: Args) {
   const published = post.publishedAt ? new Date(post.publishedAt) : null;
 
   return (
-    <>
-      <SiteHeader />
-      <main>
-        <article className="page-section">
-          <div className="site-container page-prose">
+    <article className="cms-section">
+          <div className="site-container cms-prose">
             <span className="section-kicker">{post.type}</span>
             <h1>{post.title}</h1>
             {published ? (
-              <time dateTime={published.toISOString()} className="post-date">
+              <time dateTime={published.toISOString()} className="cms-post-date">
                 {published.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })}
               </time>
             ) : null}
             {cover ? (
               <Image
-                className="post-cover"
+                className="cms-post-cover"
                 src={cover}
                 alt={mediaAlt(post.coverImage, post.title)}
                 width={1200}
@@ -61,9 +57,6 @@ export default async function PostPage({ params }: Args) {
             ) : null}
             {post.content ? <RichText data={post.content} /> : null}
           </div>
-        </article>
-      </main>
-      <SiteFooter />
-    </>
+    </article>
   );
 }
