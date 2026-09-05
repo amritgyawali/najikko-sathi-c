@@ -99,7 +99,7 @@ Set these environment variables in the Vercel project:
 | Variable | Notes |
 | --- | --- |
 | `PAYLOAD_SECRET` | Any long random string (`openssl rand -base64 32`) |
-| `DATABASE_URI` | Supabase session pooler connection string, with the database password percent-encoded |
+| `DATABASE_URI` | Supabase transaction pooler (port 6543), with the database password percent-encoded. Session pooling can exhaust connections on Vercel |
 | `DATABASE_SSL_CA` | Supabase root certificate from Database Settings → SSL Configuration. PEM text or escaped `\n` newlines; verifies the server certificate |
 | `DATABASE_MIGRATION_URI` | Optional direct/session connection when `DATABASE_URI` uses the transaction pooler |
 | `CLOUDINARY_URL` | `cloudinary://<api_key>:<api_secret>@<cloud_name>`, used for dashboard uploads |
@@ -122,6 +122,9 @@ Keep credentials in an ignored `.env` locally and encrypted production variables
 on Vercel. Do not share the production database with untrusted preview builds.
 Create the first administrator with the seed before making the connected admin
 dashboard public.
+
+Vercel Functions run in Sydney (`syd1`) beside this Supabase project's database
+(`ap-southeast-2`). Each function uses at most two pooled client connections.
 
 `npm run build` runs pending migrations first, so a deploy applies schema
 changes automatically. After changing anything in `cms/`, generate a migration

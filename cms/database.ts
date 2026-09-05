@@ -14,7 +14,7 @@ export function databasePoolConfig() {
 
   return {
     connectionString,
-    max: 5,
+    max: 2,
     idleTimeoutMillis: 10_000,
     connectionTimeoutMillis: 10_000,
     ...(ca ? { ssl: { ca, rejectUnauthorized: true } } : {}),
