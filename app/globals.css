@@ -18,7 +18,7 @@
 
 html {
   scroll-behavior: smooth;
-  min-width: 960px;
+  min-width: 320px;
 }
 
 section[id],
@@ -40,7 +40,9 @@ a {
 }
 
 button,
-input {
+input,
+select,
+textarea {
   font: inherit;
 }
 
@@ -51,7 +53,10 @@ a {
 
 a:focus-visible,
 button:focus-visible,
-input:focus-visible {
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+summary:focus-visible {
   outline: 3px solid #7db3ff;
   outline-offset: 3px;
 }

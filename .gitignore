@@ -25,3 +25,7 @@ Thumbs.db
 # TypeScript
 *.tsbuildinfo
 next-env.d.ts
+
+# Local inspection and test artifacts
+/tmp/
+/graphify-out/

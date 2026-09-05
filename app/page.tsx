@@ -1,3 +1,8 @@
+import Link from "next/link";
+import { servicePortfolio } from "./_data/services";
+import { MediaShowcase } from "./_components/page-content";
+import { pageMetadata } from "./_lib/seo";
+
 import Image from "next/image";
 import {
   Aperture,
@@ -8,96 +13,40 @@ import {
   FileText,
   Film,
   GraduationCap,
-  Mail,
-  MapPin,
   Megaphone,
   MessageSquareText,
   Mic2,
   Newspaper,
-  Phone,
   Scissors,
   Search,
-  Share2,
   Video,
 } from "lucide-react";
 import {
   brandPillars,
   business,
-  footerGroups,
-  navigation,
   rightSancharTopics,
-  services,
 } from "./_data/site";
 
+export const metadata = pageMetadata("Media House in Kathmandu, Nepal", "Najikko Sathi Media offers documentary and video production, social media management, media training, and research from Anamnagar, Kathmandu, Nepal.", "/");
+
 const serviceIcons = [
-  Newspaper,
-  FileText,
-  MessageSquareText,
-  Search,
   Camera,
   Film,
   Megaphone,
-  Video,
   Aperture,
+  FileText,
+  MessageSquareText,
+  Megaphone,
+  Video,
   Clapperboard,
+  GraduationCap,
+  Camera,
+  Newspaper,
   Scissors,
   GraduationCap,
+  Search,
+  MessageSquareText,
 ] as const;
-
-function Header() {
-  return (
-    <>
-      <div className="utility-bar">
-        <div className="site-container utility-inner">
-          <div className="utility-contact">
-            <span className="utility-phone">
-              <Phone aria-hidden="true" />
-              {business.phones.map((phone, index) => (
-                <span key={phone}>
-                  {index > 0 ? <span aria-hidden="true">/</span> : null}
-                  <a href={`tel:${phone}`}>{phone}</a>
-                </span>
-              ))}
-            </span>
-            <a href={`mailto:${business.email}`}>
-              <Mail aria-hidden="true" /> {business.email}
-            </a>
-            <span><MapPin aria-hidden="true" /> {business.address}</span>
-          </div>
-          <a className="utility-share" href="#contact" aria-label={`Contact ${business.shortName}`}>
-            <Share2 aria-hidden="true" />
-          </a>
-        </div>
-      </div>
-      <header className="site-header">
-        <div className="site-container header-inner">
-          <a className="brand" href="#home" aria-label={`${business.shortName} home`}>
-            <span className="brand-mark" aria-hidden="true">{business.initials}</span>
-            <span className="brand-copy">
-              <strong>{business.shortName}</strong>
-              <small>Media Pvt. Ltd.</small>
-            </span>
-          </a>
-          <nav className="primary-nav" aria-label="Primary navigation">
-            {navigation.map((item, index) => (
-              <a
-                key={item.label}
-                href={item.href}
-                className={index === 0 ? "active" : undefined}
-                aria-current={index === 0 ? "page" : undefined}
-              >
-                {item.label}
-              </a>
-            ))}
-          </nav>
-          <div className="header-actions">
-            <a className="inquiry-button" href="#contact">Start a conversation</a>
-          </div>
-        </div>
-      </header>
-    </>
-  );
-}
 
 function Hero() {
   return (
@@ -121,7 +70,7 @@ function Hero() {
             created in Nepal for people, organizations, and communities.
           </p>
           <div className="hero-actions">
-            <a className="hero-cta" href="#services">Explore our services <ArrowRight aria-hidden="true" /></a>
+            <Link className="hero-cta" href="/services">Explore our services <ArrowRight aria-hidden="true" /></Link>
             <a className="hero-secondary" href={business.rightSanchar} target="_blank" rel="noreferrer">
               Visit Right Sanchar <ArrowUpRight aria-hidden="true" />
             </a>
@@ -186,7 +135,7 @@ function About() {
             <span>Visual production</span>
             <span>Skill development</span>
           </div>
-          <a className="text-link" href="#services">Explore Our Services <ArrowRight aria-hidden="true" /></a>
+          <Link className="text-link" href="/services">Explore Our Services <ArrowRight aria-hidden="true" /></Link>
         </div>
       </div>
     </section>
@@ -210,17 +159,17 @@ function Services() {
             <h2>One Media House.<br />Many Ways to Communicate.</h2>
             <p>From verified information to cinematic storytelling, every service is built around clarity, truth, and impact.</p>
           </div>
-          <a className="outline-button" href="#production">Explore Production <ArrowUpRight aria-hidden="true" /></a>
+          <Link className="outline-button" href="/production">Explore Production <ArrowUpRight aria-hidden="true" /></Link>
         </div>
         <div className="verticals-grid">
-          {services.map((name, index) => {
+          {servicePortfolio.map((service, index) => {
             const Icon = serviceIcons[index];
             return (
-              <a className="vertical-card" href={index < 4 ? "#right-sanchar" : "#production"} key={name}>
+              <Link className="vertical-card" href={`/services/${service.slug}`} key={service.slug}>
                 <Icon aria-hidden="true" />
-                <strong>{name}</strong>
+                <strong>{service.shortTitle}</strong>
                 <ArrowRight className="card-arrow" aria-hidden="true" />
-              </a>
+              </Link>
             );
           })}
         </div>
@@ -300,7 +249,7 @@ function RightSanchar() {
             <strong>Call Us</strong>
             <small className="connection-phone-links">
               {business.phones.map((phone, index) => (
-                <a href={`tel:${phone}`} key={phone}>{index > 0 ? " / " : ""}{phone}</a>
+                <a href={`tel:+977${phone}`} key={phone}>{index > 0 ? " / " : ""}{phone}</a>
               ))}
             </small>
           </span>
@@ -311,56 +260,15 @@ function RightSanchar() {
   );
 }
 
-function Footer() {
-  return (
-    <footer id="contact">
-      <div className="site-container footer-grid">
-        <div className="footer-about">
-          <h3>Company Info</h3>
-          <p>
-            {business.legalName} is a media house focused on truthful information, meaningful
-            storytelling, production, advertising, training, and social responsibility.
-          </p>
-        </div>
-        {footerGroups.map((group) => (
-          <div key={group.title}>
-            <h3>{group.title}</h3>
-            <ul>{group.links.map((link) => <li key={link.label}><a href={link.href}>{link.label}</a></li>)}</ul>
-          </div>
-        ))}
-        <div>
-          <h3>Contact Directly</h3>
-          <a className="newsletter direct-contact" href={`mailto:${business.email}`}>
-            <span>{business.email}</span>
-            <ArrowRight aria-hidden="true" />
-          </a>
-          <p className="footer-phone">
-            {business.phones.map((phone, index) => (
-              <span key={phone}>{index > 0 ? " / " : ""}<a href={`tel:${phone}`}>{phone}</a></span>
-            ))}
-          </p>
-        </div>
-      </div>
-      <div className="site-container footer-bottom">
-        <span>&copy; 2026 {business.legalName} All Rights Reserved.</span>
-        <span>{business.address} &middot; VAT {business.vat}</span>
-      </div>
-    </footer>
-  );
-}
-
 export default function Home() {
   return (
     <>
-      <Header />
-      <main>
-        <Hero />
-        <About />
-        <Services />
-        <Production />
-        <RightSanchar />
-      </main>
-      <Footer />
+      <Hero />
+      <About />
+      <Services />
+      <Production />
+      <RightSanchar />
+      <MediaShowcase mediaKey="home" title="Najikko Sathi" />
     </>
   );
 }
