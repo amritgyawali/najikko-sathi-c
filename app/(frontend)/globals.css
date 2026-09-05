@@ -36,6 +36,30 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* Reading the site in Nepali swaps the two Latin faces for a Devanagari one.
+   Both faces are referenced through variables, so redefining them here changes
+   every heading, label, and paragraph without touching another rule. */
+html[lang="ne"] {
+  --font-hanken: var(--font-devanagari);
+  --font-inter: var(--font-devanagari);
+}
+
+html[lang="ne"] body {
+  line-height: 1.65;
+  letter-spacing: 0;
+}
+
+html[lang="ne"] .hero-kicker,
+html[lang="ne"] .eyebrow,
+html[lang="ne"] .section-kicker,
+html[lang="ne"] .brand,
+html[lang="ne"] .foundation-chip {
+  /* Devanagari has no case, so the uppercase tracking used for the Latin
+     kickers only adds noise. */
+  text-transform: none;
+  letter-spacing: .01em;
+}
+
 a {
   color: inherit;
   text-decoration: none;
@@ -170,10 +194,64 @@ summary:focus-visible {
   font-weight: 700;
 }
 
+.header-end {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+}
+
 .header-actions {
   display: flex;
   align-items: center;
   gap: 13px;
+}
+
+.lang-switch {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: #fff;
+  font-family: var(--font-inter), Arial, sans-serif;
+}
+
+.lang-option {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 46px;
+  height: 30px;
+  padding-inline: 12px;
+  border: 0;
+  border-radius: 999px;
+  color: #434750;
+  background: transparent;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color .2s ease, background .2s ease;
+}
+
+.lang-option:hover {
+  color: var(--secondary);
+}
+
+.lang-option.is-active {
+  color: #fff;
+  background: var(--secondary);
+}
+
+.lang-option-short {
+  display: none;
+}
+
+/* The Nepali label is set in Devanagari whichever language the site is in, so
+   the choice is legible to a reader who cannot read the other one. */
+.lang-option[lang="ne"] {
+  font-family: var(--font-devanagari), var(--font-inter), Arial, sans-serif;
 }
 
 .inquiry-button,
