@@ -20,8 +20,8 @@ export const MediaSlots: CollectionConfig = {
   },
   access: { read: () => true, create: isEditor, update: isEditor, delete: isEditor },
   hooks: {
-    afterChange: [revalidateDoc("", ["/", "/services", "/about", "/production", "/training"])],
-    afterDelete: [revalidateDocAfterDelete("", ["/", "/services", "/about", "/production", "/training"])],
+    afterChange: [revalidateDoc("", ["/", "/services", "/our-work", "/about", "/production", "/training"])],
+    afterDelete: [revalidateDocAfterDelete("", ["/", "/services", "/our-work", "/about", "/production", "/training"])],
   },
   fields: [
     {

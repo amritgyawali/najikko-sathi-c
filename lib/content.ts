@@ -24,6 +24,7 @@ import {
   business as fallbackBusiness,
   footerGroups as fallbackFooterGroups,
   navigation as fallbackNavigation,
+  navSections,
 } from "@/app/(frontend)/_data/site";
 
 /**
@@ -106,7 +107,11 @@ export const getBusiness = cache(async (): Promise<BusinessInfo> => {
   };
 });
 
-export type NavItem = { label: string; href: string; newTab?: boolean };
+export type NavItem = { label: string; href: string; newTab?: boolean; covers?: string[] };
+
+/** Attach the pages a menu item stands for, so the header can highlight it. */
+const withSection = (item: NavItem): NavItem =>
+  navSections[item.href] ? { ...item, covers: navSections[item.href] } : item;
 
 export type NavConfig = {
   items: NavItem[];
@@ -116,7 +121,7 @@ export type NavConfig = {
 
 export const getNavigation = cache(async (): Promise<NavConfig> => {
   const fallback: NavConfig = {
-    items: fallbackNavigation.map((item) => ({ label: item.label, href: item.href })),
+    items: fallbackNavigation.map((item) => withSection({ label: item.label, href: item.href })),
     cta: { label: "Start a conversation", href: "#contact", enabled: true },
     showUtilityBar: true,
   };
@@ -126,7 +131,7 @@ export const getNavigation = cache(async (): Promise<NavConfig> => {
 
   const items = nav.items
     ?.filter((item) => item.label && item.href)
-    .map((item) => ({ label: item.label, href: item.href, newTab: item.newTab ?? false }));
+    .map((item) => withSection({ label: item.label, href: item.href, newTab: item.newTab ?? false }));
 
   // Pages flagged "show in navigation" are appended automatically, so adding a
   // page to the menu does not also mean editing the Navigation global.

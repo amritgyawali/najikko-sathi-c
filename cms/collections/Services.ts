@@ -24,8 +24,8 @@ export const Services: CollectionConfig = {
     delete: isEditor,
   },
   hooks: {
-    afterChange: [revalidateDoc("/services", ["/", "/services"])],
-    afterDelete: [revalidateDocAfterDelete("/services", ["/", "/services"])],
+    afterChange: [revalidateDoc("/services", ["/", "/services", "/our-work"])],
+    afterDelete: [revalidateDocAfterDelete("/services", ["/", "/services", "/our-work"])],
   },
   fields: [
     {

@@ -18,8 +18,8 @@ export const Faqs: CollectionConfig = {
   },
   access: { read: () => true, create: isEditor, update: isEditor, delete: isEditor },
   hooks: {
-    afterChange: [revalidateDoc("", ["/", "/services", "/contact", "/training", "/production"])],
-    afterDelete: [revalidateDocAfterDelete("", ["/", "/services", "/contact", "/training", "/production"])],
+    afterChange: [revalidateDoc("", ["/", "/services", "/our-work", "/contact", "/training", "/production"])],
+    afterDelete: [revalidateDocAfterDelete("", ["/", "/services", "/our-work", "/contact", "/training", "/production"])],
   },
   fields: [
     { name: "question", type: "text", required: true },

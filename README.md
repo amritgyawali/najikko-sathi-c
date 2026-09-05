@@ -15,7 +15,7 @@ Content is managed through a full admin dashboard powered by
 | Area | Where in the dashboard | Appears on |
 | --- | --- | --- |
 | Traffic, top pages, referrers, devices, enquiry queue | Dashboard home | - |
-| The 16 services and their detail pages | Services → Services | `/services`, `/services/<slug>`, homepage grid, `/production`, `/training` |
+| The 16 services and their detail pages | Services → Services | `/services`, `/services/<slug>`, homepage grid, `/our-work`, `/production`, `/training` |
 | Service groupings | Services → Service categories | `/services` sections |
 | News, blogs, commentary, investigations | Content → Posts | `/posts`, `/posts/<slug>` |
 | Promotions and packages | Content → Offers | `/offers` |
@@ -182,7 +182,7 @@ until someone approves it in the dashboard.
 
 ## Pages
 
-All navbar items navigate to separate pages: `/`, `/about`, `/services`, `/production`, `/training`, `/right-sanchar`, and `/contact`. Each of the 16 services has a statically generated `/services/[slug]` page with its own scope, preparation guidance, workflow, FAQs, related services, and contact link.
+The navbar links five separate pages, in this order: `/`, `/services`, `/our-work`, `/contact`, and `/about`. `/our-work` gathers the areas that are not in the menu themselves - `/production`, `/training` and `/right-sanchar` keep their own pages, stay in the sitemap, and highlight **Our Work** in the header while a visitor is on them (see `navSections` in `app/(frontend)/_data/site.ts`). Each of the 16 services has a statically generated `/services/[slug]` page with its own scope, preparation guidance, workflow, FAQs, related services, and contact link.
 
 The portfolio covers four production services, five social media services, five training programs, and two research and development services. The source is retained in `docs/Service_Portfolio_Overview.pdf`.
 
@@ -195,7 +195,7 @@ npx playwright install chromium
 npm run check:site
 ```
 
-The browser installation is only needed once per machine. `check:site` starts a production server on port 3100, checks all 23 pages at desktop and mobile widths, checks internal destinations and anchors, renders all social preview images, and exercises navigation history, the mobile menu, FAQs, and inquiry validation. Screenshots go to ignored `tmp/site-check/`. Set `CHECK_BASE_URL` to test an already running preview. No email is sent during checks.
+The browser installation is only needed once per machine. `check:site` starts a production server on port 3100, checks all 24 pages at desktop and mobile widths, checks internal destinations and anchors, renders all social preview images, and exercises navigation history, the mobile menu, FAQs, and inquiry validation. Screenshots go to ignored `tmp/site-check/`. Set `CHECK_BASE_URL` to test an already running preview. No email is sent during checks.
 
 ## Owner-managed photos and videos
 

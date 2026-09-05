@@ -34,7 +34,7 @@ try {
   // Content is managed in the CMS, so the sitemap grows as pages are published.
   // Assert that everything reachable is listed rather than fixing a total.
   const sitemapPaths = new Set(publishedUrls.map((url) => new URL(url).pathname));
-  for (const required of ["/", "/about", "/services", "/production", "/training", "/right-sanchar", "/contact"]) {
+  for (const required of ["/", "/about", "/services", "/our-work", "/production", "/training", "/right-sanchar", "/contact"]) {
     assert(sitemapPaths.has(required), `Navigation page missing from the sitemap: ${required}`);
   }
   const serviceCount = [...sitemapPaths].filter((path) => path.startsWith("/services/")).length;
@@ -84,7 +84,7 @@ try {
       brokenImages: [...document.images].filter((image) => !image.complete || image.naturalWidth === 0).map((image) => image.src),
       uploads: document.querySelectorAll('input[type="file"]').length,
       videos: document.querySelectorAll("video").length,
-      activeNav: document.querySelectorAll('.primary-nav [aria-current="page"]').length,
+      activeNav: document.querySelectorAll(".primary-nav a.active").length,
       overflow: document.documentElement.scrollWidth > window.innerWidth,
     }));
     assert.equal(info.h1, 1, `${path}: one main heading`);
@@ -119,7 +119,7 @@ try {
       assert.equal(await page.locator(`[id="${decodeURIComponent(target.hash.slice(1))}"]`).count(), 1, `Missing anchor: ${href}`);
     }
   }
-  assert.equal(previewImages.size, 23, "Every page should have its own social image title");
+  assert.equal(previewImages.size, 24, "Every page should have its own social image title");
   for (const preview of previewImages) {
     const response = await fetch(`${origin}${preview}`);
     assert.equal(response.status, 200, `Social image: ${preview}`);
@@ -165,8 +165,8 @@ try {
   }
   await page.goto(origin);
   await page.getByRole("button", { name: "Open navigation" }).click();
-  await page.getByRole("navigation", { name: "Primary navigation" }).getByRole("link", { name: "Training", exact: true }).click();
-  await page.waitForURL("**/training");
+  await page.getByRole("navigation", { name: "Primary navigation" }).getByRole("link", { name: "Our Work", exact: true }).click();
+  await page.waitForURL("**/our-work");
   assert.equal(await page.getByRole("button", { name: "Open navigation" }).getAttribute("aria-expanded"), "false");
   await page.getByRole("button", { name: "Open navigation" }).click();
   await page.getByRole("navigation", { name: "Primary navigation" }).getByRole("link", { name: "Home", exact: true }).focus();
@@ -177,7 +177,7 @@ try {
   assert.equal(await question.getAttribute("open"), "");
   for (const width of [320, 768, 1024]) {
     await page.setViewportSize({ width, height: 900 });
-    for (const path of ["/", "/about", "/services", "/production", "/training", "/right-sanchar", "/contact"]) {
+    for (const path of ["/", "/about", "/services", "/our-work", "/production", "/training", "/right-sanchar", "/contact"]) {
       await page.goto(`${origin}${path}`);
       assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth), false, `${path}: overflow at ${width}px`);
     }

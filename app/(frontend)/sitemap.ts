@@ -34,8 +34,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   if (posts.length > 0) add("/posts");
   if (offers.length > 0) add("/offers");
 
+  // Menu items, plus the pages a menu item stands for without linking to them
+  // directly, so shortening the navbar never drops a page from the sitemap.
   for (const item of nav.items) {
-    if (item.href.startsWith("/")) add(item.href);
+    for (const href of [item.href, ...(item.covers ?? [])]) {
+      if (href.startsWith("/")) add(href);
+    }
   }
   for (const service of services) add(`/services/${service.slug}`);
   for (const post of posts) if (post.slug) add(`/posts/${post.slug}`, post.updatedAt);

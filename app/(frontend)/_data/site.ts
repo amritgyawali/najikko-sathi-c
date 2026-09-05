@@ -23,13 +23,20 @@ export const business = {
 
 export const navigation = [
   { label: "Home", href: "/" },
-  { label: "About Us", href: "/about" },
   { label: "Services", href: "/services" },
-  { label: "Production", href: "/production" },
-  { label: "Training", href: "/training" },
-  { label: "Right Sanchar", href: "/right-sanchar" },
+  { label: "Our Work", href: "/our-work" },
   { label: "Contact", href: "/contact" },
+  { label: "About Us", href: "/about" },
 ] as const;
+
+/**
+ * Pages that sit underneath a menu item without having their own link in the
+ * navbar. The header highlights the parent while a visitor is on one of them,
+ * and the sitemap still lists them, so shortening the menu never hides a page.
+ */
+export const navSections: Record<string, string[]> = {
+  "/our-work": ["/production", "/training", "/right-sanchar"],
+};
 
 export const brandPillars = [
   "Honest news",

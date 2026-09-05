@@ -5,7 +5,13 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
 /** Nav links are resolved on the server (CMS, or the static fallback). */
-type NavItem = { label: string; href: string; newTab?: boolean };
+type NavItem = { label: string; href: string; newTab?: boolean; covers?: string[] };
+
+/** True on the item's own page, and on any page it stands for in the menu. */
+function isCurrentSection(pathname: string, item: NavItem) {
+  const paths = [item.href, ...(item.covers ?? [])];
+  return paths.some((path) => pathname === path || (path !== "/" && pathname.startsWith(`${path}/`)));
+}
 
 export function Navigation({ items }: { items: NavItem[] }) {
   const pathname = usePathname();
@@ -19,8 +25,9 @@ export function Navigation({ items }: { items: NavItem[] }) {
       </button>
       <nav id="primary-navigation" className={`primary-nav${open ? " is-open" : ""}`} aria-label="Primary navigation" onKeyDown={(event) => { if (event.key === "Escape") { setOpenForPath(null); document.querySelector<HTMLButtonElement>(".menu-toggle")?.focus(); } }}>
         {items.map((item) => {
-          const active = pathname === item.href || (item.href !== "/" && pathname.startsWith(`${item.href}/`));
-          return <Link key={`${item.label}-${item.href}`} href={item.href} target={item.newTab ? "_blank" : undefined} rel={item.newTab ? "noreferrer" : undefined} className={active ? "active" : undefined} aria-current={active ? "page" : undefined} onClick={() => setOpenForPath(null)}>{item.label}</Link>;
+          const active = isCurrentSection(pathname, item);
+          const exact = pathname === item.href;
+          return <Link key={`${item.label}-${item.href}`} href={item.href} target={item.newTab ? "_blank" : undefined} rel={item.newTab ? "noreferrer" : undefined} className={active ? "active" : undefined} aria-current={exact ? "page" : active ? "true" : undefined} onClick={() => setOpenForPath(null)}>{item.label}</Link>;
         })}
       </nav>
     </>
