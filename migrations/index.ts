@@ -3,6 +3,7 @@ import * as migration_20260905_081428_add_services_and_tools from './20260905_08
 import * as migration_20260905_110000_secure_cms_tables from './20260905_110000_secure_cms_tables';
 import * as migration_20260905_140000_navbar_our_work from './20260905_140000_navbar_our_work';
 import * as migration_20260905_145200_add_account_approval from './20260905_145200_add_account_approval';
+import * as migration_20260905_184631_add_leadership_and_social_responsibility from './20260905_184631_add_leadership_and_social_responsibility';
 
 export const migrations = [
   {
@@ -29,5 +30,10 @@ export const migrations = [
     up: migration_20260905_145200_add_account_approval.up,
     down: migration_20260905_145200_add_account_approval.down,
     name: '20260905_145200_add_account_approval',
+  },
+  {
+    up: migration_20260905_184631_add_leadership_and_social_responsibility.up,
+    down: migration_20260905_184631_add_leadership_and_social_responsibility.down,
+    name: '20260905_184631_add_leadership_and_social_responsibility'
   },
 ];

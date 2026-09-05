@@ -19,6 +19,7 @@ export type PageMedia = {
 
 export const pageMedia: Record<string, PageMedia> = {
   home: {}, about: {}, services: {}, "our-work": {}, production: {}, training: {}, "right-sanchar": {}, contact: {},
+  "social-media-handling": {}, research: {}, advertisement: {}, it: {},
   "biography-videos": {}, "documentary-film-production": {}, "advertisements-commercials": {},
   "corporate-profile-making": {}, "digital-profile-creation": {}, "media-consulting": {},
   "facebook-boosting-digital-campaigns": {}, "social-media-advertisements": {}, "event-coverage-management": {},

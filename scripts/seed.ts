@@ -128,6 +128,12 @@ async function seed() {
         { label: "Visual production" },
         { label: "Skill development" },
       ],
+      leadershipKicker: "From our leadership",
+      leadershipHeading: "Messages from the people who guide our work.",
+      // Left empty on purpose: the chairman's and director's own words belong
+      // to them. Add the messages in Site -> Homepage -> Leadership and the
+      // carousel appears on the front page.
+      leadershipMessages: [],
       servicesKicker: "Our Services",
       // Cleared on purpose: with no custom list the homepage grid shows the
       // full service portfolio, each card linking to its own service page.

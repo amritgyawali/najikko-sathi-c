@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Mail, MapPin, Phone, Share2 } from "lucide-react";
 import { getBusiness, getFooter, getNavigation } from "@/lib/content";
@@ -41,7 +42,12 @@ export async function Header() {
       <header className="site-header">
         <div className="site-container header-inner">
           <Link className="brand" href="/" aria-label={`${business.shortName} home`}>
-            <span className="brand-mark" aria-hidden="true">{business.initials}</span>
+            {/* The logo uploaded in Site Settings replaces the initials mark. */}
+            {business.logoUrl ? (
+              <Image className="brand-logo" src={business.logoUrl} alt="" width={132} height={132} priority />
+            ) : (
+              <span className="brand-mark" aria-hidden="true">{business.initials}</span>
+            )}
             <span className="brand-copy">
               <strong>{business.shortName}</strong>
               <small>Media Pvt. Ltd.</small>

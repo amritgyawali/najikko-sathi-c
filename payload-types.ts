@@ -74,6 +74,7 @@ export interface Config {
     offers: Offer;
     reviews: Review;
     faqs: Faq;
+    'social-responsibility': SocialResponsibility;
     team: Team;
     enquiries: Enquiry;
     media: Media;
@@ -95,6 +96,7 @@ export interface Config {
     offers: OffersSelect<false> | OffersSelect<true>;
     reviews: ReviewsSelect<false> | ReviewsSelect<true>;
     faqs: FaqsSelect<false> | FaqsSelect<true>;
+    'social-responsibility': SocialResponsibilitySelect<false> | SocialResponsibilitySelect<true>;
     team: TeamSelect<false> | TeamSelect<true>;
     enquiries: EnquiriesSelect<false> | EnquiriesSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
@@ -645,6 +647,42 @@ export interface Faq {
   createdAt: string;
 }
 /**
+ * Films and photo albums from our social responsibility work.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "social-responsibility".
+ */
+export interface SocialResponsibility {
+  id: number;
+  title: string;
+  /**
+   * A short description shown under the title.
+   */
+  summary?: string | null;
+  /**
+   * Paste the YouTube link, for example https://www.youtube.com/watch?v=XXXXXXXXXXX. Leave blank for a photo-only album.
+   */
+  youtubeUrl?: string | null;
+  /**
+   * Upload as many photographs as you like and drag to reorder them.
+   */
+  photos?:
+    | {
+        image: number | Media;
+        caption?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  date?: string | null;
+  /**
+   * Lower numbers appear first.
+   */
+  order?: number | null;
+  status: 'draft' | 'published';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * The people introduced on the about page.
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -813,6 +851,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'faqs';
         value: number | Faq;
+      } | null)
+    | ({
+        relationTo: 'social-responsibility';
+        value: number | SocialResponsibility;
       } | null)
     | ({
         relationTo: 'team';
@@ -1151,6 +1193,27 @@ export interface FaqsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "social-responsibility_select".
+ */
+export interface SocialResponsibilitySelect<T extends boolean = true> {
+  title?: T;
+  summary?: T;
+  youtubeUrl?: T;
+  photos?:
+    | T
+    | {
+        image?: T;
+        caption?: T;
+        id?: T;
+      };
+  date?: T;
+  order?: T;
+  status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "team_select".
  */
 export interface TeamSelect<T extends boolean = true> {
@@ -1377,6 +1440,21 @@ export interface Homepage {
   aboutCapabilities?:
     | {
         label: string;
+        id?: string | null;
+      }[]
+    | null;
+  leadershipKicker?: string | null;
+  leadershipHeading?: string | null;
+  /**
+   * Shown one at a time on the homepage. The carousel moves on every five seconds, and visitors can step through with the arrows.
+   */
+  leadershipMessages?:
+    | {
+        role: string;
+        name: string;
+        heading?: string | null;
+        message: string;
+        photo?: (number | null) | Media;
         id?: string | null;
       }[]
     | null;
@@ -1613,6 +1691,18 @@ export interface HomepageSelect<T extends boolean = true> {
     | T
     | {
         label?: T;
+        id?: T;
+      };
+  leadershipKicker?: T;
+  leadershipHeading?: T;
+  leadershipMessages?:
+    | T
+    | {
+        role?: T;
+        name?: T;
+        heading?: T;
+        message?: T;
+        photo?: T;
         id?: T;
       };
   servicesKicker?: T;

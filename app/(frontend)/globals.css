@@ -962,6 +962,12 @@ footer li a:hover {
   letter-spacing: -.03em;
 }
 
+.brand-logo {
+  width: 46px;
+  height: 46px;
+  object-fit: contain;
+}
+
 .brand-copy {
   display: flex;
   flex-direction: column;
@@ -983,101 +989,233 @@ footer li a:hover {
   letter-spacing: .13em;
 }
 
-.brand-overview {
-  min-height: 280px;
-  display: grid;
-  grid-template-columns: 1.18fr repeat(3, minmax(0, 1fr));
-  grid-template-rows: repeat(2, minmax(112px, 1fr));
-  gap: 8px;
-  padding: 8px;
-  overflow: hidden;
+.media-system {
+  padding: 26px 20px 30px;
   border-radius: 15px;
-  background: #edf2f8;
+  background:
+    radial-gradient(circle at 50% 46%, #ffffff 0%, #eef3f9 58%, #e6ecf5 100%);
 }
 
-.overview-center,
-.overview-pillar {
+.media-system-wheel {
+  position: relative;
+  width: min(520px, 100%);
+  margin-inline: auto;
+  aspect-ratio: 1;
+}
+
+/*
+ * Each petal is a square box on the ring. Only the drawn shape and its label
+ * take the pointer, so the boxes may overlap at the corners without one petal
+ * stealing a neighbour's click.
+ */
+/*
+ * Each petal covers the whole wheel, so only the drawn shape and its label
+ * take the pointer and every link matches the petal a visitor can see.
+ */
+.media-petal {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.media-petal svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  filter: drop-shadow(0 9px 18px rgb(6 43 92 / 16%));
+}
+
+.media-petal path {
+  cursor: pointer;
+  pointer-events: auto;
+  transform-box: view-box;
+  transform-origin: 50% 50%;
+  transition: transform .25s ease;
+}
+
+.media-petal:hover path {
+  transform: scale(1.045);
+}
+
+.media-petal span {
+  position: absolute;
+  width: 27%;
+  color: #fff;
+  cursor: pointer;
+  pointer-events: auto;
+  font-size: clamp(9.5px, 2.4vw, 15px);
+  font-weight: 750;
+  line-height: 1.2;
+  letter-spacing: -.01em;
+  text-align: center;
+  text-shadow: 0 1px 2px rgb(0 0 0 / 20%);
+  transform: translate(-50%, -50%);
+}
+
+.media-system-core {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 30%;
+  height: 30%;
+  overflow: hidden;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 10px 28px rgb(6 43 92 / 14%);
+  transform: translate(-50%, -50%);
+}
+
+.media-system-core img {
+  width: 78%;
+  height: 78%;
+  object-fit: contain;
+}
+
+.media-system-core strong {
+  color: var(--primary);
+  font-size: clamp(20px, 4.4vw, 40px);
+  font-weight: 800;
+  letter-spacing: -.05em;
+}
+
+.leadership-section {
+  background: var(--surface);
+}
+
+.leadership-message {
+  display: grid;
+  grid-template-columns: 240px minmax(0, 1fr);
+  align-items: center;
+  gap: 44px;
+  padding: 38px;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: #fff;
+  box-shadow: var(--shadow-soft);
+}
+
+.leadership-portrait {
+  display: grid;
+  place-items: center;
+  width: 240px;
+  height: 240px;
+  overflow: hidden;
+  border-radius: 50% 50% 50% 16%;
+  background: linear-gradient(145deg, var(--secondary), var(--primary));
+}
+
+.leadership-portrait img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.leadership-portrait span {
+  color: #fff;
+  font-size: 64px;
+  font-weight: 800;
+  letter-spacing: -.04em;
+}
+
+.leadership-quote-mark {
+  width: 28px;
+  height: 28px;
+  color: var(--warm);
+}
+
+.leadership-copy h3 {
+  margin: 14px 0 12px;
+  color: var(--primary);
+  font-size: 25px;
+  font-weight: 650;
+  letter-spacing: -.02em;
+}
+
+.leadership-copy p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 16.5px;
+  line-height: 1.8;
+  white-space: pre-line;
+}
+
+.leadership-attribution {
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
-  text-align: left;
+  gap: 5px;
+  margin-top: 24px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
 }
 
-.overview-center {
-  grid-row: 1 / -1;
-  align-items: flex-start;
-  justify-content: center;
-  padding: 28px;
-  overflow: hidden;
-  border-radius: 12px;
-  color: #fff;
-  background:
-    radial-gradient(circle at 94% 12%, rgb(115 168 255 / 36%), transparent 32%),
-    linear-gradient(145deg, #0f5eaf, var(--primary) 72%);
-}
-
-.overview-center strong {
-  margin: 7px 0 13px;
-  font-size: 64px;
-  line-height: .78;
-  letter-spacing: -.075em;
-}
-
-.overview-center span {
-  color: #dbe8ff;
+.leadership-attribution strong {
+  color: var(--primary);
   font-size: 17px;
-  font-weight: 600;
-  line-height: 1.25;
+  font-weight: 750;
 }
 
-.overview-center small {
-  color: #9ec3ff;
+.leadership-attribution span {
+  color: var(--secondary);
   font-family: var(--font-inter), Arial, sans-serif;
-  font-size: 9px;
-  font-weight: 750;
-  letter-spacing: .16em;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .15em;
   text-transform: uppercase;
 }
 
-.overview-pillar {
-  position: relative;
-  min-width: 0;
-  padding: 20px;
-  border: 1px solid rgb(6 43 92 / 8%);
-  border-radius: 12px;
-  color: var(--primary);
-  background: #fff;
-  box-shadow: 0 4px 16px rgb(6 43 92 / 4%);
-  font-family: var(--font-inter), Arial, sans-serif;
-  font-size: 13px;
-  font-weight: 720;
-  line-height: 1.3;
-  transition: color .22s ease, background .22s ease, transform .22s ease;
+.leadership-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  margin-top: 26px;
 }
 
-.overview-pillar::before {
-  content: "";
-  position: absolute;
-  top: 18px;
-  left: 20px;
-  width: 8px;
-  height: 8px;
-  border: 2px solid rgb(18 104 211 / 30%);
+.leadership-controls button {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--line);
   border-radius: 50%;
   background: #fff;
-  box-shadow: 0 0 0 5px rgb(18 104 211 / 6%);
+  color: var(--primary);
+  cursor: pointer;
+  transition: background .2s ease, color .2s ease, border-color .2s ease;
 }
 
-.overview-pillar:hover {
+.leadership-controls button:hover {
+  border-color: var(--secondary);
   color: #fff;
   background: var(--secondary);
-  transform: translateY(-2px);
 }
 
-.overview-pillar:hover::before {
-  border-color: rgb(255 255 255 / 54%);
-  background: var(--signal);
-  box-shadow: 0 0 0 5px rgb(255 255 255 / 10%);
+.leadership-controls svg {
+  width: 20px;
+  height: 20px;
+}
+
+.leadership-dots {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.leadership-dots i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--line);
+  transition: width .2s ease, background .2s ease;
+}
+
+.leadership-dots i.is-current {
+  width: 22px;
+  border-radius: 4px;
+  background: var(--secondary);
 }
 
 .media-visual {

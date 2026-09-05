@@ -1,7 +1,8 @@
 import Link from "next/link";
-import { ArrowRight, Clapperboard, GraduationCap, Megaphone, Newspaper, Search } from "lucide-react";
+import { ArrowRight, Clapperboard, GraduationCap, Megaphone, MonitorSmartphone, Newspaper, Search, Speech } from "lucide-react";
 import { getCategoryViews, getFaqPairs, getServiceViews } from "@/lib/services";
 import { ContactCta, MediaShowcase, PageHero, ProcessSteps, Questions, SectionHeading, ServiceCards } from "../_components/page-content";
+import { SocialResponsibilitySection } from "../_components/social-responsibility";
 import { pageMetadata } from "../_lib/seo";
 
 // Rendered per request so the page always reflects what is in the dashboard.
@@ -10,15 +11,17 @@ import { pageMetadata } from "../_lib/seo";
 // site trades a cached render for content that is never stale.
 export const dynamic = "force-dynamic";
 
-// The five areas the menu item stands for. Production, training and Right
-// Sanchar keep their own pages; social media and research live as sections of
-// the services page, so this is the one place that gathers them all.
+// Every area of the practice, each with its own page. These are the same six
+// disciplines as the media system wheel on the homepage, plus the news portal,
+// so this page is the one place that gathers all of them.
 const workAreas = [
   { icon: Clapperboard, title: "Photography & video production", href: "/production", description: "Biography films, documentaries, commercials, and organizational profiles, from research through to the final edit." },
+  { icon: Megaphone, title: "Social media handling", href: "/social-media-handling", description: "Profile making, media consulting, and event coverage and management across the platforms your audience already uses." },
+  { icon: GraduationCap, title: "Training & capacity building", href: "/training", description: "Practical programs in social media, content creation, journalism, photography, editing, and design for individuals and teams." },
+  { icon: Search, title: "Research & development", href: "/research", description: "Field research and development work with government, non-governmental, and international organizations across Nepal." },
+  { icon: MonitorSmartphone, title: "Information technology", href: "/it", description: "Websites, news portals, and the digital systems behind them, built so the people who own them can keep them running." },
+  { icon: Speech, title: "Advertisement", href: "/advertisement", description: "Commercials, digital campaigns, and print and outdoor material, written and produced around one clear message." },
   { icon: Newspaper, title: "Right Sanchar news portal", href: "/right-sanchar", description: "Our digital news platform for accurate, truthful, and unbiased reporting on issues that matter to the public." },
-  { icon: GraduationCap, title: "Training & capacity building", href: "/training", description: "Practical programs in social media, content creation, journalism, and creative production for individuals and teams." },
-  { icon: Megaphone, title: "Social media & campaigns", href: "/services#social-media", description: "Digital presence management, branding, audience engagement, and performance marketing across major platforms." },
-  { icon: Search, title: "Research & development", href: "/services#research", description: "Field research, media monitoring, data collection, and development work with public and civil society partners." },
 ];
 
 export const metadata = pageMetadata(
@@ -43,7 +46,7 @@ export default async function OurWorkPage() {
   return <>
     <PageHero eyebrow="Our work" title="The stories, campaigns, and programs behind our name." description="Production, news, training, and research are parts of one media practice. This is where each part of our work leads." path="/our-work" label="Our Work" category={category}><Link className="hero-cta" prefetch={false} href="/contact?service=Our%20Work">Discuss a project <ArrowRight aria-hidden="true" /></Link></PageHero>
     <section className="content-section"><div className="site-container">
-      <SectionHeading kicker="What we work on" title="Five areas, one media house." description="Each area has its own page with the scope, process, and the questions worth settling before work begins." />
+      <SectionHeading kicker="What we work on" title="Seven areas, one media house." description="Each area has its own page with the scope, process, and the questions worth settling before work begins." />
       <div className="service-detail-grid">{workAreas.map(({ icon: Icon, title, href, description }) => <Link className="service-detail-card" href={href} key={href}>
         <span className="service-card-icon"><Icon aria-hidden="true" /></span>
         <h3>{title}</h3><p>{description}</p><span className="service-card-action">See this work <ArrowRight aria-hidden="true" /></span>
@@ -57,6 +60,7 @@ export default async function OurWorkPage() {
       <SectionHeading kicker="How a project runs" title="From the first conversation to what you publish." />
       <ProcessSteps steps={[["Understand", "Agree on the audience, the message, and where the finished work will be seen."], ["Plan", "Set the scope, the material to be gathered, and what is needed from your side."], ["Produce", "Film, photograph, write, or teach within the agreed plan."], ["Deliver", "Hand over the formats agreed for your channels, and review the result together."]]} />
     </div></section>
+    <SocialResponsibilitySection />
     <MediaShowcase mediaKey="our-work" title="Our work" />
     <section className="content-section"><div className="site-container faq-grid">
       <SectionHeading kicker="Before you brief us" title="Questions we are often asked." />

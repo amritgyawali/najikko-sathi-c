@@ -15,11 +15,12 @@ Content is managed through a full admin dashboard powered by
 | Area | Where in the dashboard | Appears on |
 | --- | --- | --- |
 | Traffic, top pages, referrers, devices, enquiry queue | Dashboard home | - |
-| The 16 services and their detail pages | Services → Services | `/services`, `/services/<slug>`, homepage grid, `/our-work`, `/production`, `/training` |
+| The 16 services and their detail pages | Services → Services | `/services`, `/services/<slug>`, `/our-work`, and every discipline page |
 | Service groupings | Services → Service categories | `/services` sections |
 | News, blogs, commentary, investigations | Content → Posts | `/posts`, `/posts/<slug>` |
 | Promotions and packages | Content → Offers | `/offers` |
 | Client testimonials, with an approval queue | Content → Reviews | Review blocks |
+| Social responsibility films and photo albums | Content → Social responsibility | `/our-work` |
 | New website pages, built from layout blocks | Content → Pages | `/<slug>` |
 | Questions and answers | Content → FAQs | Contact, services, training, production |
 | The people on the about page | Content → Team | `/about` |
@@ -27,6 +28,8 @@ Content is managed through a full admin dashboard powered by
 | The photo or video featured on each page | Content → Page media | Every page's showcase band |
 | Contact form messages, with triage and notes | Enquiries | Sent from `/contact` |
 | Homepage copy and imagery | Site → Homepage | `/` |
+| Chairman and director messages | Site → Homepage → Leadership | `/` |
+| Company logo, shown in the header and the media system wheel | Site → Site Settings | Every page |
 | Navbar links, order and header button | Site → Navigation | Every page |
 | Site-wide notice, with a schedule | Site → Announcement bar | Every page |
 | Website colours, corner radius, heading font | Site → Appearance | Every page |
@@ -34,6 +37,38 @@ Content is managed through a full admin dashboard powered by
 | Company name, address, phones, VAT, SEO | Site → Site Settings | Every page |
 | Old URLs redirected to new ones | Administration → Redirects | Applied by `proxy.ts` |
 | Dashboard accounts, roles and approving sign-ups | Administration → Users | - |
+
+### The homepage
+
+The front page is the media system wheel, the introduction, the leadership
+messages, and the page's own photo and film. The wheel's six petals -
+production, social media handling, training, research and development, IT, and
+advertisement - each link to that discipline's page, and the company logo
+uploaded in **Site → Site Settings** sits at its centre. Until a logo is
+uploaded the centre falls back to the initials mark.
+
+The service grid, the production band, and the Right Sanchar band used to sit
+on the homepage as well. They now open `/services`, `/production`, and
+`/right-sanchar` respectively, and still read their copy from
+**Site → Homepage**, so nothing an editor had written was lost when they moved.
+
+The **Leadership** tab is empty to begin with, and the carousel appears on the
+homepage as soon as the first message is saved there. Add one entry for the
+chairman and one for the director: the carousel then moves on by itself every
+five seconds, with arrows for stepping through it by hand.
+
+### Social responsibility
+
+**Content → Social responsibility** drives the section of the same name on
+`/our-work`. Each entry has a title, an optional summary, an optional YouTube
+link, and an optional photo album. Paste an ordinary YouTube watch URL and the
+film is embedded; upload photographs with captions and they become an album.
+An entry can be both, or either one on its own. Entries are ordered by the
+**Order** field and only appear once **Published**.
+
+Because the site renders per request, a photograph added, replaced, or removed
+in the dashboard is on the public page on the next load - there is nothing to
+rebuild and no cache to clear.
 
 Two more tools sit on the dashboard home: **Download backup**, which exports every
 collection and global as one JSON file (administrators only), and the **search page**
@@ -200,7 +235,7 @@ until someone approves it in the dashboard.
 
 ## Pages
 
-The navbar links five separate pages, in this order: `/`, `/services`, `/our-work`, `/contact`, and `/about`. `/our-work` gathers the areas that are not in the menu themselves - `/production`, `/training` and `/right-sanchar` keep their own pages, stay in the sitemap, and highlight **Our Work** in the header while a visitor is on them (see `navSections` in `app/(frontend)/_data/site.ts`). Each of the 16 services has a statically generated `/services/[slug]` page with its own scope, preparation guidance, workflow, FAQs, related services, and contact link.
+The navbar links five separate pages, in this order: `/`, `/services`, `/our-work`, `/contact`, and `/about`. `/our-work` gathers the areas that are not in the menu themselves - `/production`, `/social-media-handling`, `/training`, `/research`, `/it`, `/advertisement` and `/right-sanchar` keep their own pages, stay in the sitemap, and highlight **Our Work** in the header while a visitor is on them (see `navSections` in `app/(frontend)/_data/site.ts`). The first six are the disciplines in the homepage wheel, and each petal links straight to its page. Each of the 16 services has a statically generated `/services/[slug]` page with its own scope, preparation guidance, workflow, FAQs, related services, and contact link.
 
 The portfolio covers four production services, five social media services, five training programs, and two research and development services. The source is retained in `docs/Service_Portfolio_Overview.pdf`.
 
@@ -213,7 +248,7 @@ npx playwright install chromium
 npm run check:site
 ```
 
-The browser installation is only needed once per machine. `check:site` starts a production server on port 3100, checks all 24 pages at desktop and mobile widths, checks internal destinations and anchors, renders all social preview images, and exercises navigation history, the mobile menu, FAQs, and inquiry validation. Screenshots go to ignored `tmp/site-check/`. Set `CHECK_BASE_URL` to test an already running preview. No email is sent during checks.
+The browser installation is only needed once per machine. `check:site` starts a production server on port 3100, checks all 28 pages at desktop and mobile widths, checks internal destinations and anchors, renders all social preview images, and exercises navigation history, the mobile menu, FAQs, and inquiry validation. Screenshots go to ignored `tmp/site-check/`. Set `CHECK_BASE_URL` to test an already running preview. No email is sent during checks.
 
 ## Owner-managed photos and videos
 

@@ -35,8 +35,30 @@ export const navigation = [
  * and the sitemap still lists them, so shortening the menu never hides a page.
  */
 export const navSections: Record<string, string[]> = {
-  "/our-work": ["/production", "/training", "/right-sanchar"],
+  "/our-work": [
+    "/production",
+    "/social-media-handling",
+    "/training",
+    "/research",
+    "/it",
+    "/advertisement",
+    "/right-sanchar",
+  ],
 };
+
+/**
+ * The six disciplines in the media system wheel on the homepage. Each petal
+ * links to the page for that discipline, and this order is the order round the
+ * circle, clockwise from the top.
+ */
+export const mediaSystem = [
+  { label: "Production", href: "/production", from: "#f5333f", to: "#d81e2a" },
+  { label: "Social Media Handling", href: "/social-media-handling", from: "#f2960f", to: "#e07708" },
+  { label: "Training", href: "/training", from: "#a51fa0", to: "#87157f" },
+  { label: "Research & Development", href: "/research", from: "#9b7420", to: "#7d5b12" },
+  { label: "IT", href: "/it", from: "#1f6fd0", to: "#12539f" },
+  { label: "Advertisement", href: "/advertisement", from: "#16a244", to: "#0c8134" },
+] as const;
 
 export const brandPillars = [
   "Honest news",
@@ -65,9 +87,11 @@ export const footerGroups = [
     title: "Media",
     links: [
       { label: "Right Sanchar", href: "/right-sanchar" },
-      { label: "Social Media", href: "/services#social-media" },
+      { label: "Social Media", href: "/social-media-handling" },
       { label: "Media Training", href: "/training" },
-      { label: "Research & Development", href: "/services#research" },
+      { label: "Advertisement", href: "/advertisement" },
+      { label: "IT", href: "/it" },
+      { label: "Research & Development", href: "/research" },
     ],
   },
   {

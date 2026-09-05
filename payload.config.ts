@@ -19,6 +19,7 @@ import { Redirects } from "./cms/collections/Redirects";
 import { Reviews } from "./cms/collections/Reviews";
 import { ServiceCategories } from "./cms/collections/ServiceCategories";
 import { Services } from "./cms/collections/Services";
+import { SocialResponsibility } from "./cms/collections/SocialResponsibility";
 import { TeamMembers } from "./cms/collections/TeamMembers";
 import { Users } from "./cms/collections/Users";
 import { Announcement } from "./cms/globals/Announcement";
@@ -62,6 +63,7 @@ export default buildConfig({
     Offers,
     Reviews,
     Faqs,
+    SocialResponsibility,
     TeamMembers,
     Enquiries,
     Media,
