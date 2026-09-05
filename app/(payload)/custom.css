@@ -1,0 +1,62 @@
+/*
+ * Brand styling for the dashboard, layered on top of Payload's own stylesheet.
+ * Payload exposes its palette as CSS variables, so setting them here restyles
+ * every screen consistently instead of overriding individual components.
+ */
+
+:root {
+  /* Najikko Sathi navy, matching the public site's --primary. */
+  --theme-elevation-1000: 6 43 92;
+
+  --color-success-500: 15 122 61;
+  --color-error-500: 199 62 44;
+}
+
+/* Brand the accent Payload uses for buttons, links and active states. */
+html[data-theme="light"] {
+  --theme-success-500: #0f7a3d;
+  --color-base-800: #0d1b30;
+  --color-base-1000: #06172b;
+}
+
+/* A calmer page background than pure white, matching the site's --surface. */
+html[data-theme="light"] body {
+  background: #f4f7fb;
+}
+
+html[data-theme="light"] .template-default__wrap,
+html[data-theme="light"] .dashboard {
+  background: transparent;
+}
+
+/* The brand mark in the top-left of the sidebar. */
+.nav .nav__brand,
+.nav__header {
+  border-bottom: 1px solid var(--theme-elevation-100);
+}
+
+/* Group headings in the sidebar: quieter, so the links read first. */
+.nav-group__toggle {
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--theme-elevation-500);
+}
+
+/* Give list tables a little more breathing room. */
+.table table td,
+.table table th {
+  padding-block: 0.85rem;
+}
+
+/* Make the primary action button unmistakable. */
+.btn--style-primary {
+  font-weight: 600;
+}
+
+/* Field descriptions carry most of the guidance in this dashboard, so make
+   sure they are readable rather than an afterthought. */
+.field-description {
+  color: var(--theme-elevation-600);
+  line-height: 1.5;
+}

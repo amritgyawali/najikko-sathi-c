@@ -43,6 +43,10 @@ export default buildConfig({
     meta: {
       titleSuffix: "- Najikko Sathi Dashboard",
     },
+    // Initials drawn locally. The default sends an MD5 of the signed-in
+    // administrator's email to gravatar.com on every dashboard page load, and
+    // renders a broken image whenever that request is blocked.
+    avatar: "default",
     components: {
       // Traffic and content statistics, shown at the top of the dashboard.
       beforeDashboard: ["/cms/components/DashboardStats#DashboardStats"],
