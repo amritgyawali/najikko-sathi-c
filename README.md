@@ -124,7 +124,8 @@ Create the first administrator with the seed before making the connected admin
 dashboard public.
 
 Vercel Functions run in Sydney (`syd1`) beside this Supabase project's database
-(`ap-southeast-2`). Each function uses at most two pooled client connections.
+(`ap-southeast-2`). Each function uses at most five pooled client connections,
+leaving room for Payload's reserved connection, transactions, and lock checks.
 
 `npm run build` runs pending migrations first, so a deploy applies schema
 changes automatically. After changing anything in `cms/`, generate a migration

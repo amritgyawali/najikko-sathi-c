@@ -14,7 +14,9 @@ export function databasePoolConfig() {
 
   return {
     connectionString,
-    max: 2,
+    // Payload keeps one connection for reconnect handling. Mutations also
+    // need a transaction connection and a separate document-lock query.
+    max: 5,
     idleTimeoutMillis: 10_000,
     connectionTimeoutMillis: 10_000,
     ...(ca ? { ssl: { ca, rejectUnauthorized: true } } : {}),
