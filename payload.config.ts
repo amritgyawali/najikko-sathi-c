@@ -27,11 +27,13 @@ import { Footer } from "./cms/globals/Footer";
 import { Homepage } from "./cms/globals/Homepage";
 import { Navigation } from "./cms/globals/Navigation";
 import { SiteSettings } from "./cms/globals/SiteSettings";
+import { cloudinaryStorage } from "./cms/storage/cloudinary";
+import { databasePoolConfig } from "./cms/database";
 
 const dirname = path.dirname(fileURLToPath(import.meta.url));
 
-// Vercel's filesystem is read-only, so uploads must go to blob storage there.
-// Locally the token is usually absent and Payload falls back to ./media.
+// Cloudinary is preferred when configured. Vercel Blob remains supported.
+const cloudinaryURL = process.env.CLOUDINARY_URL;
 const blobToken = process.env.BLOB_READ_WRITE_TOKEN;
 
 export default buildConfig({
@@ -66,13 +68,18 @@ export default buildConfig({
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || "",
   db: postgresAdapter({
-    pool: { connectionString: process.env.DATABASE_URI || "" },
+    pool: databasePoolConfig(),
+    // Use checked-in migrations even during local development, since a local
+    // server may be connected to the same hosted database as production.
+    push: false,
   }),
   sharp,
   typescript: {
     outputFile: path.resolve(dirname, "payload-types.ts"),
   },
-  plugins: blobToken
-    ? [vercelBlobStorage({ enabled: true, collections: { media: true }, token: blobToken })]
-    : [],
+  plugins: cloudinaryURL
+    ? [cloudinaryStorage(cloudinaryURL)]
+    : blobToken
+      ? [vercelBlobStorage({ enabled: true, collections: { media: true }, token: blobToken })]
+      : [],
 });

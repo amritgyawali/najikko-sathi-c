@@ -82,8 +82,13 @@ npm run dev
 ```
 
 `npm run seed` loads the site's existing copy into the CMS and creates the first
-administrator, so the dashboard opens pre-filled rather than blank. It is safe
-to re-run; the administrator is only created when no user exists yet.
+administrator, so the dashboard opens pre-filled rather than blank. Re-running
+it overwrites seeded globals, services, categories, and FAQs with repository
+content. Existing users are preserved. Run it once during initial setup; avoid
+running it after editors have customized that content.
+
+Automatic development schema changes are disabled. Run `npm run migrate` before
+starting development against a newly created database.
 
 Open <http://localhost:3000/admin> and sign in with the seeded account.
 
@@ -94,9 +99,29 @@ Set these environment variables in the Vercel project:
 | Variable | Notes |
 | --- | --- |
 | `PAYLOAD_SECRET` | Any long random string (`openssl rand -base64 32`) |
-| `DATABASE_URI` | Postgres connection string |
-| `BLOB_READ_WRITE_TOKEN` | From Vercel → Storage → Blob. Required for uploads: Vercel's filesystem is read-only |
+| `DATABASE_URI` | Supabase session pooler connection string, with the database password percent-encoded |
+| `DATABASE_SSL_CA` | Supabase root certificate from Database Settings → SSL Configuration. PEM text or escaped `\n` newlines; verifies the server certificate |
+| `DATABASE_MIGRATION_URI` | Optional direct/session connection when `DATABASE_URI` uses the transaction pooler |
+| `CLOUDINARY_URL` | `cloudinary://<api_key>:<api_secret>@<cloud_name>`, used for dashboard uploads |
+| `BLOB_READ_WRITE_TOKEN` | Optional alternative when `CLOUDINARY_URL` is empty |
 | `NEXT_PUBLIC_SERVER_URL` | The production URL |
+
+Supabase API keys are not database passwords and are not needed by this CMS.
+Payload handles dashboard authentication and accesses Postgres on the server.
+The security migration enables row level security and removes Supabase browser
+API permissions on the 70 CMS tables, including users, sessions, and enquiries.
+Future migrations that add tables must apply the same restrictions.
+
+Cloudinary stores originals and the thumbnail, card, and hero versions generated
+by Payload. PDFs use raw storage. The Cloudinary cloud allowed by Next Image is
+configured in `next.config.ts`. Cloudinary may require enabling PDF delivery in
+the account's security settings. Server uploads on Vercel must fit within its
+4.5 MB request limit, including multipart form overhead.
+
+Keep credentials in an ignored `.env` locally and encrypted production variables
+on Vercel. Do not share the production database with untrusted preview builds.
+Create the first administrator with the seed before making the connected admin
+dashboard public.
 
 `npm run build` runs pending migrations first, so a deploy applies schema
 changes automatically. After changing anything in `cms/`, generate a migration

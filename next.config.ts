@@ -6,9 +6,10 @@ const nextConfig: NextConfig = {
   images: {
     formats: ["image/avif", "image/webp"],
     qualities: [75, 88],
-    // Images uploaded through the dashboard are served from Vercel Blob.
+    // Dashboard uploads are served by the configured storage provider.
     remotePatterns: [
       { protocol: "https", hostname: "*.public.blob.vercel-storage.com" },
+      { protocol: "https", hostname: "res.cloudinary.com", pathname: "/v7paiwof/**" },
     ],
   },
 };

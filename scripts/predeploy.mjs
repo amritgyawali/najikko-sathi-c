@@ -11,6 +11,12 @@ import { existsSync } from "node:fs";
 // .env loaded here too - otherwise migrations would be silently skipped.
 if (existsSync(".env")) process.loadEnvFile(".env");
 
+// Supabase transaction pooling is for application requests. Migrations can
+// use its session pooler (or a direct connection) through a separate variable.
+if (process.env.DATABASE_MIGRATION_URI) {
+  process.env.DATABASE_URI = process.env.DATABASE_MIGRATION_URI;
+}
+
 if (!process.env.DATABASE_URI || !process.env.PAYLOAD_SECRET) {
   console.log("[predeploy] DATABASE_URI/PAYLOAD_SECRET not set - skipping migrations.");
   process.exit(0);
