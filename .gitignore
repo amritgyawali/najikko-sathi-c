@@ -26,6 +26,9 @@ Thumbs.db
 *.tsbuildinfo
 next-env.d.ts
 
+# Local upload directory (production uploads go to blob storage)
+/media/
+
 # Local inspection and test artifacts
 /tmp/
 /graphify-out/

@@ -1,0 +1,52 @@
+import type { CollectionConfig } from "payload";
+import { isEditor, isPublishedOrStaff } from "../access";
+import { slugField, statusField } from "../fields";
+
+/** Promotions and packages, with an optional run window. */
+export const Offers: CollectionConfig = {
+  slug: "offers",
+  admin: {
+    useAsTitle: "title",
+    defaultColumns: ["title", "status", "startsAt", "endsAt"],
+    group: "Content",
+    description: "Promotions, packages and limited-time offers.",
+  },
+  versions: { drafts: true },
+  access: {
+    read: isPublishedOrStaff,
+    create: isEditor,
+    update: isEditor,
+    delete: isEditor,
+  },
+  fields: [
+    { name: "title", type: "text", required: true },
+    slugField(),
+    statusField,
+    {
+      name: "badge",
+      type: "text",
+      admin: { description: 'Short highlight, for example "20% off" or "New".' },
+    },
+    { name: "summary", type: "textarea", required: true },
+    { name: "details", type: "richText" },
+    { name: "image", type: "upload", relationTo: "media" },
+    {
+      type: "row",
+      fields: [
+        { name: "startsAt", type: "date", admin: { width: "50%" } },
+        {
+          name: "endsAt",
+          type: "date",
+          admin: { width: "50%", description: "Leave blank for an ongoing offer." },
+        },
+      ],
+    },
+    {
+      type: "row",
+      fields: [
+        { name: "ctaLabel", type: "text", defaultValue: "Enquire now", admin: { width: "50%" } },
+        { name: "ctaHref", type: "text", defaultValue: "#contact", admin: { width: "50%" } },
+      ],
+    },
+  ],
+};

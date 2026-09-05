@@ -4,9 +4,10 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
-import { navigation } from "../_data/site";
+/** Nav links are resolved on the server (CMS, or the static fallback). */
+type NavItem = { label: string; href: string; newTab?: boolean };
 
-export function Navigation() {
+export function Navigation({ items }: { items: NavItem[] }) {
   const pathname = usePathname();
   const [openForPath, setOpenForPath] = useState<string | null>(null);
   const open = openForPath === pathname;
@@ -17,9 +18,9 @@ export function Navigation() {
         {open ? <X aria-hidden="true" /> : <Menu aria-hidden="true" />}
       </button>
       <nav id="primary-navigation" className={`primary-nav${open ? " is-open" : ""}`} aria-label="Primary navigation" onKeyDown={(event) => { if (event.key === "Escape") { setOpenForPath(null); document.querySelector<HTMLButtonElement>(".menu-toggle")?.focus(); } }}>
-        {navigation.map((item) => {
+        {items.map((item) => {
           const active = pathname === item.href || (item.href !== "/" && pathname.startsWith(`${item.href}/`));
-          return <Link key={item.href} href={item.href} className={active ? "active" : undefined} aria-current={active ? "page" : undefined} onClick={() => setOpenForPath(null)}>{item.label}</Link>;
+          return <Link key={`${item.label}-${item.href}`} href={item.href} target={item.newTab ? "_blank" : undefined} rel={item.newTab ? "noreferrer" : undefined} className={active ? "active" : undefined} aria-current={active ? "page" : undefined} onClick={() => setOpenForPath(null)}>{item.label}</Link>;
         })}
       </nav>
     </>
