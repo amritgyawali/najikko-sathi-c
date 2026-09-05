@@ -426,6 +426,10 @@ export interface User {
    * Determines what this person can see and change.
    */
   role: 'admin' | 'editor' | 'author';
+  /**
+   * Until this is ticked, the account cannot sign in.
+   */
+  approved?: boolean | null;
   avatar?: (number | null) | Media;
   updatedAt: string;
   createdAt: string;
@@ -1269,6 +1273,7 @@ export interface RedirectsSelect<T extends boolean = true> {
 export interface UsersSelect<T extends boolean = true> {
   name?: T;
   role?: T;
+  approved?: T;
   avatar?: T;
   updatedAt?: T;
   createdAt?: T;

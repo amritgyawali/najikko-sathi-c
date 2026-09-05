@@ -46,6 +46,8 @@ export default buildConfig({
     components: {
       // Traffic and content statistics, shown at the top of the dashboard.
       beforeDashboard: ["/cms/components/DashboardStats#DashboardStats"],
+      // A way to register, shown under the login form.
+      afterLogin: ["/cms/components/LoginSignupLink#LoginSignupLink"],
     },
   },
   collections: [

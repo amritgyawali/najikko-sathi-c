@@ -33,7 +33,7 @@ Content is managed through a full admin dashboard powered by
 | Footer columns and links | Site → Footer | Every page |
 | Company name, address, phones, VAT, SEO | Site → Site Settings | Every page |
 | Old URLs redirected to new ones | Administration → Redirects | Applied by `proxy.ts` |
-| Dashboard accounts and roles | Administration → Users | - |
+| Dashboard accounts, roles and approving sign-ups | Administration → Users | - |
 
 Two more tools sit on the dashboard home: **Download backup**, which exports every
 collection and global as one JSON file (administrators only), and the **search page**
@@ -56,6 +56,24 @@ than to prerender the pages again.
 Posts and offers have **Publish at** and **Unpublish at**. Content outside its
 window is hidden from the website and from the sitemap, without anyone having to
 remember to unpublish it. The announcement bar has the same start and end dates.
+
+### Signing up and signing in
+
+The dashboard login is at `/admin`. Under the login form there is a **Create one**
+link to `/signup`.
+
+- The **first** account created on a fresh database becomes an approved
+  administrator and can sign in straight away.
+- Every account after that is created as an **unapproved author** and cannot sign
+  in until an administrator ticks **Approved** on it in Administration → Users.
+
+Role and approval are locked to administrators at the field level, so a sign-up
+cannot make itself an admin - not through the sign-up form and not by posting
+directly to the REST API.
+
+If you would rather nobody could register at all, set `create` back to `isAdmin`
+in `cms/collections/Users.ts` and remove the `afterLogin` component from
+`payload.config.ts`.
 
 ### Roles
 

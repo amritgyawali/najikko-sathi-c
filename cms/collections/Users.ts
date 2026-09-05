@@ -1,4 +1,5 @@
 import type { CollectionConfig } from "payload";
+import { APIError } from "payload";
 import { isAdmin, isAdminField } from "../access";
 
 /**
@@ -15,9 +16,10 @@ export const Users: CollectionConfig = {
     description: "People who can sign in to this dashboard.",
   },
   access: {
-    // Only admins manage the roster. Everyone may read/update their own row,
-    // which is what powers the account page in the admin panel.
-    create: isAdmin,
+    // Anyone may register, but the role and approval fields below are locked to
+    // administrators, so a new sign-up can only ever be an unapproved author.
+    // The beforeLogin hook then keeps them out until someone approves them.
+    create: () => true,
     delete: isAdmin,
     read: ({ req }) => {
       const user = req.user as { role?: string; id?: string | number } | null;
@@ -31,6 +33,32 @@ export const Users: CollectionConfig = {
       if (user.role === "admin") return true;
       return { id: { equals: user.id } };
     },
+  },
+  hooks: {
+    beforeChange: [
+      async ({ data, operation, req }) => {
+        if (operation !== "create") return data;
+        // Whoever registers first owns the site, so that account is made an
+        // approved administrator. Everyone after them waits for approval.
+        const existing = await req.payload.count({ collection: "users", overrideAccess: true });
+        if (existing.totalDocs === 0) {
+          return { ...data, role: "admin", approved: true };
+        }
+        return data;
+      },
+    ],
+    beforeLogin: [
+      ({ user }) => {
+        if (!(user as { approved?: boolean }).approved) {
+          throw new APIError(
+            "This account is waiting for an administrator to approve it.",
+            403,
+            undefined,
+            true,
+          );
+        }
+      },
+    ],
   },
   fields: [
     {
@@ -51,6 +79,18 @@ export const Users: CollectionConfig = {
         { label: "Author - writes and edits only their own posts", value: "author" },
       ],
       admin: { description: "Determines what this person can see and change." },
+    },
+    {
+      name: "approved",
+      type: "checkbox",
+      defaultValue: false,
+      // Locked to administrators: a self-registered account cannot approve
+      // itself, whatever it sends.
+      access: { create: isAdminField, update: isAdminField },
+      admin: {
+        position: "sidebar",
+        description: "Until this is ticked, the account cannot sign in.",
+      },
     },
     {
       name: "avatar",
