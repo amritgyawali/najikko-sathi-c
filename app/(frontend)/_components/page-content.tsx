@@ -106,5 +106,5 @@ export async function MediaShowcase({ mediaKey, title }: { mediaKey: string; tit
 }
 
 export function ContactCta({ title = "Let’s make something meaningful.", description = "Tell us about your audience, your idea, and what you want to communicate.", service }: { title?: string; description?: string; service?: string }) {
-  return <section className="contact-cta"><div className="site-container contact-cta-inner"><div><span className="section-kicker">Your next step</span><h2>{title}</h2><p>{description}</p></div><Link className="hero-cta" href={service ? `/contact?service=${encodeURIComponent(service)}` : "/contact"}>Start a conversation <ArrowUpRight aria-hidden="true" /></Link></div></section>;
+  return <section className="contact-cta"><div className="site-container contact-cta-inner"><div><span className="section-kicker">Your next step</span><h2>{title}</h2><p>{description}</p></div><Link className="hero-cta" prefetch={false} href={service ? `/contact?service=${encodeURIComponent(service)}` : "/contact"}>Start a conversation <ArrowUpRight aria-hidden="true" /></Link></div></section>;
 }

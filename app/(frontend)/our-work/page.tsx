@@ -41,7 +41,7 @@ export default async function OurWorkPage() {
   const category = categories.find((item) => item.id === "production");
 
   return <>
-    <PageHero eyebrow="Our work" title="The stories, campaigns, and programs behind our name." description="Production, news, training, and research are parts of one media practice. This is where each part of our work leads." path="/our-work" label="Our Work" category={category}><Link className="hero-cta" href="/contact?service=Our%20Work">Discuss a project <ArrowRight aria-hidden="true" /></Link></PageHero>
+    <PageHero eyebrow="Our work" title="The stories, campaigns, and programs behind our name." description="Production, news, training, and research are parts of one media practice. This is where each part of our work leads." path="/our-work" label="Our Work" category={category}><Link className="hero-cta" prefetch={false} href="/contact?service=Our%20Work">Discuss a project <ArrowRight aria-hidden="true" /></Link></PageHero>
     <section className="content-section"><div className="site-container">
       <SectionHeading kicker="What we work on" title="Five areas, one media house." description="Each area has its own page with the scope, process, and the questions worth settling before work begins." />
       <div className="service-detail-grid">{workAreas.map(({ icon: Icon, title, href, description }) => <Link className="service-detail-card" href={href} key={href}>
