@@ -1,4 +1,5 @@
 import type { GlobalConfig } from "payload";
+import { revalidateSite } from "../hooks/revalidate";
 import { isAdminField, isEditor } from "../access";
 
 /** Company identity and contact details used across every page. */
@@ -7,6 +8,7 @@ export const SiteSettings: GlobalConfig = {
   label: "Site Settings",
   admin: { group: "Site", description: "Company name, contact details and identity." },
   access: { read: () => true, update: isEditor },
+  hooks: { afterChange: [revalidateSite] },
   fields: [
     {
       type: "row",

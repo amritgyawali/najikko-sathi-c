@@ -3,15 +3,22 @@ import { getPayload, type Where } from "payload";
 import { cache } from "react";
 
 import type {
+  Announcement,
   Appearance,
   Footer,
   Homepage,
   Navigation,
+  Faq,
+  MediaSlot,
   Offer,
   Page,
   Post,
+  Redirect,
   Review,
+  Service,
+  ServiceCategory,
   SiteSetting,
+  Team,
 } from "@/payload-types";
 import {
   business as fallbackBusiness,
@@ -41,7 +48,9 @@ const client = cache(async () => {
   }
 });
 
-async function readGlobal<T>(slug: "homepage" | "navigation" | "appearance" | "footer" | "site-settings") {
+async function readGlobal<T>(
+  slug: "homepage" | "navigation" | "announcement" | "appearance" | "footer" | "site-settings",
+) {
   const payload = await client();
   if (!payload) return null;
   try {
@@ -213,6 +222,12 @@ type CollectionMap = {
   pages: Page;
   offers: Offer;
   reviews: Review;
+  services: Service;
+  "service-categories": ServiceCategory;
+  faqs: Faq;
+  team: Team;
+  "media-slots": MediaSlot;
+  redirects: Redirect;
 };
 
 /**
@@ -252,3 +267,59 @@ export async function getBySlug<K extends keyof CollectionMap>(
   });
   return docs[0] ?? null;
 }
+
+/**
+ * Matches content that is published *and* inside its scheduled window. A blank
+ * publishAt means "already live"; a blank unpublishAt means "no end date".
+ */
+export function liveWhere(now = new Date()): Where {
+  const stamp = now.toISOString();
+  return {
+    and: [
+      { status: { equals: "published" } },
+      { or: [{ publishAt: { exists: false } }, { publishAt: { less_than_equal: stamp } }] },
+      { or: [{ unpublishAt: { exists: false } }, { unpublishAt: { greater_than: stamp } }] },
+    ],
+  };
+}
+
+/** Services in display order, with their category populated. */
+export const getServices = cache(async (): Promise<Service[]> =>
+  getCollection("services", {
+    where: { status: { equals: "published" } },
+    limit: 200,
+    sort: "order",
+  }),
+);
+
+export const getServiceCategories = cache(async (): Promise<ServiceCategory[]> =>
+  getCollection("service-categories", { limit: 50, sort: "order", depth: 0 }),
+);
+
+export const getFaqs = cache(async (placement: Faq["placement"]): Promise<Faq[]> =>
+  getCollection("faqs", { where: { placement: { equals: placement } }, limit: 50, sort: "order", depth: 0 }),
+);
+
+export const getTeam = cache(async (): Promise<Team[]> =>
+  getCollection("team", { limit: 50, sort: "order" }),
+);
+
+/** The photo/video featured on a given page, keyed by page or service slug. */
+export const getMediaSlot = cache(async (key: string): Promise<MediaSlot | null> => {
+  const rows = await getCollection("media-slots", { where: { key: { equals: key } }, limit: 1 });
+  return rows[0] ?? null;
+});
+
+export const getAnnouncement = cache(async (): Promise<Announcement | null> => {
+  const announcement = await readGlobal<Announcement>("announcement");
+  if (!announcement?.enabled || !announcement.message) return null;
+  // Respect the scheduling window before showing anything.
+  const now = Date.now();
+  if (announcement.startsAt && new Date(announcement.startsAt).getTime() > now) return null;
+  if (announcement.endsAt && new Date(announcement.endsAt).getTime() < now) return null;
+  return announcement;
+});
+
+export const getRedirects = cache(async (): Promise<Redirect[]> =>
+  getCollection("redirects", { limit: 500, depth: 0 }),
+);

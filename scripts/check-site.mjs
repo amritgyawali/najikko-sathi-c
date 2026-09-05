@@ -31,7 +31,15 @@ try {
   assert.equal(sitemapResponse.status, 200);
   const sitemap = await sitemapResponse.text();
   const publishedUrls = [...sitemap.matchAll(/<loc>(.*?)<\/loc>/g)].map((match) => match[1]);
-  assert.equal(publishedUrls.length, 23, "All seven navigation pages and 16 services must be in the sitemap");
+  // Content is managed in the CMS, so the sitemap grows as pages are published.
+  // Assert that everything reachable is listed rather than fixing a total.
+  const sitemapPaths = new Set(publishedUrls.map((url) => new URL(url).pathname));
+  for (const required of ["/", "/about", "/services", "/production", "/training", "/right-sanchar", "/contact"]) {
+    assert(sitemapPaths.has(required), `Navigation page missing from the sitemap: ${required}`);
+  }
+  const serviceCount = [...sitemapPaths].filter((path) => path.startsWith("/services/")).length;
+  assert(serviceCount >= 16, `Expected at least 16 service pages in the sitemap, found ${serviceCount}`);
+  assert(!sitemapPaths.has("/search"), "The search page is noindex and must not be in the sitemap");
   assert.equal(new Set(publishedUrls).size, publishedUrls.length, "Sitemap URLs must be unique");
   const paths = publishedUrls.map((url) => new URL(url).pathname);
   const robots = await (await fetch(`${origin}/robots.txt`)).text();

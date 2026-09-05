@@ -1,4 +1,5 @@
 import type { Field, GlobalConfig } from "payload";
+import { revalidateSite } from "../hooks/revalidate";
 import { isAdmin } from "../access";
 
 const HEX = /^#([0-9a-f]{3}|[0-9a-f]{6})$/i;
@@ -30,6 +31,7 @@ export const Appearance: GlobalConfig = {
   admin: { group: "Site", description: "Website colours, typography and corner rounding." },
   // Branding is deliberately admin-only: editors manage content, not the look.
   access: { read: () => true, update: isAdmin },
+  hooks: { afterChange: [revalidateSite] },
   fields: [
     {
       type: "collapsible",

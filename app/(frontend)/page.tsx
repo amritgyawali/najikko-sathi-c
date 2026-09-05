@@ -22,9 +22,18 @@ import type { Homepage } from "@/payload-types";
 import { getBusiness, getHomepage, type BusinessInfo } from "@/lib/content";
 import { mediaUrl } from "@/lib/media";
 import { MediaShowcase } from "./_components/page-content";
-import { servicePortfolio } from "./_data/services";
+import { getServiceViews, type ServiceView } from "@/lib/services";
 import { brandPillars, rightSancharTopics } from "./_data/site";
 import { pageMetadata } from "./_lib/seo";
+
+// Rendered per request so the page always reflects what is in the dashboard.
+// A prerendered page cannot be regenerated reliably on demand here, and giving
+// it a revalidate window makes Next loop on link prefetches, so this small
+// site trades a cached render for content that is never stale.
+export const dynamic = "force-dynamic";
+
+
+
 
 export const metadata = pageMetadata(
   "Media House in Kathmandu, Nepal",
@@ -164,7 +173,7 @@ function About({ business, home }: { business: BusinessInfo; home: Homepage | nu
   );
 }
 
-function Services({ home }: { home: Homepage | null }) {
+function Services({ home, services }: { home: Homepage | null; services: ServiceView[] }) {
   // The service portfolio drives this grid by default, so each card links to a
   // real service page. Filling in Homepage → Services in the dashboard replaces
   // the grid with that custom list instead.
@@ -207,7 +216,7 @@ function Services({ home }: { home: Homepage | null }) {
                   </Link>
                 );
               })
-            : servicePortfolio.map((service, index) => {
+            : services.map((service, index) => {
                 const Icon = serviceIcons[index] ?? Camera;
                 return (
                   <Link className="vertical-card" href={`/services/${service.slug}`} key={service.slug}>
@@ -314,13 +323,17 @@ function RightSanchar({ business, home }: { business: BusinessInfo; home: Homepa
 }
 
 export default async function Home() {
-  const [business, home] = await Promise.all([getBusiness(), getHomepage()]);
+  const [business, home, services] = await Promise.all([
+    getBusiness(),
+    getHomepage(),
+    getServiceViews(),
+  ]);
 
   return (
     <>
       <Hero business={business} home={home} />
       <About business={business} home={home} />
-      <Services home={home} />
+      <Services home={home} services={services} />
       <Production business={business} home={home} />
       <RightSanchar business={business} home={home} />
       <MediaShowcase mediaKey="home" title={business.shortName} />

@@ -1,4 +1,5 @@
 import type { CollectionConfig } from "payload";
+import { revalidateDoc, revalidateDocAfterDelete } from "../hooks/revalidate";
 import { isEditor, isPublishedOrStaff } from "../access";
 import { layoutBlocks } from "../blocks";
 import { seoField, slugField, statusField } from "../fields";
@@ -22,6 +23,11 @@ export const Pages: CollectionConfig = {
     update: isEditor,
     delete: isEditor,
   },
+  hooks: {
+    afterChange: [revalidateDoc("", ["/"])],
+    afterDelete: [revalidateDocAfterDelete("", ["/"])],
+  },
+
   fields: [
     { name: "title", type: "text", required: true },
     slugField(),

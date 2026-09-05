@@ -1,4 +1,5 @@
 import type { CollectionConfig } from "payload";
+import { revalidateDoc, revalidateDocAfterDelete } from "../hooks/revalidate";
 import { isEditor, isEditorField } from "../access";
 
 /**
@@ -20,6 +21,11 @@ export const Reviews: CollectionConfig = {
     update: isEditor,
     delete: isEditor,
   },
+  hooks: {
+    afterChange: [revalidateDoc("", ["/"])],
+    afterDelete: [revalidateDocAfterDelete("", ["/"])],
+  },
+
   fields: [
     { name: "name", type: "text", required: true },
     { name: "role", type: "text", admin: { description: "Job title or organisation." } },

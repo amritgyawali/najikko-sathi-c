@@ -1,4 +1,5 @@
 import type { CollectionConfig } from "payload";
+import { revalidateDoc, revalidateDocAfterDelete } from "../hooks/revalidate";
 import { isEditorOrOwner, isPublishedOrStaff } from "../access";
 import { seoField, slugField, statusField } from "../fields";
 
@@ -22,6 +23,11 @@ export const Posts: CollectionConfig = {
     update: isEditorOrOwner,
     delete: isEditorOrOwner,
   },
+  hooks: {
+    afterChange: [revalidateDoc("/posts", ["/", "/posts"])],
+    afterDelete: [revalidateDocAfterDelete("/posts", ["/", "/posts"])],
+  },
+
   fields: [
     { name: "title", type: "text", required: true },
     slugField(),
@@ -40,6 +46,24 @@ export const Posts: CollectionConfig = {
       admin: { position: "sidebar" },
     },
     statusField,
+    {
+      name: "publishAt",
+      type: "date",
+      admin: {
+        position: "sidebar",
+        date: { pickerAppearance: "dayAndTime" },
+        description: "Optional. The post stays hidden until this time.",
+      },
+    },
+    {
+      name: "unpublishAt",
+      type: "date",
+      admin: {
+        position: "sidebar",
+        date: { pickerAppearance: "dayAndTime" },
+        description: "Optional. The post disappears from the site after this time.",
+      },
+    },
     {
       name: "publishedAt",
       type: "date",

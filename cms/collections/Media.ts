@@ -1,4 +1,5 @@
 import type { CollectionConfig } from "payload";
+import { revalidateDoc, revalidateDocAfterDelete } from "../hooks/revalidate";
 import { isEditor } from "../access";
 
 /**
@@ -26,6 +27,11 @@ export const Media: CollectionConfig = {
       { name: "hero", width: 2400, height: undefined, position: "centre" },
     ],
   },
+  hooks: {
+    afterChange: [revalidateDoc("", ["/"])],
+    afterDelete: [revalidateDocAfterDelete("", ["/"])],
+  },
+
   fields: [
     {
       name: "alt",

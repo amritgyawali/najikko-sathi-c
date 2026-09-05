@@ -4,6 +4,15 @@ import { business, rightSancharTopics } from "../_data/site";
 import { ContactCta, MediaShowcase, PageHero, SectionHeading } from "../_components/page-content";
 import { pageMetadata } from "../_lib/seo";
 
+// Rendered per request so the page always reflects what is in the dashboard.
+// A prerendered page cannot be regenerated reliably on demand here, and giving
+// it a revalidate window makes Next loop on link prefetches, so this small
+// site trades a cached render for content that is never stale.
+export const dynamic = "force-dynamic";
+
+
+
+
 export const metadata = pageMetadata("Right Sanchar | Our Digital News Portal", "Discover Right Sanchar, Najikko Sathi Media's digital news portal focused on truthful reporting, public-interest stories, commentary, and investigations in Nepal.", "/right-sanchar");
 
 export default function RightSancharPage() {

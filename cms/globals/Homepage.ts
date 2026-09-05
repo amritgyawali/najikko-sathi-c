@@ -1,4 +1,5 @@
 import type { GlobalConfig } from "payload";
+import { revalidateSite } from "../hooks/revalidate";
 import { isEditor } from "../access";
 
 /**
@@ -10,6 +11,7 @@ export const Homepage: GlobalConfig = {
   label: "Homepage",
   admin: { group: "Site", description: "All the text and imagery on the front page." },
   access: { read: () => true, update: isEditor },
+  hooks: { afterChange: [revalidateSite] },
   fields: [
     {
       type: "tabs",

@@ -3,19 +3,20 @@ import { RichText } from "@payloadcms/richtext-lexical/react";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 
-import { getBySlug, getCollection } from "@/lib/content";
+import { getBySlug } from "@/lib/content";
 import { mediaAlt, mediaUrl } from "@/lib/media";
+
+// Rendered per request so the page always reflects what is in the dashboard.
+// A prerendered page cannot be regenerated reliably on demand here, and giving
+// it a revalidate window makes Next loop on link prefetches, so this small
+// site trades a cached render for content that is never stale.
+export const dynamic = "force-dynamic";
+
+
+
 
 type Args = { params: Promise<{ slug: string }> };
 
-export async function generateStaticParams() {
-  const posts = await getCollection("posts", {
-    where: { status: { equals: "published" } },
-    limit: 100,
-    depth: 0,
-  });
-  return posts.filter((post) => post.slug).map((post) => ({ slug: post.slug as string }));
-}
 
 export async function generateMetadata({ params }: Args): Promise<Metadata> {
   const { slug } = await params;

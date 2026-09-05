@@ -1,4 +1,5 @@
 import type { CollectionConfig } from "payload";
+import { revalidateDoc, revalidateDocAfterDelete } from "../hooks/revalidate";
 import { isEditor, isPublishedOrStaff } from "../access";
 import { slugField, statusField } from "../fields";
 
@@ -18,10 +19,33 @@ export const Offers: CollectionConfig = {
     update: isEditor,
     delete: isEditor,
   },
+  hooks: {
+    afterChange: [revalidateDoc("/offers", ["/", "/offers"])],
+    afterDelete: [revalidateDocAfterDelete("/offers", ["/", "/offers"])],
+  },
+
   fields: [
     { name: "title", type: "text", required: true },
     slugField(),
     statusField,
+    {
+      name: "publishAt",
+      type: "date",
+      admin: {
+        position: "sidebar",
+        date: { pickerAppearance: "dayAndTime" },
+        description: "Optional. The offer stays hidden until this time.",
+      },
+    },
+    {
+      name: "unpublishAt",
+      type: "date",
+      admin: {
+        position: "sidebar",
+        date: { pickerAppearance: "dayAndTime" },
+        description: "Optional. The offer disappears from the site after this time.",
+      },
+    },
     {
       name: "badge",
       type: "text",

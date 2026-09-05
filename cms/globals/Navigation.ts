@@ -1,4 +1,5 @@
 import type { GlobalConfig } from "payload";
+import { revalidateSite } from "../hooks/revalidate";
 import { isEditor } from "../access";
 
 /** The main navigation bar: links, order, and the header call-to-action. */
@@ -7,6 +8,7 @@ export const Navigation: GlobalConfig = {
   label: "Navigation",
   admin: { group: "Site", description: "Reorder, add or remove the links in the navbar." },
   access: { read: () => true, update: isEditor },
+  hooks: { afterChange: [revalidateSite] },
   fields: [
     {
       name: "items",

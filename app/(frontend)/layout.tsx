@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Hanken_Grotesk, Inter } from "next/font/google";
 import "./globals.css";
 import "./pages.css";
+import { AnnouncementBar } from "./_components/announcement-bar";
 import { Footer, Header } from "./_components/site-shell";
 import { StructuredData } from "./_components/structured-data";
 import { TrackPageView } from "./_components/TrackPageView";
@@ -63,6 +64,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
       <head>{overrides ? <style>{`:root{${overrides}}`}</style> : null}</head>
       <body>
         <a className="skip-link" href="#main-content">Skip to content</a>
+        <AnnouncementBar />
         <Header />
         <main id="main-content">{children}</main>
         <Footer />

@@ -69,9 +69,16 @@ export interface Config {
   collections: {
     pages: Page;
     posts: Post;
+    services: Service;
+    'service-categories': ServiceCategory;
     offers: Offer;
     reviews: Review;
+    faqs: Faq;
+    team: Team;
+    enquiries: Enquiry;
     media: Media;
+    'media-slots': MediaSlot;
+    redirects: Redirect;
     users: User;
     pageviews: Pageview;
     'payload-kv': PayloadKv;
@@ -83,9 +90,16 @@ export interface Config {
   collectionsSelect: {
     pages: PagesSelect<false> | PagesSelect<true>;
     posts: PostsSelect<false> | PostsSelect<true>;
+    services: ServicesSelect<false> | ServicesSelect<true>;
+    'service-categories': ServiceCategoriesSelect<false> | ServiceCategoriesSelect<true>;
     offers: OffersSelect<false> | OffersSelect<true>;
     reviews: ReviewsSelect<false> | ReviewsSelect<true>;
+    faqs: FaqsSelect<false> | FaqsSelect<true>;
+    team: TeamSelect<false> | TeamSelect<true>;
+    enquiries: EnquiriesSelect<false> | EnquiriesSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    'media-slots': MediaSlotsSelect<false> | MediaSlotsSelect<true>;
+    redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     pageviews: PageviewsSelect<false> | PageviewsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
@@ -100,6 +114,7 @@ export interface Config {
   globals: {
     homepage: Homepage;
     navigation: Navigation;
+    announcement: Announcement;
     appearance: Appearance;
     footer: Footer;
     'site-settings': SiteSetting;
@@ -107,6 +122,7 @@ export interface Config {
   globalsSelect: {
     homepage: HomepageSelect<false> | HomepageSelect<true>;
     navigation: NavigationSelect<false> | NavigationSelect<true>;
+    announcement: AnnouncementSelect<false> | AnnouncementSelect<true>;
     appearance: AppearanceSelect<false> | AppearanceSelect<true>;
     footer: FooterSelect<false> | FooterSelect<true>;
     'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
@@ -345,6 +361,14 @@ export interface Post {
   slug?: string | null;
   type: 'news' | 'blog' | 'commentary' | 'investigation';
   status: 'draft' | 'published';
+  /**
+   * Optional. The post stays hidden until this time.
+   */
+  publishAt?: string | null;
+  /**
+   * Optional. The post disappears from the site after this time.
+   */
+  unpublishAt?: string | null;
   publishedAt?: string | null;
   /**
    * Show this on the homepage.
@@ -423,6 +447,107 @@ export interface User {
   collection: 'users';
 }
 /**
+ * Everything the company offers, one document per service.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "services".
+ */
+export interface Service {
+  id: number;
+  title: string;
+  /**
+   * Used on cards and in breadcrumbs.
+   */
+  shortTitle: string;
+  /**
+   * One or two sentences, shown on cards and in the page header.
+   */
+  description: string;
+  image?: (number | null) | Media;
+  intro: string;
+  audience?: string | null;
+  preparation?: string | null;
+  deliverables?:
+    | {
+        item: string;
+        id?: string | null;
+      }[]
+    | null;
+  steps?:
+    | {
+        title: string;
+        description: string;
+        id?: string | null;
+      }[]
+    | null;
+  faq?:
+    | {
+        question: string;
+        answer: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Search-result description for this service page.
+   */
+  metaDescription?: string | null;
+  /**
+   * Overrides the title and description shown in search results.
+   */
+  seo?: {
+    title?: string | null;
+    description?: string | null;
+    image?: (number | null) | Media;
+  };
+  /**
+   * Leave blank to generate this from the title.
+   */
+  slug?: string | null;
+  status: 'draft' | 'published';
+  category: number | ServiceCategory;
+  /**
+   * Lower numbers appear first.
+   */
+  order?: number | null;
+  /**
+   * Highlight on the homepage grid.
+   */
+  featured?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * The sections the services page is grouped into.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "service-categories".
+ */
+export interface ServiceCategory {
+  id: number;
+  /**
+   * Short name, e.g. "Production".
+   */
+  label: string;
+  /**
+   * Leave blank to generate this from the title.
+   */
+  slug?: string | null;
+  /**
+   * Heading shown above this group.
+   */
+  title: string;
+  description?: string | null;
+  /**
+   * Where "explore" links point, e.g. "/production".
+   */
+  href?: string | null;
+  icon?: ('clapperboard' | 'megaphone' | 'graduationCap' | 'search' | 'camera' | 'newspaper') | null;
+  order?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * Promotions, packages and limited-time offers.
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -436,6 +561,14 @@ export interface Offer {
    */
   slug?: string | null;
   status: 'draft' | 'published';
+  /**
+   * Optional. The offer stays hidden until this time.
+   */
+  publishAt?: string | null;
+  /**
+   * Optional. The offer disappears from the site after this time.
+   */
+  unpublishAt?: string | null;
   /**
    * Short highlight, for example "20% off" or "New".
    */
@@ -493,6 +626,125 @@ export interface Review {
   createdAt: string;
 }
 /**
+ * Questions and answers shown on the website.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "faqs".
+ */
+export interface Faq {
+  id: number;
+  question: string;
+  answer: string;
+  placement: 'contact' | 'services' | 'training' | 'production';
+  order?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * The people introduced on the about page.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "team".
+ */
+export interface Team {
+  id: number;
+  name: string;
+  role: string;
+  bio?: string | null;
+  photo?: (number | null) | Media;
+  email?: string | null;
+  order?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Messages sent through the website contact form.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "enquiries".
+ */
+export interface Enquiry {
+  id: number;
+  name: string;
+  email: string;
+  phone?: string | null;
+  /**
+   * The service the visitor was looking at.
+   */
+  service?: string | null;
+  message: string;
+  state?: ('new' | 'in-progress' | 'replied' | 'closed' | 'spam') | null;
+  assignedTo?: (number | null) | User;
+  /**
+   * Internal only. Never shown on the website.
+   */
+  notes?: string | null;
+  /**
+   * The page the enquiry was sent from.
+   */
+  sourcePath?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * The photo or video featured on each page.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media-slots".
+ */
+export interface MediaSlot {
+  id: number;
+  /**
+   * Which page this belongs to: "home", "about", "services", "contact", or a service slug such as "documentary-film-production".
+   */
+  key: string;
+  image?: (number | null) | Media;
+  caption?: string | null;
+  video?: {
+    /**
+     * URL of the video file.
+     */
+    src?: string | null;
+    /**
+     * URL of the still shown before playback.
+     */
+    poster?: string | null;
+    title?: string | null;
+    description?: string | null;
+    transcript?: string | null;
+    /**
+     * ISO 8601, e.g. "PT2M30S".
+     */
+    duration?: string | null;
+    uploadDate?: string | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Send an old URL to a new one.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "redirects".
+ */
+export interface Redirect {
+  id: number;
+  /**
+   * The old path, starting with "/", e.g. "/old-services".
+   */
+  from: string;
+  /**
+   * Where to send it: a path such as "/services", or a full URL.
+   */
+  to: string;
+  /**
+   * Permanent (301) tells search engines the move is final.
+   */
+  permanent?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * Raw traffic log behind the dashboard statistics.
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -539,6 +791,14 @@ export interface PayloadLockedDocument {
         value: number | Post;
       } | null)
     | ({
+        relationTo: 'services';
+        value: number | Service;
+      } | null)
+    | ({
+        relationTo: 'service-categories';
+        value: number | ServiceCategory;
+      } | null)
+    | ({
         relationTo: 'offers';
         value: number | Offer;
       } | null)
@@ -547,8 +807,28 @@ export interface PayloadLockedDocument {
         value: number | Review;
       } | null)
     | ({
+        relationTo: 'faqs';
+        value: number | Faq;
+      } | null)
+    | ({
+        relationTo: 'team';
+        value: number | Team;
+      } | null)
+    | ({
+        relationTo: 'enquiries';
+        value: number | Enquiry;
+      } | null)
+    | ({
         relationTo: 'media';
         value: number | Media;
+      } | null)
+    | ({
+        relationTo: 'media-slots';
+        value: number | MediaSlot;
+      } | null)
+    | ({
+        relationTo: 'redirects';
+        value: number | Redirect;
       } | null)
     | ({
         relationTo: 'users';
@@ -727,6 +1007,8 @@ export interface PostsSelect<T extends boolean = true> {
   slug?: T;
   type?: T;
   status?: T;
+  publishAt?: T;
+  unpublishAt?: T;
   publishedAt?: T;
   featured?: T;
   author?: T;
@@ -752,12 +1034,78 @@ export interface PostsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "services_select".
+ */
+export interface ServicesSelect<T extends boolean = true> {
+  title?: T;
+  shortTitle?: T;
+  description?: T;
+  image?: T;
+  intro?: T;
+  audience?: T;
+  preparation?: T;
+  deliverables?:
+    | T
+    | {
+        item?: T;
+        id?: T;
+      };
+  steps?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        id?: T;
+      };
+  faq?:
+    | T
+    | {
+        question?: T;
+        answer?: T;
+        id?: T;
+      };
+  metaDescription?: T;
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+      };
+  slug?: T;
+  status?: T;
+  category?: T;
+  order?: T;
+  featured?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "service-categories_select".
+ */
+export interface ServiceCategoriesSelect<T extends boolean = true> {
+  label?: T;
+  slug?: T;
+  title?: T;
+  description?: T;
+  href?: T;
+  icon?: T;
+  order?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "offers_select".
  */
 export interface OffersSelect<T extends boolean = true> {
   title?: T;
   slug?: T;
   status?: T;
+  publishAt?: T;
+  unpublishAt?: T;
   badge?: T;
   summary?: T;
   details?: T;
@@ -782,6 +1130,49 @@ export interface ReviewsSelect<T extends boolean = true> {
   avatar?: T;
   approved?: T;
   featured?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "faqs_select".
+ */
+export interface FaqsSelect<T extends boolean = true> {
+  question?: T;
+  answer?: T;
+  placement?: T;
+  order?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "team_select".
+ */
+export interface TeamSelect<T extends boolean = true> {
+  name?: T;
+  role?: T;
+  bio?: T;
+  photo?: T;
+  email?: T;
+  order?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "enquiries_select".
+ */
+export interface EnquiriesSelect<T extends boolean = true> {
+  name?: T;
+  email?: T;
+  phone?: T;
+  service?: T;
+  message?: T;
+  state?: T;
+  assignedTo?: T;
+  notes?: T;
+  sourcePath?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -837,6 +1228,39 @@ export interface MediaSelect<T extends boolean = true> {
               filename?: T;
             };
       };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media-slots_select".
+ */
+export interface MediaSlotsSelect<T extends boolean = true> {
+  key?: T;
+  image?: T;
+  caption?: T;
+  video?:
+    | T
+    | {
+        src?: T;
+        poster?: T;
+        title?: T;
+        description?: T;
+        transcript?: T;
+        duration?: T;
+        uploadDate?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "redirects_select".
+ */
+export interface RedirectsSelect<T extends boolean = true> {
+  from?: T;
+  to?: T;
+  permanent?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1028,6 +1452,30 @@ export interface Navigation {
   createdAt?: string | null;
 }
 /**
+ * A notice shown at the top of every page.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "announcement".
+ */
+export interface Announcement {
+  id: number;
+  enabled?: boolean | null;
+  message?: string | null;
+  linkLabel?: string | null;
+  linkHref?: string | null;
+  /**
+   * Leave blank to show immediately.
+   */
+  startsAt?: string | null;
+  /**
+   * Leave blank to show until switched off.
+   */
+  endsAt?: string | null;
+  tone?: ('info' | 'highlight' | 'urgent') | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
  * Website colours, typography and corner rounding.
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1210,6 +1658,22 @@ export interface NavigationSelect<T extends boolean = true> {
         enabled?: T;
       };
   showUtilityBar?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "announcement_select".
+ */
+export interface AnnouncementSelect<T extends boolean = true> {
+  enabled?: T;
+  message?: T;
+  linkLabel?: T;
+  linkHref?: T;
+  startsAt?: T;
+  endsAt?: T;
+  tone?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

@@ -2,6 +2,8 @@ import { existsSync } from "fs";
 
 import { getPayload } from "payload";
 
+import { pageMedia } from "../app/(frontend)/_data/media";
+import { categories, servicePortfolio } from "../app/(frontend)/_data/services";
 import {
   brandPillars,
   business,
@@ -127,9 +129,10 @@ async function seed() {
         { label: "Skill development" },
       ],
       servicesKicker: "Our Services",
-      // Homepage -> Services is deliberately left empty: the homepage grid then
-      // shows the full service portfolio, with each card linking to its own
-      // service page. Filling it in from the dashboard overrides that grid.
+      // Cleared on purpose: with no custom list the homepage grid shows the
+      // full service portfolio, each card linking to its own service page.
+      // Filling this in from the dashboard overrides that grid.
+      services: [],
       servicesIntro:
         "From verified information to cinematic storytelling, every service is built around " +
         "clarity, truth, and impact.",
@@ -146,6 +149,103 @@ async function seed() {
       sancharTopics: rightSancharTopics.map((label) => ({ label })),
     },
   });
+
+  // ---------------------------------------------------------------------
+  // Service portfolio. These are the real 18 services and their four
+  // groupings, taken from the Service Portfolio & Scope of Work document that
+  // already drives the site - not placeholder content.
+  // ---------------------------------------------------------------------
+  const categoryIds = new Map<string, number>();
+  for (const [index, category] of categories.entries()) {
+    const existing = await payload.find({
+      collection: "service-categories",
+      where: { slug: { equals: category.id } },
+      limit: 1,
+      overrideAccess: true,
+    });
+    const data = {
+      label: category.label,
+      slug: category.id,
+      title: category.title,
+      description: category.description,
+      href: category.href,
+      icon: ({ production: "clapperboard", "social-media": "megaphone", training: "graduationCap", research: "search" } as const)[category.id],
+      order: index,
+    };
+    const saved = existing.docs[0]
+      ? await payload.update({ collection: "service-categories", id: existing.docs[0].id, data, overrideAccess: true })
+      : await payload.create({ collection: "service-categories", data, overrideAccess: true });
+    categoryIds.set(category.id, saved.id as number);
+  }
+  payload.logger.info(`Seeded ${categories.length} service categories.`);
+
+  for (const [index, service] of servicePortfolio.entries()) {
+    const existing = await payload.find({
+      collection: "services",
+      where: { slug: { equals: service.slug } },
+      limit: 1,
+      overrideAccess: true,
+    });
+    const data = {
+      title: service.title,
+      shortTitle: service.shortTitle,
+      slug: service.slug,
+      status: "published" as const,
+      category: categoryIds.get(service.category)!,
+      order: index,
+      description: service.description,
+      metaDescription: service.metaDescription,
+      intro: service.intro,
+      audience: service.audience,
+      preparation: service.preparation,
+      deliverables: service.deliverables.map((item) => ({ item })),
+      steps: service.steps.map(([title, description]) => ({ title, description })),
+      faq: service.faq.map(([question, answer]) => ({ question, answer })),
+    };
+    if (existing.docs[0]) {
+      await payload.update({ collection: "services", id: existing.docs[0].id, data, overrideAccess: true });
+    } else {
+      await payload.create({ collection: "services", data, overrideAccess: true });
+    }
+  }
+  payload.logger.info(`Seeded ${servicePortfolio.length} services.`);
+
+  // A media slot per page and per service, so an editor can drop a photo in
+  // without first having to work out the right key.
+  for (const key of Object.keys(pageMedia)) {
+    const existing = await payload.find({
+      collection: "media-slots",
+      where: { key: { equals: key } },
+      limit: 1,
+      overrideAccess: true,
+    });
+    if (!existing.docs[0]) {
+      await payload.create({ collection: "media-slots", data: { key }, overrideAccess: true });
+    }
+  }
+  payload.logger.info(`Prepared ${Object.keys(pageMedia).length} page media slots.`);
+
+  // The questions already published on the contact page.
+  const contactFaqs: [string, string][] = [
+    ["What information should I share?", "Describe your idea, the intended audience, the service you need, preferred timing, and any relevant budget range. For training, include the topic and group size."],
+    ["Can I request several services together?", "Yes. A project may combine research, filming, social content, or training. Describe the overall goal so the individual scopes can be discussed together."],
+    ["What happens after I send the form?", "Your message reaches the Najikko Sathi team directly and is tracked until it is answered. You can also use the direct email address or phone numbers on this page."],
+  ];
+  for (const [index, [question, answer]] of contactFaqs.entries()) {
+    const existing = await payload.find({
+      collection: "faqs",
+      where: { question: { equals: question } },
+      limit: 1,
+      overrideAccess: true,
+    });
+    const data = { question, answer, placement: "contact" as const, order: index };
+    if (existing.docs[0]) {
+      await payload.update({ collection: "faqs", id: existing.docs[0].id, data, overrideAccess: true });
+    } else {
+      await payload.create({ collection: "faqs", data, overrideAccess: true });
+    }
+  }
+  payload.logger.info(`Seeded ${contactFaqs.length} contact questions.`);
 
   // Writing Appearance persists the colour defaults so the fields are
   // populated the first time an admin opens the page.

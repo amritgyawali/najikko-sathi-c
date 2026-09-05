@@ -1,8 +1,17 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
-import { getBySlug, getCollection } from "@/lib/content";
+import { getBySlug } from "@/lib/content";
 import { RenderBlocks } from "../_components/RenderBlocks";
+
+// Rendered per request so the page always reflects what is in the dashboard.
+// A prerendered page cannot be regenerated reliably on demand here, and giving
+// it a revalidate window makes Next loop on link prefetches, so this small
+// site trades a cached render for content that is never stale.
+export const dynamic = "force-dynamic";
+
+
+
 
 type Args = { params: Promise<{ slug: string }> };
 
@@ -10,14 +19,6 @@ type Args = { params: Promise<{ slug: string }> };
  * Renders any page created in the dashboard at /<slug>. Pages are rendered on
  * demand, so a newly published page is live without a redeploy.
  */
-export async function generateStaticParams() {
-  const pages = await getCollection("pages", {
-    where: { status: { equals: "published" } },
-    limit: 100,
-    depth: 0,
-  });
-  return pages.filter((page) => page.slug).map((page) => ({ slug: page.slug as string }));
-}
 
 export async function generateMetadata({ params }: Args): Promise<Metadata> {
   const { slug } = await params;

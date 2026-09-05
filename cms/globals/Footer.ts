@@ -1,4 +1,5 @@
 import type { GlobalConfig } from "payload";
+import { revalidateSite } from "../hooks/revalidate";
 import { isEditor } from "../access";
 
 /** Footer link columns and the closing copy. */
@@ -7,6 +8,7 @@ export const Footer: GlobalConfig = {
   label: "Footer",
   admin: { group: "Site", description: "Footer columns, links and company blurb." },
   access: { read: () => true, update: isEditor },
+  hooks: { afterChange: [revalidateSite] },
   fields: [
     { name: "about", type: "textarea", label: "Company blurb" },
     {

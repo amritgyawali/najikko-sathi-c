@@ -7,13 +7,21 @@ import { vercelBlobStorage } from "@payloadcms/storage-vercel-blob";
 import { buildConfig } from "payload";
 import sharp from "sharp";
 
+import { Enquiries } from "./cms/collections/Enquiries";
+import { Faqs } from "./cms/collections/Faqs";
 import { Media } from "./cms/collections/Media";
+import { MediaSlots } from "./cms/collections/MediaSlots";
 import { Offers } from "./cms/collections/Offers";
 import { PageViews } from "./cms/collections/PageViews";
 import { Pages } from "./cms/collections/Pages";
 import { Posts } from "./cms/collections/Posts";
+import { Redirects } from "./cms/collections/Redirects";
 import { Reviews } from "./cms/collections/Reviews";
+import { ServiceCategories } from "./cms/collections/ServiceCategories";
+import { Services } from "./cms/collections/Services";
+import { TeamMembers } from "./cms/collections/TeamMembers";
 import { Users } from "./cms/collections/Users";
+import { Announcement } from "./cms/globals/Announcement";
 import { Appearance } from "./cms/globals/Appearance";
 import { Footer } from "./cms/globals/Footer";
 import { Homepage } from "./cms/globals/Homepage";
@@ -38,8 +46,23 @@ export default buildConfig({
       beforeDashboard: ["/cms/components/DashboardStats#DashboardStats"],
     },
   },
-  collections: [Pages, Posts, Offers, Reviews, Media, Users, PageViews],
-  globals: [Homepage, Navigation, Appearance, Footer, SiteSettings],
+  collections: [
+    Pages,
+    Posts,
+    Services,
+    ServiceCategories,
+    Offers,
+    Reviews,
+    Faqs,
+    TeamMembers,
+    Enquiries,
+    Media,
+    MediaSlots,
+    Redirects,
+    Users,
+    PageViews,
+  ],
+  globals: [Homepage, Navigation, Announcement, Appearance, Footer, SiteSettings],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || "",
   db: postgresAdapter({

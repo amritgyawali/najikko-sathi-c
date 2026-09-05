@@ -12,20 +12,50 @@ Content is managed through a full admin dashboard powered by
 
 ## What the dashboard controls
 
-| Area | Where in the dashboard |
-| --- | --- |
-| Traffic stats, top pages, content counts | Dashboard home |
-| News, blogs, commentary, investigations | Content → Posts |
-| Promotions and packages | Content → Offers |
-| Client testimonials, with an approval queue | Content → Reviews |
-| New website pages, built from layout blocks | Content → Pages |
-| Photos and files | Content → Media |
-| Homepage copy and imagery | Site → Homepage |
-| Navbar links, order and header button | Site → Navigation |
-| Website colours, corner radius, heading font | Site → Appearance |
-| Footer columns and links | Site → Footer |
-| Company name, address, phones, VAT, SEO | Site → Site Settings |
-| Dashboard accounts and roles | Administration → Users |
+| Area | Where in the dashboard | Appears on |
+| --- | --- | --- |
+| Traffic, top pages, referrers, devices, enquiry queue | Dashboard home | - |
+| The 16 services and their detail pages | Services → Services | `/services`, `/services/<slug>`, homepage grid, `/production`, `/training` |
+| Service groupings | Services → Service categories | `/services` sections |
+| News, blogs, commentary, investigations | Content → Posts | `/posts`, `/posts/<slug>` |
+| Promotions and packages | Content → Offers | `/offers` |
+| Client testimonials, with an approval queue | Content → Reviews | Review blocks |
+| New website pages, built from layout blocks | Content → Pages | `/<slug>` |
+| Questions and answers | Content → FAQs | Contact, services, training, production |
+| The people on the about page | Content → Team | `/about` |
+| Photos and files | Content → Media | Everywhere |
+| The photo or video featured on each page | Content → Page media | Every page's showcase band |
+| Contact form messages, with triage and notes | Enquiries | Sent from `/contact` |
+| Homepage copy and imagery | Site → Homepage | `/` |
+| Navbar links, order and header button | Site → Navigation | Every page |
+| Site-wide notice, with a schedule | Site → Announcement bar | Every page |
+| Website colours, corner radius, heading font | Site → Appearance | Every page |
+| Footer columns and links | Site → Footer | Every page |
+| Company name, address, phones, VAT, SEO | Site → Site Settings | Every page |
+| Old URLs redirected to new ones | Administration → Redirects | Applied by `proxy.ts` |
+| Dashboard accounts and roles | Administration → Users | - |
+
+Two more tools sit on the dashboard home: **Download backup**, which exports every
+collection and global as one JSON file (administrators only), and the **search page**
+at `/search`, which searches services, writing, offers, and pages.
+
+### How changes reach the website
+
+Public pages are rendered per request (`export const dynamic = "force-dynamic"`),
+so anything saved in the dashboard is live on the next page load - no deploy, no
+cache to clear. Payload hooks in `cms/hooks/revalidate.ts` additionally purge
+Next's router cache on every save.
+
+This trades a prerendered response for content that is never stale, which is the
+right way round for a site whose whole point is being editable. If the site ever
+outgrows it, the fix is to cache the CMS reads and revalidate them by tag rather
+than to prerender the pages again.
+
+### Scheduling
+
+Posts and offers have **Publish at** and **Unpublish at**. Content outside its
+window is hidden from the website and from the sitemap, without anyone having to
+remember to unpublish it. The announcement bar has the same start and end dates.
 
 ### Roles
 
@@ -144,9 +174,12 @@ Media sections start with clearly labeled placeholders. Add approved files to `p
 
 There is no public upload feature. Initial media setup and any future changes require repository write access and a deployment. Videos are not represented as published work or included in video structured data until actual media is configured.
 
-## Contact behavior
+## Contact behaviour
 
-The inquiry form opens an email draft in the visitor's configured email application. It does not send email itself or store submitted data. Service links preselect the relevant topic. Direct phone and email links remain available.
+The contact form posts to `/enquiry`, which stores the message in the Enquiries
+collection so the team can triage it in the dashboard. A hidden field catches
+bots. Nothing is emailed automatically, and nothing is shared with a third
+party; the form says so on the page.
 
 ## SEO and publication
 
@@ -167,14 +200,16 @@ API live in `app/(payload)/`.
 
 - `app/(frontend)/_components/` - Shared navigation, footer, page sections, structured data, and inquiry form
 - `app/(frontend)/_data/site.ts` - Business identity, contact information, navigation, and footer links
-- `app/(frontend)/_data/services.ts` - The 16 service definitions and detail content
-- `app/(frontend)/_data/media.ts` - Owner-managed photo and video slots
+- `app/(frontend)/_data/services.ts` - Fallback copy of the 16 services, used only when the CMS is unreachable
+- `app/(frontend)/_data/media.ts` - Fallback media slots, superseded by Content → Page media
 - `app/(frontend)/_lib/seo.ts` - Canonical URLs, metadata, and organization data
 - `app/(frontend)/pages.css` - Interior page design and responsive styles
 - `app/(frontend)/services/[slug]/page.tsx` - Generated service detail pages
 - `app/(payload)/` - The admin dashboard and Payload REST/GraphQL routes
 - `cms/` - Collections, globals, blocks, and access control
 - `lib/content.ts` - CMS reads, with the static fallback
+- `lib/services.ts` - One shape for a service, whether it came from the CMS or the fallback
+- `proxy.ts` - Applies the redirects managed in the dashboard
 - `migrations/` - Database migrations (commit these)
 - `payload.config.ts` - CMS configuration
 - `scripts/check-site.mjs` - Production route and browser verification

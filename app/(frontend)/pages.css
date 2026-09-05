@@ -268,3 +268,147 @@
 @media (prefers-reduced-motion: reduce) {
   .service-detail-card:hover { transform: none; }
 }
+
+/* Spam trap: present for bots, hidden from people and screen readers. */
+.form-trap {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Site-wide announcement strip, shown above the utility bar. */
+.announcement-bar {
+  background: var(--primary);
+  color: #fff;
+  font-size: .92rem;
+}
+
+.announcement-bar.announcement-highlight { background: var(--secondary); }
+.announcement-bar.announcement-urgent { background: var(--signal); }
+
+.announcement-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 10px 0;
+  flex-wrap: wrap;
+}
+
+.announcement-inner p { margin: 0; }
+
+.announcement-inner a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+.announcement-inner svg { width: 15px; height: 15px; }
+
+/* Site search */
+.search-form { margin-bottom: 32px; }
+
+.search-form label {
+  display: block;
+  font-size: .85rem;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+.search-field {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 8px 8px 14px;
+  background: var(--surface-alt);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  max-width: 640px;
+}
+
+.search-field > svg { width: 18px; height: 18px; color: var(--muted); flex: none; }
+
+.search-field input {
+  flex: 1;
+  border: 0;
+  background: none;
+  padding: 8px 0;
+  font-size: 1rem;
+  color: var(--ink);
+  outline: none;
+}
+
+.search-results { display: grid; gap: 12px; margin-top: 24px; }
+
+.search-result {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 18px 20px;
+  background: var(--surface-alt);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  transition: border-color .2s ease, transform .2s ease;
+}
+
+.search-result:hover { border-color: var(--secondary); transform: translateY(-2px); }
+.search-result strong { color: var(--primary); font-size: 1.08rem; }
+.search-result p { margin: 0; color: var(--muted); font-size: .95rem; }
+
+.search-result-go {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--secondary);
+  font-size: .9rem;
+  font-weight: 600;
+}
+
+.search-result-go svg { width: 15px; height: 15px; }
+
+.cms-meta { color: var(--muted); font-size: .85rem; margin: 0; }
+
+/* Team, managed in the dashboard */
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 22px;
+  margin-top: 32px;
+}
+
+.team-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 22px;
+  background: var(--surface-alt);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+
+.team-card img {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  border-radius: calc(var(--radius) - 8px);
+}
+
+.team-initials {
+  display: grid;
+  place-items: center;
+  height: 220px;
+  border-radius: calc(var(--radius) - 8px);
+  background: linear-gradient(140deg, var(--primary), var(--primary-rich));
+  color: #fff;
+  font-size: 3rem;
+  font-weight: 700;
+}
+
+.team-card strong { color: var(--primary); font-size: 1.08rem; }
+.team-role { color: var(--secondary); font-size: .88rem; font-weight: 600; }
+.team-card p { margin: 0; color: var(--muted); font-size: .93rem; line-height: 1.6; }
