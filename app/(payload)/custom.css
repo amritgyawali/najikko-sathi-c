@@ -1,62 +1,746 @@
 /*
- * Brand styling for the dashboard, layered on top of Payload's own stylesheet.
- * Payload exposes its palette as CSS variables, so setting them here restyles
- * every screen consistently instead of overriding individual components.
+ * Najikko Sathi dashboard theme.
+ *
+ * Layered on top of Payload's own stylesheet. Wherever Payload exposes a CSS
+ * variable it is set here rather than overriding the component, so the theme
+ * follows Payload through upgrades instead of fighting it.
  */
 
+/* ------------------------------------------------------------------ tokens */
+
 :root {
-  /* Najikko Sathi navy, matching the public site's --primary. */
-  --theme-elevation-1000: 6 43 92;
+  --ns-navy: #062b5c;
+  --ns-navy-deep: #041f45;
+  --ns-blue: #1268d3;
+  --ns-blue-soft: #e8f0fd;
+  --ns-ink: #0f1c30;
+  --ns-muted: #5d6a7c;
+  --ns-line: #e3e9f2;
+  --ns-surface: #f5f7fb;
+  --ns-card: #ffffff;
 
-  --color-success-500: 15 122 61;
-  --color-error-500: 199 62 44;
+  --ns-radius: 12px;
+  --ns-radius-sm: 9px;
+  --ns-shadow-sm: 0 1px 2px rgb(6 43 92 / 6%), 0 1px 3px rgb(6 43 92 / 4%);
+  --ns-shadow: 0 2px 6px rgb(6 43 92 / 6%), 0 8px 24px rgb(6 43 92 / 7%);
+  --ns-shadow-lg: 0 12px 40px rgb(6 43 92 / 14%);
+  --ns-ease: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Brand the accent Payload uses for buttons, links and active states. */
+/* Payload's own palette, retuned to the brand. Setting these restyles every
+   screen at once - buttons, focus rings, borders, popovers and inputs. */
 html[data-theme="light"] {
+  --theme-bg: var(--ns-surface);
+  --theme-input-bg: #ffffff;
+  --theme-elevation-0: #ffffff;
+  --theme-elevation-50: #f7f9fc;
+  --theme-elevation-100: var(--ns-line);
+  --theme-elevation-150: #dbe3ef;
+  --theme-elevation-200: #ccd7e6;
+  --theme-elevation-400: #8d9bb0;
+  --theme-elevation-500: var(--ns-muted);
+  --theme-elevation-600: #47566a;
+  --theme-elevation-800: #1d2c42;
+  --theme-elevation-1000: var(--ns-ink);
+  --theme-text: var(--ns-ink);
   --theme-success-500: #0f7a3d;
-  --color-base-800: #0d1b30;
-  --color-base-1000: #06172b;
+  --theme-error-500: #c73e2c;
+  --theme-warning-500: #b26a00;
 }
 
-/* A calmer page background than pure white, matching the site's --surface. */
-html[data-theme="light"] body {
-  background: #f4f7fb;
+html[data-theme="dark"] {
+  --ns-line: #22304a;
+  --ns-card: #101a2b;
+  --ns-ink: #e8eef7;
+  --ns-muted: #9aa9be;
+  --ns-blue-soft: #142744;
+  --ns-shadow-sm: 0 1px 2px rgb(0 0 0 / 30%);
+  --ns-shadow: 0 6px 20px rgb(0 0 0 / 35%);
+  --ns-shadow-lg: 0 16px 44px rgb(0 0 0 / 45%);
 }
 
-html[data-theme="light"] .template-default__wrap,
-html[data-theme="light"] .dashboard {
-  background: transparent;
+body {
+  font-family: var(--font-admin), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  letter-spacing: -0.005em;
 }
 
-/* The brand mark in the top-left of the sidebar. */
-.nav .nav__brand,
+/* --------------------------------------------------------------- typography */
+
+h1, h2, h3, h4, .doc-header__title, .list-header__title {
+  letter-spacing: -0.02em;
+  font-weight: 650;
+}
+
+.list-header__title,
+.doc-header__title {
+  font-size: 1.6rem;
+}
+
+.custom-view-description,
+.field-description {
+  color: var(--ns-muted);
+  line-height: 1.55;
+  font-size: 0.82rem;
+}
+
+.field-label {
+  font-weight: 600;
+  font-size: 0.83rem;
+  letter-spacing: 0.01em;
+  color: var(--theme-elevation-800);
+}
+
+/* -------------------------------------------------------------------- shell */
+
+.template-default__wrap {
+  background: var(--theme-bg);
+}
+
+/* Sidebar: its own surface, separated by a hairline rather than a heavy edge. */
+.nav {
+  background: var(--ns-card);
+  border-right: 1px solid var(--ns-line);
+}
+
+.nav__scroll {
+  padding-inline: 10px;
+}
+
 .nav__header {
-  border-bottom: 1px solid var(--theme-elevation-100);
+  border-bottom: 1px solid var(--ns-line);
 }
 
-/* Group headings in the sidebar: quieter, so the links read first. */
+/* Group headings read as quiet labels so the links themselves lead. */
+.nav-group__label,
 .nav-group__toggle {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--theme-elevation-400);
+  padding-inline: 10px;
+}
+
+/* Links become rounded rows with a clear hover and active state. */
+.nav__link {
+  position: relative;
+  border-radius: var(--ns-radius-sm);
+  padding: 8px 12px;
+  margin-block: 1px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--theme-elevation-600);
+  transition: background-color 0.15s var(--ns-ease), color 0.15s var(--ns-ease);
+}
+
+.nav__link:hover {
+  background: var(--ns-blue-soft);
+  color: var(--ns-navy);
+  text-decoration: none;
+}
+
+/* Payload marks the current entity with an indicator; give the whole row the
+   active treatment so the target is the row, not just the text. */
+.nav__link:has(.nav__link-indicator),
+.nav__link[aria-current="page"] {
+  background: var(--ns-blue-soft);
+  color: var(--ns-navy);
+  font-weight: 650;
+}
+
+.nav__link:has(.nav__link-indicator)::before,
+.nav__link[aria-current="page"]::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  translate: 0 -50%;
+  width: 3px;
+  height: 18px;
+  border-radius: 0 3px 3px 0;
+  background: var(--ns-blue);
+}
+
+.nav__log-out {
+  border-top: 1px solid var(--ns-line);
+}
+
+/* Header: sticky, quiet, with the breadcrumb doing the work. */
+.app-header__bg {
+  background: color-mix(in srgb, var(--ns-card) 88%, transparent);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--ns-line);
+}
+
+.step-nav {
+  font-size: 0.86rem;
+  color: var(--ns-muted);
+}
+
+.step-nav__last {
+  color: var(--theme-elevation-800);
+  font-weight: 600;
+}
+
+/* ------------------------------------------------------------------ surfaces */
+
+/* Dashboard entity cards. */
+.card {
+  background: var(--ns-card);
+  border: 1px solid var(--ns-line);
+  border-radius: var(--ns-radius);
+  box-shadow: var(--ns-shadow-sm);
+  transition: transform 0.18s var(--ns-ease), box-shadow 0.18s var(--ns-ease),
+    border-color 0.18s var(--ns-ease);
+}
+
+.card--has-onclick:hover {
+  transform: translateY(-2px);
+  border-color: var(--ns-blue);
+  box-shadow: var(--ns-shadow);
+}
+
+.card__title {
+  font-size: 0.98rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.collections__label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--theme-elevation-400);
+}
+
+/* ------------------------------------------------------------------- tables */
+
+.table-wrap,
+.collection-list__tables {
+  background: var(--ns-card);
+  border: 1px solid var(--ns-line);
+  border-radius: var(--ns-radius);
+  box-shadow: var(--ns-shadow-sm);
+  overflow: hidden;
+}
+
+.table table {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.table table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--theme-elevation-50);
+  border-bottom: 1px solid var(--ns-line);
   font-size: 0.72rem;
+  font-weight: 700;
   letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--theme-elevation-500);
+  padding-block: 0.75rem;
+}
+
+.table table td {
+  padding-block: 0.9rem;
+  border-bottom: 1px solid var(--theme-elevation-50);
+  font-size: 0.9rem;
+}
+
+.table table tbody tr {
+  transition: background-color 0.12s var(--ns-ease);
+}
+
+.table table tbody tr:hover {
+  background: var(--ns-blue-soft);
+}
+
+.table table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.cell-title a {
+  font-weight: 600;
+  color: var(--ns-navy);
+}
+
+/* Search and filter row above the table. */
+.search-bar input,
+.search-filter__input {
+  border-radius: 999px;
+  border: 1px solid var(--ns-line);
+  background: var(--ns-card);
+  /* Leave room for the magnifier Payload renders inside the field. */
+  padding-inline: 44px 16px;
+}
+
+.list-controls {
+  gap: 10px;
+}
+
+/* Pagination. */
+.paginator__page {
+  border-radius: var(--ns-radius-sm);
+  min-width: 32px;
+  font-size: 0.86rem;
+}
+
+.paginator__page--is-current {
+  background: var(--ns-navy);
+  color: #fff;
+  font-weight: 650;
+}
+
+/* ------------------------------------------------------------------ controls */
+
+.btn {
+  border-radius: var(--ns-radius-sm);
+  font-weight: 600;
+  letter-spacing: 0.005em;
+  transition: transform 0.12s var(--ns-ease), box-shadow 0.15s var(--ns-ease),
+    background-color 0.15s var(--ns-ease), opacity 0.15s var(--ns-ease);
+}
+
+.btn--style-primary .btn__content,
+.btn--style-primary {
+  background: var(--ns-navy);
+  color: #fff;
+}
+
+.btn--style-primary:hover:not(.btn--disabled) {
+  background: var(--ns-navy-deep);
+  transform: translateY(-1px);
+  box-shadow: var(--ns-shadow-sm);
+}
+
+.btn--style-pill {
+  border-radius: 999px;
+  border: 1px solid var(--ns-line);
+  background: var(--ns-card);
+}
+
+.btn--style-pill:hover {
+  border-color: var(--ns-blue);
+  color: var(--ns-navy);
+}
+
+.btn--disabled {
+  opacity: 0.55;
+}
+
+/* Inputs: consistent radius and an unmistakable focus ring. */
+input.text,
+.textarea,
+textarea,
+.rs__control,
+.field-type input:not([type="checkbox"]):not([type="radio"]) {
+  border-radius: var(--ns-radius-sm) !important;
+  border-color: var(--ns-line) !important;
+  transition: border-color 0.15s var(--ns-ease), box-shadow 0.15s var(--ns-ease);
+}
+
+input.text:focus,
+.textarea:focus,
+textarea:focus,
+.rs__control--is-focused,
+.field-type input:focus:not([type="checkbox"]):not([type="radio"]) {
+  border-color: var(--ns-blue) !important;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--ns-blue) 18%, transparent) !important;
+  outline: none;
+}
+
+/* --------------------------------------------------------------- doc editing */
+
+.doc-header {
+  padding-bottom: 0.5rem;
+}
+
+/* The save bar reads as a distinct strip so the action is always findable. */
+.doc-controls {
+  background: color-mix(in srgb, var(--ns-card) 92%, transparent);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--ns-line);
+}
+
+/* Tabs, both the document tabs and the tabs field. */
+.tabs-field__tabs,
+.doc-tabs__tabs {
+  border-bottom: 1px solid var(--ns-line);
+  gap: 2px;
+}
+
+.tabs-field__tab-button,
+.doc-tab__label {
+  position: relative;
+  border-radius: var(--ns-radius-sm) var(--ns-radius-sm) 0 0;
+  padding: 10px 16px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--theme-elevation-500);
+  transition: color 0.15s var(--ns-ease), background-color 0.15s var(--ns-ease);
+}
+
+.tabs-field__tab-button:hover,
+.doc-tab:hover .doc-tab__label {
+  background: var(--ns-blue-soft);
+  color: var(--ns-navy);
+}
+
+.tabs-field__tab-button--active,
+.doc-tab--active .doc-tab__label {
+  color: var(--ns-navy);
+}
+
+.tabs-field__tab-button--active::after,
+.doc-tab--active .doc-tab__label::after {
+  content: "";
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: -1px;
+  height: 2px;
+  border-radius: 2px 2px 0 0;
+  background: var(--ns-blue);
+}
+
+/* Repeating rows (brand pillars, services, deliverables) read as stacked cards. */
+.array-field__row,
+.collapsible--style-default {
+  border: 1px solid var(--ns-line);
+  border-radius: var(--ns-radius-sm);
+  background: var(--ns-card);
+  margin-bottom: 8px;
+  overflow: hidden;
+}
+
+.collapsible__header-wrap {
+  background: var(--theme-elevation-50);
+}
+
+.collapsible__toggle {
+  font-weight: 600;
+  font-size: 0.88rem;
+}
+
+/* Upload dropzone. */
+.dropzone,
+.upload__dropzoneAndUpload {
+  border-radius: var(--ns-radius);
+  border: 1px dashed var(--theme-elevation-200);
+  background: var(--theme-elevation-50);
+  transition: border-color 0.15s var(--ns-ease), background-color 0.15s var(--ns-ease);
+}
+
+.dropzone:hover,
+.upload__dropzoneAndUpload:hover {
+  border-color: var(--ns-blue);
+  background: var(--ns-blue-soft);
+}
+
+/* Popovers. */
+.popup__content,
+.popup-button-list {
+  border-radius: var(--ns-radius-sm);
+  border: 1px solid var(--ns-line);
+  box-shadow: var(--ns-shadow-lg);
+}
+
+/* Status pills in list views. */
+.pill {
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 0.75rem;
+  letter-spacing: 0.01em;
+}
+
+/* --------------------------------------------------- reduced-motion respect */
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
+
+/* ================================================================== overview
+   The dashboard home panel. Its markup lives in
+   cms/components/DashboardStats.tsx.
+   ========================================================================= */
+
+.ns-overview {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  margin-bottom: 40px;
+}
+
+.ns-overview__head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.ns-overview__title {
+  margin: 0;
+  font-size: 1.7rem;
+  font-weight: 680;
+  letter-spacing: -0.025em;
+}
+
+.ns-overview__sub {
+  margin: 4px 0 0;
+  color: var(--ns-muted);
+  font-size: 0.88rem;
+}
+
+.ns-overview__actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.ns-action {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 15px;
+  border-radius: 999px;
+  border: 1px solid var(--ns-line);
+  background: var(--ns-card);
+  color: var(--theme-elevation-800);
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: border-color 0.15s var(--ns-ease), color 0.15s var(--ns-ease),
+    transform 0.12s var(--ns-ease), box-shadow 0.15s var(--ns-ease);
+}
+
+.ns-action:hover {
+  border-color: var(--ns-blue);
+  color: var(--ns-navy);
+  transform: translateY(-1px);
+  box-shadow: var(--ns-shadow-sm);
+  text-decoration: none;
+}
+
+.ns-action--primary {
+  background: var(--ns-navy);
+  border-color: var(--ns-navy);
+  color: #fff;
+}
+
+.ns-action--primary:hover {
+  background: var(--ns-navy-deep);
+  border-color: var(--ns-navy-deep);
+  color: #fff;
+}
+
+/* ------------------------------------------------------------------- grids */
+
+.ns-grid {
+  display: grid;
+  gap: 14px;
+}
+
+.ns-grid--stats {
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+}
+
+.ns-grid--panels {
+  grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+}
+
+.ns-grid--counts {
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+}
+
+/* ------------------------------------------------------- stat tiles (hero) */
+
+.ns-stat {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 18px 20px;
+  background: var(--ns-card);
+  border: 1px solid var(--ns-line);
+  border-radius: var(--ns-radius);
+  box-shadow: var(--ns-shadow-sm);
+  overflow: hidden;
+}
+
+/* A quiet brand edge, so the row of tiles reads as one family. */
+.ns-stat::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 3px;
+  background: var(--ns-blue);
+  opacity: 0.5;
+}
+
+.ns-stat--attention::before {
+  background: var(--theme-warning-500);
+  opacity: 1;
+}
+
+.ns-stat__label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
   text-transform: uppercase;
   color: var(--theme-elevation-500);
 }
 
-/* Give list tables a little more breathing room. */
-.table table td,
-.table table th {
-  padding-block: 0.85rem;
+.ns-stat__value {
+  font-size: 2rem;
+  font-weight: 680;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+  color: var(--theme-elevation-1000);
 }
 
-/* Make the primary action button unmistakable. */
-.btn--style-primary {
+.ns-stat__hint {
+  font-size: 0.78rem;
+  color: var(--ns-muted);
+}
+
+/* ------------------------------------------------------------------ panels */
+
+.ns-panel {
+  padding: 18px 20px;
+  background: var(--ns-card);
+  border: 1px solid var(--ns-line);
+  border-radius: var(--ns-radius);
+  box-shadow: var(--ns-shadow-sm);
+}
+
+.ns-panel__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.ns-panel__title {
+  margin: 0 0 12px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--theme-elevation-500);
+}
+
+.ns-panel__head .ns-panel__title {
+  margin-bottom: 0;
+}
+
+.ns-panel__meta {
+  font-size: 0.8rem;
+  color: var(--ns-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.ns-panel__empty {
+  margin: 0;
+  font-size: 0.86rem;
+  color: var(--ns-muted);
+}
+
+/* --------------------------------------------------- ranked magnitude bars */
+
+.ns-bars {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.ns-bars__row {
+  display: grid;
+  grid-template-columns: minmax(0, 42%) 1fr auto;
+  align-items: center;
+  gap: 10px;
+}
+
+.ns-bars__name {
+  font-size: 0.84rem;
+  color: var(--theme-elevation-800);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ns-bars__track {
+  height: 8px;
+  border-radius: 4px;
+  background: var(--theme-elevation-100);
+  overflow: hidden;
+}
+
+/* One hue for magnitude, with a rounded data-end anchored to the baseline. */
+.ns-bars__fill {
+  display: block;
+  height: 100%;
+  border-radius: 0 4px 4px 0;
+  background: var(--ns-blue);
+}
+
+.ns-bars__value {
+  font-size: 0.84rem;
   font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--theme-elevation-800);
 }
 
-/* Field descriptions carry most of the guidance in this dashboard, so make
-   sure they are readable rather than an afterthought. */
-.field-description {
-  color: var(--theme-elevation-600);
-  line-height: 1.5;
+/* ------------------------------------------------------------ daily trend */
+
+.ns-chart {
+  display: flex;
+  align-items: flex-end;
+  /* A 2px surface gap between adjacent bars. */
+  gap: 2px;
+  height: 120px;
+  margin-top: 14px;
+  padding-bottom: 2px;
+  border-bottom: 1px solid var(--theme-elevation-100);
+}
+
+.ns-chart__col {
+  flex: 1;
+  display: flex;
+  align-items: flex-end;
+  height: 100%;
+  min-width: 0;
+}
+
+.ns-chart__bar {
+  display: block;
+  width: 100%;
+  border-radius: 4px 4px 0 0;
+  background: var(--ns-blue);
+  opacity: 0.85;
+  transition: opacity 0.15s var(--ns-ease);
+}
+
+.ns-chart__col:hover .ns-chart__bar {
+  opacity: 1;
+}
+
+.ns-chart__axis {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 7px;
+  font-size: 0.74rem;
+  color: var(--theme-elevation-400);
 }
