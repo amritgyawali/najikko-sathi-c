@@ -52,6 +52,8 @@ export default buildConfig({
       beforeDashboard: ["/cms/components/DashboardStats#DashboardStats"],
       // A way to register, shown under the login form.
       afterLogin: ["/cms/components/LoginSignupLink#LoginSignupLink"],
+      // Light / dark switch, in the header beside the account menu.
+      actions: ["/cms/components/ThemeToggle#ThemeToggle"],
     },
   },
   collections: [
