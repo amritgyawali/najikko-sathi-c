@@ -34,7 +34,7 @@ try {
   // Content is managed in the CMS, so the sitemap grows as pages are published.
   // Assert that everything reachable is listed rather than fixing a total.
   const sitemapPaths = new Set(publishedUrls.map((url) => new URL(url).pathname));
-  for (const required of ["/", "/about", "/services", "/our-work", "/production", "/training", "/right-sanchar", "/contact"]) {
+  for (const required of ["/", "/about", "/services", "/our-work", "/production", "/social-media-handling", "/training", "/research", "/it", "/advertisement", "/right-sanchar", "/contact"]) {
     assert(sitemapPaths.has(required), `Navigation page missing from the sitemap: ${required}`);
   }
   const serviceCount = [...sitemapPaths].filter((path) => path.startsWith("/services/")).length;
@@ -119,7 +119,7 @@ try {
       assert.equal(await page.locator(`[id="${decodeURIComponent(target.hash.slice(1))}"]`).count(), 1, `Missing anchor: ${href}`);
     }
   }
-  assert.equal(previewImages.size, 24, "Every page should have its own social image title");
+  assert.equal(previewImages.size, 28, "Every page should have its own social image title");
   for (const preview of previewImages) {
     const response = await fetch(`${origin}${preview}`);
     assert.equal(response.status, 200, `Social image: ${preview}`);
@@ -177,7 +177,7 @@ try {
   assert.equal(await question.getAttribute("open"), "");
   for (const width of [320, 768, 1024]) {
     await page.setViewportSize({ width, height: 900 });
-    for (const path of ["/", "/about", "/services", "/our-work", "/production", "/training", "/right-sanchar", "/contact"]) {
+    for (const path of ["/", "/about", "/services", "/our-work", "/production", "/social-media-handling", "/training", "/research", "/it", "/advertisement", "/right-sanchar", "/contact"]) {
       await page.goto(`${origin}${path}`);
       assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth), false, `${path}: overflow at ${width}px`);
     }

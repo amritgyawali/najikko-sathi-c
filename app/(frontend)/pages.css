@@ -128,6 +128,38 @@
 .not-found p { color: var(--muted); }
 .not-found .primary-button { margin-top: 20px; }
 
+/* Discipline pages: production, social media handling, advertisement, IT. */
+.discipline-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+.discipline-card { display: flex; flex-direction: column; padding: 30px; border: 1px solid var(--line); border-radius: 16px; background: #fff; transition: border-color .2s, box-shadow .2s; }
+.discipline-card:hover { border-color: #8eb3e4; box-shadow: var(--shadow-soft); }
+.discipline-card h3 { margin: 0 0 12px; color: var(--primary); font-size: 23px; font-weight: 650; letter-spacing: -.02em; line-height: 1.2; }
+.discipline-card > p { margin: 0 0 20px; color: var(--muted); font-size: 14.5px; line-height: 1.75; }
+.discipline-card ul { display: grid; gap: 10px; margin: 0 0 22px; padding: 0; list-style: none; }
+.discipline-card li { display: flex; align-items: flex-start; gap: 10px; color: var(--ink); font-size: 13.5px; line-height: 1.55; }
+.discipline-card li svg { flex-shrink: 0; width: 16px; height: 16px; margin-top: 2px; color: var(--secondary); }
+.discipline-card .text-link { margin-top: auto; }
+.topic-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+.topic-grid article { padding: 24px 26px; border: 1px solid var(--line); border-left: 3px solid var(--secondary); border-radius: 14px; background: #fff; }
+.topic-grid h3 { margin: 0 0 10px; color: var(--primary); font-size: 19px; font-weight: 650; letter-spacing: -.015em; }
+.topic-grid p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.7; }
+
+/* Social responsibility: dashboard-managed films and photo albums. */
+.social-section { background: var(--surface); }
+.social-entries { display: grid; gap: 28px; }
+.social-entry { padding: 30px; border: 1px solid var(--line); border-radius: 18px; background: #fff; }
+.social-entry-head { display: flex; align-items: flex-start; gap: 18px; margin-bottom: 24px; }
+.social-entry-icon { display: grid; place-items: center; flex-shrink: 0; width: 48px; height: 48px; border-radius: 12px; color: var(--secondary); background: #edf4fe; }
+.social-entry-icon svg { width: 24px; height: 24px; stroke-width: 1.5; }
+.social-entry h3 { margin: 0 0 8px; color: var(--primary); font-size: 24px; font-weight: 650; letter-spacing: -.02em; }
+.social-entry-head p { margin: 0; color: var(--muted); font-size: 15px; line-height: 1.7; }
+.social-video { position: relative; overflow: hidden; aspect-ratio: 16 / 9; border-radius: 14px; background: #041d41; }
+.social-video iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.social-album { display: grid; grid-template-columns: repeat(auto-fill, minmax(215px, 1fr)); gap: 14px; margin-top: 22px; }
+.social-album figure { margin: 0; }
+.social-album img { display: block; width: 100%; height: 190px; object-fit: cover; border-radius: 12px; }
+.social-album figcaption { margin-top: 8px; color: var(--muted); font-size: 12.5px; line-height: 1.5; }
+.social-entry .text-link { margin-top: 20px; }
+
 @media (max-width: 1100px) {
   .header-inner { gap: 14px; }
   .header-actions .inquiry-button { min-width: 0; padding-inline: 12px; font-size: 10px; }
@@ -140,6 +172,7 @@
   .foundation-grid { gap: 36px; }
   .production-visual { padding: 25px; gap: 10px; }
   .production-camera { width: 70px; height: 70px; }
+  .discipline-grid, .topic-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 @media (max-width: 960px) {
@@ -152,7 +185,9 @@
   .utility-contact { gap: 16px; }
   .utility-contact > span:last-child { display: none; }
   .hero h1 { max-width: 700px; font-size: 60px; }
-  .brand-overview { grid-template-columns: 1.2fr 1fr 1fr; grid-template-rows: repeat(3, 95px); }
+  .media-system-wheel { width: min(430px, 100%); }
+  .leadership-message { grid-template-columns: 190px minmax(0, 1fr); gap: 32px; padding: 30px; }
+  .leadership-portrait { width: 190px; height: 190px; }
   .chairman-grid, .foundation-grid { gap: 40px; }
   .portrait-caption { right: 0; }
   .media-visual > span { font-size: 7px; }
@@ -187,12 +222,17 @@
   .hero-actions { flex-wrap: wrap; gap: 16px; }
   .hero-cta { font-size: 10px; padding-inline: 18px; letter-spacing: .07em; }
   .stats-wrap { margin-top: -70px; }
-  .brand-overview { min-height: 0; gap: 7px; padding: 6px; grid-template-columns: 1fr 1fr; grid-template-rows: auto; }
-  .overview-center { grid-row: auto; grid-column: 1 / -1; min-height: 180px; padding: 24px; }
-  .overview-center strong { font-size: 48px; }
-  .overview-center span { font-size: 15px; }
-  .overview-pillar { min-height: 105px; padding: 16px; font-size: 12px; }
-  .overview-pillar::before { left: 16px; top: 16px; }
+  .media-system { padding: 16px 10px 20px; }
+  .media-system-wheel { width: 100%; }
+  .media-petal span { font-size: clamp(9px, 3.1vw, 13px); }
+  .leadership-message { grid-template-columns: 1fr; justify-items: start; gap: 26px; padding: 24px; }
+  .leadership-portrait { width: 150px; height: 150px; }
+  .leadership-portrait span { font-size: 46px; }
+  .leadership-copy p { font-size: 15.5px; }
+  .discipline-grid, .topic-grid { grid-template-columns: 1fr; }
+  .discipline-card, .social-entry { padding: 24px; }
+  .social-album { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+  .social-album img { height: 145px; }
   .chairman-section, .foundation-section, .verticals-section, .value-section { padding-block: 52px; }
   .chairman-grid, .foundation-grid { grid-template-columns: 1fr; gap: 40px; }
   .portrait-wrap { width: min(100%, 360px); }

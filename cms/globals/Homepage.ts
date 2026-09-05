@@ -65,7 +65,41 @@ export const Homepage: GlobalConfig = {
           ],
         },
         {
+          label: "Leadership",
+          fields: [
+            { name: "leadershipKicker", type: "text", defaultValue: "From our leadership" },
+            { name: "leadershipHeading", type: "text" },
+            {
+              name: "leadershipMessages",
+              type: "array",
+              label: "Messages",
+              labels: { singular: "Message", plural: "Messages" },
+              admin: {
+                description:
+                  "Shown one at a time on the homepage. The carousel moves on every five " +
+                  "seconds, and visitors can step through with the arrows.",
+              },
+              fields: [
+                {
+                  type: "row",
+                  fields: [
+                    { name: "role", type: "text", required: true, admin: { width: "50%" } },
+                    { name: "name", type: "text", required: true, admin: { width: "50%" } },
+                  ],
+                },
+                { name: "heading", type: "text", label: "Message title" },
+                { name: "message", type: "textarea", required: true },
+                { name: "photo", type: "upload", relationTo: "media" },
+              ],
+            },
+          ],
+        },
+        {
           label: "Services",
+          admin: {
+            description:
+              "This grid moved off the homepage and now opens the services page.",
+          },
           fields: [
             { name: "servicesKicker", type: "text", defaultValue: "Our Services" },
             { name: "servicesHeading", type: "text" },
@@ -93,6 +127,7 @@ export const Homepage: GlobalConfig = {
         },
         {
           label: "Production",
+          admin: { description: "This band moved off the homepage and now opens the production page." },
           fields: [
             { name: "productionChip", type: "text", defaultValue: "Production" },
             { name: "productionHeading", type: "text" },
@@ -102,6 +137,7 @@ export const Homepage: GlobalConfig = {
         },
         {
           label: "Right Sanchar",
+          admin: { description: "This band moved off the homepage and now opens the Right Sanchar page." },
           fields: [
             { name: "sancharHeading", type: "text" },
             { name: "sancharIntro", type: "textarea" },

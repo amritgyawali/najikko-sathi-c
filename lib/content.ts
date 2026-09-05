@@ -18,8 +18,10 @@ import type {
   Service,
   ServiceCategory,
   SiteSetting,
+  SocialResponsibility,
   Team,
 } from "@/payload-types";
+import { mediaAlt, mediaUrl } from "@/lib/media";
 import {
   business as fallbackBusiness,
   footerGroups as fallbackFooterGroups,
@@ -82,11 +84,19 @@ export type BusinessInfo = {
   websiteLabel: string;
   rightSanchar: string;
   rightSancharLabel: string;
+  /** The logo uploaded in Site Settings, or null while none has been. */
+  logoUrl: string | null;
+  logoAlt: string;
 };
 
 export const getBusiness = cache(async (): Promise<BusinessInfo> => {
   const settings = await readGlobal<SiteSetting>("site-settings");
-  const base: BusinessInfo = { ...fallbackBusiness, phones: [...fallbackBusiness.phones] };
+  const base: BusinessInfo = {
+    ...fallbackBusiness,
+    phones: [...fallbackBusiness.phones],
+    logoUrl: null,
+    logoAlt: fallbackBusiness.legalName,
+  };
   if (!settings) return base;
 
   return {
@@ -104,6 +114,10 @@ export const getBusiness = cache(async (): Promise<BusinessInfo> => {
     websiteLabel: or(settings.websiteLabel, base.websiteLabel),
     rightSanchar: or(settings.rightSanchar, base.rightSanchar),
     rightSancharLabel: or(settings.rightSancharLabel, base.rightSancharLabel),
+    // A logo uploaded in the dashboard replaces the initials mark everywhere
+    // it appears: the header, the media system wheel, and the footer.
+    logoUrl: mediaUrl(settings.logo),
+    logoAlt: mediaAlt(settings.logo, or(settings.legalName, base.legalName)),
   };
 });
 
@@ -231,6 +245,7 @@ type CollectionMap = {
   "service-categories": ServiceCategory;
   faqs: Faq;
   team: Team;
+  "social-responsibility": SocialResponsibility;
   "media-slots": MediaSlot;
   redirects: Redirect;
 };
@@ -310,6 +325,15 @@ export const getTeam = cache(async (): Promise<Team[]> =>
 );
 
 /** The photo/video featured on a given page, keyed by page or service slug. */
+/** Social responsibility films and photo albums, in the editor's order. */
+export const getSocialResponsibility = cache(async (): Promise<SocialResponsibility[]> =>
+  getCollection("social-responsibility", {
+    where: { status: { equals: "published" } },
+    limit: 50,
+    sort: "order",
+  }),
+);
+
 export const getMediaSlot = cache(async (key: string): Promise<MediaSlot | null> => {
   const rows = await getCollection("media-slots", { where: { key: { equals: key } }, limit: 1 });
   return rows[0] ?? null;

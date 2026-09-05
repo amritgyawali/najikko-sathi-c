@@ -1,29 +1,13 @@
 import Image from "next/image";
 import Link from "next/link";
-import {
-  Aperture,
-  ArrowRight,
-  ArrowUpRight,
-  Camera,
-  Clapperboard,
-  FileText,
-  Film,
-  GraduationCap,
-  Megaphone,
-  MessageSquareText,
-  Mic2,
-  Newspaper,
-  Scissors,
-  Search,
-  Video,
-} from "lucide-react";
+import { ArrowRight, ArrowUpRight, Camera, Film, Mic2 } from "lucide-react";
 
 import type { Homepage } from "@/payload-types";
 import { getBusiness, getHomepage, type BusinessInfo } from "@/lib/content";
-import { mediaUrl } from "@/lib/media";
+import { mediaAlt, mediaUrl } from "@/lib/media";
 import { MediaShowcase } from "./_components/page-content";
-import { getServiceViews, type ServiceView } from "@/lib/services";
-import { brandPillars, rightSancharTopics } from "./_data/site";
+import { LeadershipCarousel, type LeadershipMessage } from "./_components/leadership-carousel";
+import { MediaSystem } from "./_components/media-system";
 import { pageMetadata } from "./_lib/seo";
 
 // Rendered per request so the page always reflects what is in the dashboard.
@@ -40,27 +24,6 @@ export const metadata = pageMetadata(
   "Najikko Sathi Media offers documentary and video production, social media management, media training, and research from Anamnagar, Kathmandu, Nepal.",
   "/",
 );
-
-const serviceIcons = [
-  Camera, Film, Megaphone, Aperture, FileText, MessageSquareText, Megaphone, Video,
-  Clapperboard, GraduationCap, Camera, Newspaper, Scissors, GraduationCap, Search,
-  MessageSquareText,
-] as const;
-
-const iconByName = {
-  newspaper: Newspaper,
-  fileText: FileText,
-  messageSquare: MessageSquareText,
-  search: Search,
-  camera: Camera,
-  film: Film,
-  megaphone: Megaphone,
-  video: Video,
-  aperture: Aperture,
-  clapperboard: Clapperboard,
-  scissors: Scissors,
-  graduationCap: GraduationCap,
-} as const;
 
 const labels = (rows: { label: string }[] | null | undefined, fallback: readonly string[]): string[] =>
   rows && rows.length > 0 ? rows.map((row) => row.label) : [...fallback];
@@ -104,18 +67,9 @@ function Hero({ business, home }: { business: BusinessInfo; home: Homepage | nul
           </div>
         </div>
       </section>
-      <section className="stats-wrap" aria-label={`${business.shortName} media commitments`}>
+      <section className="stats-wrap" aria-label={`${business.shortName} media system`}>
         <div className="stats-card">
-          <div className="brand-overview">
-            <div className="overview-center">
-              <small>Our media system</small>
-              <strong>{business.initials}</strong>
-              <span>Six disciplines.<br />One close companion.</span>
-            </div>
-            {labels(home?.brandPillars, brandPillars).map((pillar) => (
-              <span className="overview-pillar" key={pillar}>{pillar}</span>
-            ))}
-          </div>
+          <MediaSystem business={business} />
         </div>
       </section>
     </>
@@ -173,169 +127,45 @@ function About({ business, home }: { business: BusinessInfo; home: Homepage | nu
   );
 }
 
-function Services({ home, services }: { home: Homepage | null; services: ServiceView[] }) {
-  // The service portfolio drives this grid by default, so each card links to a
-  // real service page. Filling in Homepage → Services in the dashboard replaces
-  // the grid with that custom list instead.
-  const custom = home?.services?.filter((row) => row.name) ?? [];
+/**
+ * The chairman's and director's messages. Both are written in the dashboard,
+ * so the section only appears once there is something to show.
+ */
+function Leadership({ home }: { home: Homepage | null }) {
+  const messages: LeadershipMessage[] = (home?.leadershipMessages ?? [])
+    .filter((row) => row.message && row.name)
+    .map((row) => ({
+      role: row.role,
+      name: row.name,
+      heading: row.heading ?? "",
+      message: row.message,
+      photoUrl: mediaUrl(row.photo),
+      photoAlt: mediaAlt(row.photo, `${row.name}, ${row.role}`),
+    }));
+
+  if (messages.length === 0) return null;
 
   return (
-    <section className="verticals-section" id="services">
-      <Image
-        className="verticals-texture"
-        src="/images/verticals-texture.jpg"
-        alt=""
-        fill
-        sizes="100vw"
-      />
-      <div className="site-container verticals-content">
-        <div className="verticals-intro">
-          <div>
-            <span className="section-kicker">{home?.servicesKicker || "Our Services"}</span>
-            {home?.servicesHeading ? (
-              <h2>{home.servicesHeading}</h2>
-            ) : (
-              <h2>One Media House.<br />Many Ways to Communicate.</h2>
-            )}
-            <p>
-              {home?.servicesIntro ||
-                "From verified information to cinematic storytelling, every service is built around clarity, truth, and impact."}
-            </p>
-          </div>
-          <Link className="outline-button" href="/production">Explore Production <ArrowUpRight aria-hidden="true" /></Link>
+    <section className="content-section leadership-section" id="leadership">
+      <div className="site-container">
+        <div className="section-heading">
+          <span className="eyebrow"><i />{home?.leadershipKicker || "From our leadership"}</span>
+          <h2>{home?.leadershipHeading || "Messages from the people who guide our work."}</h2>
         </div>
-        <div className="verticals-grid">
-          {custom.length > 0
-            ? custom.map((row) => {
-                const Icon = iconByName[(row.icon ?? "newspaper") as keyof typeof iconByName] ?? Newspaper;
-                return (
-                  <Link className="vertical-card" href={row.href || "/services"} key={row.name}>
-                    <Icon aria-hidden="true" />
-                    <strong>{row.name}</strong>
-                    <ArrowRight className="card-arrow" aria-hidden="true" />
-                  </Link>
-                );
-              })
-            : services.map((service, index) => {
-                const Icon = serviceIcons[index] ?? Camera;
-                return (
-                  <Link className="vertical-card" href={`/services/${service.slug}`} key={service.slug}>
-                    <Icon aria-hidden="true" />
-                    <strong>{service.shortTitle}</strong>
-                    <ArrowRight className="card-arrow" aria-hidden="true" />
-                  </Link>
-                );
-              })}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function Production({ business, home }: { business: BusinessInfo; home: Homepage | null }) {
-  return (
-    <section className="foundation-section" id="production">
-      <div className="site-container foundation-grid">
-        <div className="foundation-image-wrap">
-          <div className="foundation-backplate" aria-hidden="true" />
-          <div className="production-visual" aria-label="Production process: research, script, shoot, and edit">
-            <Clapperboard className="production-camera" aria-hidden="true" />
-            <div className="production-steps">
-              <span><Search aria-hidden="true" /> Research</span>
-              <span><FileText aria-hidden="true" /> Script</span>
-              <span><Camera aria-hidden="true" /> Shoot</span>
-              <span><Scissors aria-hidden="true" /> Edit</span>
-            </div>
-          </div>
-          <div className="legacy-badge"><strong>4</strong><span>Complete Stages</span></div>
-        </div>
-        <div className="foundation-copy">
-          <span className="foundation-chip">{home?.productionChip || "Production"}</span>
-          {home?.productionHeading ? (
-            <h2>{home.productionHeading}</h2>
-          ) : (
-            <h2>Stories Brought to Life<br /><em>With Cinematic Craft</em></h2>
-          )}
-          <p>
-            {home?.productionBody ||
-              "We turn ideas, lives, and real events into compelling visual experiences. Our team produces biography videos, documentaries, advertisements, and social or corporate films through research, scriptwriting, cinematography, and cinematic editing."}
-          </p>
-          <a className="primary-button" href={`mailto:${business.email}?subject=Production%20Inquiry`}>
-            {home?.productionCtaLabel || "Start a Production"} <ArrowRight aria-hidden="true" />
-          </a>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function RightSanchar({ business, home }: { business: BusinessInfo; home: Homepage | null }) {
-  const topics = labels(home?.sancharTopics, rightSancharTopics);
-
-  return (
-    <section className="value-section" id="right-sanchar">
-      <div className="site-container value-content">
-        <div className="value-heading">
-          <h2>{home?.sancharHeading || "Right Information. Right Time. Right Perspective."}</h2>
-          <p>
-            {home?.sancharIntro ||
-              "Right Sanchar delivers accurate, truthful, and unbiased information on issues that matter to the public."}
-          </p>
-        </div>
-        <a className="logo-cloud-card" href={business.rightSanchar} target="_blank" rel="noreferrer" aria-label="Visit Right Sanchar">
-          <div className="right-sanchar-card">
-            <div className="right-sanchar-identity">
-              <span className="portal-icon"><Newspaper aria-hidden="true" /></span>
-              <span className="portal-label">Our digital news portal</span>
-              <strong>RIGHT<br />SANCHAR</strong>
-              <small>{business.rightSancharLabel}</small>
-              <span className="portal-action">Visit the portal <ArrowUpRight aria-hidden="true" /></span>
-            </div>
-            <div className="topic-cloud">
-              {topics.map((topic) => <span key={topic}>{topic}</span>)}
-            </div>
-          </div>
-        </a>
-        <div className="partners-title"><i /><span>Connect With Us</span><i /></div>
-        <div className="partners" aria-label={`${business.shortName} contact links`}>
-          <a className="connection-item" href={business.website} target="_blank" rel="noreferrer">
-            <strong>{business.shortName}</strong><small>{business.websiteLabel}</small>
-          </a>
-          <a className="connection-item" href={business.rightSanchar} target="_blank" rel="noreferrer">
-            <strong>Right Sanchar</strong><small>{business.rightSancharLabel}</small>
-          </a>
-          <a className="connection-item" href={`mailto:${business.email}`}>
-            <strong>Email Us</strong><small>{business.email}</small>
-          </a>
-          <span className="connection-item">
-            <strong>Call Us</strong>
-            <small className="connection-phone-links">
-              {business.phones.map((phone, index) => (
-                <a href={`tel:+977${phone}`} key={phone}>{index > 0 ? " / " : ""}{phone}</a>
-              ))}
-            </small>
-          </span>
-          <span className="connection-item"><strong>VAT</strong><small>{business.vat}</small></span>
-        </div>
+        <LeadershipCarousel messages={messages} />
       </div>
     </section>
   );
 }
 
 export default async function Home() {
-  const [business, home, services] = await Promise.all([
-    getBusiness(),
-    getHomepage(),
-    getServiceViews(),
-  ]);
+  const [business, home] = await Promise.all([getBusiness(), getHomepage()]);
 
   return (
     <>
       <Hero business={business} home={home} />
       <About business={business} home={home} />
-      <Services home={home} services={services} />
-      <Production business={business} home={home} />
-      <RightSanchar business={business} home={home} />
+      <Leadership home={home} />
       <MediaShowcase mediaKey="home" title={business.shortName} />
     </>
   );

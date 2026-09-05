@@ -56,6 +56,11 @@ export function ServiceCards({ services }: { services: ServiceView[] }) {
   })}</div>;
 }
 
+/** A plain grid of named subjects, used by the discipline pages. */
+export function TopicGrid({ items }: { items: { title: string; text: string }[] }) {
+  return <div className="topic-grid">{items.map(({ title, text }) => <article key={title}><h3>{title}</h3><p>{text}</p></article>)}</div>;
+}
+
 export function ProcessSteps({ steps }: { steps: [string, string][] }) {
   return <ol className="process-list">{steps.map(([title, description], index) => <li key={title}><span className="process-number">{String(index + 1).padStart(2, "0")}</span><h3>{title}</h3><p>{description}</p></li>)}</ol>;
 }

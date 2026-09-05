@@ -2,9 +2,9 @@ export type ServiceCategory = "production" | "social-media" | "training" | "rese
 
 export const categories = [
   { id: "production", title: "Production work", label: "Production", description: "Full-service photography and videography for visual storytelling, corporate branding, and public messaging.", href: "/production" },
-  { id: "social-media", title: "Social media handling", label: "Social media", description: "Digital presence management, branding, audience engagement, and performance marketing across major digital platforms.", href: "/services#social-media" },
+  { id: "social-media", title: "Social media handling", label: "Social media", description: "Digital presence management, branding, audience engagement, and performance marketing across major digital platforms.", href: "/social-media-handling" },
   { id: "training", title: "Training programs", label: "Training", description: "Practical capacity building for individuals, corporate teams, journalists, and creative professionals.", href: "/training" },
-  { id: "research", title: "Research & development", label: "Research", description: "Field research, media monitoring, data collection, and development initiatives with public and civil society stakeholders.", href: "/services#research" },
+  { id: "research", title: "Research & development", label: "Research", description: "Field research, media monitoring, data collection, and development initiatives with public and civil society stakeholders.", href: "/research" },
 ] as const;
 
 export type Service = {
