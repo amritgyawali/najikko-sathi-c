@@ -35,7 +35,11 @@ export const navigation = [
  * and the sitemap still lists them, so shortening the menu never hides a page.
  */
 export const navSections: Record<string, string[]> = {
+  // The writing index and each post sit under Our Work; publishing the first
+  // post must not leave the header with nothing highlighted.
+  "/services": ["/offers"],
   "/our-work": [
+    "/posts",
     "/production",
     "/social-media-handling",
     "/training",

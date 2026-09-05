@@ -119,7 +119,7 @@ try {
       assert.equal(await page.locator(`[id="${decodeURIComponent(target.hash.slice(1))}"]`).count(), 1, `Missing anchor: ${href}`);
     }
   }
-  assert.equal(previewImages.size, 28, "Every page should have its own social image title");
+  assert.equal(previewImages.size, paths.length, "Every page should have its own social image title");
   for (const preview of previewImages) {
     const response = await fetch(`${origin}${preview}`);
     assert.equal(response.status, 200, `Social image: ${preview}`);
