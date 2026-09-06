@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { getBySlug } from "@/lib/content";
+import { pageMetadata } from "../_lib/seo";
+import { Breadcrumbs } from "../_components/page-content";
 import { RenderBlocks } from "../_components/RenderBlocks";
 
 // Rendered per request so the page always reflects what is in the dashboard.
@@ -24,10 +26,12 @@ export async function generateMetadata({ params }: Args): Promise<Metadata> {
   const { slug } = await params;
   const page = await getBySlug("pages", slug);
   if (!page) return {};
-  return {
-    title: page.seo?.title || page.title,
-    description: page.seo?.description ?? undefined,
-  };
+  return pageMetadata(
+    page.seo?.title || page.title,
+    page.seo?.description ||
+      `${page.title} - Najikko Sathi Media Pvt. Ltd., a media house in Anamnagar, Kathmandu, Nepal.`,
+    `/${page.slug}`,
+  );
 }
 
 export default async function CmsPage({ params }: Args) {
@@ -35,5 +39,10 @@ export default async function CmsPage({ params }: Args) {
   const page = await getBySlug("pages", slug);
   if (!page) notFound();
 
-  return <RenderBlocks layout={page.layout} />;
+  return <>
+    <div className="site-container cms-breadcrumbs">
+      <Breadcrumbs items={[{ label: page.title, href: `/${page.slug}` }]} />
+    </div>
+    <RenderBlocks layout={page.layout} />
+  </>;
 }

@@ -99,6 +99,24 @@ Two more tools sit on the dashboard home: **Download backup**, which exports eve
 collection and global as one JSON file (administrators only), and the **search page**
 at `/search`, which searches services, writing, offers, and pages.
 
+### Finding a page on the live website
+
+Every document and every global carries an **On the website** link at the top
+of the edit screen, next to Save. It shows the address the content will have -
+`/posts/my-story`, `/services/documentary-film-production`, `/our-work` - opens
+it in a new tab, and copies it to the clipboard. Where the content has no page
+of its own, such as an enquiry or a review, it says where the content does
+appear instead. A draft is flagged as one, so it is clear why the page is not
+public yet. The mapping lives in `cms/live-urls.ts`; add a case there when a
+new collection gets a public page.
+
+Every list table has a matching **Link** column, so a page of posts or services
+shows where each row went without opening any of them. A draft's address is
+shown in amber, and content with no page of its own shows a dash.
+
+The sidebar has **Dashboard** and **View website** above the menu, so the
+overview and the public site are one click away from anywhere in the admin.
+
 ### How changes reach the website
 
 Public pages are rendered per request (`export const dynamic = "force-dynamic"`),
@@ -230,7 +248,10 @@ DELETE FROM payload_migrations WHERE name = 'dev';
 **`npm run check:pages` fails.**
 The site and `lib/site-map.ts` disagree: a page was added or removed without
 updating that list. The message names the paths. Fixing it is what keeps the
-dashboard's **Website pages** panel describing the real website.
+dashboard's **Website pages** panel describing the real website. The same check
+compares the site map with `cms/live-urls.ts` — the two describe the website
+from opposite ends, so a Page media entry has to lead back to the page whose
+showcase band uses it.
 
 **`npm run check:site` fails on navigation assertions.**
 It verifies the site against the default navigation, so run it with the CMS at its
@@ -265,7 +286,7 @@ until someone approves it in the dashboard.
 
 ## Pages
 
-The navbar links five separate pages, in this order: `/`, `/services`, `/our-work`, `/contact`, and `/about`. `/our-work` gathers the areas that are not in the menu themselves - `/production`, `/social-media-handling`, `/training`, `/research`, `/it`, `/advertisement` and `/right-sanchar` keep their own pages, stay in the sitemap, and highlight **Our Work** in the header while a visitor is on them (see `navSections` in `lib/site-map.ts`, which `app/(frontend)/_data/site.ts` re-exports). The first six are the disciplines in the homepage wheel, and each petal links straight to its page. Each of the 16 services has a statically generated `/services/[slug]` page with its own scope, preparation guidance, workflow, FAQs, related services, and contact link.
+The navbar links five separate pages, in this order: `/`, `/services`, `/our-work`, `/contact`, and `/about`. `/our-work` gathers the areas that are not in the menu themselves - `/production`, `/social-media-handling`, `/training`, `/research`, `/it`, `/advertisement`, `/right-sanchar` and the writing index at `/posts` keep their own pages, stay in the sitemap, and highlight **Our Work** in the header while a visitor is on them; `/offers` sits under **Services** the same way (see `navSections` in `lib/site-map.ts`, which `app/(frontend)/_data/site.ts` re-exports). The first six are the disciplines in the homepage wheel, and each petal links straight to its page. Each of the 16 services has a statically generated `/services/[slug]` page with its own scope, preparation guidance, workflow, FAQs, related services, and contact link.
 
 The portfolio covers four production services, five social media services, five training programs, and two research and development services. The source is retained in `docs/Service_Portfolio_Overview.pdf`.
 

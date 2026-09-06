@@ -4,6 +4,8 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 
 import { getBySlug } from "@/lib/content";
+import { Breadcrumbs } from "../../_components/page-content";
+import { pageMetadata } from "../../_lib/seo";
 import { mediaAlt, mediaUrl } from "@/lib/media";
 
 // Rendered per request so the page always reflects what is in the dashboard.
@@ -22,10 +24,13 @@ export async function generateMetadata({ params }: Args): Promise<Metadata> {
   const { slug } = await params;
   const post = await getBySlug("posts", slug);
   if (!post) return {};
-  return {
-    title: post.seo?.title || post.title,
-    description: post.seo?.description || post.excerpt || undefined,
-  };
+  return pageMetadata(
+    post.seo?.title || post.title,
+    post.seo?.description ||
+      post.excerpt ||
+      `${post.title} - published by Najikko Sathi Media in Kathmandu, Nepal.`,
+    `/posts/${post.slug}`,
+  );
 }
 
 export default async function PostPage({ params }: Args) {
@@ -39,6 +44,7 @@ export default async function PostPage({ params }: Args) {
   return (
     <article className="cms-section">
           <div className="site-container cms-prose">
+            <Breadcrumbs items={[{ label: "Writing", href: "/posts" }, { label: post.title, href: `/posts/${post.slug}` }]} />
             <span className="section-kicker">{post.type}</span>
             <h1>{post.title}</h1>
             {published ? (

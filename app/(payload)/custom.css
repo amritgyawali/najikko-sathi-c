@@ -19,6 +19,15 @@
   --ns-surface: #f5f7fb;
   --ns-card: #ffffff;
 
+  /* The six discipline colours from the media system wheel, reused here so
+     the dashboard is recognisably the same product as the website. */
+  --ns-c1: #e0273a;
+  --ns-c2: #e8880f;
+  --ns-c3: #a51fa0;
+  --ns-c4: #9b7420;
+  --ns-c5: #1f6fd0;
+  --ns-c6: #12983c;
+
   /* Ink for text and icons sitting on a tinted/accent surface. It has to
      change with the theme: navy on a pale tint reads well, navy on a dark
      tint is invisible. */
@@ -119,6 +128,69 @@ h1, h2, h3, h4, .doc-header__title, .list-header__title {
   border-bottom: 1px solid var(--ns-line);
 }
 
+/* The two links above the menu: back to the overview, out to the website.
+   Markup in cms/components/NavDashboardLink.tsx. */
+.ns-nav-top {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-bottom: 12px;
+  margin-bottom: 10px;
+  border-bottom: 1px solid var(--ns-line);
+}
+
+.ns-nav-top__link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  border-radius: var(--ns-radius-sm);
+  color: var(--theme-elevation-600);
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background-color 0.15s var(--ns-ease), color 0.15s var(--ns-ease);
+}
+
+.ns-nav-top__link svg {
+  width: 17px;
+  height: 17px;
+  flex-shrink: 0;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.75;
+}
+
+.ns-nav-top__link:hover {
+  background: var(--ns-blue-soft);
+  color: var(--ns-navy);
+  text-decoration: none;
+}
+
+/* The dashboard itself gets the brand gradient, so the way back is the most
+   prominent thing in the sidebar. */
+.ns-nav-top__link--home {
+  color: #fff;
+  background: linear-gradient(135deg, var(--ns-navy) 0%, var(--ns-blue) 100%);
+  box-shadow: var(--ns-shadow-sm);
+}
+
+.ns-nav-top__link--home svg {
+  opacity: 1;
+}
+
+.ns-nav-top__link--home:hover {
+  color: #fff;
+  background: linear-gradient(135deg, var(--ns-navy-deep) 0%, var(--ns-navy) 100%);
+}
+
+.ns-nav-top__link--home.is-current {
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--ns-blue) 22%, transparent);
+}
+
 /* Group headings read as quiet labels so the links themselves lead. */
 .nav-group__label,
 .nav-group__toggle {
@@ -153,6 +225,31 @@ h1, h2, h3, h4, .doc-header__title, .list-header__title {
   color: var(--theme-elevation-600);
   transition: background-color 0.15s var(--ns-ease), color 0.15s var(--ns-ease);
 }
+
+/* A dot before each group name, one hue per group, so the menu is scannable
+   by colour as well as by name. The label sits inside the toggle button, so
+   only the label carries it. */
+.nav-group__label {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.nav-group__label::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--ns-blue);
+  flex-shrink: 0;
+}
+
+.nav-group:nth-of-type(1) .nav-group__label::before { background: var(--ns-c5); }
+.nav-group:nth-of-type(2) .nav-group__label::before { background: var(--ns-c6); }
+.nav-group:nth-of-type(3) .nav-group__label::before { background: var(--ns-c2); }
+.nav-group:nth-of-type(4) .nav-group__label::before { background: var(--ns-c3); }
+.nav-group:nth-of-type(5) .nav-group__label::before { background: var(--ns-c1); }
+.nav-group:nth-of-type(6) .nav-group__label::before { background: var(--ns-c4); }
 
 .nav__link:hover {
   background: var(--ns-blue-soft);
@@ -207,6 +304,8 @@ h1, h2, h3, h4, .doc-header__title, .list-header__title {
 
 /* Dashboard entity cards. */
 .card {
+  position: relative;
+  overflow: hidden;
   background: var(--ns-card);
   border: 1px solid var(--ns-line);
   border-radius: var(--ns-radius);
@@ -215,9 +314,28 @@ h1, h2, h3, h4, .doc-header__title, .list-header__title {
     border-color 0.18s var(--ns-ease);
 }
 
+/* A coloured edge, cycling the six discipline hues down the grid, so the list
+   of collections reads as a set of places rather than a wall of white boxes. */
+.card::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 3px;
+  background: var(--ns-accent, var(--ns-blue));
+  opacity: 0.9;
+}
+
+/* Each card sits in its own list item, so the cycle counts the items. */
+.collections__card-list > li:nth-of-type(6n + 1) { --ns-accent: var(--ns-c5); }
+.collections__card-list > li:nth-of-type(6n + 2) { --ns-accent: var(--ns-c6); }
+.collections__card-list > li:nth-of-type(6n + 3) { --ns-accent: var(--ns-c2); }
+.collections__card-list > li:nth-of-type(6n + 4) { --ns-accent: var(--ns-c3); }
+.collections__card-list > li:nth-of-type(6n + 5) { --ns-accent: var(--ns-c1); }
+.collections__card-list > li:nth-of-type(6n + 6) { --ns-accent: var(--ns-c4); }
+
 .card--has-onclick:hover {
   transform: translateY(-2px);
-  border-color: var(--ns-blue);
+  border-color: var(--ns-accent, var(--ns-blue));
   box-shadow: var(--ns-shadow);
 }
 
@@ -477,6 +595,161 @@ textarea:focus,
   letter-spacing: 0.01em;
 }
 
+/* =============================================================== live link
+   "On the website" - shown above the save controls on every document and
+   global. Markup in cms/components/LiveLink.tsx.
+   ========================================================================= */
+
+.ns-live {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-right: auto;
+  padding: 6px 8px 6px 14px;
+  border: 1px solid var(--ns-line);
+  border-radius: 999px;
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--ns-blue) 8%, var(--ns-card)),
+    var(--ns-card) 65%
+  );
+}
+
+.ns-live__label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--theme-elevation-500);
+}
+
+.ns-live__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 32ch;
+  color: var(--ns-blue);
+  font-size: 0.86rem;
+  font-weight: 650;
+  text-decoration: none;
+}
+
+.ns-live__path {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ns-live__link svg {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.ns-live__link:hover {
+  color: var(--ns-navy);
+  text-decoration: underline;
+}
+
+.ns-live__copy {
+  padding: 4px 11px;
+  border: 1px solid var(--ns-line);
+  border-radius: 999px;
+  background: var(--ns-card);
+  color: var(--theme-elevation-600);
+  font-size: 0.76rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.15s var(--ns-ease), color 0.15s var(--ns-ease);
+}
+
+.ns-live__copy:hover {
+  border-color: var(--ns-blue);
+  color: var(--ns-navy);
+}
+
+.ns-live__pending {
+  font-size: 0.83rem;
+  color: var(--ns-muted);
+}
+
+/* A draft, or an unsaved document, has no public page yet. */
+.ns-live__flag {
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--theme-warning-500) 14%, transparent);
+  color: var(--theme-warning-500);
+  font-size: 0.74rem;
+  font-weight: 650;
+}
+
+/* Screen-reader-only, for the "opens in a new tab" note. */
+.ns-live__sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* The Link column in every list table. Markup in
+   cms/components/LiveLinkCell.tsx. */
+.ns-cell-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 30ch;
+  color: var(--ns-blue);
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.ns-cell-link > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ns-cell-link svg {
+  width: 13px;
+  height: 13px;
+  flex-shrink: 0;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.7;
+}
+
+.ns-cell-link:hover {
+  color: var(--ns-navy);
+  text-decoration: underline;
+}
+
+/* A draft has an address but nothing is there yet. */
+.ns-cell-link--draft {
+  color: var(--theme-warning-500);
+}
+
+.ns-cell-link--none {
+  color: var(--theme-elevation-400);
+}
+
+/* The controls row wraps once the link is in it. */
+.doc-controls__controls-wrapper {
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
 /* --------------------------------------------------- reduced-motion respect */
 
 @media (prefers-reduced-motion: reduce) {
@@ -499,23 +772,50 @@ textarea:focus,
 }
 
 .ns-overview__head {
+  position: relative;
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
   gap: 20px;
   flex-wrap: wrap;
+  overflow: hidden;
+  padding: 26px 28px;
+  border-radius: var(--ns-radius);
+  color: #fff;
+  background:
+    radial-gradient(circle at 88% -30%, rgb(115 168 255 / 45%), transparent 55%),
+    linear-gradient(125deg, var(--ns-navy-deep) 0%, var(--ns-navy) 45%, var(--ns-blue) 130%);
+  box-shadow: var(--ns-shadow);
+}
+
+/* The six discipline colours as a thin ribbon along the top of the banner. */
+.ns-overview__head::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 4px;
+  background: linear-gradient(
+    90deg,
+    var(--ns-c1) 0%, var(--ns-c1) 16.6%,
+    var(--ns-c2) 16.6%, var(--ns-c2) 33.3%,
+    var(--ns-c3) 33.3%, var(--ns-c3) 50%,
+    var(--ns-c4) 50%, var(--ns-c4) 66.6%,
+    var(--ns-c5) 66.6%, var(--ns-c5) 83.3%,
+    var(--ns-c6) 83.3%
+  );
 }
 
 .ns-overview__title {
   margin: 0;
+  color: #fff;
   font-size: 27px;
   font-weight: 680;
   letter-spacing: -0.025em;
 }
 
 .ns-overview__sub {
-  margin: 4px 0 0;
-  color: var(--ns-muted);
+  margin: 5px 0 0;
+  color: #cfe0fb;
   font-size: 14px;
 }
 
@@ -530,34 +830,34 @@ textarea:focus,
   align-items: center;
   padding: 8px 15px;
   border-radius: 999px;
-  border: 1px solid var(--ns-line);
-  background: var(--ns-card);
-  color: var(--theme-elevation-800);
+  border: 1px solid rgb(255 255 255 / 32%);
+  background: rgb(255 255 255 / 10%);
+  color: #fff;
   font-size: 13px;
   font-weight: 600;
   text-decoration: none;
-  transition: border-color 0.15s var(--ns-ease), color 0.15s var(--ns-ease),
-    transform 0.12s var(--ns-ease), box-shadow 0.15s var(--ns-ease);
+  transition: background-color 0.15s var(--ns-ease), border-color 0.15s var(--ns-ease),
+    transform 0.12s var(--ns-ease);
 }
 
 .ns-action:hover {
-  border-color: var(--ns-blue);
-  color: var(--ns-accent-ink);
+  border-color: #fff;
+  background: rgb(255 255 255 / 20%);
+  color: #fff;
   transform: translateY(-1px);
-  box-shadow: var(--ns-shadow-sm);
   text-decoration: none;
 }
 
 .ns-action--primary {
-  background: var(--ns-navy);
-  border-color: var(--ns-navy);
-  color: #fff;
+  background: #fff;
+  border-color: #fff;
+  color: var(--ns-navy);
 }
 
 .ns-action--primary:hover {
-  background: var(--ns-navy-deep);
-  border-color: var(--ns-navy-deep);
-  color: #fff;
+  background: #eaf1fd;
+  border-color: #eaf1fd;
+  color: var(--ns-navy);
 }
 
 /* ------------------------------------------------------------------- grids */
@@ -594,19 +894,47 @@ textarea:focus,
   overflow: hidden;
 }
 
-/* A quiet brand edge, so the row of tiles reads as one family. */
+/* Each tile carries its own hue: a bar down the edge and a soft wash behind
+   the number, set through --ns-accent by the modifier classes below. */
+.ns-stat {
+  --ns-accent: var(--ns-blue);
+}
+
 .ns-stat::before {
   content: "";
   position: absolute;
   inset: 0 auto 0 0;
-  width: 3px;
-  background: var(--ns-blue);
-  opacity: 0.5;
+  width: 4px;
+  background: var(--ns-accent);
 }
 
-.ns-stat--attention::before {
-  background: var(--theme-warning-500);
-  opacity: 1;
+.ns-stat::after {
+  content: "";
+  position: absolute;
+  top: -34px;
+  right: -34px;
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  background: var(--ns-accent);
+  opacity: 0.09;
+  pointer-events: none;
+}
+
+.ns-stat--c1 { --ns-accent: var(--ns-c1); }
+.ns-stat--c2 { --ns-accent: var(--ns-c2); }
+.ns-stat--c3 { --ns-accent: var(--ns-c3); }
+.ns-stat--c4 { --ns-accent: var(--ns-c4); }
+.ns-stat--c5 { --ns-accent: var(--ns-c5); }
+.ns-stat--c6 { --ns-accent: var(--ns-c6); }
+
+/* Something waiting on the reader outranks its palette slot. */
+.ns-stat--attention {
+  --ns-accent: var(--theme-warning-500);
+}
+
+.ns-stat--attention .ns-stat__value {
+  color: var(--theme-warning-500);
 }
 
 .ns-stat__label {
@@ -634,6 +962,9 @@ textarea:focus,
 /* ------------------------------------------------------------------ panels */
 
 .ns-panel {
+  --ns-accent: var(--ns-blue);
+  position: relative;
+  overflow: hidden;
   padding: 18px 20px;
   background: var(--ns-card);
   border: 1px solid var(--ns-line);
@@ -647,6 +978,21 @@ textarea:focus,
   justify-content: space-between;
   gap: 12px;
   flex-wrap: wrap;
+}
+
+.ns-panel--c1 { --ns-accent: var(--ns-c1); }
+.ns-panel--c2 { --ns-accent: var(--ns-c2); }
+.ns-panel--c3 { --ns-accent: var(--ns-c3); }
+.ns-panel--c4 { --ns-accent: var(--ns-c4); }
+.ns-panel--c5 { --ns-accent: var(--ns-c5); }
+.ns-panel--c6 { --ns-accent: var(--ns-c6); }
+
+.ns-panel::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 3px;
+  background: var(--ns-accent);
 }
 
 .ns-panel__title {
@@ -707,12 +1053,17 @@ textarea:focus,
   overflow: hidden;
 }
 
-/* One hue for magnitude, with a rounded data-end anchored to the baseline. */
+/* One hue per panel for magnitude, with a rounded data-end anchored to the
+   baseline. */
 .ns-bars__fill {
   display: block;
   height: 100%;
   border-radius: 0 4px 4px 0;
-  background: var(--ns-blue);
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--ns-accent) 70%, #fff),
+    var(--ns-accent)
+  );
 }
 
 .ns-bars__value {
@@ -747,8 +1098,8 @@ textarea:focus,
   display: block;
   width: 100%;
   border-radius: 4px 4px 0 0;
-  background: var(--ns-blue);
-  opacity: 0.85;
+  background: linear-gradient(180deg, var(--ns-blue), var(--ns-navy));
+  opacity: 0.88;
   transition: opacity 0.15s var(--ns-ease);
 }
 
@@ -979,15 +1330,15 @@ a.ns-page__path:hover {
 /* --------------------------------------------------- dark-mode solid brand */
 
 /* Navy is the brand on a pale page. Against a dark page it reads as a hole,
-   so solid brand surfaces move to the lighter accent instead. */
-html[data-theme="dark"] .ns-action--primary,
+   so solid brand surfaces move to the lighter accent instead.
+   The overview's own buttons are exempt: they sit on the brand banner, which
+   is dark in both themes, so they keep their white-on-blue treatment. */
 html[data-theme="dark"] .btn--style-primary {
   background: var(--ns-blue);
   border-color: var(--ns-blue);
   color: #06152b;
 }
 
-html[data-theme="dark"] .ns-action--primary:hover,
 html[data-theme="dark"] .btn--style-primary:hover:not(.btn--disabled) {
   background: #6ba3ff;
   border-color: #6ba3ff;

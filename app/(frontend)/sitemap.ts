@@ -36,9 +36,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   // Menu items, plus the pages a menu item stands for without linking to them
   // directly, so shortening the navbar never drops a page from the sitemap.
+  // The two listing pages are covered by a menu item so the header highlights
+  // it while a visitor is reading one, but they earn their sitemap entry above
+  // only once they have something on them - a cover must not override that.
+  const listings = new Set(["/posts", "/offers"]);
   for (const item of nav.items) {
     for (const href of [item.href, ...(item.covers ?? [])]) {
-      if (href.startsWith("/")) add(href);
+      if (href.startsWith("/") && !listings.has(href)) add(href);
     }
   }
   for (const service of services) add(`/services/${service.slug}`);

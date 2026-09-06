@@ -2,7 +2,8 @@ import assert from "node:assert/strict";
 import { readdir } from "node:fs/promises";
 import path from "node:path";
 
-import { sitePages } from "../lib/site-map";
+import { liveTargetFor } from "../cms/live-urls";
+import { mediaKeyToPath, sitePages } from "../lib/site-map";
 
 /**
  * Keeps lib/site-map.ts honest.
@@ -11,6 +12,11 @@ import { sitePages } from "../lib/site-map";
  * grouping of pages under a menu item all read that one list. This check fails
  * when it stops describing the website: a route added with no entry, or an
  * entry left behind after a route was deleted.
+ *
+ * It also checks the site map against cms/live-urls.ts, which answers the
+ * opposite question - given a document, which page does it come out on. The two
+ * describe the same website from different ends, so a page media entry has to
+ * lead back to the page the site map says it belongs to.
  *
  * Needs no database, no build and no browser, so it can run on its own:
  *   npm run check:pages
@@ -81,8 +87,21 @@ for (const page of sitePages) {
   }
 }
 
+// The dashboard shows editors a live address for each Page media entry. It has
+// to be the page whose showcase band actually uses that entry.
+for (const [key, pagePath] of Object.entries(mediaKeyToPath)) {
+  const target = liveTargetFor({ collectionSlug: "media-slots", data: { key } });
+  assert.equal(
+    target.path,
+    pagePath,
+    `Page media "${key}" belongs to ${pagePath} in lib/site-map.ts, but cms/live-urls.ts ` +
+      `sends an editor to ${target.path ?? "nowhere"}.`,
+  );
+}
+
 const inMenu = sitePages.filter((page) => typeof page.navOrder === "number");
 console.log(
-  `PASS ${routes.length} routes, all in lib/site-map.ts. ` +
+  `PASS ${routes.length} routes, all in lib/site-map.ts, ` +
+    `${Object.keys(mediaKeyToPath).length} page media keys agreeing with cms/live-urls.ts. ` +
     `Menu: ${inMenu.map((page) => page.label).join(", ")}.`,
 );

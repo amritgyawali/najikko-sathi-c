@@ -34,6 +34,12 @@ export type SitePage = {
    * lists the page.
    */
   parent?: string;
+  /**
+   * The Page media entry that holds this page's photo or film, when it has
+   * one. cms/live-urls.ts resolves the same key back to this path, and
+   * check:pages fails if the two ever disagree.
+   */
+  mediaKey?: string;
   /** Where in the dashboard this page's content is written. */
   edit: AdminLink[];
   /**
@@ -60,6 +66,8 @@ const collectionLink = (slug: string, label: string, note?: string): AdminLink =
 const pageMedia = (key: string): AdminLink =>
   collectionLink("media-slots", "Page media", `the "${key}" entry`);
 
+
+
 /**
  * Every page on the website. Menu order is `navOrder`; everything else either
  * sits under a menu item (`parent`) or is reached from a link on the site.
@@ -70,6 +78,7 @@ export const sitePages: SitePage[] = [
     label: "Home",
     summary: "The hero, the media system wheel, the introduction and the leadership messages.",
     navOrder: 1,
+    mediaKey: "home",
     edit: [
       globalLink("homepage", "Homepage", "the Home tab"),
       globalLink("site-settings", "Site settings", "logo and company details"),
@@ -81,6 +90,7 @@ export const sitePages: SitePage[] = [
     label: "Services",
     summary: "The full service portfolio, grouped by category.",
     navOrder: 2,
+    mediaKey: "services",
     edit: [
       collectionLink("services", "Services"),
       collectionLink("service-categories", "Service categories"),
@@ -93,6 +103,7 @@ export const sitePages: SitePage[] = [
     label: "Our Work",
     summary: "What the company does, discipline by discipline, and its social responsibility work.",
     navOrder: 3,
+    mediaKey: "our-work",
     edit: [
       collectionLink("services", "Services"),
       collectionLink("social-responsibility", "Social responsibility"),
@@ -105,6 +116,7 @@ export const sitePages: SitePage[] = [
     label: "Contact",
     summary: "Contact details, the enquiry form, and the questions people ask before writing in.",
     navOrder: 4,
+    mediaKey: "contact",
     edit: [
       globalLink("site-settings", "Site settings", "address, phones, email"),
       collectionLink("faqs", "FAQs", 'placement "contact"'),
@@ -117,6 +129,7 @@ export const sitePages: SitePage[] = [
     label: "About Us",
     summary: "Who the company is, what it stands for, and the people behind it.",
     navOrder: 5,
+    mediaKey: "about",
     edit: [
       collectionLink("team", "Team"),
       globalLink("site-settings", "Site settings", "company name and address"),
@@ -131,6 +144,7 @@ export const sitePages: SitePage[] = [
     label: "Production",
     summary: "Biography videos, documentaries, advertisements and corporate films.",
     parent: "/our-work",
+    mediaKey: "production",
     edit: [
       globalLink("homepage", "Homepage", "the Production page tab"),
       collectionLink("services", "Services", "the production category"),
@@ -143,6 +157,7 @@ export const sitePages: SitePage[] = [
     label: "Social Media Handling",
     summary: "Running and growing social channels for clients.",
     parent: "/our-work",
+    mediaKey: "social-media-handling",
     edit: [
       collectionLink("services", "Services", "the social media category"),
       pageMedia("social-media-handling"),
@@ -153,6 +168,7 @@ export const sitePages: SitePage[] = [
     label: "Training",
     summary: "Media and skill development courses.",
     parent: "/our-work",
+    mediaKey: "training",
     edit: [
       collectionLink("services", "Services", "the training category"),
       collectionLink("faqs", "FAQs", 'placement "training"'),
@@ -164,6 +180,7 @@ export const sitePages: SitePage[] = [
     label: "Research & Development",
     summary: "Research, surveys and content development work.",
     parent: "/our-work",
+    mediaKey: "research",
     edit: [collectionLink("services", "Services"), pageMedia("research")],
   },
   {
@@ -171,6 +188,7 @@ export const sitePages: SitePage[] = [
     label: "IT",
     summary: "Websites, systems and technical support.",
     parent: "/our-work",
+    mediaKey: "it",
     edit: [collectionLink("services", "Services"), pageMedia("it")],
   },
   {
@@ -178,6 +196,7 @@ export const sitePages: SitePage[] = [
     label: "Advertisement",
     summary: "Campaign planning, commercials and placement.",
     parent: "/our-work",
+    mediaKey: "advertisement",
     edit: [collectionLink("services", "Services"), pageMedia("advertisement")],
   },
   {
@@ -185,6 +204,7 @@ export const sitePages: SitePage[] = [
     label: "Right Sanchar",
     summary: "The news arm: accurate, truthful and unbiased reporting.",
     parent: "/our-work",
+    mediaKey: "right-sanchar",
     edit: [
       globalLink("homepage", "Homepage", "the Right Sanchar page tab"),
       globalLink("site-settings", "Site settings", "the Right Sanchar address"),
@@ -192,19 +212,25 @@ export const sitePages: SitePage[] = [
     ],
   },
 
-  // Reached from links on the site rather than from the menu.
+  // The two indexes that appear once there is something to list. They have no
+  // menu link of their own, so the header highlights the item they sit under
+  // rather than leaving nothing marked while a visitor reads a post.
   {
     path: "/posts",
     label: "Writing",
     summary: "News, blogs, commentary and investigations. Listed once something is published.",
+    parent: "/our-work",
     edit: [collectionLink("posts", "Posts")],
   },
   {
     path: "/offers",
     label: "Offers",
     summary: "Promotions and packages. Listed once something is published and in date.",
+    parent: "/services",
     edit: [collectionLink("offers", "Offers")],
   },
+
+  // Reached from links on the site rather than from the menu.
   {
     path: "/search",
     label: "Search",
@@ -241,6 +267,11 @@ export const sitePages: SitePage[] = [
     edit: [collectionLink("pages", "Pages")],
   },
 ];
+
+/** Every page that has a Page media entry, as its key → the page's path. */
+export const mediaKeyToPath: Record<string, string> = Object.fromEntries(
+  sitePages.filter((page) => page.mediaKey).map((page) => [page.mediaKey as string, page.path]),
+);
 
 /** Indexed by path, for looking up the entry behind a menu link. */
 export const sitePageByPath: Record<string, SitePage> = Object.fromEntries(
