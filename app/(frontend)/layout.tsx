@@ -1,13 +1,16 @@
 import type { Metadata } from "next";
-import { Hanken_Grotesk, Inter } from "next/font/google";
+import { cookies } from "next/headers";
+import { Hanken_Grotesk, Inter, Noto_Sans_Devanagari } from "next/font/google";
 import "./globals.css";
 import "./pages.css";
 import { AnnouncementBar } from "./_components/announcement-bar";
 import { Footer, Header } from "./_components/site-shell";
+import { LanguageProvider } from "./_components/language-provider";
 import { StructuredData } from "./_components/structured-data";
 import { TrackPageView } from "./_components/TrackPageView";
 import { organization, siteUrl } from "./_lib/seo";
 import { getBusiness, getTheme } from "@/lib/content";
+import { LANGUAGE_COOKIE, normalizeLanguage } from "@/lib/i18n/config";
 
 const hanken = Hanken_Grotesk({
   subsets: ["latin"],
@@ -18,6 +21,14 @@ const hanken = Hanken_Grotesk({
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
+  display: "swap",
+});
+
+// Every face on the site switches to this one while the site is read in
+// Nepali; globals.css points the heading and body variables at it.
+const devanagari = Noto_Sans_Devanagari({
+  subsets: ["devanagari", "latin"],
+  variable: "--font-devanagari",
   display: "swap",
 });
 
@@ -54,20 +65,25 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
   // Colours saved in the dashboard override the defaults declared in
   // globals.css. Injecting them here means a branding change takes effect on
   // the next request, with no rebuild.
-  const [business, theme] = await Promise.all([getBusiness(), getTheme()]);
+  const [business, theme, cookieStore] = await Promise.all([getBusiness(), getTheme(), cookies()]);
+  // Reading the choice here means the document is already marked with the
+  // right language, and the right font, on the first paint.
+  const language = normalizeLanguage(cookieStore.get(LANGUAGE_COOKIE)?.value);
   const overrides = Object.entries(theme)
     .map(([token, value]) => `${token}:${value};`)
     .join("");
 
   return (
-    <html lang="en" className={`${hanken.variable} ${inter.variable}`}>
+    <html lang={language} data-language={language} className={`${hanken.variable} ${inter.variable} ${devanagari.variable}`}>
       <head>{overrides ? <style>{`:root{${overrides}}`}</style> : null}</head>
       <body>
-        <a className="skip-link" href="#main-content">Skip to content</a>
-        <AnnouncementBar />
-        <Header />
-        <main id="main-content">{children}</main>
-        <Footer />
+        <LanguageProvider initialLanguage={language}>
+          <a className="skip-link" href="#main-content">Skip to content</a>
+          <AnnouncementBar />
+          <Header />
+          <main id="main-content">{children}</main>
+          <Footer />
+        </LanguageProvider>
         <StructuredData
           data={[
             organization,

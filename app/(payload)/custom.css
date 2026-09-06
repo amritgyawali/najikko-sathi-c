@@ -28,6 +28,11 @@
   --ns-c5: #1f6fd0;
   --ns-c6: #12983c;
 
+  /* Ink for text and icons sitting on a tinted/accent surface. It has to
+     change with the theme: navy on a pale tint reads well, navy on a dark
+     tint is invisible. */
+  --ns-accent-ink: #062b5c;
+
   --ns-radius: 12px;
   --ns-radius-sm: 9px;
   --ns-shadow-sm: 0 1px 2px rgb(6 43 92 / 6%), 0 1px 3px rgb(6 43 92 / 4%);
@@ -58,6 +63,8 @@ html[data-theme="light"] {
 }
 
 html[data-theme="dark"] {
+  --ns-accent-ink: #9ec5ff;
+  --ns-blue: #4c8dff;
   --ns-line: #22304a;
   --ns-card: #101a2b;
   --ns-ink: #e8eef7;
@@ -84,19 +91,19 @@ h1, h2, h3, h4, .doc-header__title, .list-header__title {
 
 .list-header__title,
 .doc-header__title {
-  font-size: 1.6rem;
+  font-size: 25px;
 }
 
 .custom-view-description,
 .field-description {
   color: var(--ns-muted);
   line-height: 1.55;
-  font-size: 0.82rem;
+  font-size: 13px;
 }
 
 .field-label {
   font-weight: 600;
-  font-size: 0.83rem;
+  font-size: 13px;
   letter-spacing: 0.01em;
   color: var(--theme-elevation-800);
 }
@@ -187,12 +194,24 @@ h1, h2, h3, h4, .doc-header__title, .list-header__title {
 /* Group headings read as quiet labels so the links themselves lead. */
 .nav-group__label,
 .nav-group__toggle {
-  font-size: 0.68rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--theme-elevation-400);
+  font-size: 15px;
+  font-weight: 750;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  color: var(--theme-elevation-800);
   padding-inline: 10px;
+  margin-top: 6px;
+}
+
+/* A hairline under each heading separates one group from the next. */
+.nav-group__toggle {
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--ns-line);
+  margin-bottom: 4px;
+}
+
+.nav-group__indicator {
+  color: var(--theme-elevation-400);
 }
 
 /* Links become rounded rows with a clear hover and active state. */
@@ -201,7 +220,7 @@ h1, h2, h3, h4, .doc-header__title, .list-header__title {
   border-radius: var(--ns-radius-sm);
   padding: 8px 12px;
   margin-block: 1px;
-  font-size: 0.9rem;
+  font-size: 14px;
   font-weight: 500;
   color: var(--theme-elevation-600);
   transition: background-color 0.15s var(--ns-ease), color 0.15s var(--ns-ease);
@@ -234,7 +253,7 @@ h1, h2, h3, h4, .doc-header__title, .list-header__title {
 
 .nav__link:hover {
   background: var(--ns-blue-soft);
-  color: var(--ns-navy);
+  color: var(--ns-accent-ink);
   text-decoration: none;
 }
 
@@ -243,7 +262,7 @@ h1, h2, h3, h4, .doc-header__title, .list-header__title {
 .nav__link:has(.nav__link-indicator),
 .nav__link[aria-current="page"] {
   background: var(--ns-blue-soft);
-  color: var(--ns-navy);
+  color: var(--ns-accent-ink);
   font-weight: 650;
 }
 
@@ -272,7 +291,7 @@ h1, h2, h3, h4, .doc-header__title, .list-header__title {
 }
 
 .step-nav {
-  font-size: 0.86rem;
+  font-size: 14px;
   color: var(--ns-muted);
 }
 
@@ -321,13 +340,13 @@ h1, h2, h3, h4, .doc-header__title, .list-header__title {
 }
 
 .card__title {
-  font-size: 0.98rem;
+  font-size: 16px;
   font-weight: 600;
   letter-spacing: -0.01em;
 }
 
 .collections__label {
-  font-size: 0.7rem;
+  font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -356,7 +375,7 @@ h1, h2, h3, h4, .doc-header__title, .list-header__title {
   z-index: 1;
   background: var(--theme-elevation-50);
   border-bottom: 1px solid var(--ns-line);
-  font-size: 0.72rem;
+  font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -367,7 +386,7 @@ h1, h2, h3, h4, .doc-header__title, .list-header__title {
 .table table td {
   padding-block: 0.9rem;
   border-bottom: 1px solid var(--theme-elevation-50);
-  font-size: 0.9rem;
+  font-size: 14px;
 }
 
 .table table tbody tr {
@@ -384,7 +403,7 @@ h1, h2, h3, h4, .doc-header__title, .list-header__title {
 
 .cell-title a {
   font-weight: 600;
-  color: var(--ns-navy);
+  color: var(--ns-accent-ink);
 }
 
 /* Search and filter row above the table. */
@@ -405,7 +424,7 @@ h1, h2, h3, h4, .doc-header__title, .list-header__title {
 .paginator__page {
   border-radius: var(--ns-radius-sm);
   min-width: 32px;
-  font-size: 0.86rem;
+  font-size: 14px;
 }
 
 .paginator__page--is-current {
@@ -444,7 +463,7 @@ h1, h2, h3, h4, .doc-header__title, .list-header__title {
 
 .btn--style-pill:hover {
   border-color: var(--ns-blue);
-  color: var(--ns-navy);
+  color: var(--ns-accent-ink);
 }
 
 .btn--disabled {
@@ -498,7 +517,7 @@ textarea:focus,
   border-radius: var(--ns-radius-sm) var(--ns-radius-sm) 0 0;
   padding: 10px 16px;
   font-weight: 600;
-  font-size: 0.9rem;
+  font-size: 14px;
   color: var(--theme-elevation-500);
   transition: color 0.15s var(--ns-ease), background-color 0.15s var(--ns-ease);
 }
@@ -506,12 +525,12 @@ textarea:focus,
 .tabs-field__tab-button:hover,
 .doc-tab:hover .doc-tab__label {
   background: var(--ns-blue-soft);
-  color: var(--ns-navy);
+  color: var(--ns-accent-ink);
 }
 
 .tabs-field__tab-button--active,
 .doc-tab--active .doc-tab__label {
-  color: var(--ns-navy);
+  color: var(--ns-accent-ink);
 }
 
 .tabs-field__tab-button--active::after,
@@ -542,7 +561,7 @@ textarea:focus,
 
 .collapsible__toggle {
   font-weight: 600;
-  font-size: 0.88rem;
+  font-size: 14px;
 }
 
 /* Upload dropzone. */
@@ -572,7 +591,7 @@ textarea:focus,
 .pill {
   border-radius: 999px;
   font-weight: 600;
-  font-size: 0.75rem;
+  font-size: 12px;
   letter-spacing: 0.01em;
 }
 
@@ -789,7 +808,7 @@ textarea:focus,
 .ns-overview__title {
   margin: 0;
   color: #fff;
-  font-size: 1.7rem;
+  font-size: 27px;
   font-weight: 680;
   letter-spacing: -0.025em;
 }
@@ -797,7 +816,7 @@ textarea:focus,
 .ns-overview__sub {
   margin: 5px 0 0;
   color: #cfe0fb;
-  font-size: 0.88rem;
+  font-size: 14px;
 }
 
 .ns-overview__actions {
@@ -814,7 +833,7 @@ textarea:focus,
   border: 1px solid rgb(255 255 255 / 32%);
   background: rgb(255 255 255 / 10%);
   color: #fff;
-  font-size: 0.85rem;
+  font-size: 13px;
   font-weight: 600;
   text-decoration: none;
   transition: background-color 0.15s var(--ns-ease), border-color 0.15s var(--ns-ease),
@@ -919,7 +938,7 @@ textarea:focus,
 }
 
 .ns-stat__label {
-  font-size: 0.72rem;
+  font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.09em;
   text-transform: uppercase;
@@ -927,7 +946,7 @@ textarea:focus,
 }
 
 .ns-stat__value {
-  font-size: 2rem;
+  font-size: 32px;
   font-weight: 680;
   line-height: 1.1;
   letter-spacing: -0.03em;
@@ -936,7 +955,7 @@ textarea:focus,
 }
 
 .ns-stat__hint {
-  font-size: 0.78rem;
+  font-size: 12px;
   color: var(--ns-muted);
 }
 
@@ -978,7 +997,7 @@ textarea:focus,
 
 .ns-panel__title {
   margin: 0 0 12px;
-  font-size: 0.74rem;
+  font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.09em;
   text-transform: uppercase;
@@ -990,14 +1009,14 @@ textarea:focus,
 }
 
 .ns-panel__meta {
-  font-size: 0.8rem;
+  font-size: 13px;
   color: var(--ns-muted);
   font-variant-numeric: tabular-nums;
 }
 
 .ns-panel__empty {
   margin: 0;
-  font-size: 0.86rem;
+  font-size: 14px;
   color: var(--ns-muted);
 }
 
@@ -1020,7 +1039,7 @@ textarea:focus,
 }
 
 .ns-bars__name {
-  font-size: 0.84rem;
+  font-size: 13px;
   color: var(--theme-elevation-800);
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1048,7 +1067,7 @@ textarea:focus,
 }
 
 .ns-bars__value {
-  font-size: 0.84rem;
+  font-size: 13px;
   font-weight: 600;
   font-variant-numeric: tabular-nums;
   color: var(--theme-elevation-800);
@@ -1092,6 +1111,101 @@ textarea:focus,
   display: flex;
   justify-content: space-between;
   margin-top: 7px;
-  font-size: 0.74rem;
+  font-size: 11px;
   color: var(--theme-elevation-400);
+}
+
+/* ------------------------------------------------------------ theme toggle */
+
+.ns-theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 14px 7px 11px;
+  border-radius: 999px;
+  border: 1px solid var(--ns-line);
+  background: var(--ns-card);
+  color: var(--theme-elevation-800);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.15s var(--ns-ease), color 0.15s var(--ns-ease),
+    transform 0.12s var(--ns-ease);
+}
+
+.ns-theme-toggle:hover {
+  border-color: var(--ns-blue);
+  color: var(--ns-accent-ink);
+  transform: translateY(-1px);
+}
+
+.ns-theme-toggle:focus-visible {
+  outline: none;
+  border-color: var(--ns-blue);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--ns-blue) 22%, transparent);
+}
+
+.ns-theme-toggle__icon {
+  display: inline-flex;
+}
+
+.ns-theme-toggle__icon svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* The word is helpful on a roomy header and noise on a narrow one. */
+@media (max-width: 900px) {
+  .ns-theme-toggle__label {
+    display: none;
+  }
+
+  .ns-theme-toggle {
+    padding: 7px 10px;
+  }
+}
+
+/* --------------------------------------------------- dark-mode solid brand */
+
+/* Navy is the brand on a pale page. Against a dark page it reads as a hole,
+   so solid brand surfaces move to the lighter accent instead.
+   The overview's own buttons are exempt: they sit on the brand banner, which
+   is dark in both themes, so they keep their white-on-blue treatment. */
+html[data-theme="dark"] .btn--style-primary {
+  background: var(--ns-blue);
+  border-color: var(--ns-blue);
+  color: #06152b;
+}
+
+html[data-theme="dark"] .btn--style-primary:hover:not(.btn--disabled) {
+  background: #6ba3ff;
+  border-color: #6ba3ff;
+  color: #06152b;
+}
+
+html[data-theme="dark"] .paginator__page--is-current {
+  background: var(--ns-blue);
+  color: #06152b;
+}
+
+html[data-theme="dark"] .ns-stat::before {
+  opacity: 0.75;
+}
+
+/* Payload's mid grey lands around 4:1 on the dark panel surface, which is under
+   the 4.5:1 that small bold uppercase text needs. Lift the label tokens. */
+html[data-theme="dark"] .ns-stat__label,
+html[data-theme="dark"] .ns-panel__title,
+html[data-theme="dark"] .collections__label,
+html[data-theme="dark"] .table table thead th {
+  color: #9fb0c6;
+}
+
+html[data-theme="dark"] .ns-stat__hint,
+html[data-theme="dark"] .ns-panel__meta,
+html[data-theme="dark"] .ns-overview__sub,
+html[data-theme="dark"] .field-description,
+html[data-theme="dark"] .custom-view-description {
+  color: #a8b6c9;
 }

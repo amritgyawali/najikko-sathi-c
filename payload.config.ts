@@ -114,6 +114,8 @@ export default buildConfig({
       afterLogin: ["/cms/components/LoginSignupLink#LoginSignupLink"],
       // Back to the overview, and out to the public site, above the menu.
       beforeNavLinks: ["/cms/components/NavDashboardLink#NavDashboardLink"],
+      // Light / dark switch, in the header beside the account menu.
+      actions: ["/cms/components/ThemeToggle#ThemeToggle"],
     },
   },
   collections: [

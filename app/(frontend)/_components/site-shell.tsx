@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Mail, MapPin, Phone, Share2 } from "lucide-react";
 import { getBusiness, getFooter, getNavigation } from "@/lib/content";
+import { LanguageToggle } from "./language-toggle";
 import { Navigation } from "./navigation";
 
 /**
@@ -54,11 +55,14 @@ export async function Header() {
             </span>
           </Link>
           <Navigation items={nav.items} />
-          {nav.cta.enabled ? (
-            <div className="header-actions">
-              <Link className="inquiry-button" href={nav.cta.href}>{nav.cta.label}</Link>
-            </div>
-          ) : null}
+          <div className="header-end">
+            <LanguageToggle />
+            {nav.cta.enabled ? (
+              <div className="header-actions">
+                <Link className="inquiry-button" href={nav.cta.href}>{nav.cta.label}</Link>
+              </div>
+            ) : null}
+          </div>
         </div>
       </header>
     </>
