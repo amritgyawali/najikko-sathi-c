@@ -73,19 +73,32 @@ async function loadTraffic(payload: Payload): Promise<Traffic> {
   }
 }
 
+/**
+ * One figure. `accent` picks a hue from the six discipline colours the website
+ * uses, so a row of tiles is distinguishable at a glance; "attention" overrides
+ * it when something is actually waiting on the reader.
+ */
 function Stat({
   title,
   value,
   hint,
   tone,
+  accent,
 }: {
   title: string;
   value: React.ReactNode;
   hint?: string;
   tone?: "attention" | "calm";
+  accent?: 1 | 2 | 3 | 4 | 5 | 6;
 }) {
+  const classes = [
+    "ns-stat",
+    accent ? `ns-stat--c${accent}` : "",
+    tone === "attention" ? "ns-stat--attention" : "",
+  ].filter(Boolean);
+
   return (
-    <div className={`ns-stat${tone === "attention" ? " ns-stat--attention" : ""}`}>
+    <div className={classes.join(" ")}>
       <span className="ns-stat__label">{title}</span>
       <strong className="ns-stat__value">{value}</strong>
       {hint ? <span className="ns-stat__hint">{hint}</span> : null}
@@ -94,10 +107,20 @@ function Stat({
 }
 
 /** A ranked magnitude list: one hue, value shown at the end of each bar. */
-function Breakdown({ title, rows, empty }: { title: string; rows: [string, number][]; empty: string }) {
+function Breakdown({
+  title,
+  rows,
+  empty,
+  accent,
+}: {
+  title: string;
+  rows: [string, number][];
+  empty: string;
+  accent?: 1 | 2 | 3 | 4 | 5 | 6;
+}) {
   const top = rows[0]?.[1] ?? 0;
   return (
-    <section className="ns-panel">
+    <section className={`ns-panel${accent ? ` ns-panel--c${accent}` : ""}`}>
       <h3 className="ns-panel__title">{title}</h3>
       {rows.length === 0 ? (
         <p className="ns-panel__empty">{empty}</p>
@@ -129,7 +152,7 @@ function Trend({ days }: { days: { date: string; count: number }[] }) {
     new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "short" });
 
   return (
-    <section className="ns-panel">
+    <section className="ns-panel ns-panel--c5">
       <div className="ns-panel__head">
         <h3 className="ns-panel__title">Views per day</h3>
         <span className="ns-panel__meta">{total.toLocaleString()} in the last 14 days</span>
@@ -201,9 +224,9 @@ export async function DashboardStats({ payload }: Props) {
       </header>
 
       <div className="ns-grid ns-grid--stats">
-        <Stat title="Views today" value={views1.toLocaleString()} hint="Last 24 hours" />
-        <Stat title="Views this week" value={views7.toLocaleString()} hint="Last 7 days" />
-        <Stat title="Views this month" value={views30.toLocaleString()} hint="Last 30 days" />
+        <Stat title="Views today" value={views1.toLocaleString()} hint="Last 24 hours" accent={5} />
+        <Stat title="Views this week" value={views7.toLocaleString()} hint="Last 7 days" accent={6} />
+        <Stat title="Views this month" value={views30.toLocaleString()} hint="Last 30 days" accent={3} />
         <Stat
           title="New enquiries"
           value={newEnquiries}
@@ -221,16 +244,16 @@ export async function DashboardStats({ payload }: Props) {
       {trend.length > 0 ? <Trend days={trend} /> : null}
 
       <div className="ns-grid ns-grid--panels">
-        <Breakdown title="Most visited pages" rows={topPages} empty="No visits recorded yet." />
-        <Breakdown title="Where visitors came from" rows={topReferrers} empty="No referrers recorded yet." />
-        <Breakdown title="Devices" rows={devices} empty="No devices recorded yet." />
+        <Breakdown title="Most visited pages" rows={topPages} empty="No visits recorded yet." accent={5} />
+        <Breakdown title="Where visitors came from" rows={topReferrers} empty="No referrers recorded yet." accent={6} />
+        <Breakdown title="Devices" rows={devices} empty="No devices recorded yet." accent={2} />
       </div>
 
       <div className="ns-grid ns-grid--counts">
-        <Stat title="Published services" value={services} />
-        <Stat title="Published posts" value={posts} />
-        <Stat title="Live pages" value={pages} />
-        <Stat title="Active offers" value={offers} />
+        <Stat title="Published services" value={services} accent={1} />
+        <Stat title="Published posts" value={posts} accent={2} />
+        <Stat title="Live pages" value={pages} accent={5} />
+        <Stat title="Active offers" value={offers} accent={6} />
       </div>
     </div>
   );

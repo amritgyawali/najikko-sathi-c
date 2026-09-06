@@ -74,6 +74,24 @@ Two more tools sit on the dashboard home: **Download backup**, which exports eve
 collection and global as one JSON file (administrators only), and the **search page**
 at `/search`, which searches services, writing, offers, and pages.
 
+### Finding a page on the live website
+
+Every document and every global carries an **On the website** link at the top
+of the edit screen, next to Save. It shows the address the content will have -
+`/posts/my-story`, `/services/documentary-film-production`, `/our-work` - opens
+it in a new tab, and copies it to the clipboard. Where the content has no page
+of its own, such as an enquiry or a review, it says where the content does
+appear instead. A draft is flagged as one, so it is clear why the page is not
+public yet. The mapping lives in `cms/live-urls.ts`; add a case there when a
+new collection gets a public page.
+
+Every list table has a matching **Link** column, so a page of posts or services
+shows where each row went without opening any of them. A draft's address is
+shown in amber, and content with no page of its own shows a dash.
+
+The sidebar has **Dashboard** and **View website** above the menu, so the
+overview and the public site are one click away from anywhere in the admin.
+
 ### How changes reach the website
 
 Public pages are rendered per request (`export const dynamic = "force-dynamic"`),

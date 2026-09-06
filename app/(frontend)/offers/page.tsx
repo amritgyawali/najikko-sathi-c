@@ -18,7 +18,7 @@ export const dynamic = "force-dynamic";
 
 export const metadata = pageMetadata(
   "Current Offers & Packages",
-  "See the current offers and packages available from Najikko Sathi Media in Kathmandu, Nepal.",
+  "See the current offers and packages from Najikko Sathi Media in Kathmandu, Nepal, covering video production, social media handling, training, and research work.",
   "/offers",
 );
 

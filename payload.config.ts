@@ -4,7 +4,7 @@ import { fileURLToPath } from "url";
 import { postgresAdapter } from "@payloadcms/db-postgres";
 import { lexicalEditor } from "@payloadcms/richtext-lexical";
 import { vercelBlobStorage } from "@payloadcms/storage-vercel-blob";
-import { buildConfig } from "payload";
+import { buildConfig, type CollectionConfig, type Field, type GlobalConfig } from "payload";
 import sharp from "sharp";
 
 import { Enquiries } from "./cms/collections/Enquiries";
@@ -37,6 +37,65 @@ const dirname = path.dirname(fileURLToPath(import.meta.url));
 const cloudinaryURL = process.env.CLOUDINARY_URL;
 const blobToken = process.env.BLOB_READ_WRITE_TOKEN;
 
+/**
+ * Puts the "on the website" address everywhere content is managed: at the top
+ * of every document and global, and as a Link column on every list table -
+ * rather than repeating the same block in twenty config files. Both components
+ * work the address out themselves from the document or the row.
+ *
+ * Collections and globals hang the slot off different keys, so there are two
+ * wrappers rather than one.
+ */
+const LIVE_LINK = "/cms/components/LiveLink#LiveLink";
+const LIVE_LINK_CELL = "/cms/components/LiveLinkCell#LiveLinkCell";
+
+/** A column of live addresses. Holds no data, so it needs no migration. */
+const liveLinkColumn: Field = {
+  name: "liveLink",
+  type: "ui",
+  label: "Link",
+  admin: { components: { Cell: LIVE_LINK_CELL } },
+};
+
+const withLiveLink = (config: CollectionConfig): CollectionConfig => ({
+  ...config,
+  admin: {
+    ...config.admin,
+    // A collection that names its columns would otherwise hide the new one.
+    ...(config.admin?.defaultColumns
+      ? { defaultColumns: [...config.admin.defaultColumns, liveLinkColumn.name!] }
+      : {}),
+    components: {
+      ...config.admin?.components,
+      edit: {
+        ...config.admin?.components?.edit,
+        beforeDocumentControls: [
+          ...(config.admin?.components?.edit?.beforeDocumentControls ?? []),
+          LIVE_LINK,
+        ],
+      },
+    },
+  },
+  fields: [...config.fields, liveLinkColumn],
+});
+
+const withGlobalLiveLink = (config: GlobalConfig): GlobalConfig => ({
+  ...config,
+  admin: {
+    ...config.admin,
+    components: {
+      ...config.admin?.components,
+      elements: {
+        ...config.admin?.components?.elements,
+        beforeDocumentControls: [
+          ...(config.admin?.components?.elements?.beforeDocumentControls ?? []),
+          LIVE_LINK,
+        ],
+      },
+    },
+  },
+});
+
 export default buildConfig({
   admin: {
     user: Users.slug,
@@ -53,6 +112,8 @@ export default buildConfig({
       beforeDashboard: ["/cms/components/DashboardStats#DashboardStats"],
       // A way to register, shown under the login form.
       afterLogin: ["/cms/components/LoginSignupLink#LoginSignupLink"],
+      // Back to the overview, and out to the public site, above the menu.
+      beforeNavLinks: ["/cms/components/NavDashboardLink#NavDashboardLink"],
       // Light / dark switch, in the header beside the account menu.
       actions: ["/cms/components/ThemeToggle#ThemeToggle"],
     },
@@ -73,8 +134,8 @@ export default buildConfig({
     Redirects,
     Users,
     PageViews,
-  ],
-  globals: [Homepage, Navigation, Announcement, Appearance, Footer, SiteSettings],
+  ].map(withLiveLink),
+  globals: [Homepage, Navigation, Announcement, Appearance, Footer, SiteSettings].map(withGlobalLiveLink),
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || "",
   db: postgresAdapter({

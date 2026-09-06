@@ -12,6 +12,13 @@
 .breadcrumbs li + li::before { content: "/"; opacity: .55; }
 .breadcrumbs a:hover { text-decoration: underline; }
 .breadcrumbs [aria-current] { color: #fff; }
+/* Posts and dashboard-built pages carry breadcrumbs on a light background,
+   where the hero's pale palette would be invisible. */
+.cms-breadcrumbs { padding-top: 26px; }
+.cms-breadcrumbs .breadcrumbs, .cms-prose > .breadcrumbs { color: var(--muted); }
+.cms-breadcrumbs .breadcrumbs ol, .cms-prose > .breadcrumbs ol { margin-bottom: 22px; }
+.cms-breadcrumbs .breadcrumbs a, .cms-prose > .breadcrumbs a { color: var(--secondary); }
+.cms-breadcrumbs .breadcrumbs [aria-current], .cms-prose > .breadcrumbs [aria-current] { color: var(--primary); font-weight: 600; }
 .page-hero-grid { display: grid; grid-template-columns: minmax(0, 1fr) 230px; align-items: center; gap: 80px; }
 .page-hero h1 { max-width: 870px; margin: 0 0 22px; font-size: clamp(40px, 4.5vw, 64px); line-height: 1.03; font-weight: 650; letter-spacing: -.04em; }
 .page-hero p { max-width: 710px; margin: 0; color: #d7e2ff; font-size: 17px; line-height: 1.65; }
