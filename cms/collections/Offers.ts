@@ -69,7 +69,7 @@ export const Offers: CollectionConfig = {
       type: "row",
       fields: [
         { name: "ctaLabel", type: "text", defaultValue: "Enquire now", admin: { width: "50%" } },
-        { name: "ctaHref", type: "text", defaultValue: "#contact", admin: { width: "50%" } },
+        { name: "ctaHref", type: "text", defaultValue: "/contact", admin: { width: "50%" } },
       ],
     },
   ],
