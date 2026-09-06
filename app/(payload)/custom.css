@@ -545,6 +545,123 @@ textarea:focus,
   background: var(--ns-blue);
 }
 
+/*
+ * A document reads as a sheet of paper rather than as fields floating on the
+ * page background. Long forms - Site Settings, a service, a page - are the
+ * screens an owner spends the most time on, and a bounded white surface with
+ * one rhythm of spacing is what makes a long one navigable.
+ */
+.document-fields__edit {
+  /* Payload's own page gutter, so the sheet lines up with the title above it. */
+  margin: 4px var(--gutter-h, 60px) 44px;
+  padding: 26px 28px 30px;
+  background: var(--ns-card);
+  border: 1px solid var(--ns-line);
+  border-radius: var(--ns-radius);
+  box-shadow: var(--ns-shadow-sm);
+}
+
+.document-fields__sidebar-wrap .document-fields__sidebar {
+  padding: 22px 20px;
+  background: var(--ns-card);
+  border: 1px solid var(--ns-line);
+  border-radius: var(--ns-radius);
+  box-shadow: var(--ns-shadow-sm);
+}
+
+/* The save bar follows the page down, so Save is reachable from anywhere in a
+   long form without scrolling back to the top. */
+.doc-controls {
+  position: sticky;
+  top: 0;
+  z-index: 4;
+}
+
+/*
+ * The tabs inside a document are a segmented control: a single track with the
+ * open section filled in. That reads as one choice among a few, which is what
+ * it is, and it is unmistakably not the Edit/API tabs above it.
+ */
+/* Payload bleeds the tab strip past the form's edges; inside a sheet it should
+   sit within them. */
+.tabs-field__tabs-wrap {
+  margin: 0 0 20px;
+  padding: 0;
+  border: 0;
+}
+
+.tabs-field .tabs-field__tabs-wrap .tabs-field__tabs {
+  display: inline-flex;
+  /* Payload stretches the strip to the form's width with a minimum width as
+     well as a width, and a minimum beats a maximum - so both are reset here.
+     A segmented control is only as wide as its labels. */
+  min-width: 0;
+  max-width: max-content;
+  margin: 0;
+  gap: 3px;
+  padding: 4px;
+  border: 1px solid var(--ns-line);
+  border-radius: 999px;
+  background: var(--theme-elevation-50);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.tabs-field__tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.tabs-field__tab-button {
+  /* Each tab is as wide as its own label, so the track ends where the labels
+     do rather than stretching across the form. */
+  flex: 0 0 auto;
+  width: auto;
+  border-radius: 999px;
+  padding: 7px 16px;
+  font-size: 13.5px;
+  white-space: nowrap;
+}
+
+.tabs-field__tab-button:hover {
+  background: var(--ns-card);
+}
+
+.tabs-field__tab-button--active,
+.tabs-field__tab-button--active:hover {
+  background: var(--ns-card);
+  color: var(--ns-accent-ink);
+  box-shadow: var(--ns-shadow-sm);
+}
+
+/* The underline belongs to the document tabs; the segmented control has none. */
+.tabs-field__tab-button--active::after {
+  content: none;
+}
+
+/*
+ * Payload bleeds a document's top-level fields out past the page gutter,
+ * because without a sheet the page itself is the surface. Inside one they have
+ * to stay within its edges.
+ */
+.document-fields__edit .render-fields,
+.document-fields__edit .tabs-field__content-wrap {
+  padding-inline: 0;
+}
+
+.document-fields__edit .render-fields > .field-type,
+.document-fields__edit .render-fields > .tabs-field {
+  margin-inline: 0;
+}
+
+/* A tab's own line of explanation, above its fields. */
+.tabs-field__content-wrap > .field-description {
+  margin: -4px 0 18px;
+  max-width: 72ch;
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--ns-muted);
+}
+
 /* Repeating rows (brand pillars, services, deliverables) read as stacked cards. */
 .array-field__row,
 .collapsible--style-default {
@@ -697,6 +814,125 @@ textarea:focus,
   overflow: hidden;
   clip-path: inset(50%);
   white-space: nowrap;
+}
+
+/* --------------------------------------------------------- list-table cells */
+
+/*
+ * A state, drawn as a coloured pill rather than as a grey word. Markup in
+ * cms/components/cells/StateCell.tsx, which decides the tone from the value,
+ * so "Published" is the same green everywhere it appears.
+ */
+.ns-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 11px 3px 9px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  font-size: 12px;
+  font-weight: 650;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+
+.ns-pill::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.85;
+}
+
+.ns-pill--live {
+  background: #e7f6ec;
+  border-color: #bfe6cc;
+  color: #0d7a32;
+}
+
+.ns-pill--waiting {
+  background: #fdf3e2;
+  border-color: #f3ddb4;
+  color: #96610a;
+}
+
+.ns-pill--info {
+  background: var(--ns-blue-soft);
+  border-color: #c3d9f8;
+  color: #0f56b0;
+}
+
+.ns-pill--off {
+  background: #f3f5f9;
+  border-color: var(--ns-line);
+  color: #6a7688;
+}
+
+.ns-pill--neutral {
+  background: transparent;
+  border-color: var(--ns-line);
+  color: var(--ns-muted);
+}
+
+.ns-pill--neutral::before {
+  opacity: 0.4;
+}
+
+/* The picture column. Markup in cms/components/cells/ThumbCell.tsx. */
+.ns-thumb {
+  display: block;
+  width: 52px;
+  height: 38px;
+  object-fit: cover;
+  border-radius: 7px;
+  border: 1px solid var(--ns-line);
+  background: var(--ns-surface);
+}
+
+.ns-thumb--empty {
+  display: grid;
+  place-items: center;
+  border-style: dashed;
+  color: var(--theme-elevation-300);
+}
+
+.ns-thumb--empty svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* A film has no still to show, so its frame says so with a play mark. */
+.ns-thumb--film {
+  border-style: solid;
+  background: var(--ns-navy);
+  color: #9dc0f5;
+}
+
+.ns-thumb--film svg {
+  fill: currentColor;
+  stroke: none;
+}
+
+/* A review's rating. Markup in cms/components/cells/RatingCell.tsx. */
+.ns-stars {
+  display: inline-flex;
+  gap: 1px;
+}
+
+.ns-stars svg {
+  width: 15px;
+  height: 15px;
+  fill: var(--theme-elevation-150);
+}
+
+.ns-stars svg.is-on {
+  fill: #e8a80f;
 }
 
 /* The Link column in every list table. Markup in
@@ -1493,6 +1729,41 @@ html[data-theme="dark"] .ns-overview__sub,
 html[data-theme="dark"] .field-description,
 html[data-theme="dark"] .custom-view-description {
   color: #a8b6c9;
+}
+
+/* The pills carry their own colour, so the dark theme restates them on a dark
+   ground rather than letting the light tints wash out. */
+html[data-theme="dark"] .ns-pill--live {
+  background: #0f3320;
+  border-color: #1d5c37;
+  color: #6fd394;
+}
+
+html[data-theme="dark"] .ns-pill--waiting {
+  background: #3a2a0d;
+  border-color: #6b4d15;
+  color: #f0b95c;
+}
+
+html[data-theme="dark"] .ns-pill--info {
+  background: #0e2748;
+  border-color: #1d4a80;
+  color: #7db2fb;
+}
+
+html[data-theme="dark"] .ns-pill--off {
+  background: #1a2233;
+  border-color: #2b3852;
+  color: #93a2b8;
+}
+
+html[data-theme="dark"] .ns-thumb {
+  border-color: #22304a;
+  background: #0c1626;
+}
+
+html[data-theme="dark"] .ns-stars svg {
+  fill: #2b3852;
 }
 
 /* The lighter blue the dark theme uses needs dark text on it, not white. */

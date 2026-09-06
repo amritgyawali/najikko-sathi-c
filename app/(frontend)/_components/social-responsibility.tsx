@@ -4,7 +4,9 @@ import { ArrowUpRight, HeartHandshake } from "lucide-react";
 import { getSocialResponsibility } from "@/lib/content";
 import { mediaAlt, mediaUrl } from "@/lib/media";
 import { youtubeEmbedUrl, youtubeId, youtubeWatchUrl } from "@/lib/youtube";
+import { siteUrl } from "../_lib/seo";
 import { SectionHeading } from "./page-content";
+import { StructuredData } from "./structured-data";
 
 /**
  * The social responsibility work, as entered in the dashboard. Every entry may
@@ -51,6 +53,21 @@ export async function SocialResponsibilitySection({
                 </header>
                 {videoId ? (
                   <div className="social-video">
+                    {/* A film a visitor can play should also be a film a search
+                        engine can list, so each one describes itself. */}
+                    <StructuredData
+                      data={{
+                        "@context": "https://schema.org",
+                        "@type": "VideoObject",
+                        name: entry.title,
+                        description: entry.summary || undefined,
+                        embedUrl: youtubeEmbedUrl(videoId),
+                        url: youtubeWatchUrl(videoId),
+                        thumbnailUrl: `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`,
+                        uploadDate: entry.date || entry.createdAt,
+                        publisher: { "@id": `${siteUrl}/#organization` },
+                      }}
+                    />
                     <iframe
                       src={youtubeEmbedUrl(videoId)}
                       title={entry.title}

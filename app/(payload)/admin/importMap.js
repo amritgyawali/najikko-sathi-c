@@ -28,6 +28,9 @@ import { LoginSignupLink as LoginSignupLink_4ecb88133f73eab493d10ad23060fd42 } f
 import { DashboardStats as DashboardStats_9d6438ef9cd6fb98711ce5f3f44a3c38 } from '../../../cms/components/DashboardStats'
 import { SitePages as SitePages_9822e4ce3f3b2591dd4c3d250008a071 } from '../../../cms/components/SitePages'
 import { PageMedia as PageMedia_5c07d1c0f4d2a4d5d1a0d02cbb3ad2fa } from '../../../cms/components/PageMedia'
+import { StateCell as StateCell_1a7c2f1d9b0e4a6c8d3f5b2e7a9c4d61 } from '../../../cms/components/cells/StateCell'
+import { ThumbCell as ThumbCell_2b8d3e2f0c1f5b7d9e4a6c3f8b0d5e72 } from '../../../cms/components/cells/ThumbCell'
+import { RatingCell as RatingCell_3c9e4f30d2a06c8e0f5b7d4a9c1e6f83 } from '../../../cms/components/cells/RatingCell'
 import { NavDashboardLink as NavDashboardLink_890d30fb0fa4343fca3dfba76ff31891 } from '../../../cms/components/NavDashboardLink'
 import { CollectionCards as CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1 } from '@payloadcms/next/rsc'
 
@@ -63,6 +66,9 @@ export const importMap = {
   "/cms/components/DashboardStats#DashboardStats": DashboardStats_9d6438ef9cd6fb98711ce5f3f44a3c38,
   "/cms/components/SitePages#SitePages": SitePages_9822e4ce3f3b2591dd4c3d250008a071,
   "/cms/components/PageMedia#PageMedia": PageMedia_5c07d1c0f4d2a4d5d1a0d02cbb3ad2fa,
+  "/cms/components/cells/StateCell#StateCell": StateCell_1a7c2f1d9b0e4a6c8d3f5b2e7a9c4d61,
+  "/cms/components/cells/ThumbCell#ThumbCell": ThumbCell_2b8d3e2f0c1f5b7d9e4a6c3f8b0d5e72,
+  "/cms/components/cells/RatingCell#RatingCell": RatingCell_3c9e4f30d2a06c8e0f5b7d4a9c1e6f83,
   "/cms/components/NavDashboardLink#NavDashboardLink": NavDashboardLink_890d30fb0fa4343fca3dfba76ff31891,
   "@payloadcms/next/rsc#CollectionCards": CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1
 }

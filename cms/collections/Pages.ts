@@ -3,7 +3,7 @@ import type { CollectionBeforeChangeHook, CollectionConfig } from "payload";
 import { revalidateDoc, revalidateDocAfterDelete } from "../hooks/revalidate";
 import { isEditor, isPublishedOrStaff } from "../access";
 import { layoutBlocks } from "../blocks";
-import { pageSeoField, slugField, statusField } from "../fields";
+import { pageSeoField, slugField, statusField, STATE_CELL } from "../fields";
 
 /**
  * Every page on the website, in one place.
@@ -79,6 +79,7 @@ export const Pages: CollectionConfig = {
         readOnly: true,
         description:
           "A website page is one the site ships with; deleting it here restores the copy it shipped with. A new page is one built in the dashboard.",
+        components: { Cell: STATE_CELL },
       },
     },
     {

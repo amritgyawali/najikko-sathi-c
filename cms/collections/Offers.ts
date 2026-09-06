@@ -1,16 +1,18 @@
 import type { CollectionConfig } from "payload";
 import { revalidateDoc, revalidateDocAfterDelete } from "../hooks/revalidate";
 import { isEditor, isPublishedOrStaff } from "../access";
-import { slugField, statusField } from "../fields";
+import { slugField, statusField, THUMB_CELL } from "../fields";
 
 /** Promotions and packages, with an optional run window. */
 export const Offers: CollectionConfig = {
   slug: "offers",
   admin: {
     useAsTitle: "title",
-    defaultColumns: ["title", "status", "startsAt", "endsAt"],
+    defaultColumns: ["image", "title", "status", "startsAt", "endsAt"],
     group: "Content",
-    description: "Promotions, packages and limited-time offers.",
+    description:
+      "Promotions, packages and limited-time offers. A published offer inside its dates appears at /offers.",
+    listSearchableFields: ["title", "summary"],
   },
   versions: { drafts: true },
   access: {
@@ -53,7 +55,13 @@ export const Offers: CollectionConfig = {
     },
     { name: "summary", type: "textarea", required: true },
     { name: "details", type: "richText" },
-    { name: "image", type: "upload", relationTo: "media" },
+    {
+      name: "image",
+      type: "upload",
+      relationTo: "media",
+      label: "Photograph",
+      admin: { components: { Cell: THUMB_CELL } },
+    },
     {
       type: "row",
       fields: [

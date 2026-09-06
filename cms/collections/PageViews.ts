@@ -13,7 +13,8 @@ export const PageViews: CollectionConfig = {
     useAsTitle: "path",
     defaultColumns: ["path", "referrer", "device", "createdAt"],
     group: "Analytics",
-    description: "Raw traffic log behind the dashboard statistics.",
+    description:
+      "The raw traffic log behind the dashboard overview. No cookies, no personal data, no third party.",
   },
   access: {
     read: isEditor,
