@@ -10,7 +10,7 @@ import { absoluteUrl } from "../_lib/seo";
 export const dynamic = "force-dynamic";
 
 /**
- * Everything on this page is edited in the dashboard at Content → Pages. The
+ * Everything on this page is edited in the dashboard at Content → Website pages. The
  * services it lists are the published ones in Content → Services, grouped by
  * the categories in Content → Service categories.
  */

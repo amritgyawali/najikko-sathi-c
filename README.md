@@ -23,7 +23,7 @@ Content is managed through a full admin dashboard powered by
 | Promotions and packages | Content → Offers | `/offers` |
 | Client testimonials, with an approval queue | Content → Reviews | Review blocks |
 | Social responsibility films and photo albums | Content → Social responsibility | `/our-work` |
-| Every page: its hero, its sections, their order and wording, its address, and whether it is on the website at all | Content → Pages | Every page, and `/<slug>` for new ones |
+| Every page: its hero, its sections, their order and wording, its address, and whether it is on the website at all | Content → Website pages | Every page, and `/<slug>` for new ones |
 | Questions and answers | Content → FAQs | Contact, services, training, production |
 | The people on the about page | Content → Team | `/about` |
 | Photos, films and files | Content → Media | Everywhere |
@@ -66,17 +66,23 @@ every five seconds, with arrows for stepping through it by hand.
 
 ### Every page is editable
 
-Every page on this website is a document in **Content → Pages**, and everything
-on it - the hero at the top, the written sections, the card grids, the numbered
-process, the questions, the photo and film band, the closing call to action - is
-a *section* in a list you can rewrite, reorder, add to, or delete.
+Every page on this website is a document in **Content → Website pages**, and
+everything on it - the hero at the top, the written sections, the card grids,
+the numbered process, the questions, the photo and film band, the closing call
+to action - is a *section* in a list you can rewrite, reorder, add to, or delete.
 
-The pages the site ships with (Home, Services, Our Work, Contact, About, and the
-discipline pages) start out held in code, in `lib/page-defaults.ts`. Press **Add
-them to the dashboard** on the dashboard home and each one becomes a document
-holding exactly the copy it already shows. Nothing on the website changes; what
-changes is that every word of it can now be edited. `npm run sync:pages` does
-the same thing from a terminal, and `npm run seed` does it for a fresh install.
+All of them are already there: Home, Services, Our Work, Contact, About Us,
+Production, Social Media Handling, Training, Research & Development, IT,
+Advertisement, Right Sanchar, Writing, Offers, Search and the sign-up page. Each
+one arrived holding exactly the copy it already shows, put there by a migration
+(`migrations/20260906_110000_import_website_pages.ts`) so nobody has to find a
+button before they can change a page. The copy each one ships with still lives
+in `lib/page-defaults.ts`, which is what the page falls back to if its document
+is deleted.
+
+A page added to the site in code later needs importing once, which is what
+**Add them to the dashboard** on the dashboard home does; `npm run sync:pages`
+does the same from a terminal, and `npm run seed` does it for a fresh install.
 
 From then on:
 
@@ -233,7 +239,7 @@ npm run dev
 ```
 
 `npm run seed` loads the site's existing copy into the CMS, adds every page of
-the website to **Content → Pages**, and creates the first administrator, so the
+the website to **Content → Website pages**, and creates the first administrator, so the
 dashboard opens pre-filled rather than blank. Re-running it overwrites seeded
 globals, services, categories, and FAQs with repository content; existing users
 and existing pages are preserved. Run it once during initial setup; avoid
@@ -353,8 +359,8 @@ The portfolio covers four production services, five social media services, five 
 
 Each of those pages is a list of sections rather than a hand-written file. The
 route (`app/(frontend)/about/page.tsx` and its siblings) names its address; the
-sections come from the page's document in **Content → Pages**, or, until it is
-imported there, from `lib/page-defaults.ts`. `cms/sections.ts` defines what a
+sections come from the page's document in **Content → Website pages**, or, if
+that document has been deleted, from `lib/page-defaults.ts`. `cms/sections.ts` defines what a
 section can be and `app/(frontend)/_components/PageSections.tsx` draws it, so a
 page reads the same whether its words come from the dashboard or from the code.
 

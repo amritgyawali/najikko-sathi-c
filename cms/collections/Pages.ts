@@ -38,12 +38,15 @@ const derivePath: CollectionBeforeChangeHook = ({ data }) => {
 
 export const Pages: CollectionConfig = {
   slug: "pages",
+  // Named for what it holds rather than for the collection: someone looking for
+  // where to change the About page should recognise it in the menu.
+  labels: { singular: "Website page", plural: "Website pages" },
   admin: {
     useAsTitle: "title",
     defaultColumns: ["title", "path", "kind", "status", "updatedAt"],
     group: "Content",
     description:
-      "Every page on the website. Edit the words on a built-in page, build a new one from sections, or take one off the site.",
+      "Every page on the website - Home, Services, Our Work, Contact, About and the rest. Open one to change its words and sections, build a new one, or take one off the site.",
   },
   versions: { drafts: true },
   access: {

@@ -268,7 +268,7 @@ export const sitePages: SitePage[] = [
   {
     path: "/[slug]",
     label: "Pages built in the dashboard",
-    summary: "Anything created in Content → Pages goes live at its own address.",
+    summary: "Anything created in Content → Website pages goes live at its own address.",
     dynamic: true,
     edit: [collectionLink("pages", "Pages")],
   },
@@ -385,7 +385,7 @@ export type NavItem = { label: string; href: string; newTab?: boolean; covers?: 
 export const withSection = (item: NavItem): NavItem =>
   navSections[item.href] ? { ...item, covers: navSections[item.href] } : item;
 
-/** A page in Content → Pages, as far as the menu is concerned. */
+/** A page in Content → Website pages, as far as the menu is concerned. */
 export type PageDoc = {
   title: string;
   slug?: string | null;

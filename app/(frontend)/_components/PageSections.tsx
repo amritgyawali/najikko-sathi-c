@@ -31,9 +31,9 @@ import { SocialResponsibilitySection } from "./social-responsibility";
  * into the page a visitor sees, so rewriting a heading in the dashboard, moving
  * a band up the page, or deleting one changes the website and nothing else.
  *
- * The sections come either from the page's document in Content → Pages or, for
- * a built-in page nobody has imported yet, from lib/page-defaults.ts. Both take
- * the same shape, so a page renders identically either way.
+ * The sections come either from the page's document in Content → Website
+ * pages or, when that document has been deleted, from lib/page-defaults.ts.
+ * Both take the same shape, so a page renders identically either way.
  */
 
 /** What the sections need to know about the page they are being drawn on. */

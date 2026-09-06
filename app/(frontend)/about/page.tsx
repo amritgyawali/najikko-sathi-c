@@ -9,9 +9,9 @@ import { absoluteUrl, siteUrl } from "../_lib/seo";
 export const dynamic = "force-dynamic";
 
 /**
- * Everything on this page is edited in the dashboard at Content → Pages.
- * Until it is imported there, it renders the copy it ships with, in
- * lib/page-defaults.ts.
+ * Everything on this page is edited in the dashboard at Content → Website pages.
+ * Delete that document and it renders the copy it ships with, in
+ * lib/page-defaults.ts, instead.
  */
 export const generateMetadata = () => routeMetadata("/about");
 

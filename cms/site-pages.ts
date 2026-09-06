@@ -1,4 +1,4 @@
-import type { Payload, RequiredDataFromCollectionSlug } from "payload";
+import type { Payload, PayloadRequest, RequiredDataFromCollectionSlug } from "payload";
 
 import { routePageContent } from "../lib/page-defaults";
 import { sitePages, type SitePage } from "../lib/site-map";
@@ -15,8 +15,10 @@ import { sitePages, type SitePage } from "../lib/site-map";
  * Deleting that document again restores the copy the page shipped with, so an
  * import is never destructive and never one-way.
  *
- * Both the button on the dashboard (cms/endpoints/site-pages.ts) and
- * `npm run sync:pages` call this.
+ * The button on the dashboard (cms/endpoints/site-pages.ts), `npm run
+ * sync:pages`, the seed, and the migration that put the pages there in the
+ * first place all call this, so there is one definition of what importing a
+ * page means.
  */
 
 /** A built-in page: one with a fixed address and copy that ships with it. */
@@ -69,8 +71,17 @@ export type SyncReport = {
 
 const emptyReport = (): SyncReport => ({ imported: [], alreadyThere: [], restored: [], failed: [] });
 
-/** The built-in pages that already have a document, by address. */
-async function existingByPath(payload: Payload): Promise<Map<string, string | number>> {
+/**
+ * The built-in pages that already have a document, by address.
+ *
+ * `req` carries the caller's database transaction when there is one. A
+ * migration has to pass its own, or its reads and writes would queue behind the
+ * transaction it is already inside.
+ */
+async function existingByPath(
+  payload: Payload,
+  req?: PayloadRequest,
+): Promise<Map<string, string | number>> {
   const found = await payload.find({
     collection: "pages",
     where: { kind: { equals: "route" } },
@@ -78,6 +89,7 @@ async function existingByPath(payload: Payload): Promise<Map<string, string | nu
     depth: 0,
     pagination: false,
     overrideAccess: true,
+    ...(req ? { req } : {}),
   });
 
   return new Map(
@@ -91,9 +103,13 @@ async function existingByPath(payload: Payload): Promise<Map<string, string | nu
  * Creates a document for every built-in page that does not have one yet.
  * Pass `paths` to import only some of them.
  */
-export async function importRoutePages(payload: Payload, paths?: string[]): Promise<SyncReport> {
+export async function importRoutePages(
+  payload: Payload,
+  paths?: string[],
+  req?: PayloadRequest,
+): Promise<SyncReport> {
   const report = emptyReport();
-  const existing = await existingByPath(payload);
+  const existing = await existingByPath(payload, req);
   const wanted = paths?.length
     ? routePages.filter((page) => paths.includes(page.path))
     : routePages;
@@ -104,7 +120,12 @@ export async function importRoutePages(payload: Payload, paths?: string[]): Prom
       continue;
     }
     try {
-      await payload.create({ collection: "pages", data: documentFor(page), overrideAccess: true });
+      await payload.create({
+        collection: "pages",
+        data: documentFor(page),
+        overrideAccess: true,
+        ...(req ? { req } : {}),
+      });
       report.imported.push(page.path);
     } catch (error) {
       report.failed.push({ path: page.path, reason: error instanceof Error ? error.message : String(error) });
@@ -119,9 +140,13 @@ export async function importRoutePages(payload: Payload, paths?: string[]): Prom
  * that overrides it. The page keeps working: it simply renders from
  * lib/page-defaults.ts again.
  */
-export async function restoreRoutePages(payload: Payload, paths: string[]): Promise<SyncReport> {
+export async function restoreRoutePages(
+  payload: Payload,
+  paths: string[],
+  req?: PayloadRequest,
+): Promise<SyncReport> {
   const report = emptyReport();
-  const existing = await existingByPath(payload);
+  const existing = await existingByPath(payload, req);
 
   for (const path of paths) {
     const id = existing.get(path);
@@ -130,7 +155,12 @@ export async function restoreRoutePages(payload: Payload, paths: string[]): Prom
       continue;
     }
     try {
-      await payload.delete({ collection: "pages", id, overrideAccess: true });
+      await payload.delete({
+        collection: "pages",
+        id,
+        overrideAccess: true,
+        ...(req ? { req } : {}),
+      });
       report.restored.push(path);
     } catch (error) {
       report.failed.push({ path, reason: error instanceof Error ? error.message : String(error) });

@@ -23,7 +23,7 @@ import { ImportPagesButton } from "./ImportPagesButton";
  *
  * - the pages the site ships with (cms/site-pages.ts), whose addresses are
  *   fixed by the routes that serve them;
- * - the pages created in Content → Pages, which go live at their own address;
+ * - the pages created in Content → Website pages, which go live at their own address;
  * - the menu, resolved on every load with `resolveNavItems` - the same function
  *   the public header calls, from the same two sources - so reordering the menu
  *   or publishing a page shows here on the next load.

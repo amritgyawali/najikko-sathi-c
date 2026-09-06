@@ -10,7 +10,7 @@ export const dynamic = "force-dynamic";
 
 /**
  * Everything on this page - the contact details band, the questions and the
- * photo showcase - is edited in the dashboard at Content → Pages. The address,
+ * photo showcase - is edited in the dashboard at Content → Website pages. The address,
  * phone numbers and email inside it come from Site → Site settings.
  */
 export const generateMetadata = () => routeMetadata("/contact");
