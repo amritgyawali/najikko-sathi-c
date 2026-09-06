@@ -7,6 +7,7 @@ import * as migration_20260905_184631_add_leadership_and_social_responsibility f
 import * as migration_20260906_060756_add_page_sections from './20260906_060756_add_page_sections';
 import * as migration_20260906_060900_secure_page_section_tables from './20260906_060900_secure_page_section_tables';
 import * as migration_20260906_062914_add_page_noindex from './20260906_062914_add_page_noindex';
+import * as migration_20260906_090000_page_media_uploads from './20260906_090000_page_media_uploads';
 
 export const migrations = [
   {
@@ -52,6 +53,11 @@ export const migrations = [
   {
     up: migration_20260906_062914_add_page_noindex.up,
     down: migration_20260906_062914_add_page_noindex.down,
-    name: '20260906_062914_add_page_noindex'
+    name: '20260906_062914_add_page_noindex',
+  },
+  {
+    up: migration_20260906_090000_page_media_uploads.up,
+    down: migration_20260906_090000_page_media_uploads.down,
+    name: '20260906_090000_page_media_uploads',
   },
 ];

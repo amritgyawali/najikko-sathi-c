@@ -19,6 +19,9 @@ export type LiveTarget = {
 /** Page media slots are keyed by page name first, and by service slug otherwise. */
 const pageForMediaSlot: Record<string, string> = {
   home: "/",
+  // The decorative panels, which hold one photograph rather than a band.
+  "home-about": "/",
+  "production-band": "/production",
   about: "/about",
   services: "/services",
   "our-work": "/our-work",
@@ -94,7 +97,7 @@ export function liveTargetFor({
       const key = text(data.key);
       return {
         path: key ? pageForMediaSlot[key] ?? `/services/${key}` : null,
-        where: "The photo and film band on the page this key names.",
+        where: "The photograph or film on the page this key names.",
       };
     }
     case "media": {

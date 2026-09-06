@@ -1358,6 +1358,40 @@ a.ns-page__path:hover {
   color: var(--ns-accent-ink);
 }
 
+/* The photo and film placeholders under the page list. Its markup lives in
+   cms/components/PageMedia.tsx, and it reuses the page list's rows. */
+
+.ns-slots {
+  margin-top: -20px;
+}
+
+.ns-slots .ns-pages__hint {
+  margin: 10px 0 0;
+}
+
+.ns-slot__tags {
+  display: inline-flex;
+  gap: 6px;
+  margin-left: auto;
+}
+
+.ns-slot__tag {
+  padding: 2px 9px;
+  border-radius: 999px;
+  border: 1px solid var(--ns-line);
+  background: var(--ns-card);
+  color: var(--ns-muted);
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.ns-slot__tag--on {
+  border-color: transparent;
+  background: var(--ns-blue);
+  color: #fff;
+}
+
 /* ------------------------------------------------------------ theme toggle */
 
 .ns-theme-toggle {
@@ -1451,6 +1485,7 @@ html[data-theme="dark"] .ns-panel__meta,
 html[data-theme="dark"] .ns-page__summary,
 html[data-theme="dark"] .ns-page__path,
 html[data-theme="dark"] .ns-page__note,
+html[data-theme="dark"] .ns-slot__tag:not(.ns-slot__tag--on),
 html[data-theme="dark"] .ns-pages__hint,
 html[data-theme="dark"] .ns-pages__barnote,
 html[data-theme="dark"] .ns-page__stamp,
@@ -1458,6 +1493,11 @@ html[data-theme="dark"] .ns-overview__sub,
 html[data-theme="dark"] .field-description,
 html[data-theme="dark"] .custom-view-description {
   color: #a8b6c9;
+}
+
+/* The lighter blue the dark theme uses needs dark text on it, not white. */
+html[data-theme="dark"] .ns-slot__tag--on {
+  color: #06152b;
 }
 
 html[data-theme="dark"] .ns-page--broken .ns-page__summary {

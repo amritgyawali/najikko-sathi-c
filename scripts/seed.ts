@@ -3,7 +3,6 @@ import { existsSync } from "fs";
 import { getPayload } from "payload";
 
 import { importRoutePages } from "../cms/site-pages";
-import { pageMedia } from "../app/(frontend)/_data/media";
 import { categories, servicePortfolio } from "../app/(frontend)/_data/services";
 import {
   brandPillars,
@@ -12,6 +11,7 @@ import {
   navigation,
   rightSancharTopics,
 } from "../app/(frontend)/_data/site";
+import { mediaPlaceholders } from "../lib/site-map";
 
 /**
  * Fills the CMS with the site's existing content so the dashboard opens
@@ -217,9 +217,14 @@ async function seed() {
   }
   payload.logger.info(`Seeded ${servicePortfolio.length} services.`);
 
-  // A media slot per page and per service, so an editor can drop a photo in
-  // without first having to work out the right key.
-  for (const key of Object.keys(pageMedia)) {
+  // A media slot per placeholder on the site and per service page, so every
+  // one of them is waiting in the dashboard with an upload button, and nobody
+  // has to work out the right key before adding a photograph.
+  const mediaKeys = [
+    ...mediaPlaceholders.map((placeholder) => placeholder.key),
+    ...servicePortfolio.map((service) => service.slug),
+  ];
+  for (const key of mediaKeys) {
     const existing = await payload.find({
       collection: "media-slots",
       where: { key: { equals: key } },
@@ -230,7 +235,7 @@ async function seed() {
       await payload.create({ collection: "media-slots", data: { key }, overrideAccess: true });
     }
   }
-  payload.logger.info(`Prepared ${Object.keys(pageMedia).length} page media slots.`);
+  payload.logger.info(`Prepared ${mediaKeys.length} page media slots.`);
 
   // The questions already published on the contact page.
   const contactFaqs: [string, string][] = [

@@ -4,8 +4,9 @@ import { ArrowRight, ArrowUpRight, Camera, Film, Mic2 } from "lucide-react";
 
 import type { Homepage } from "@/payload-types";
 import type { PageSection } from "@/lib/page-defaults";
-import type { BusinessInfo } from "@/lib/content";
+import { getMediaSlot, type BusinessInfo } from "@/lib/content";
 import { mediaAlt, mediaUrl } from "@/lib/media";
+import { slotPhoto } from "@/lib/page-media";
 import { LeadershipCarousel, type LeadershipMessage } from "./leadership-carousel";
 import { MediaSystem } from "./media-system";
 
@@ -81,7 +82,12 @@ export function HomeHero({
   );
 }
 
-export function HomeAbout({
+/**
+ * The introduction, and the panel beside it. The panel is drawn from icons
+ * until someone uploads a photograph to the "home-about" Page media entry, at
+ * which point the photograph fills the panel instead.
+ */
+export async function HomeAbout({
   block,
   business,
   home,
@@ -95,6 +101,7 @@ export function HomeAbout({
     "Visual production",
     "Skill development",
   ]);
+  const photo = slotPhoto(await getMediaSlot("home-about"), `${business.shortName} at work`);
 
   return (
     <section className="chairman-section" id="about">
@@ -102,13 +109,22 @@ export function HomeAbout({
       <div className="site-container chairman-grid">
         <div className="portrait-wrap">
           <div className="portrait-glow" aria-hidden="true" />
-          <div className="media-visual" aria-hidden="true">
-            <Camera className="media-visual-main" />
-            <Mic2 className="media-visual-mic" />
-            <Film className="media-visual-film" />
-            <span>Information</span>
-            <span>Entertainment</span>
-            <span>Responsibility</span>
+          <div
+            className={`media-visual${photo ? " media-visual--photo" : ""}`}
+            aria-hidden={photo ? undefined : true}
+          >
+            {photo ? (
+              <Image src={photo.src} alt={photo.alt} fill sizes="(max-width: 900px) 100vw, 400px" />
+            ) : (
+              <>
+                <Camera className="media-visual-main" />
+                <Mic2 className="media-visual-mic" />
+                <Film className="media-visual-film" />
+                <span>Information</span>
+                <span>Entertainment</span>
+                <span>Responsibility</span>
+              </>
+            )}
           </div>
           <div className="portrait-caption">
             <strong>{block.captionTitle || "Your Media Partner"}</strong>

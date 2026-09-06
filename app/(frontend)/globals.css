@@ -1320,6 +1320,16 @@ footer li a:hover {
   border-radius: 50%;
 }
 
+/* A photograph uploaded in the dashboard fills the panel, so the ring drawn
+   behind the artwork it replaces is no longer wanted. */
+.media-visual--photo::after {
+  content: none;
+}
+
+.media-visual--photo img {
+  object-fit: cover;
+}
+
 .media-visual-main {
   width: 142px;
   height: 142px;
@@ -1382,6 +1392,21 @@ footer li a:hover {
   right: -70px;
   border: 1px solid rgb(255 255 255 / 15%);
   border-radius: 50%;
+}
+
+/* The same panel once a photograph has been uploaded for it: the picture fills
+   the frame, and the artwork it stands in for is dropped. */
+.production-visual--photo {
+  display: block;
+  padding: 0;
+}
+
+.production-visual--photo::before {
+  content: none;
+}
+
+.production-visual--photo img {
+  object-fit: cover;
 }
 
 .production-camera {

@@ -4,7 +4,7 @@ import path from "node:path";
 
 import { liveTargetFor } from "../cms/live-urls";
 import { routePageContent } from "../lib/page-defaults";
-import { mediaKeyToPath, sitePages } from "../lib/site-map";
+import { mediaKeyToPath, mediaPlaceholders, sitePages } from "../lib/site-map";
 
 /**
  * Keeps lib/site-map.ts honest.
@@ -105,6 +105,20 @@ for (const [key, pagePath] of Object.entries(mediaKeyToPath)) {
   );
 }
 
+// Every placeholder belongs to a page that exists, and no two share a key.
+const placeholderKeys = mediaPlaceholders.map((placeholder) => placeholder.key);
+assert.equal(
+  new Set(placeholderKeys).size,
+  placeholderKeys.length,
+  "lib/site-map.ts gives two placeholders the same Page media key.",
+);
+for (const placeholder of mediaPlaceholders) {
+  assert(
+    listed.includes(placeholder.path),
+    `Page media "${placeholder.key}" belongs to ${placeholder.path}, which is not a page.`,
+  );
+}
+
 // Every page needs the copy it ships with, and every piece of shipped copy
 // needs a page. Routes generated from other content have no copy of their own.
 const fixed = sitePages.filter((page) => !page.dynamic).map((page) => page.path);
@@ -157,6 +171,6 @@ const inMenu = sitePages.filter((page) => typeof page.navOrder === "number");
 console.log(
   `PASS ${routes.length} routes, all in lib/site-map.ts, ` +
     `${Object.keys(routePageContent).length} of them with the copy they ship with, ` +
-    `${Object.keys(mediaKeyToPath).length} page media keys agreeing with cms/live-urls.ts. ` +
+    `${Object.keys(mediaKeyToPath).length} page media placeholders agreeing with cms/live-urls.ts. ` +
     `Menu: ${inMenu.map((page) => page.label).join(", ")}.`,
 );

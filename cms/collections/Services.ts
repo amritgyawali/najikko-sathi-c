@@ -1,5 +1,6 @@
 import type { CollectionConfig } from "payload";
 import { isEditor, isPublishedOrStaff } from "../access";
+import { ensureMediaSlot } from "../hooks/media-slot";
 import { revalidateDoc, revalidateDocAfterDelete } from "../hooks/revalidate";
 import { seoField, slugField, statusField } from "../fields";
 
@@ -24,7 +25,9 @@ export const Services: CollectionConfig = {
     delete: isEditor,
   },
   hooks: {
-    afterChange: [revalidateDoc("/services", ["/", "/services", "/our-work"])],
+    // A service page has a photo and film band of its own, so its Page media
+    // entry is created with the service rather than left for someone to add.
+    afterChange: [ensureMediaSlot, revalidateDoc("/services", ["/", "/services", "/our-work"])],
     afterDelete: [revalidateDocAfterDelete("/services", ["/", "/services", "/our-work"])],
   },
   fields: [

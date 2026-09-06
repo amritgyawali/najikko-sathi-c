@@ -1,54 +1,86 @@
-# Owner media setup
+# Adding photos and films
 
-The website has labeled photo and video placeholders on all seven main pages and all 16 service detail pages. No visitor can upload files. There is no upload form, API, public setup screen, or first-visitor claim mechanism.
+Every blue placeholder on the website - the "in pictures & film" band near the
+foot of each page, and the panels on the home and production pages - is filled
+from the dashboard. Uploading a photograph is a save, not a deployment: the page
+shows it on the next request.
 
-Only someone with write access to the GitHub repository can replace these placeholders. Adding media is a repository edit followed by a deployment. You can complete this setup once and leave the site as a static media presentation afterward.
+Visitors cannot upload anything. There is no public upload form, no API for it,
+and no first-visitor setup screen. Only someone signed in to the dashboard with
+an editor or administrator account can add or replace a file.
 
-## Add photos
+## Where to start
 
-1. Add the approved photo to `public/media/` using GitHub's **Add file → Upload files** or your local checkout. Use a descriptive filename, such as `documentary-interview.webp`.
-2. Find the corresponding key in `app/_data/media.ts`.
-3. Add the image configuration. Write accurate alt text and a caption describing the actual photo:
+Open the dashboard at `/admin`. Under the traffic overview and the list of
+website pages there is a panel called **Photos & films**. It lists every
+placeholder on the site, says whether a photograph or a film has been added to
+it yet, and links straight to the entry that fills it. Nothing here has to be
+worked out by hand - if you can see a blue placeholder on a page, it has a row
+in that panel.
 
-```ts
-"documentary-film-production": {
-  image: {
-    src: "/media/documentary-interview.webp",
-    alt: "Describe the people, setting, and activity visible in your photo",
-    caption: "An accurate caption for this approved photograph.",
-  },
-},
-```
+The same entries live under **Content → Page media**, and each one names the
+page it belongs to.
 
-Use a landscape image around 1600 pixels wide where possible. WebP or JPEG works well. Remove private metadata and use only photos you have permission to publish. Next.js serves responsive optimized image sizes.
+## Add a photograph
 
-## Add videos
+1. Open the placeholder's entry from the **Photos & films** panel.
+2. Under **Photograph**, choose a file from the media library or upload a new
+   one. Write alt text describing what is in the picture: screen readers and
+   search engines read it.
+3. A **caption** is optional. When it is filled in, it is printed under the
+   photograph.
+4. Save.
 
-Upload an MP4, a landscape poster image, and a WebVTT English captions file to `public/media/`, then add:
+A landscape image around 1600 pixels wide works well. JPEG, WebP and PNG are all
+fine, and the site serves resized versions automatically. Use only photographs
+you have permission to publish.
 
-```ts
-"documentary-film-production": {
-  video: {
-    src: "/media/documentary-introduction.mp4",
-    poster: "/media/documentary-poster.jpg",
-    title: "The actual title of your film",
-    description: "An accurate description of the published film.",
-    captions: "/media/documentary-introduction.en.vtt",
-    transcript: "The complete spoken content of the film, written as readable text.",
-    uploadDate: "2026-09-05T00:00:00+05:45",
-    duration: "PT1M30S",
-  },
-},
-```
+## Add a film
 
-Replace the example date and duration with the video's real publication date and duration. An image and a video can be configured under the same key. Add accurate English captions/transcripts or adapt the track language in the component when publishing another language. Use H.264 video and AAC audio in the MP4 for broad playback support. Keep repository videos small; large films should use your own trusted media hosting, with absolute HTTPS URLs in the configuration. Remote photographs need their exact host added to `images.remotePatterns` in `next.config.ts`; local `/media/` images need no configuration.
+A film can be given three ways, and the page uses the first one that is filled
+in:
 
-Until a video is configured, the page has no player, broken media URL, or VideoObject schema. Once configured, the player includes controls, a poster, captions, a readable transcript, and metadata describing that real film. Video loading uses `preload="none"`.
+1. **Upload a film** - an MP4 or WebM file, played in the visitor's own browser.
+2. **YouTube link** - an ordinary watch or share link. The film plays in
+   YouTube's privacy-enhanced player, which sets no cookie until playback
+   starts.
+3. **Film address** - the address of a film hosted somewhere else.
 
-## Page keys
+Use the YouTube link for anything longer than a short clip. The hosting the site
+runs on caps how large a single upload can be - on Vercel a request cannot carry
+more than 4.5 MB - and a full documentary will not fit through it.
 
-The main keys are `home`, `about`, `services`, `production`, `training`, `right-sanchar`, and `contact`. Service keys match the URL after `/services/`, such as `biography-videos` or `source-research`. All available keys already exist in the configuration.
+The rest of the fields are optional and describe the film for search engines and
+for people who cannot watch it:
 
-## Publish and finish
+- **Still image** - shown before playback starts.
+- **Title** and **description** - the description is printed under the player.
+- **Transcript** - what is said in the film, as readable text. It appears under
+  the player behind a "Read video transcript" toggle.
+- **Duration** in ISO 8601 form, such as `PT1M30S`, and the **upload date**.
 
-Run `npm run lint`, `npm run build`, and `npm run check:site`, then commit and push the media and configuration together. Deploy the resulting commit through your hosting provider. After this initial setup, no ongoing upload service is needed. Repository administrators retain their normal ability to make future code changes.
+Until a film is added, the page shows the placeholder and no player, no broken
+address, and no video metadata. Once one is added, the player carries controls,
+the still image, the transcript, and structured data describing that real film.
+
+## Which placeholder is which
+
+Each page's band is keyed by the page: `home`, `about`, `services`, `our-work`,
+`production`, `social-media-handling`, `training`, `research`, `it`,
+`advertisement`, `right-sanchar` and `contact`. The two decorative panels are
+`home-about` (beside the introduction on the front page) and `production-band`
+(on the production page). A service page's band is keyed by the service's own
+slug, such as `biography-videos`, and its entry is created with the service.
+
+You should never have to type one of these keys. The **Photos & films** panel
+links to the right entry for each placeholder, and every entry shows the address
+of the page it appears on.
+
+## Where the files are kept
+
+Uploads go to Cloudinary when `CLOUDINARY_URL` is set, and to Vercel Blob when
+`BLOB_READ_WRITE_TOKEN` is set instead. With neither, files are written beside
+the application, which is fine for local work but not for a deployment that
+rebuilds. Photographs are optimized by Next.js, which only accepts the storage
+host named in `images.remotePatterns` in `next.config.ts`; that entry follows
+`CLOUDINARY_URL`, so moving to another Cloudinary account needs no code change.

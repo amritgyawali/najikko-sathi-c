@@ -3,14 +3,19 @@ import { revalidateDoc, revalidateDocAfterDelete } from "../hooks/revalidate";
 import { isEditor } from "../access";
 
 /**
- * Central image library. Every photo on the website is uploaded here once and
- * referenced elsewhere, so swapping a picture updates it everywhere at once.
+ * Central file library. Every photograph and film on the website is uploaded
+ * here once and referenced elsewhere, so swapping a file updates it everywhere
+ * at once.
+ *
+ * Films are stored beside the photographs rather than in a collection of their
+ * own: the storage adapter already knows how to hand a video to Cloudinary, and
+ * one library means an editor has one place to look for a file they uploaded.
  */
 export const Media: CollectionConfig = {
   slug: "media",
   admin: {
     group: "Content",
-    description: "Photos and files used across the website.",
+    description: "Photos, films and files used across the website.",
   },
   access: {
     read: () => true,
@@ -19,7 +24,11 @@ export const Media: CollectionConfig = {
     delete: isEditor,
   },
   upload: {
-    mimeTypes: ["image/*", "application/pdf"],
+    // Films are accepted here, but the host decides how large an upload may
+    // be: on Vercel a request body cannot exceed 4.5 MB, so anything longer
+    // than a short clip is better published on YouTube. Page media takes a
+    // YouTube link or a file address for exactly that case.
+    mimeTypes: ["image/*", "video/*", "application/pdf"],
     focalPoint: true,
     imageSizes: [
       { name: "thumbnail", width: 480, height: undefined, position: "centre" },
@@ -38,7 +47,7 @@ export const Media: CollectionConfig = {
       type: "text",
       required: true,
       admin: {
-        description: "Describe the image for screen readers and search engines.",
+        description: "Describe the picture or film for screen readers and search engines.",
       },
     },
     {
