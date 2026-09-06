@@ -6,7 +6,7 @@ export const dynamic = "force-dynamic";
 
 /**
  * The search page. Its heading and the wording around the box are edited in the
- * dashboard at Content → Pages; the results are gathered as a visitor searches.
+ * dashboard at Content → Website pages; the results are gathered as a visitor searches.
  */
 export const generateMetadata = () => routeMetadata("/search");
 

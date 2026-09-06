@@ -8,7 +8,7 @@ export const dynamic = "force-dynamic";
 
 /**
  * Everything on this page - its heading, its sections and their order - is
- * edited in the dashboard at Content → Pages. Until the page is imported there,
+ * edited in the dashboard at Content → Website pages. Until the page is imported there,
  * it renders the copy it ships with, in lib/page-defaults.ts.
  */
 export const generateMetadata = () => routeMetadata("/our-work");

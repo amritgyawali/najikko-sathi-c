@@ -353,7 +353,7 @@ export const getRedirects = cache(async (): Promise<Redirect[]> =>
 
 /**
  * The addresses of pages an editor has taken off the website, by setting the
- * page back to Draft in Content → Pages. The menu, the sitemap and the pages
+ * page back to Draft in Content → Website pages. The menu, the sitemap and the pages
  * themselves all check this, so removing a page removes every trace of it.
  */
 export const getHiddenPaths = cache(async (): Promise<string[]> => {

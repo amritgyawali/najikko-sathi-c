@@ -9,7 +9,7 @@ import React from "react";
  * Posts to the endpoint in cms/endpoints/site-pages.ts, which creates a Page
  * document for each of the website's built-in pages, holding exactly the copy
  * that page already shows. Nothing on the website changes; what changes is that
- * every word of those pages becomes editable in Content → Pages.
+ * every word of those pages becomes editable in Content → Website pages.
  *
  * Pass `paths` to import one page rather than all of them.
  */

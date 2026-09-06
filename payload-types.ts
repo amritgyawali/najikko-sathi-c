@@ -158,7 +158,7 @@ export interface UserAuthOperations {
   };
 }
 /**
- * Every page on the website. Edit the words on a built-in page, build a new one from sections, or take one off the site.
+ * Every page on the website - Home, Services, Our Work, Contact, About and the rest. Open one to change its words and sections, build a new one, or take one off the site.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "pages".

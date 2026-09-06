@@ -14,7 +14,7 @@ import { MediaSystem } from "./media-system";
  * The three bands that open the front page.
  *
  * Their words are written in Site → Homepage & page copy, and the page they sit
- * on decides whether they appear at all and in what order (Content → Pages →
+ * on decides whether they appear at all and in what order (Content → Website pages →
  * Home). Everything they show has a fallback here, so the site reads correctly
  * before anyone has opened the dashboard.
  */

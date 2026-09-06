@@ -9,7 +9,7 @@ export const dynamic = "force-dynamic";
 /**
  * The front page. Its bands - the hero, the media system wheel, the
  * introduction and the leadership messages - are listed in the dashboard at
- * Content → Pages → Home, and the words in them are written in
+ * Content → Website pages → Home, and the words in them are written in
  * Site → Homepage & page copy.
  */
 export const generateMetadata = () => routeMetadata("/");

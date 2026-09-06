@@ -8,6 +8,7 @@ import * as migration_20260906_060756_add_page_sections from './20260906_060756_
 import * as migration_20260906_060900_secure_page_section_tables from './20260906_060900_secure_page_section_tables';
 import * as migration_20260906_062914_add_page_noindex from './20260906_062914_add_page_noindex';
 import * as migration_20260906_090000_page_media_uploads from './20260906_090000_page_media_uploads';
+import * as migration_20260906_110000_import_website_pages from './20260906_110000_import_website_pages';
 
 export const migrations = [
   {
@@ -59,5 +60,10 @@ export const migrations = [
     up: migration_20260906_090000_page_media_uploads.up,
     down: migration_20260906_090000_page_media_uploads.down,
     name: '20260906_090000_page_media_uploads',
+  },
+  {
+    up: migration_20260906_110000_import_website_pages.up,
+    down: migration_20260906_110000_import_website_pages.down,
+    name: '20260906_110000_import_website_pages',
   },
 ];

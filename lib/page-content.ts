@@ -10,10 +10,10 @@ import { sitePageByPath } from "@/lib/site-map";
  *
  * One page can come from either of two places, and this is where they meet:
  *
- * - the document in Content → Pages, once the page has been imported into the
- *   dashboard or created there, which is what an editor changes;
- * - the copy the page ships with, in lib/page-defaults.ts, for a built-in page
- *   nobody has imported yet.
+ * - the document in Content → Website pages, which every built-in page has and
+ *   which is what an editor changes;
+ * - the copy the page ships with, in lib/page-defaults.ts, which is what a page
+ *   falls back to if its document is deleted.
  *
  * A built-in page whose document has been set back to Draft is treated as taken
  * off the website: the address stops answering, and the menu and sitemap drop

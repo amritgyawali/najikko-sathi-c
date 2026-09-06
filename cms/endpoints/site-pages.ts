@@ -7,8 +7,8 @@ import { importRoutePages, restoreRoutePages } from "../site-pages";
  *
  * POST /api/site-pages with `{ "action": "import" }` creates a document for
  * every built-in page that does not have one yet, so all of them can be edited
- * in Content → Pages. `{ "action": "restore", "paths": ["/about"] }` deletes
- * the document again, putting that page back to the copy it ships with.
+ * in Content → Website pages. `{ "action": "restore", "paths": ["/about"] }`
+ * deletes the document again, putting that page back to the copy it ships with.
  *
  * Only signed-in editors and administrators may do either, which is the same
  * rule the Pages collection itself applies.
