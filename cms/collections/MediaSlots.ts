@@ -2,6 +2,7 @@ import type { CollectionConfig } from "payload";
 import { isEditor } from "../access";
 import { revalidateDoc, revalidateDocAfterDelete } from "../hooks/revalidate";
 import { mediaPlaceholderPaths, mediaPlaceholders } from "../../lib/site-map";
+import { THUMB_CELL } from "../fields";
 
 /**
  * The photograph and the film shown on a given page.
@@ -28,11 +29,13 @@ export const MediaSlots: CollectionConfig = {
   labels: { singular: "Page media", plural: "Page media" },
   admin: {
     useAsTitle: "key",
-    defaultColumns: ["key", "image", "updatedAt"],
+    defaultColumns: ["image", "key", "updatedAt"],
     group: "Content",
     description:
       "The photograph or film featured on each page. Open a row, upload a picture or a film, and save.",
   },
+  // Alphabetical, so the same placeholder is always in the same place.
+  defaultSort: "key",
   access: { read: () => true, create: isEditor, update: isEditor, delete: isEditor },
   hooks: {
     // A film or a photograph can appear on any of these pages, and a service
@@ -58,7 +61,10 @@ export const MediaSlots: CollectionConfig = {
       relationTo: "media",
       label: "Photograph",
       filterOptions: { mimeType: { contains: "image" } },
-      admin: { description: "Replaces the blue photo placeholder on this page." },
+      admin: {
+        description: "Replaces the blue photo placeholder on this page.",
+        components: { Cell: THUMB_CELL },
+      },
     },
     {
       name: "caption",

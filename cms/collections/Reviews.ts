@@ -1,7 +1,7 @@
 import type { CollectionConfig } from "payload";
 import { revalidateDoc, revalidateDocAfterDelete } from "../hooks/revalidate";
 import { isEditor, isEditorField } from "../access";
-import { placementsField } from "../fields";
+import { placementsField, STATE_CELL, THUMB_CELL } from "../fields";
 
 /**
  * Client testimonials. Reviews can arrive from the public submission endpoint,
@@ -11,9 +11,11 @@ export const Reviews: CollectionConfig = {
   slug: "reviews",
   admin: {
     useAsTitle: "name",
-    defaultColumns: ["name", "rating", "approved", "featured", "placements"],
+    defaultColumns: ["avatar", "name", "role", "rating", "approved", "placements"],
     group: "Content",
-    description: "Client testimonials shown on the website.",
+    description:
+      "Client testimonials. Nothing here reaches the website until it is approved.",
+    listSearchableFields: ["name", "quote"],
   },
   access: {
     // Visitors only ever see approved reviews; staff see the moderation queue.
@@ -37,23 +39,41 @@ export const Reviews: CollectionConfig = {
       min: 1,
       max: 5,
       defaultValue: 5,
-      admin: { position: "sidebar" },
+      admin: {
+        position: "sidebar",
+        description: "Out of five.",
+        components: { Cell: "/cms/components/cells/RatingCell#RatingCell" },
+      },
     },
     { name: "quote", type: "textarea", required: true, maxLength: 600 },
-    { name: "avatar", type: "upload", relationTo: "media" },
+    {
+      name: "avatar",
+      type: "upload",
+      relationTo: "media",
+      label: "Photograph",
+      admin: { components: { Cell: THUMB_CELL } },
+    },
     {
       name: "approved",
       type: "checkbox",
       defaultValue: false,
       // A public submission must not be able to approve itself.
       access: { create: isEditorField, update: isEditorField },
-      admin: { position: "sidebar", description: "Only approved reviews appear on the site." },
+      admin: {
+        position: "sidebar",
+        description: "Only approved reviews appear on the site.",
+        components: { Cell: STATE_CELL },
+      },
     },
     {
       name: "featured",
       type: "checkbox",
       access: { create: isEditorField, update: isEditorField },
-      admin: { position: "sidebar" },
+      admin: {
+        position: "sidebar",
+        description: "Show this one first.",
+        components: { Cell: STATE_CELL },
+      },
     },
     placementsField({
       thing: "review",

@@ -181,6 +181,9 @@ export interface Page {
    * Leave blank to generate this from the title.
    */
   slug?: string | null;
+  /**
+   * Publishing puts this on the website; a draft stays here.
+   */
   status: 'draft' | 'published';
   /**
    * Add a link to this page in the main navigation.
@@ -788,7 +791,7 @@ export interface Page {
   _status?: ('draft' | 'published') | null;
 }
 /**
- * Photos, films and files used across the website.
+ * Every photograph, film and file on the website. Upload once here, then use it anywhere.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "media".
@@ -863,7 +866,7 @@ export interface Media {
   };
 }
 /**
- * News, blogs, commentary and investigative pieces.
+ * News, blogs, commentary and investigative pieces. Published ones appear at /posts, newest first.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "posts".
@@ -876,6 +879,9 @@ export interface Post {
    */
   slug?: string | null;
   type: 'news' | 'blog' | 'commentary' | 'investigation';
+  /**
+   * Publishing puts this on the website; a draft stays here.
+   */
   status: 'draft' | 'published';
   /**
    * Choose the pages this post is published on. Leave it empty to show it on every page that lists writing.
@@ -912,9 +918,12 @@ export interface Post {
    */
   featured?: boolean | null;
   author?: (number | null) | User;
+  /**
+   * Shown at the top of the post and in link previews.
+   */
   coverImage?: (number | null) | Media;
   /**
-   * Short summary used in listings and link previews.
+   * One or two sentences. Used in listings, search results and link previews.
    */
   excerpt?: string | null;
   content?: {
@@ -932,6 +941,9 @@ export interface Post {
     };
     [k: string]: unknown;
   } | null;
+  /**
+   * Optional. Used for grouping and for search.
+   */
   tags?:
     | {
         tag: string;
@@ -951,7 +963,7 @@ export interface Post {
   _status?: ('draft' | 'published') | null;
 }
 /**
- * People who can sign in to this dashboard.
+ * People who can sign in to this dashboard. A new sign-up waits here until an administrator approves it.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users".
@@ -988,7 +1000,7 @@ export interface User {
   collection: 'users';
 }
 /**
- * Everything the company offers, one document per service.
+ * Everything the company offers, one document per service. Each published one gets its own page.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "services".
@@ -1044,6 +1056,9 @@ export interface Service {
    * Leave blank to generate this from the title.
    */
   slug?: string | null;
+  /**
+   * Publishing puts this on the website; a draft stays here.
+   */
   status: 'draft' | 'published';
   category: number | ServiceCategory;
   /**
@@ -1089,7 +1104,7 @@ export interface ServiceCategory {
   createdAt: string;
 }
 /**
- * Promotions, packages and limited-time offers.
+ * Promotions, packages and limited-time offers. A published offer inside its dates appears at /offers.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "offers".
@@ -1101,6 +1116,9 @@ export interface Offer {
    * Leave blank to generate this from the title.
    */
   slug?: string | null;
+  /**
+   * Publishing puts this on the website; a draft stays here.
+   */
   status: 'draft' | 'published';
   /**
    * Choose the pages this offer is published on. Leave it empty to show it on every page that lists offers.
@@ -1164,7 +1182,7 @@ export interface Offer {
   _status?: ('draft' | 'published') | null;
 }
 /**
- * Client testimonials shown on the website.
+ * Client testimonials. Nothing here reaches the website until it is approved.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "reviews".
@@ -1176,6 +1194,9 @@ export interface Review {
    * Job title or organisation.
    */
   role?: string | null;
+  /**
+   * Out of five.
+   */
   rating: number;
   quote: string;
   avatar?: (number | null) | Media;
@@ -1183,6 +1204,9 @@ export interface Review {
    * Only approved reviews appear on the site.
    */
   approved?: boolean | null;
+  /**
+   * Show this one first.
+   */
   featured?: boolean | null;
   /**
    * Choose the pages this review is published on. Leave it empty to show it on every page that carries a reviews band.
@@ -1209,7 +1233,7 @@ export interface Review {
   createdAt: string;
 }
 /**
- * Questions and answers shown on the website.
+ * Questions and answers. Each one picks the pages it belongs to, and search engines can show them as rich results.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "faqs".
@@ -1239,12 +1263,15 @@ export interface Faq {
         | 'offers'
       )[]
     | null;
+  /**
+   * Lower numbers appear first.
+   */
   order?: number | null;
   updatedAt: string;
   createdAt: string;
 }
 /**
- * Films and photo albums from our social responsibility work.
+ * Films and photo albums from our social responsibility work, shown together on /our-work.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "social-responsibility".
@@ -1275,6 +1302,9 @@ export interface SocialResponsibility {
    * Lower numbers appear first.
    */
   order?: number | null;
+  /**
+   * Publishing puts this on the website; a draft stays here.
+   */
   status: 'draft' | 'published';
   /**
    * Choose the pages this entry is published on. Leave it empty to show it on every page that carries a social responsibility band.
@@ -1301,7 +1331,7 @@ export interface SocialResponsibility {
   createdAt: string;
 }
 /**
- * The people introduced on the about page.
+ * The people introduced on the about page, in the order set here.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "team".
@@ -1309,10 +1339,19 @@ export interface SocialResponsibility {
 export interface Team {
   id: number;
   name: string;
+  /**
+   * Their title, as it should read on the page.
+   */
   role: string;
+  /**
+   * Optional. One or two sentences.
+   */
   bio?: string | null;
   photo?: (number | null) | Media;
   email?: string | null;
+  /**
+   * Lower numbers appear first.
+   */
   order?: number | null;
   /**
    * Choose the pages this person is published on. Leave it empty to show it on every page that carries a team band.
@@ -1339,7 +1378,7 @@ export interface Team {
   createdAt: string;
 }
 /**
- * Messages sent through the website contact form.
+ * Messages sent through the website contact form. Private: nothing here is ever published.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "enquiries".
@@ -1350,14 +1389,20 @@ export interface Enquiry {
   email: string;
   phone?: string | null;
   /**
-   * The service the visitor was looking at.
+   * The service the visitor was looking at when they wrote in.
    */
   service?: string | null;
   message: string;
+  /**
+   * Where this message has got to.
+   */
   state?: ('new' | 'in-progress' | 'replied' | 'closed' | 'spam') | null;
+  /**
+   * Whoever is answering this one.
+   */
   assignedTo?: (number | null) | User;
   /**
-   * Internal only. Never shown on the website.
+   * For the team only. Never shown on the website and never sent to the sender.
    */
   notes?: string | null;
   /**
@@ -1427,7 +1472,7 @@ export interface MediaSlot {
   createdAt: string;
 }
 /**
- * Send an old URL to a new one.
+ * Send an old address to a new one, so a link published elsewhere keeps working.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "redirects".
@@ -1450,7 +1495,7 @@ export interface Redirect {
   createdAt: string;
 }
 /**
- * Raw traffic log behind the dashboard statistics.
+ * The raw traffic log behind the dashboard overview. No cookies, no personal data, no third party.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "pageviews".
@@ -2490,33 +2535,42 @@ export interface Navigation {
   items: {
     label: string;
     /**
-     * A path such as "/about", or a full address for another website. The pages the site has are listed on the dashboard home.
+     * A path such as "/about", or a full address for another website. Every page this site has is listed on the dashboard home.
      */
     href: string;
     newTab?: boolean | null;
     id?: string | null;
   }[];
+  /**
+   * The one filled button at the right of the header.
+   */
   cta?: {
     label?: string | null;
     href?: string | null;
     enabled?: boolean | null;
   };
   /**
-   * The thin contact strip above the header.
+   * The thin line of phone, email and address above the header.
    */
   showUtilityBar?: boolean | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
 /**
- * A notice shown at the top of every page.
+ * A strip above the header, for a campaign or a notice. Switch it on, or give it dates and let it appear and disappear on its own.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "announcement".
  */
 export interface Announcement {
   id: number;
+  /**
+   * Nothing appears on the website until this is ticked.
+   */
   enabled?: boolean | null;
+  /**
+   * One sentence. It is read before anything else on the page.
+   */
   message?: string | null;
   linkLabel?: string | null;
   linkHref?: string | null;
@@ -2528,6 +2582,9 @@ export interface Announcement {
    * Leave blank to show until switched off.
    */
   endsAt?: string | null;
+  /**
+   * How loud the strip should look.
+   */
   tone?: ('info' | 'highlight' | 'urgent') | null;
   updatedAt?: string | null;
   createdAt?: string | null;
@@ -2568,20 +2625,32 @@ export interface Appearance {
   createdAt?: string | null;
 }
 /**
- * Footer columns, links and company blurb.
+ * The columns of links and the company line at the foot of every page.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "footer".
  */
 export interface Footer {
   id: number;
+  /**
+   * The paragraph in the first footer column. Two or three lines reads best.
+   */
   about?: string | null;
+  /**
+   * Each one is a column in the footer, in the order listed here.
+   */
   groups?:
     | {
+        /**
+         * The heading above the column.
+         */
         title: string;
         links?:
           | {
               label: string;
+              /**
+               * A path such as "/services", or a full address.
+               */
               href: string;
               id?: string | null;
             }[]
@@ -2611,9 +2680,15 @@ export interface SiteSetting {
    */
   initials: string;
   address: string;
+  /**
+   * Replaces the initials mark in the header, the media system wheel and the footer.
+   */
   logo?: (number | null) | Media;
   email: string;
   vat?: string | null;
+  /**
+   * Shown in the order listed here.
+   */
   phones?:
     | {
         number: string;
@@ -2621,9 +2696,15 @@ export interface SiteSetting {
       }[]
     | null;
   website?: string | null;
+  /**
+   * How the address is written out.
+   */
   websiteLabel?: string | null;
   rightSanchar?: string | null;
   rightSancharLabel?: string | null;
+  /**
+   * For example "Facebook" and the page's address.
+   */
   socialLinks?:
     | {
         platform: string;
@@ -2634,6 +2715,9 @@ export interface SiteSetting {
   defaultSeo?: {
     title?: string | null;
     description?: string | null;
+    /**
+     * Used when a page has no picture of its own. Landscape works best.
+     */
     image?: (number | null) | Media;
   };
   updatedAt?: string | null;

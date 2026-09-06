@@ -15,8 +15,13 @@ import { placementsField } from "../fields";
 export const Media: CollectionConfig = {
   slug: "media",
   admin: {
+    // Size and kind matter here now that films live beside photographs: an
+    // editor picking a file needs to see which is which without opening it.
+    defaultColumns: ["filename", "alt", "mimeType", "filesize", "updatedAt"],
     group: "Content",
-    description: "Photos, films and files used across the website.",
+    description:
+      "Every photograph, film and file on the website. Upload once here, then use it anywhere.",
+    listSearchableFields: ["filename", "alt"],
   },
   access: {
     read: () => true,

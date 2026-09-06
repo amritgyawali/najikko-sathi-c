@@ -1,7 +1,7 @@
 import type { CollectionConfig } from "payload";
 import { revalidateDoc, revalidateDocAfterDelete } from "../hooks/revalidate";
 import { isEditorOrOwner, isPublishedOrStaff } from "../access";
-import { placementsField, seoField, slugField, statusField } from "../fields";
+import { placementsField, seoField, slugField, statusField, THUMB_CELL } from "../fields";
 
 /**
  * News articles, blog entries, commentary and investigations. One collection
@@ -12,9 +12,11 @@ export const Posts: CollectionConfig = {
   slug: "posts",
   admin: {
     useAsTitle: "title",
-    defaultColumns: ["title", "type", "status", "publishedAt", "author"],
+    defaultColumns: ["coverImage", "title", "type", "status", "publishedAt"],
     group: "Content",
-    description: "News, blogs, commentary and investigative pieces.",
+    description:
+      "News, blogs, commentary and investigative pieces. Published ones appear at /posts, newest first.",
+    listSearchableFields: ["title", "excerpt"],
   },
   versions: { drafts: true },
   access: {
@@ -85,19 +87,48 @@ export const Posts: CollectionConfig = {
       // something to match against.
       defaultValue: ({ user }) => user?.id,
     },
-    { name: "coverImage", type: "upload", relationTo: "media" },
     {
-      name: "excerpt",
-      type: "textarea",
-      maxLength: 300,
-      admin: { description: "Short summary used in listings and link previews." },
+      type: "tabs",
+      tabs: [
+        {
+          label: "The piece",
+          description: "Everything a reader sees, in the order they meet it.",
+          fields: [
+            {
+              name: "coverImage",
+              type: "upload",
+              relationTo: "media",
+              label: "Cover photograph",
+              admin: {
+                description: "Shown at the top of the post and in link previews.",
+                components: { Cell: THUMB_CELL },
+              },
+            },
+            {
+              name: "excerpt",
+              type: "textarea",
+              maxLength: 300,
+              label: "Standfirst",
+              admin: {
+                description: "One or two sentences. Used in listings, search results and link previews.",
+              },
+            },
+            { name: "content", type: "richText", label: "Body" },
+            {
+              name: "tags",
+              type: "array",
+              labels: { singular: "Tag", plural: "Tags" },
+              admin: { description: "Optional. Used for grouping and for search." },
+              fields: [{ name: "tag", type: "text", required: true }],
+            },
+          ],
+        },
+        {
+          label: "Search results",
+          description: "Overrides what a search engine shows. Left blank, the title and standfirst are used.",
+          fields: [seoField],
+        },
+      ],
     },
-    { name: "content", type: "richText" },
-    {
-      name: "tags",
-      type: "array",
-      fields: [{ name: "tag", type: "text", required: true }],
-    },
-    seoField,
   ],
 };

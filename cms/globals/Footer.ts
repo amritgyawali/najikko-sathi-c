@@ -6,23 +6,48 @@ import { isEditor } from "../access";
 export const Footer: GlobalConfig = {
   slug: "footer",
   label: "Footer",
-  admin: { group: "Site", description: "Footer columns, links and company blurb." },
+  admin: {
+    group: "Site",
+    description: "The columns of links and the company line at the foot of every page.",
+  },
   access: { read: () => true, update: isEditor },
   hooks: { afterChange: [revalidateSite] },
   fields: [
-    { name: "about", type: "textarea", label: "Company blurb" },
+    {
+      name: "about",
+      type: "textarea",
+      label: "Company blurb",
+      admin: { description: "The paragraph in the first footer column. Two or three lines reads best." },
+    },
     {
       name: "groups",
       type: "array",
       label: "Link columns",
+      labels: { singular: "Column", plural: "Columns" },
+      admin: {
+        description: "Each one is a column in the footer, in the order listed here.",
+        initCollapsed: true,
+      },
       fields: [
-        { name: "title", type: "text", required: true },
+        { name: "title", type: "text", required: true, admin: { description: "The heading above the column." } },
         {
           name: "links",
           type: "array",
+          labels: { singular: "Link", plural: "Links" },
           fields: [
-            { name: "label", type: "text", required: true },
-            { name: "href", type: "text", required: true },
+            {
+              type: "row",
+              fields: [
+                { name: "label", type: "text", required: true, admin: { width: "45%" } },
+                {
+                  name: "href",
+                  type: "text",
+                  required: true,
+                  label: "Address",
+                  admin: { width: "55%", description: 'A path such as "/services", or a full address.' },
+                },
+              ],
+            },
           ],
         },
       ],

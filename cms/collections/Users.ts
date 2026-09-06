@@ -1,6 +1,7 @@
 import type { CollectionConfig } from "payload";
 import { APIError } from "payload";
 import { isAdmin, isAdminField } from "../access";
+import { STATE_CELL, THUMB_CELL } from "../fields";
 
 /**
  * Dashboard accounts. Authentication is handled by Payload; the `role` field
@@ -11,9 +12,11 @@ export const Users: CollectionConfig = {
   auth: true,
   admin: {
     useAsTitle: "name",
-    defaultColumns: ["name", "email", "role", "updatedAt"],
+    defaultColumns: ["avatar", "name", "email", "role", "approved"],
     group: "Administration",
-    description: "People who can sign in to this dashboard.",
+    description:
+      "People who can sign in to this dashboard. A new sign-up waits here until an administrator approves it.",
+    listSearchableFields: ["name", "email"],
   },
   access: {
     // Anyone may register, but the role and approval fields below are locked to
@@ -78,7 +81,10 @@ export const Users: CollectionConfig = {
         { label: "Editor - manages all content, but not users or branding", value: "editor" },
         { label: "Author - writes and edits only their own posts", value: "author" },
       ],
-      admin: { description: "Determines what this person can see and change." },
+      admin: {
+        description: "Determines what this person can see and change.",
+        components: { Cell: STATE_CELL },
+      },
     },
     {
       name: "approved",
@@ -90,12 +96,15 @@ export const Users: CollectionConfig = {
       admin: {
         position: "sidebar",
         description: "Until this is ticked, the account cannot sign in.",
+        components: { Cell: STATE_CELL },
       },
     },
     {
       name: "avatar",
       type: "upload",
       relationTo: "media",
+      label: "Photograph",
+      admin: { components: { Cell: THUMB_CELL } },
     },
   ],
 };

@@ -132,6 +132,26 @@ no entry there, if an entry names a route that no longer exists, or if a page ha
 no copy to ship with, so a page cannot be added to the site and quietly missed by
 the dashboard.
 
+### How the dashboard itself is put together
+
+Two conventions run through every section, so a screen an editor has not seen
+before still reads the way the last one did.
+
+**Lists show state, not words.** A publishing status, an enquiry's progress, a
+review's approval and a page's kind are drawn as coloured pills
+(`cms/components/cells/StateCell.tsx`), which decides the colour from the value:
+the same word is always the same colour. A picture column shows the picture
+(`ThumbCell`), a rating shows stars (`RatingCell`), and a collection whose
+documents have no public address - enquiries, users, reviews, page views - is
+spared the "Link" column rather than being given a row of dashes.
+
+**A document is a sheet.** The fields sit on a bounded white surface with one
+rhythm of spacing, the save bar follows the page down so Save is always
+reachable, and a form long enough to need sections gets tabs drawn as a
+segmented control with a line of explanation under them. The styling is in
+`app/(payload)/custom.css`, layered on Payload's own variables rather than
+fighting its components.
+
 ### Photos & films, on the dashboard home
 
 Below it, **Photos & films** lists every blue placeholder on the website: each

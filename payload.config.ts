@@ -58,7 +58,14 @@ const liveLinkColumn: Field = {
   admin: { components: { Cell: LIVE_LINK_CELL } },
 };
 
-const withLiveLink = (config: CollectionConfig): CollectionConfig => ({
+/**
+ * Collections whose documents never have a page of their own. A column of
+ * em-dashes tells an editor nothing, so these keep the plain table they had
+ * before the address column existed.
+ */
+const PRIVATE_COLLECTIONS = new Set(["enquiries", "users", "pageviews", "reviews"]);
+
+const withLiveLink = (config: CollectionConfig): CollectionConfig => (PRIVATE_COLLECTIONS.has(config.slug) ? config : {
   ...config,
   admin: {
     ...config.admin,

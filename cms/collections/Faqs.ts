@@ -19,7 +19,9 @@ export const Faqs: CollectionConfig = {
     useAsTitle: "question",
     defaultColumns: ["question", "placements", "order"],
     group: "Content",
-    description: "Questions and answers shown on the website.",
+    description:
+      "Questions and answers. Each one picks the pages it belongs to, and search engines can show them as rich results.",
+    listSearchableFields: ["question", "answer"],
   },
   access: { read: () => true, create: isEditor, update: isEditor, delete: isEditor },
   hooks: {
@@ -33,6 +35,11 @@ export const Faqs: CollectionConfig = {
       thing: "question",
       everywhere: "on every page that carries a questions band",
     }),
-    { name: "order", type: "number", defaultValue: 0, admin: { position: "sidebar" } },
+    {
+      name: "order",
+      type: "number",
+      defaultValue: 0,
+      admin: { position: "sidebar", description: "Lower numbers appear first." },
+    },
   ],
 };
