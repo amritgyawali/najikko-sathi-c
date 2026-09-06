@@ -3,13 +3,23 @@ import { revalidateSite } from "../hooks/revalidate";
 import { isEditor } from "../access";
 
 /**
- * Every piece of copy on the existing homepage, section by section. The names
- * mirror the sections in app/(frontend)/page.tsx so the mapping stays obvious.
+ * The copy that is written here rather than in a collection, tab by tab.
+ *
+ * Each tab is named after the page it appears on, and lib/site-map.ts points
+ * back at it from that page, so an editor opening the dashboard sees the same
+ * page names a visitor sees in the navbar. Three of these bands started life on
+ * the front page and now open pages of their own; the fields kept their names
+ * so nothing anyone had written was lost when they moved.
  */
 export const Homepage: GlobalConfig = {
   slug: "homepage",
-  label: "Homepage",
-  admin: { group: "Site", description: "All the text and imagery on the front page." },
+  label: "Homepage & page copy",
+  admin: {
+    group: "Site",
+    description:
+      "Written copy for the front page and for three pages that grew out of it. " +
+      "Each tab says which address it appears at.",
+  },
   access: { read: () => true, update: isEditor },
   hooks: { afterChange: [revalidateSite] },
   fields: [
@@ -17,7 +27,8 @@ export const Homepage: GlobalConfig = {
       type: "tabs",
       tabs: [
         {
-          label: "Hero",
+          label: "Home - hero",
+          admin: { description: "The top of the front page, at /." },
           fields: [
             { name: "heroKicker", type: "text", defaultValue: "Kathmandu-based media house" },
             {
@@ -37,7 +48,7 @@ export const Homepage: GlobalConfig = {
               type: "row",
               fields: [
                 { name: "heroCtaLabel", type: "text", defaultValue: "Explore our services", admin: { width: "50%" } },
-                { name: "heroCtaHref", type: "text", defaultValue: "#services", admin: { width: "50%" } },
+                { name: "heroCtaHref", type: "text", defaultValue: "/services", admin: { width: "50%" } },
               ],
             },
             {
@@ -50,7 +61,8 @@ export const Homepage: GlobalConfig = {
           ],
         },
         {
-          label: "About",
+          label: "Home - about",
+          admin: { description: "The introduction on the front page, at /." },
           fields: [
             { name: "aboutEyebrow", type: "text", defaultValue: "Who We Are" },
             { name: "aboutHeading", type: "text" },
@@ -65,7 +77,12 @@ export const Homepage: GlobalConfig = {
           ],
         },
         {
-          label: "Leadership",
+          label: "Home - leadership",
+          admin: {
+            description:
+              "The chairman's and director's messages on the front page, at /. " +
+              "The carousel appears there as soon as the first message is saved.",
+          },
           fields: [
             { name: "leadershipKicker", type: "text", defaultValue: "From our leadership" },
             { name: "leadershipHeading", type: "text" },
@@ -95,10 +112,11 @@ export const Homepage: GlobalConfig = {
           ],
         },
         {
-          label: "Services",
+          label: "Services page",
           admin: {
             description:
-              "This grid moved off the homepage and now opens the services page.",
+              "The heading and introduction above the service grid, at /services. " +
+              "The services themselves are in Services -> Services.",
           },
           fields: [
             { name: "servicesKicker", type: "text", defaultValue: "Our Services" },
@@ -120,14 +138,14 @@ export const Homepage: GlobalConfig = {
                     "scissors", "graduationCap",
                   ].map((value) => ({ label: value, value })),
                 },
-                { name: "href", type: "text", defaultValue: "#production" },
+                { name: "href", type: "text", defaultValue: "/production" },
               ],
             },
           ],
         },
         {
-          label: "Production",
-          admin: { description: "This band moved off the homepage and now opens the production page." },
+          label: "Production page",
+          admin: { description: "The band at the top of /production." },
           fields: [
             { name: "productionChip", type: "text", defaultValue: "Production" },
             { name: "productionHeading", type: "text" },
@@ -136,8 +154,8 @@ export const Homepage: GlobalConfig = {
           ],
         },
         {
-          label: "Right Sanchar",
-          admin: { description: "This band moved off the homepage and now opens the Right Sanchar page." },
+          label: "Right Sanchar page",
+          admin: { description: "The band at the top of /right-sanchar." },
           fields: [
             { name: "sancharHeading", type: "text" },
             { name: "sancharIntro", type: "textarea" },

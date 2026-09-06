@@ -24,6 +24,7 @@ import { ItalicFeatureClient as ItalicFeatureClient_e70f5e05f09f93e00b997edb1ef0
 import { ThemeToggle as ThemeToggle_03e2855782842afd8d454d76720a31ec } from '../../../cms/components/ThemeToggle'
 import { LoginSignupLink as LoginSignupLink_4ecb88133f73eab493d10ad23060fd42 } from '../../../cms/components/LoginSignupLink'
 import { DashboardStats as DashboardStats_9d6438ef9cd6fb98711ce5f3f44a3c38 } from '../../../cms/components/DashboardStats'
+import { SitePages as SitePages_9822e4ce3f3b2591dd4c3d250008a071 } from '../../../cms/components/SitePages'
 import { CollectionCards as CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1 } from '@payloadcms/next/rsc'
 
 /** @type import('payload').ImportMap */
@@ -54,5 +55,6 @@ export const importMap = {
   "/cms/components/ThemeToggle#ThemeToggle": ThemeToggle_03e2855782842afd8d454d76720a31ec,
   "/cms/components/LoginSignupLink#LoginSignupLink": LoginSignupLink_4ecb88133f73eab493d10ad23060fd42,
   "/cms/components/DashboardStats#DashboardStats": DashboardStats_9d6438ef9cd6fb98711ce5f3f44a3c38,
+  "/cms/components/SitePages#SitePages": SitePages_9822e4ce3f3b2591dd4c3d250008a071,
   "@payloadcms/next/rsc#CollectionCards": CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1
 }

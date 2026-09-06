@@ -764,6 +764,167 @@ textarea:focus,
   color: var(--theme-elevation-400);
 }
 
+/* ------------------------------------------------------------ website pages */
+
+/* The live page list under the overview. Its markup lives in
+   cms/components/SitePages.tsx. */
+
+.ns-pages {
+  padding: 18px 20px;
+  margin-bottom: 40px;
+  background: var(--ns-card);
+  border: 1px solid var(--ns-line);
+  border-radius: var(--ns-radius);
+  box-shadow: var(--ns-shadow-sm);
+}
+
+.ns-pages__list {
+  list-style: none;
+  margin: 14px 0 0;
+  padding: 0;
+}
+
+.ns-page {
+  padding: 12px 0;
+  border-top: 1px solid var(--theme-elevation-100);
+}
+
+.ns-page:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+
+/* A page reached through the menu item above it, not through a link of its own. */
+.ns-page--child {
+  padding-left: 18px;
+  border-left: 2px solid var(--theme-elevation-100);
+  margin-left: 3px;
+}
+
+.ns-page--broken .ns-page__name {
+  color: var(--ns-accent-ink);
+}
+
+.ns-page--broken .ns-page__summary {
+  color: #b4472c;
+}
+
+.ns-page__head {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.ns-page__name {
+  font-size: 15px;
+  font-weight: 650;
+  color: var(--theme-elevation-1000);
+}
+
+.ns-page__path {
+  font-size: 12px;
+  color: var(--ns-muted);
+  text-decoration: none;
+}
+
+a.ns-page__path:hover {
+  color: var(--ns-accent-ink);
+  text-decoration: underline;
+}
+
+.ns-page__summary {
+  margin: 3px 0 0;
+  font-size: 13px;
+  color: var(--ns-muted);
+  max-width: 68ch;
+}
+
+.ns-page__edits {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.ns-page__edit {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0;
+  padding: 4px 11px;
+  border-radius: 999px;
+  border: 1px solid var(--ns-line);
+  background: var(--ns-card);
+  color: var(--theme-elevation-800);
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: border-color 0.15s var(--ns-ease), color 0.15s var(--ns-ease);
+}
+
+.ns-page__edit:hover {
+  border-color: var(--ns-blue);
+  color: var(--ns-accent-ink);
+  text-decoration: none;
+}
+
+.ns-page__note {
+  font-weight: 400;
+  color: var(--ns-muted);
+}
+
+.ns-page__edit:hover .ns-page__note {
+  color: inherit;
+}
+
+.ns-pages__foot {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid var(--theme-elevation-100);
+}
+
+.ns-pages__subtitle {
+  margin: 0 0 8px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--theme-elevation-500);
+}
+
+.ns-pages__minor {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-size: 13px;
+}
+
+.ns-pages__minor a {
+  color: var(--theme-elevation-800);
+  text-decoration: none;
+}
+
+.ns-pages__minor a:hover {
+  color: var(--ns-accent-ink);
+  text-decoration: underline;
+}
+
+.ns-pages__hint {
+  margin: 16px 0 0;
+  font-size: 13px;
+  color: var(--ns-muted);
+}
+
+.ns-pages__hint a {
+  color: var(--ns-accent-ink);
+}
+
 /* ------------------------------------------------------------ theme toggle */
 
 .ns-theme-toggle {
@@ -846,6 +1007,7 @@ html[data-theme="dark"] .ns-stat::before {
    the 4.5:1 that small bold uppercase text needs. Lift the label tokens. */
 html[data-theme="dark"] .ns-stat__label,
 html[data-theme="dark"] .ns-panel__title,
+html[data-theme="dark"] .ns-pages__subtitle,
 html[data-theme="dark"] .collections__label,
 html[data-theme="dark"] .table table thead th {
   color: #9fb0c6;
@@ -853,8 +1015,16 @@ html[data-theme="dark"] .table table thead th {
 
 html[data-theme="dark"] .ns-stat__hint,
 html[data-theme="dark"] .ns-panel__meta,
+html[data-theme="dark"] .ns-page__summary,
+html[data-theme="dark"] .ns-page__path,
+html[data-theme="dark"] .ns-page__note,
+html[data-theme="dark"] .ns-pages__hint,
 html[data-theme="dark"] .ns-overview__sub,
 html[data-theme="dark"] .field-description,
 html[data-theme="dark"] .custom-view-description {
   color: #a8b6c9;
+}
+
+html[data-theme="dark"] .ns-page--broken .ns-page__summary {
+  color: #ff9b7d;
 }

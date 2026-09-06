@@ -15,6 +15,7 @@ Content is managed through a full admin dashboard powered by
 | Area | Where in the dashboard | Appears on |
 | --- | --- | --- |
 | Traffic, top pages, referrers, devices, enquiry queue | Dashboard home | - |
+| The website's pages, in navbar order, and where each one is edited | Dashboard home → Website pages | - |
 | The 16 services and their detail pages | Services → Services | `/services`, `/services/<slug>`, `/our-work`, and every discipline page |
 | Service groupings | Services → Service categories | `/services` sections |
 | News, blogs, commentary, investigations | Content → Posts | `/posts`, `/posts/<slug>` |
@@ -27,8 +28,9 @@ Content is managed through a full admin dashboard powered by
 | Photos and files | Content → Media | Everywhere |
 | The photo or video featured on each page | Content → Page media | Every page's showcase band |
 | Contact form messages, with triage and notes | Enquiries | Sent from `/contact` |
-| Homepage copy and imagery | Site → Homepage | `/` |
-| Chairman and director messages | Site → Homepage → Leadership | `/` |
+| Front page copy and imagery | Site → Homepage & page copy → Home | `/` |
+| Chairman and director messages | Site → Homepage & page copy → Home - leadership | `/` |
+| Headings above the service grid, the production band, the Right Sanchar band | Site → Homepage & page copy | `/services`, `/production`, `/right-sanchar` |
 | Company logo, shown in the header and the media system wheel | Site → Site Settings | Every page |
 | Navbar links, order and header button | Site → Navigation | Every page |
 | Site-wide notice, with a schedule | Site → Announcement bar | Every page |
@@ -50,12 +52,35 @@ uploaded the centre falls back to the initials mark.
 The service grid, the production band, and the Right Sanchar band used to sit
 on the homepage as well. They now open `/services`, `/production`, and
 `/right-sanchar` respectively, and still read their copy from
-**Site → Homepage**, so nothing an editor had written was lost when they moved.
+**Site → Homepage & page copy**, so nothing an editor had written was lost when
+they moved. Every tab there is named after the page it appears on — *Home -
+hero*, *Home - about*, *Home - leadership*, *Services page*, *Production page*,
+*Right Sanchar page* — so the dashboard never claims to be editing the front
+page when the words come out somewhere else.
 
-The **Leadership** tab is empty to begin with, and the carousel appears on the
-homepage as soon as the first message is saved there. Add one entry for the
-chairman and one for the director: the carousel then moves on by itself every
-five seconds, with arrows for stepping through it by hand.
+The **Home - leadership** tab is empty to begin with, and the carousel appears
+on the homepage as soon as the first message is saved there. Add one entry for
+the chairman and one for the director: the carousel then moves on by itself
+every five seconds, with arrows for stepping through it by hand.
+
+### Website pages, on the dashboard home
+
+Under the traffic overview, **Website pages** lists the menu exactly as a
+visitor sees it — in order, with the pages that sit under **Our Work**, and with
+the pages built in **Content → Pages** appended just as the header appends them.
+Each row links to every dashboard area that writes that page's content.
+
+Nothing here is a copy that someone has to keep up to date. The panel resolves
+the menu on every load from the same two sources as the public header (the links
+in **Site → Navigation** and pages published with *show in navigation* ticked),
+through the same function, so reordering the menu or publishing a page shows up
+on the next dashboard load. A menu link with no page behind it is called out in
+red, which is how a typo in a link gets noticed before a visitor finds it.
+
+Which dashboard areas edit which page comes from `lib/site-map.ts`, the one list
+of the site's pages. `npm run check:pages` fails if a route exists with no entry
+there, or an entry names a route that no longer exists, so a page cannot be
+added to the site and quietly missed by the dashboard.
 
 ### Social responsibility
 
@@ -202,6 +227,11 @@ is not run against them. If you share one database between `npm run dev` and
 DELETE FROM payload_migrations WHERE name = 'dev';
 ```
 
+**`npm run check:pages` fails.**
+The site and `lib/site-map.ts` disagree: a page was added or removed without
+updating that list. The message names the paths. Fixing it is what keeps the
+dashboard's **Website pages** panel describing the real website.
+
 **`npm run check:site` fails on navigation assertions.**
 It verifies the site against the default navigation, so run it with the CMS at its
 seeded state. Editing Navigation in the dashboard, or publishing a page with
@@ -235,7 +265,7 @@ until someone approves it in the dashboard.
 
 ## Pages
 
-The navbar links five separate pages, in this order: `/`, `/services`, `/our-work`, `/contact`, and `/about`. `/our-work` gathers the areas that are not in the menu themselves - `/production`, `/social-media-handling`, `/training`, `/research`, `/it`, `/advertisement` and `/right-sanchar` keep their own pages, stay in the sitemap, and highlight **Our Work** in the header while a visitor is on them (see `navSections` in `app/(frontend)/_data/site.ts`). The first six are the disciplines in the homepage wheel, and each petal links straight to its page. Each of the 16 services has a statically generated `/services/[slug]` page with its own scope, preparation guidance, workflow, FAQs, related services, and contact link.
+The navbar links five separate pages, in this order: `/`, `/services`, `/our-work`, `/contact`, and `/about`. `/our-work` gathers the areas that are not in the menu themselves - `/production`, `/social-media-handling`, `/training`, `/research`, `/it`, `/advertisement` and `/right-sanchar` keep their own pages, stay in the sitemap, and highlight **Our Work** in the header while a visitor is on them (see `navSections` in `lib/site-map.ts`, which `app/(frontend)/_data/site.ts` re-exports). The first six are the disciplines in the homepage wheel, and each petal links straight to its page. Each of the 16 services has a statically generated `/services/[slug]` page with its own scope, preparation guidance, workflow, FAQs, related services, and contact link.
 
 The portfolio covers four production services, five social media services, five training programs, and two research and development services. The source is retained in `docs/Service_Portfolio_Overview.pdf`.
 
@@ -243,10 +273,15 @@ The portfolio covers four production services, five social media services, five 
 
 ```bash
 npm run lint
+npm run check:pages
 npm run build
 npx playwright install chromium
 npm run check:site
 ```
+
+`check:pages` needs no database, build or browser: it compares the routes on
+disk with `lib/site-map.ts` and fails when the two have drifted apart.
+`check:site` runs it first.
 
 The browser installation is only needed once per machine. `check:site` starts a production server on port 3100, checks all 28 pages at desktop and mobile widths, checks internal destinations and anchors, renders all social preview images, and exercises navigation history, the mobile menu, FAQs, and inquiry validation. Screenshots go to ignored `tmp/site-check/`. Set `CHECK_BASE_URL` to test an already running preview. No email is sent during checks.
 
@@ -281,7 +316,7 @@ The public website lives in the `app/(frontend)/` route group; the dashboard and
 API live in `app/(payload)/`.
 
 - `app/(frontend)/_components/` - Shared navigation, footer, page sections, structured data, and inquiry form
-- `app/(frontend)/_data/site.ts` - Business identity, contact information, navigation, and footer links
+- `app/(frontend)/_data/site.ts` - Business identity, contact information, and footer links; the navigation comes from `lib/site-map.ts`
 - `app/(frontend)/_data/services.ts` - Fallback copy of the 16 services, used only when the CMS is unreachable
 - `app/(frontend)/_data/media.ts` - Fallback media slots, superseded by Content → Page media
 - `app/(frontend)/_lib/seo.ts` - Canonical URLs, metadata, and organization data
@@ -289,11 +324,13 @@ API live in `app/(payload)/`.
 - `app/(frontend)/services/[slug]/page.tsx` - Generated service detail pages
 - `app/(payload)/` - The admin dashboard and Payload REST/GraphQL routes
 - `cms/` - Collections, globals, blocks, and access control
+- `lib/site-map.ts` - The one list of the site's pages: menu order, sub-pages, and where each is edited
 - `lib/content.ts` - CMS reads, with the static fallback
 - `lib/services.ts` - One shape for a service, whether it came from the CMS or the fallback
 - `proxy.ts` - Applies the redirects managed in the dashboard
 - `migrations/` - Database migrations (commit these)
 - `payload.config.ts` - CMS configuration
+- `scripts/check-pages.ts` - Fails when the routes and `lib/site-map.ts` disagree
 - `scripts/check-site.mjs` - Production route and browser verification
 - `Najik.docx` - Original business source document
 

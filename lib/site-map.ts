@@ -1,0 +1,308 @@
+/**
+ * The website's page structure, in one place.
+ *
+ * Every route under app/(frontend) is listed here once, with the menu it
+ * belongs to and the dashboard areas that write its content. Three things read
+ * this list, so they can never drift apart:
+ *
+ * 1. The navbar's built-in fallback and the "pages underneath a menu item"
+ *    grouping - app/(frontend)/_data/site.ts.
+ * 2. The "Website pages" panel on the dashboard home, which shows an editor
+ *    the live menu and where each page is edited - cms/components/SitePages.tsx.
+ * 3. `npm run check:pages`, which fails when a route exists with no entry here,
+ *    or an entry points at a route that no longer exists.
+ *
+ * Adding a page to the site therefore means adding it here, and the dashboard
+ * reflects it on the next load with nothing else to update.
+ */
+
+/** A link into the dashboard, and what it controls on the page. */
+export type AdminLink = { label: string; href: string; note?: string };
+
+export type SitePage = {
+  /** The public path, e.g. "/our-work". */
+  path: string;
+  /** How the page is named in the menu and in the dashboard. */
+  label: string;
+  /** One line on what the page is for. */
+  summary: string;
+  /** Position in the navbar, left to right. Absent means "not in the menu". */
+  navOrder?: number;
+  /**
+   * The menu item this page sits under without having a link of its own. The
+   * header highlights that item while a visitor is here, and the sitemap still
+   * lists the page.
+   */
+  parent?: string;
+  /** Where in the dashboard this page's content is written. */
+  edit: AdminLink[];
+  /**
+   * A route generated from CMS content rather than a fixed page, such as
+   * /services/[slug]. Excluded from the menu and from the drift check's
+   * one-directory-one-entry rule.
+   */
+  dynamic?: boolean;
+};
+
+const globalLink = (slug: string, label: string, note?: string): AdminLink => ({
+  label,
+  href: `/admin/globals/${slug}`,
+  note,
+});
+
+const collectionLink = (slug: string, label: string, note?: string): AdminLink => ({
+  label,
+  href: `/admin/collections/${slug}`,
+  note,
+});
+
+/** The photo or film in the showcase band, keyed by the page it belongs to. */
+const pageMedia = (key: string): AdminLink =>
+  collectionLink("media-slots", "Page media", `the "${key}" entry`);
+
+/**
+ * Every page on the website. Menu order is `navOrder`; everything else either
+ * sits under a menu item (`parent`) or is reached from a link on the site.
+ */
+export const sitePages: SitePage[] = [
+  {
+    path: "/",
+    label: "Home",
+    summary: "The hero, the media system wheel, the introduction and the leadership messages.",
+    navOrder: 1,
+    edit: [
+      globalLink("homepage", "Homepage", "the Home tab"),
+      globalLink("site-settings", "Site settings", "logo and company details"),
+      pageMedia("home"),
+    ],
+  },
+  {
+    path: "/services",
+    label: "Services",
+    summary: "The full service portfolio, grouped by category.",
+    navOrder: 2,
+    edit: [
+      collectionLink("services", "Services"),
+      collectionLink("service-categories", "Service categories"),
+      globalLink("homepage", "Homepage", "the Services page tab"),
+      pageMedia("services"),
+    ],
+  },
+  {
+    path: "/our-work",
+    label: "Our Work",
+    summary: "What the company does, discipline by discipline, and its social responsibility work.",
+    navOrder: 3,
+    edit: [
+      collectionLink("services", "Services"),
+      collectionLink("social-responsibility", "Social responsibility"),
+      collectionLink("faqs", "FAQs", 'placement "services"'),
+      pageMedia("our-work"),
+    ],
+  },
+  {
+    path: "/contact",
+    label: "Contact",
+    summary: "Contact details, the enquiry form, and the questions people ask before writing in.",
+    navOrder: 4,
+    edit: [
+      globalLink("site-settings", "Site settings", "address, phones, email"),
+      collectionLink("faqs", "FAQs", 'placement "contact"'),
+      collectionLink("enquiries", "Enquiries", "messages sent from this form"),
+      pageMedia("contact"),
+    ],
+  },
+  {
+    path: "/about",
+    label: "About Us",
+    summary: "Who the company is, what it stands for, and the people behind it.",
+    navOrder: 5,
+    edit: [
+      collectionLink("team", "Team"),
+      globalLink("site-settings", "Site settings", "company name and address"),
+      pageMedia("about"),
+    ],
+  },
+
+  // The disciplines. Each has its own page and its own place in the sitemap,
+  // but is reached through Our Work rather than through a menu link.
+  {
+    path: "/production",
+    label: "Production",
+    summary: "Biography videos, documentaries, advertisements and corporate films.",
+    parent: "/our-work",
+    edit: [
+      globalLink("homepage", "Homepage", "the Production page tab"),
+      collectionLink("services", "Services", "the production category"),
+      collectionLink("faqs", "FAQs", 'placement "production"'),
+      pageMedia("production"),
+    ],
+  },
+  {
+    path: "/social-media-handling",
+    label: "Social Media Handling",
+    summary: "Running and growing social channels for clients.",
+    parent: "/our-work",
+    edit: [
+      collectionLink("services", "Services", "the social media category"),
+      pageMedia("social-media-handling"),
+    ],
+  },
+  {
+    path: "/training",
+    label: "Training",
+    summary: "Media and skill development courses.",
+    parent: "/our-work",
+    edit: [
+      collectionLink("services", "Services", "the training category"),
+      collectionLink("faqs", "FAQs", 'placement "training"'),
+      pageMedia("training"),
+    ],
+  },
+  {
+    path: "/research",
+    label: "Research & Development",
+    summary: "Research, surveys and content development work.",
+    parent: "/our-work",
+    edit: [collectionLink("services", "Services"), pageMedia("research")],
+  },
+  {
+    path: "/it",
+    label: "IT",
+    summary: "Websites, systems and technical support.",
+    parent: "/our-work",
+    edit: [collectionLink("services", "Services"), pageMedia("it")],
+  },
+  {
+    path: "/advertisement",
+    label: "Advertisement",
+    summary: "Campaign planning, commercials and placement.",
+    parent: "/our-work",
+    edit: [collectionLink("services", "Services"), pageMedia("advertisement")],
+  },
+  {
+    path: "/right-sanchar",
+    label: "Right Sanchar",
+    summary: "The news arm: accurate, truthful and unbiased reporting.",
+    parent: "/our-work",
+    edit: [
+      globalLink("homepage", "Homepage", "the Right Sanchar page tab"),
+      globalLink("site-settings", "Site settings", "the Right Sanchar address"),
+      pageMedia("right-sanchar"),
+    ],
+  },
+
+  // Reached from links on the site rather than from the menu.
+  {
+    path: "/posts",
+    label: "Writing",
+    summary: "News, blogs, commentary and investigations. Listed once something is published.",
+    edit: [collectionLink("posts", "Posts")],
+  },
+  {
+    path: "/offers",
+    label: "Offers",
+    summary: "Promotions and packages. Listed once something is published and in date.",
+    edit: [collectionLink("offers", "Offers")],
+  },
+  {
+    path: "/search",
+    label: "Search",
+    summary: "Searches services, writing, offers and pages. Deliberately not indexed.",
+    edit: [],
+  },
+  {
+    path: "/signup",
+    label: "Dashboard sign-up",
+    summary: "Requests an account. An administrator approves it before it can sign in.",
+    edit: [collectionLink("users", "Users", "approve new accounts here")],
+  },
+
+  // Generated from CMS content.
+  {
+    path: "/services/[slug]",
+    label: "Service detail",
+    summary: "One page per service, generated from the service itself.",
+    dynamic: true,
+    edit: [collectionLink("services", "Services")],
+  },
+  {
+    path: "/posts/[slug]",
+    label: "Post detail",
+    summary: "One page per post.",
+    dynamic: true,
+    edit: [collectionLink("posts", "Posts")],
+  },
+  {
+    path: "/[slug]",
+    label: "Pages built in the dashboard",
+    summary: "Anything created in Content → Pages goes live at its own address.",
+    dynamic: true,
+    edit: [collectionLink("pages", "Pages")],
+  },
+];
+
+/** Indexed by path, for looking up the entry behind a menu link. */
+export const sitePageByPath: Record<string, SitePage> = Object.fromEntries(
+  sitePages.map((page) => [page.path, page]),
+);
+
+/** The menu, in order, as the site ships it before anything is edited. */
+export const defaultNavigation: { label: string; href: string }[] = sitePages
+  .filter((page) => typeof page.navOrder === "number")
+  .sort((a, b) => (a.navOrder ?? 0) - (b.navOrder ?? 0))
+  .map((page) => ({ label: page.label, href: page.path }));
+
+/**
+ * Pages that sit underneath a menu item without a link of their own, keyed by
+ * that item's path. The header highlights the parent while a visitor is on one
+ * of them, and the sitemap lists them, so shortening the menu never hides a page.
+ */
+export const navSections: Record<string, string[]> = sitePages.reduce<Record<string, string[]>>(
+  (sections, page) => {
+    if (!page.parent) return sections;
+    (sections[page.parent] ??= []).push(page.path);
+    return sections;
+  },
+  {},
+);
+
+export type NavItem = { label: string; href: string; newTab?: boolean; covers?: string[] };
+
+/** Attach the pages a menu item stands for, so the header can highlight it. */
+export const withSection = (item: NavItem): NavItem =>
+  navSections[item.href] ? { ...item, covers: navSections[item.href] } : item;
+
+/** A page built in Content → Pages, as far as the menu is concerned. */
+export type PageDoc = { title: string; slug?: string | null; showInNav?: boolean | null };
+
+/**
+ * The menu links a set of published pages contributes.
+ *
+ * Ticking "show in navigation" on a page adds it to the menu without anyone
+ * editing Site → Navigation. Both the header and the dashboard panel apply this
+ * rule through here, so neither can decide differently about a page.
+ */
+export const navItemsFromPages = (pages: PageDoc[]): NavItem[] =>
+  pages
+    .filter((page) => page.slug && page.showInNav)
+    .sort((a, b) => a.title.localeCompare(b.title))
+    .map((page) => ({ label: page.title, href: `/${page.slug}` }));
+
+/**
+ * The menu the website actually renders.
+ *
+ * `items` are the links saved in Site → Navigation, `pageItems` what
+ * `navItemsFromPages` returned. Both the header and the dashboard's page panel
+ * call this, so what an editor sees in the dashboard is what a visitor sees in
+ * the navbar.
+ */
+export function resolveNavItems(items: NavItem[] | null | undefined, pageItems: NavItem[] = []): NavItem[] {
+  const saved = (items ?? []).filter((item) => item.label && item.href);
+  const base = saved.length > 0 ? saved : defaultNavigation;
+
+  return [...base, ...pageItems]
+    .map((item) => withSection({ ...item }))
+    // A page already linked by hand should not appear twice.
+    .filter((item, index, all) => all.findIndex((other) => other.href === item.href) === index);
+}

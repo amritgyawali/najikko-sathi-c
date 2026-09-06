@@ -21,7 +21,11 @@ export const Navigation: GlobalConfig = {
           name: "href",
           type: "text",
           required: true,
-          admin: { description: 'Section anchor such as "#services", or a path such as "/about".' },
+          admin: {
+            description:
+              'A path such as "/about", or a full address for another website. The pages the ' +
+              "site has are listed on the dashboard home.",
+          },
         },
         { name: "newTab", type: "checkbox", label: "Open in a new tab" },
       ],
@@ -32,7 +36,7 @@ export const Navigation: GlobalConfig = {
       label: "Header button",
       fields: [
         { name: "label", type: "text", defaultValue: "Start a conversation" },
-        { name: "href", type: "text", defaultValue: "#contact" },
+        { name: "href", type: "text", defaultValue: "/contact" },
         { name: "enabled", type: "checkbox", defaultValue: true },
       ],
     },

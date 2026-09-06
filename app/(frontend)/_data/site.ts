@@ -21,30 +21,12 @@ export const business = {
   rightSancharLabel: "rightsanchar.com",
 } as const;
 
-export const navigation = [
-  { label: "Home", href: "/" },
-  { label: "Services", href: "/services" },
-  { label: "Our Work", href: "/our-work" },
-  { label: "Contact", href: "/contact" },
-  { label: "About Us", href: "/about" },
-] as const;
-
 /**
- * Pages that sit underneath a menu item without having their own link in the
- * navbar. The header highlights the parent while a visitor is on one of them,
- * and the sitemap still lists them, so shortening the menu never hides a page.
+ * The navbar, and the pages that sit underneath a menu item without a link of
+ * their own. Both are derived from lib/site-map.ts, the one list of the site's
+ * pages, so the menu, the sitemap and the dashboard cannot drift apart.
  */
-export const navSections: Record<string, string[]> = {
-  "/our-work": [
-    "/production",
-    "/social-media-handling",
-    "/training",
-    "/research",
-    "/it",
-    "/advertisement",
-    "/right-sanchar",
-  ],
-};
+export { defaultNavigation as navigation, navSections } from "@/lib/site-map";
 
 /**
  * The six disciplines in the media system wheel on the homepage. Each petal

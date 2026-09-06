@@ -25,9 +25,14 @@ import { mediaAlt, mediaUrl } from "@/lib/media";
 import {
   business as fallbackBusiness,
   footerGroups as fallbackFooterGroups,
-  navigation as fallbackNavigation,
-  navSections,
 } from "@/app/(frontend)/_data/site";
+import {
+  defaultNavigation,
+  navItemsFromPages,
+  resolveNavItems,
+  withSection,
+  type NavItem,
+} from "@/lib/site-map";
 
 /**
  * Reads content from Payload, falling back to the checked-in copy in
@@ -121,11 +126,7 @@ export const getBusiness = cache(async (): Promise<BusinessInfo> => {
   };
 });
 
-export type NavItem = { label: string; href: string; newTab?: boolean; covers?: string[] };
-
-/** Attach the pages a menu item stands for, so the header can highlight it. */
-const withSection = (item: NavItem): NavItem =>
-  navSections[item.href] ? { ...item, covers: navSections[item.href] } : item;
+export type { NavItem };
 
 export type NavConfig = {
   items: NavItem[];
@@ -135,17 +136,13 @@ export type NavConfig = {
 
 export const getNavigation = cache(async (): Promise<NavConfig> => {
   const fallback: NavConfig = {
-    items: fallbackNavigation.map((item) => withSection({ label: item.label, href: item.href })),
-    cta: { label: "Start a conversation", href: "#contact", enabled: true },
+    items: defaultNavigation.map((item) => withSection({ label: item.label, href: item.href })),
+    cta: { label: "Start a conversation", href: "/contact", enabled: true },
     showUtilityBar: true,
   };
 
   const nav = await readGlobal<Navigation>("navigation");
   if (!nav) return fallback;
-
-  const items = nav.items
-    ?.filter((item) => item.label && item.href)
-    .map((item) => withSection({ label: item.label, href: item.href, newTab: item.newTab ?? false }));
 
   // Pages flagged "show in navigation" are appended automatically, so adding a
   // page to the menu does not also mean editing the Navigation global.
@@ -155,17 +152,14 @@ export const getNavigation = cache(async (): Promise<NavConfig> => {
     depth: 0,
     sort: "title",
   });
-  const pageItems: NavItem[] = navPages
-    .filter((page) => page.slug)
-    .map((page) => ({ label: page.title, href: `/${page.slug}` }));
-
-  const merged = [...or(items, fallback.items), ...pageItems].filter(
-    // A page already linked by hand should not appear twice.
-    (item, index, all) => all.findIndex((other) => other.href === item.href) === index,
-  );
 
   return {
-    items: merged,
+    // resolveNavItems is shared with the dashboard's page panel, so the menu an
+    // editor sees there is the menu a visitor gets.
+    items: resolveNavItems(
+      nav.items?.map((item) => ({ label: item.label, href: item.href, newTab: item.newTab ?? false })),
+      navItemsFromPages(navPages),
+    ),
     cta: {
       label: or(nav.cta?.label, fallback.cta.label),
       href: or(nav.cta?.href, fallback.cta.href),
