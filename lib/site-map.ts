@@ -1,19 +1,23 @@
 /**
  * The website's page structure, in one place.
  *
- * Every route under app/(frontend) is listed here once, with the menu it
- * belongs to and the dashboard areas that write its content. Three things read
+ * Every route under app/(frontend) is listed here once, with its name, the menu
+ * it belongs to and the dashboard areas that write into it. Four things read
  * this list, so they can never drift apart:
  *
  * 1. The navbar's built-in fallback and the "pages underneath a menu item"
  *    grouping - app/(frontend)/_data/site.ts.
- * 2. The "Website pages" panel on the dashboard home, which shows an editor
- *    the live menu and where each page is edited - cms/components/SitePages.tsx.
- * 3. `npm run check:pages`, which fails when a route exists with no entry here,
- *    or an entry points at a route that no longer exists.
+ * 2. The "Website pages" panel on the dashboard home, which lists every page
+ *    with what can be done to it - cms/components/SitePages.tsx.
+ * 3. cms/site-pages.ts, which turns each of these into a document an editor can
+ *    change, holding the copy in lib/page-defaults.ts.
+ * 4. `npm run check:pages`, which fails when a route exists with no entry here,
+ *    an entry points at a route that no longer exists, or a page has no copy to
+ *    ship with.
  *
- * Adding a page to the site therefore means adding it here, and the dashboard
- * reflects it on the next load with nothing else to update.
+ * Adding a page to the site therefore means adding it here and writing its
+ * sections in lib/page-defaults.ts; the dashboard offers it on the next load
+ * with nothing else to update.
  */
 
 /** A link into the dashboard, and what it controls on the page. */
@@ -381,36 +385,59 @@ export type NavItem = { label: string; href: string; newTab?: boolean; covers?: 
 export const withSection = (item: NavItem): NavItem =>
   navSections[item.href] ? { ...item, covers: navSections[item.href] } : item;
 
-/** A page built in Content → Pages, as far as the menu is concerned. */
-export type PageDoc = { title: string; slug?: string | null; showInNav?: boolean | null };
+/** A page in Content → Pages, as far as the menu is concerned. */
+export type PageDoc = {
+  title: string;
+  slug?: string | null;
+  path?: string | null;
+  navOrder?: number | null;
+  showInNav?: boolean | null;
+};
 
 /**
  * The menu links a set of published pages contributes.
  *
  * Ticking "show in navigation" on a page adds it to the menu without anyone
- * editing Site → Navigation. Both the header and the dashboard panel apply this
- * rule through here, so neither can decide differently about a page.
+ * editing Site → Navigation, and the position number beside it orders those
+ * links. Both the header and the dashboard panel apply this rule through here,
+ * so neither can decide differently about a page.
  */
 export const navItemsFromPages = (pages: PageDoc[]): NavItem[] =>
   pages
-    .filter((page) => page.slug && page.showInNav)
-    .sort((a, b) => a.title.localeCompare(b.title))
-    .map((page) => ({ label: page.title, href: `/${page.slug}` }));
+    .filter((page) => (page.path || page.slug) && page.showInNav)
+    .sort(
+      (a, b) =>
+        (a.navOrder ?? Number.MAX_SAFE_INTEGER) - (b.navOrder ?? Number.MAX_SAFE_INTEGER) ||
+        a.title.localeCompare(b.title),
+    )
+    .map((page) => ({ label: page.title, href: page.path || `/${page.slug}` }));
 
 /**
  * The menu the website actually renders.
  *
  * `items` are the links saved in Site → Navigation, `pageItems` what
- * `navItemsFromPages` returned. Both the header and the dashboard's page panel
+ * `navItemsFromPages` returned, and `hidden` the addresses of pages an editor
+ * has taken off the website. Both the header and the dashboard's page panel
  * call this, so what an editor sees in the dashboard is what a visitor sees in
  * the navbar.
+ *
+ * A page that is both in the saved menu and published with "show in navigation"
+ * appears once, in the menu's position but under the page's own name - so
+ * renaming a page in the dashboard renames its link.
  */
-export function resolveNavItems(items: NavItem[] | null | undefined, pageItems: NavItem[] = []): NavItem[] {
+export function resolveNavItems(
+  items: NavItem[] | null | undefined,
+  pageItems: NavItem[] = [],
+  hidden: string[] = [],
+): NavItem[] {
   const saved = (items ?? []).filter((item) => item.label && item.href);
   const base = saved.length > 0 ? saved : defaultNavigation;
+  const namedByPage = new Map(pageItems.map((item) => [item.href, item.label]));
 
   return [...base, ...pageItems]
-    .map((item) => withSection({ ...item }))
+    .map((item) => withSection({ ...item, label: namedByPage.get(item.href) ?? item.label }))
     // A page already linked by hand should not appear twice.
-    .filter((item, index, all) => all.findIndex((other) => other.href === item.href) === index);
+    .filter((item, index, all) => all.findIndex((other) => other.href === item.href) === index)
+    // A page taken off the website leaves the menu with it.
+    .filter((item) => !hidden.includes(item.href));
 }

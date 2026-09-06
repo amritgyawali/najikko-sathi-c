@@ -158,14 +158,25 @@ export interface UserAuthOperations {
   };
 }
 /**
- * Build new website pages by stacking layout blocks.
+ * Every page on the website. Edit the words on a built-in page, build a new one from sections, or take one off the site.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "pages".
  */
 export interface Page {
   id: number;
+  /**
+   * Shown in the menu and in breadcrumbs.
+   */
   title: string;
+  /**
+   * A website page is one the site ships with; deleting it here restores the copy it shipped with. A new page is one built in the dashboard.
+   */
+  kind: 'route' | 'custom';
+  /**
+   * The address this page answers at. New pages take it from the slug below.
+   */
+  path?: string | null;
   /**
    * Leave blank to generate this from the title.
    */
@@ -176,10 +187,471 @@ export interface Page {
    */
   showInNav?: boolean | null;
   /**
-   * Add, reorder and remove sections to compose the page.
+   * Position in the menu, left to right. Leave empty to place it after the numbered links.
+   */
+  navOrder?: number | null;
+  /**
+   * The address of the menu item this page sits under, for example "/our-work". The menu highlights that item while a visitor is here.
+   */
+  parent?: string | null;
+  /**
+   * One line describing the page. Shown on the dashboard's page list.
+   */
+  summary?: string | null;
+  /**
+   * Everything on the page, top to bottom. Add, reorder, rewrite or remove a section and the website follows.
    */
   layout?:
     | (
+        | {
+            /**
+             * The line above the title.
+             */
+            eyebrow: string;
+            heading: string;
+            description?: string | null;
+            ctaLabel?: string | null;
+            ctaHref?: string | null;
+            /**
+             * Leave the address empty as well to send people to the Right Sanchar address in Site settings.
+             */
+            ctaExternal?: boolean | null;
+            /**
+             * Optional service category id (for example "production"), which colours the hero emblem.
+             */
+            category?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'pageHero';
+          }
+        | {
+            /**
+             * The small label above the heading.
+             */
+            kicker?: string | null;
+            heading?: string | null;
+            /**
+             * One or two lines under the heading.
+             */
+            description?: string | null;
+            /**
+             * The opening paragraph, set larger.
+             */
+            lead?: string | null;
+            paragraphs?:
+              | {
+                  text: string;
+                  id?: string | null;
+                }[]
+              | null;
+            linkLabel?: string | null;
+            linkHref?: string | null;
+            /**
+             * A tinted band sets the section apart from the white ones around it.
+             */
+            tone?: ('plain' | 'tinted') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'prose';
+          }
+        | {
+            /**
+             * The quotation inside the panel. The company name and address come from Site settings.
+             */
+            panelQuote?: string | null;
+            /**
+             * The small label above the heading.
+             */
+            kicker?: string | null;
+            heading?: string | null;
+            /**
+             * One or two lines under the heading.
+             */
+            description?: string | null;
+            lead?: string | null;
+            paragraphs?:
+              | {
+                  text: string;
+                  id?: string | null;
+                }[]
+              | null;
+            linkLabel?: string | null;
+            linkHref?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'identityStory';
+          }
+        | {
+            /**
+             * The small label above the heading.
+             */
+            kicker?: string | null;
+            heading?: string | null;
+            /**
+             * One or two lines under the heading.
+             */
+            description?: string | null;
+            style: 'values' | 'disciplines' | 'topics' | 'links';
+            tone?: ('plain' | 'tinted') | null;
+            cards?:
+              | {
+                  /**
+                   * Drawn above the title.
+                   */
+                  icon?:
+                    | (
+                        | 'camera'
+                        | 'clapperboard'
+                        | 'film'
+                        | 'megaphone'
+                        | 'newspaper'
+                        | 'graduationCap'
+                        | 'search'
+                        | 'monitorSmartphone'
+                        | 'speech'
+                        | 'heartHandshake'
+                        | 'bookOpen'
+                        | 'users'
+                        | 'userRoundPen'
+                        | 'compass'
+                        | 'calendarCheck'
+                        | 'monitorPlay'
+                        | 'radio'
+                        | 'sparkles'
+                        | 'layoutDashboard'
+                        | 'smartphone'
+                        | 'server'
+                        | 'landmark'
+                        | 'building2'
+                        | 'globe2'
+                        | 'mic2'
+                      )
+                    | null;
+                  title: string;
+                  text?: string | null;
+                  /**
+                   * Shown as a ticked list on the discipline style.
+                   */
+                  points?:
+                    | {
+                        text: string;
+                        id?: string | null;
+                      }[]
+                    | null;
+                  linkLabel?: string | null;
+                  linkHref?: string | null;
+                  id?: string | null;
+                }[]
+              | null;
+            chips?:
+              | {
+                  text: string;
+                  id?: string | null;
+                }[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'featureCards';
+          }
+        | {
+            /**
+             * The small label above the heading.
+             */
+            kicker?: string | null;
+            heading?: string | null;
+            /**
+             * One or two lines under the heading.
+             */
+            description?: string | null;
+            steps?:
+              | {
+                  title: string;
+                  text: string;
+                  id?: string | null;
+                }[]
+              | null;
+            tone?: ('plain' | 'tinted') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'processSteps';
+          }
+        | {
+            /**
+             * The small label above the heading.
+             */
+            kicker?: string | null;
+            heading?: string | null;
+            /**
+             * One or two lines under the heading.
+             */
+            description?: string | null;
+            /**
+             * Questions saved in Content → FAQs with this placement replace the list below. Leave the placement empty to use only the list below.
+             */
+            placement?: ('contact' | 'services' | 'training' | 'production') | null;
+            items?:
+              | {
+                  question: string;
+                  answer: string;
+                  id?: string | null;
+                }[]
+              | null;
+            tone?: ('plain' | 'tinted') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'faqSection';
+          }
+        | {
+            /**
+             * The small label above the heading.
+             */
+            kicker?: string | null;
+            heading?: string | null;
+            /**
+             * One or two lines under the heading.
+             */
+            description?: string | null;
+            source: 'category' | 'slugs' | 'all';
+            /**
+             * The category id, for example "production" or "training".
+             */
+            category?: string | null;
+            slugs?:
+              | {
+                  slug: string;
+                  id?: string | null;
+                }[]
+              | null;
+            tone?: ('plain' | 'tinted') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'serviceCards';
+          }
+        | {
+            ariaLabel?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'categoryBar';
+          }
+        | {
+            /**
+             * One section per category in Content → Service categories, listing the services filed under it.
+             */
+            note?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'categoryGroups';
+          }
+        | {
+            /**
+             * The Page media entry to show, for example "about".
+             */
+            mediaKey: string;
+            /**
+             * Names the band: “<title> in pictures & film”.
+             */
+            heading?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'mediaShowcase';
+          }
+        | {
+            /**
+             * The small label above the heading.
+             */
+            kicker?: string | null;
+            heading?: string | null;
+            /**
+             * One or two lines under the heading.
+             */
+            description?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'teamSection';
+          }
+        | {
+            /**
+             * The small label above the heading.
+             */
+            kicker?: string | null;
+            heading?: string | null;
+            /**
+             * One or two lines under the heading.
+             */
+            description?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'socialResponsibilitySection';
+          }
+        | {
+            /**
+             * The small label above the heading.
+             */
+            kicker?: string | null;
+            heading?: string | null;
+            /**
+             * One or two lines under the heading.
+             */
+            description?: string | null;
+            /**
+             * The line under the company name and VAT number.
+             */
+            note?: string | null;
+            linkLabel?: string | null;
+            linkHref?: string | null;
+            showForm?: boolean | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'contactDetails';
+          }
+        | {
+            heading: string;
+            description?: string | null;
+            /**
+             * Preselects this service on the contact form.
+             */
+            service?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'contactCta';
+          }
+        | {
+            /**
+             * The small label above the heading.
+             */
+            kicker?: string | null;
+            heading?: string | null;
+            /**
+             * One or two lines under the heading.
+             */
+            description?: string | null;
+            body?: string | null;
+            primaryLabel?: string | null;
+            /**
+             * Leave empty to use the Right Sanchar address from Site settings.
+             */
+            primaryHref?: string | null;
+            secondaryLabel?: string | null;
+            secondaryHref?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'portalLinks';
+          }
+        | {
+            /**
+             * The small label above the heading.
+             */
+            kicker?: string | null;
+            heading?: string | null;
+            /**
+             * One or two lines under the heading.
+             */
+            description?: string | null;
+            limit?: number | null;
+            /**
+             * Shown while nothing has been published.
+             */
+            emptyText?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'postList';
+          }
+        | {
+            /**
+             * The small label above the heading.
+             */
+            kicker?: string | null;
+            heading?: string | null;
+            /**
+             * One or two lines under the heading.
+             */
+            description?: string | null;
+            limit?: number | null;
+            /**
+             * Shown while no offer is running.
+             */
+            emptyText?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'offerList';
+          }
+        | {
+            /**
+             * The second button. Its address is the Right Sanchar link in Site settings. The words in this band are written in Site → Homepage & page copy, on the "Home - hero" tab.
+             */
+            secondaryLabel?: string | null;
+            showMediaSystem?: boolean | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'homeHero';
+          }
+        | {
+            linkLabel?: string | null;
+            linkHref?: string | null;
+            /**
+             * The caption on the visual. The words in this band are written in Site → Homepage & page copy, on the "Home - about" tab.
+             */
+            captionTitle?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'homeAbout';
+          }
+        | {
+            /**
+             * The words in this band are written in Site → Homepage & page copy, on the "Home - leadership" tab.
+             */
+            note?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'leadershipSection';
+          }
+        | {
+            /**
+             * The words in this band are written in Site → Homepage & page copy, on the "Production page" tab.
+             */
+            note?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'productionBand';
+          }
+        | {
+            /**
+             * The words in this band are written in Site → Homepage & page copy, on the "Right Sanchar page" tab.
+             */
+            note?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'sancharBand';
+          }
+        | {
+            /**
+             * The words in this band are written in Site → Homepage & page copy, on the "Services page" tab.
+             */
+            note?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'servicesBand';
+          }
+        | {
+            /**
+             * The small label above the heading.
+             */
+            kicker?: string | null;
+            heading?: string | null;
+            /**
+             * One or two lines under the heading.
+             */
+            description?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'searchSection';
+          }
+        | {
+            note?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'signupSection';
+          }
         | {
             kicker?: string | null;
             heading: string;
@@ -289,6 +761,10 @@ export interface Page {
     title?: string | null;
     description?: string | null;
     image?: (number | null) | Media;
+    /**
+     * The page stays on the website and keeps working. It asks not to be indexed, and it leaves the sitemap.
+     */
+    noindex?: boolean | null;
   };
   updatedAt: string;
   createdAt: string;
@@ -956,12 +1432,313 @@ export interface PayloadMigration {
  */
 export interface PagesSelect<T extends boolean = true> {
   title?: T;
+  kind?: T;
+  path?: T;
   slug?: T;
   status?: T;
   showInNav?: T;
+  navOrder?: T;
+  parent?: T;
+  summary?: T;
   layout?:
     | T
     | {
+        pageHero?:
+          | T
+          | {
+              eyebrow?: T;
+              heading?: T;
+              description?: T;
+              ctaLabel?: T;
+              ctaHref?: T;
+              ctaExternal?: T;
+              category?: T;
+              id?: T;
+              blockName?: T;
+            };
+        prose?:
+          | T
+          | {
+              kicker?: T;
+              heading?: T;
+              description?: T;
+              lead?: T;
+              paragraphs?:
+                | T
+                | {
+                    text?: T;
+                    id?: T;
+                  };
+              linkLabel?: T;
+              linkHref?: T;
+              tone?: T;
+              id?: T;
+              blockName?: T;
+            };
+        identityStory?:
+          | T
+          | {
+              panelQuote?: T;
+              kicker?: T;
+              heading?: T;
+              description?: T;
+              lead?: T;
+              paragraphs?:
+                | T
+                | {
+                    text?: T;
+                    id?: T;
+                  };
+              linkLabel?: T;
+              linkHref?: T;
+              id?: T;
+              blockName?: T;
+            };
+        featureCards?:
+          | T
+          | {
+              kicker?: T;
+              heading?: T;
+              description?: T;
+              style?: T;
+              tone?: T;
+              cards?:
+                | T
+                | {
+                    icon?: T;
+                    title?: T;
+                    text?: T;
+                    points?:
+                      | T
+                      | {
+                          text?: T;
+                          id?: T;
+                        };
+                    linkLabel?: T;
+                    linkHref?: T;
+                    id?: T;
+                  };
+              chips?:
+                | T
+                | {
+                    text?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        processSteps?:
+          | T
+          | {
+              kicker?: T;
+              heading?: T;
+              description?: T;
+              steps?:
+                | T
+                | {
+                    title?: T;
+                    text?: T;
+                    id?: T;
+                  };
+              tone?: T;
+              id?: T;
+              blockName?: T;
+            };
+        faqSection?:
+          | T
+          | {
+              kicker?: T;
+              heading?: T;
+              description?: T;
+              placement?: T;
+              items?:
+                | T
+                | {
+                    question?: T;
+                    answer?: T;
+                    id?: T;
+                  };
+              tone?: T;
+              id?: T;
+              blockName?: T;
+            };
+        serviceCards?:
+          | T
+          | {
+              kicker?: T;
+              heading?: T;
+              description?: T;
+              source?: T;
+              category?: T;
+              slugs?:
+                | T
+                | {
+                    slug?: T;
+                    id?: T;
+                  };
+              tone?: T;
+              id?: T;
+              blockName?: T;
+            };
+        categoryBar?:
+          | T
+          | {
+              ariaLabel?: T;
+              id?: T;
+              blockName?: T;
+            };
+        categoryGroups?:
+          | T
+          | {
+              note?: T;
+              id?: T;
+              blockName?: T;
+            };
+        mediaShowcase?:
+          | T
+          | {
+              mediaKey?: T;
+              heading?: T;
+              id?: T;
+              blockName?: T;
+            };
+        teamSection?:
+          | T
+          | {
+              kicker?: T;
+              heading?: T;
+              description?: T;
+              id?: T;
+              blockName?: T;
+            };
+        socialResponsibilitySection?:
+          | T
+          | {
+              kicker?: T;
+              heading?: T;
+              description?: T;
+              id?: T;
+              blockName?: T;
+            };
+        contactDetails?:
+          | T
+          | {
+              kicker?: T;
+              heading?: T;
+              description?: T;
+              note?: T;
+              linkLabel?: T;
+              linkHref?: T;
+              showForm?: T;
+              id?: T;
+              blockName?: T;
+            };
+        contactCta?:
+          | T
+          | {
+              heading?: T;
+              description?: T;
+              service?: T;
+              id?: T;
+              blockName?: T;
+            };
+        portalLinks?:
+          | T
+          | {
+              kicker?: T;
+              heading?: T;
+              description?: T;
+              body?: T;
+              primaryLabel?: T;
+              primaryHref?: T;
+              secondaryLabel?: T;
+              secondaryHref?: T;
+              id?: T;
+              blockName?: T;
+            };
+        postList?:
+          | T
+          | {
+              kicker?: T;
+              heading?: T;
+              description?: T;
+              limit?: T;
+              emptyText?: T;
+              id?: T;
+              blockName?: T;
+            };
+        offerList?:
+          | T
+          | {
+              kicker?: T;
+              heading?: T;
+              description?: T;
+              limit?: T;
+              emptyText?: T;
+              id?: T;
+              blockName?: T;
+            };
+        homeHero?:
+          | T
+          | {
+              secondaryLabel?: T;
+              showMediaSystem?: T;
+              id?: T;
+              blockName?: T;
+            };
+        homeAbout?:
+          | T
+          | {
+              linkLabel?: T;
+              linkHref?: T;
+              captionTitle?: T;
+              id?: T;
+              blockName?: T;
+            };
+        leadershipSection?:
+          | T
+          | {
+              note?: T;
+              id?: T;
+              blockName?: T;
+            };
+        productionBand?:
+          | T
+          | {
+              note?: T;
+              id?: T;
+              blockName?: T;
+            };
+        sancharBand?:
+          | T
+          | {
+              note?: T;
+              id?: T;
+              blockName?: T;
+            };
+        servicesBand?:
+          | T
+          | {
+              note?: T;
+              id?: T;
+              blockName?: T;
+            };
+        searchSection?:
+          | T
+          | {
+              kicker?: T;
+              heading?: T;
+              description?: T;
+              id?: T;
+              blockName?: T;
+            };
+        signupSection?:
+          | T
+          | {
+              note?: T;
+              id?: T;
+              blockName?: T;
+            };
         hero?:
           | T
           | {
@@ -1063,6 +1840,7 @@ export interface PagesSelect<T extends boolean = true> {
         title?: T;
         description?: T;
         image?: T;
+        noindex?: T;
       };
   updatedAt?: T;
   createdAt?: T;

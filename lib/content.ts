@@ -146,12 +146,15 @@ export const getNavigation = cache(async (): Promise<NavConfig> => {
 
   // Pages flagged "show in navigation" are appended automatically, so adding a
   // page to the menu does not also mean editing the Navigation global.
-  const navPages = await getCollection("pages", {
-    where: { and: [{ status: { equals: "published" } }, { showInNav: { equals: true } }] },
-    limit: 20,
-    depth: 0,
-    sort: "title",
-  });
+  const [navPages, hidden] = await Promise.all([
+    getCollection("pages", {
+      where: { and: [{ status: { equals: "published" } }, { showInNav: { equals: true } }] },
+      limit: 50,
+      depth: 0,
+      sort: "title",
+    }),
+    getHiddenPaths(),
+  ]);
 
   return {
     // resolveNavItems is shared with the dashboard's page panel, so the menu an
@@ -159,6 +162,7 @@ export const getNavigation = cache(async (): Promise<NavConfig> => {
     items: resolveNavItems(
       nav.items?.map((item) => ({ label: item.label, href: item.href, newTab: item.newTab ?? false })),
       navItemsFromPages(navPages),
+      hidden,
     ),
     cta: {
       label: or(nav.cta?.label, fallback.cta.label),
@@ -346,3 +350,17 @@ export const getAnnouncement = cache(async (): Promise<Announcement | null> => {
 export const getRedirects = cache(async (): Promise<Redirect[]> =>
   getCollection("redirects", { limit: 500, depth: 0 }),
 );
+
+/**
+ * The addresses of pages an editor has taken off the website, by setting the
+ * page back to Draft in Content → Pages. The menu, the sitemap and the pages
+ * themselves all check this, so removing a page removes every trace of it.
+ */
+export const getHiddenPaths = cache(async (): Promise<string[]> => {
+  const docs = await getCollection("pages", {
+    where: { status: { not_equals: "published" } },
+    limit: 200,
+    depth: 0,
+  });
+  return docs.map((doc) => doc.path).filter((path): path is string => Boolean(path));
+});

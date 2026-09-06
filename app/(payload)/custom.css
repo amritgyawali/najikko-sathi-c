@@ -1228,6 +1228,88 @@ a.ns-page__path:hover {
   color: inherit;
 }
 
+/* The row of things an editor can do to a page: open it, edit it, add it. */
+.ns-pages__bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  padding: 10px 12px;
+  border: 1px solid var(--ns-line);
+  border-radius: var(--ns-radius);
+  background: var(--theme-elevation-50);
+}
+
+.ns-pages__barnote {
+  flex: 1 1 260px;
+  min-width: 220px;
+  font-size: 12px;
+  color: var(--ns-muted);
+}
+
+.ns-pages__error {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ns-c1);
+}
+
+.ns-page__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.ns-page__action {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 11px;
+  border-radius: 999px;
+  border: 1px solid var(--ns-line);
+  background: var(--ns-card);
+  color: var(--theme-elevation-800);
+  font-size: 12px;
+  font-weight: 600;
+  font-family: inherit;
+  line-height: 1.6;
+  text-decoration: none;
+  cursor: pointer;
+  transition: border-color 0.15s var(--ns-ease), color 0.15s var(--ns-ease);
+}
+
+.ns-page__action:hover {
+  border-color: var(--ns-blue);
+  color: var(--ns-accent-ink);
+  text-decoration: none;
+}
+
+.ns-page__action:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+/* The one action that changes something, rather than opening something. */
+.ns-page__action--go {
+  border-color: var(--ns-blue);
+  color: var(--ns-accent-ink);
+}
+
+.ns-page__flag {
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--ns-c2) 16%, var(--ns-card));
+  color: var(--theme-elevation-800);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.ns-page__stamp {
+  font-size: 11px;
+  color: var(--ns-muted);
+}
+
 .ns-pages__foot {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -1405,6 +1487,8 @@ html[data-theme="dark"] .ns-page__path,
 html[data-theme="dark"] .ns-page__note,
 html[data-theme="dark"] .ns-slot__tag:not(.ns-slot__tag--on),
 html[data-theme="dark"] .ns-pages__hint,
+html[data-theme="dark"] .ns-pages__barnote,
+html[data-theme="dark"] .ns-page__stamp,
 html[data-theme="dark"] .ns-overview__sub,
 html[data-theme="dark"] .field-description,
 html[data-theme="dark"] .custom-view-description {
@@ -1418,4 +1502,9 @@ html[data-theme="dark"] .ns-slot__tag--on {
 
 html[data-theme="dark"] .ns-page--broken .ns-page__summary {
   color: #ff9b7d;
+}
+
+html[data-theme="dark"] .ns-page__flag {
+  background: rgba(242, 150, 15, 0.18);
+  color: #f3d6b4;
 }
