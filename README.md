@@ -85,6 +85,10 @@ appear instead. A draft is flagged as one, so it is clear why the page is not
 public yet. The mapping lives in `cms/live-urls.ts`; add a case there when a
 new collection gets a public page.
 
+Every list table has a matching **Link** column, so a page of posts or services
+shows where each row went without opening any of them. A draft's address is
+shown in amber, and content with no page of its own shows a dash.
+
 The sidebar has **Dashboard** and **View website** above the menu, so the
 overview and the public site are one click away from anywhere in the admin.
 

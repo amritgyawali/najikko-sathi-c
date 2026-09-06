@@ -680,6 +680,51 @@ textarea:focus,
   white-space: nowrap;
 }
 
+/* The Link column in every list table. Markup in
+   cms/components/LiveLinkCell.tsx. */
+.ns-cell-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 30ch;
+  color: var(--ns-blue);
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.ns-cell-link > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ns-cell-link svg {
+  width: 13px;
+  height: 13px;
+  flex-shrink: 0;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.7;
+}
+
+.ns-cell-link:hover {
+  color: var(--ns-navy);
+  text-decoration: underline;
+}
+
+/* A draft has an address but nothing is there yet. */
+.ns-cell-link--draft {
+  color: var(--theme-warning-500);
+}
+
+.ns-cell-link--none {
+  color: var(--theme-elevation-400);
+}
+
 /* The controls row wraps once the link is in it. */
 .doc-controls__controls-wrapper {
   flex-wrap: wrap;

@@ -4,7 +4,7 @@ import { fileURLToPath } from "url";
 import { postgresAdapter } from "@payloadcms/db-postgres";
 import { lexicalEditor } from "@payloadcms/richtext-lexical";
 import { vercelBlobStorage } from "@payloadcms/storage-vercel-blob";
-import { buildConfig, type CollectionConfig, type GlobalConfig } from "payload";
+import { buildConfig, type CollectionConfig, type Field, type GlobalConfig } from "payload";
 import sharp from "sharp";
 
 import { Enquiries } from "./cms/collections/Enquiries";
@@ -38,19 +38,33 @@ const cloudinaryURL = process.env.CLOUDINARY_URL;
 const blobToken = process.env.BLOB_READ_WRITE_TOKEN;
 
 /**
- * Puts the "on the website" link at the top of every document and every
- * global, rather than repeating the same three lines in twenty config files.
- * The component works out the address itself from the document being edited.
+ * Puts the "on the website" address everywhere content is managed: at the top
+ * of every document and global, and as a Link column on every list table -
+ * rather than repeating the same block in twenty config files. Both components
+ * work the address out themselves from the document or the row.
  *
  * Collections and globals hang the slot off different keys, so there are two
  * wrappers rather than one.
  */
 const LIVE_LINK = "/cms/components/LiveLink#LiveLink";
+const LIVE_LINK_CELL = "/cms/components/LiveLinkCell#LiveLinkCell";
+
+/** A column of live addresses. Holds no data, so it needs no migration. */
+const liveLinkColumn: Field = {
+  name: "liveLink",
+  type: "ui",
+  label: "Link",
+  admin: { components: { Cell: LIVE_LINK_CELL } },
+};
 
 const withLiveLink = (config: CollectionConfig): CollectionConfig => ({
   ...config,
   admin: {
     ...config.admin,
+    // A collection that names its columns would otherwise hide the new one.
+    ...(config.admin?.defaultColumns
+      ? { defaultColumns: [...config.admin.defaultColumns, liveLinkColumn.name!] }
+      : {}),
     components: {
       ...config.admin?.components,
       edit: {
@@ -62,6 +76,7 @@ const withLiveLink = (config: CollectionConfig): CollectionConfig => ({
       },
     },
   },
+  fields: [...config.fields, liveLinkColumn],
 });
 
 const withGlobalLiveLink = (config: GlobalConfig): GlobalConfig => ({
