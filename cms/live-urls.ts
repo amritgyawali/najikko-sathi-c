@@ -9,6 +9,26 @@
  * the admin panel and any server code can use it.
  */
 
+import { placementLabel, placementPath } from "../lib/placements";
+
+/**
+ * The pages an editor has chosen in "Where this appears": the address of the
+ * first one, and the rest of them named in a sentence. Null while nothing has
+ * been chosen, so each collection falls back to describing where its content
+ * usually goes.
+ */
+function placed(data: Record<string, unknown>): { path: string; named: string } | null {
+  const chosen = Array.isArray(data.placements)
+    ? data.placements.filter((key): key is string => typeof key === "string" && key in placementPath)
+    : [];
+  if (chosen.length === 0) return null;
+
+  const names = chosen.map((key) => placementLabel[key]);
+  const list =
+    names.length === 1 ? names[0] : `${names.slice(0, -1).join(", ")} and ${names[names.length - 1]}`;
+  return { path: placementPath[chosen[0]], named: `the ${list} ${names.length === 1 ? "page" : "pages"}` };
+}
+
 export type LiveTarget = {
   /** The public path, or null when this content has no page of its own. */
   path: string | null;
@@ -33,13 +53,6 @@ const pageForMediaSlot: Record<string, string> = {
   advertisement: "/advertisement",
   "right-sanchar": "/right-sanchar",
   contact: "/contact",
-};
-
-const pageForFaqPlacement: Record<string, string> = {
-  contact: "/contact",
-  services: "/our-work",
-  training: "/training",
-  production: "/production",
 };
 
 const globalTargets: Record<string, LiveTarget> = {
@@ -72,27 +85,39 @@ export function liveTargetFor({
   }
 
   const slug = text(data.slug);
+  const chosen = placed(data);
 
   switch (collectionSlug) {
     case "posts":
-      return { path: slug ? `/posts/${slug}` : null, where: "Its own page, and the writing index at /posts." };
+      return {
+        path: slug ? `/posts/${slug}` : null,
+        where: chosen
+          ? `Its own page, and ${chosen.named}.`
+          : "Its own page, and the writing index at /posts.",
+      };
     case "pages":
       return { path: slug ? `/${slug}` : null, where: "Its own page." };
     case "services":
       return { path: slug ? `/services/${slug}` : null, where: "Its own service page, and the services index." };
     case "offers":
-      return { path: "/offers", where: "The offers page, alongside the other live offers." };
+      return chosen
+        ? { path: chosen.path, where: `Listed on ${chosen.named}.` }
+        : { path: "/offers", where: "The offers page, alongside the other live offers." };
     case "social-responsibility":
-      return { path: "/our-work#social-responsibility", where: "The social responsibility section of Our Work." };
+      return chosen
+        ? { path: chosen.path, where: `The social responsibility band on ${chosen.named}.` }
+        : {
+            path: "/our-work#social-responsibility",
+            where: "The social responsibility section of Our Work.",
+          };
     case "team":
-      return { path: "/about", where: "The team section of the about page." };
-    case "faqs": {
-      const placement = text(data.placement);
-      return {
-        path: pageForFaqPlacement[placement] ?? null,
-        where: placement ? "The questions on the page you chose." : "Choose a placement to set the page.",
-      };
-    }
+      return chosen
+        ? { path: chosen.path, where: `The team band on ${chosen.named}.` }
+        : { path: "/about", where: "The team section of the about page." };
+    case "faqs":
+      return chosen
+        ? { path: chosen.path, where: `The questions band on ${chosen.named}.` }
+        : { path: null, where: "Every page that carries a questions band, until you choose one." };
     case "media-slots": {
       const key = text(data.key);
       return {
@@ -102,14 +127,21 @@ export function liveTargetFor({
     }
     case "media": {
       const url = text(data.url);
-      return { path: url || null, where: "The file itself. It appears wherever it has been used." };
+      return chosen
+        ? { path: chosen.path, where: `The photo and film band on ${chosen.named}.` }
+        : { path: url || null, where: "The file itself. It appears wherever it has been used." };
     }
     case "redirects": {
       const from = text(data.from);
       return { path: from.startsWith("/") ? from : null, where: "Visiting the old address sends people to the new one." };
     }
     case "reviews":
-      return { path: null, where: "Review blocks on the pages you build. Approve it first to make it public." };
+      return chosen
+        ? { path: chosen.path, where: `Review bands on ${chosen.named}. Approve it to make it public.` }
+        : {
+            path: null,
+            where: "Review blocks on the pages you build. Approve it first to make it public.",
+          };
     case "enquiries":
       return { path: null, where: "Private. Messages sent from the contact form are never published." };
     case "service-categories":

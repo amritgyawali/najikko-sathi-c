@@ -7,6 +7,7 @@ import type { PageSection } from "@/lib/page-defaults";
 import { getBusiness, getCollection, getHomepage, getTeam, liveWhere, type BusinessInfo } from "@/lib/content";
 import { getCategoryViews, getFaqPairs, getServiceViews, type CategoryView, type ServiceView } from "@/lib/services";
 import { mediaAlt, mediaUrl } from "@/lib/media";
+import { onPage, placementKeyFor } from "@/lib/placements";
 import { ContactForm } from "./contact-form";
 import { HomeAbout, HomeHero, Leadership } from "./home-sections";
 import {
@@ -266,13 +267,16 @@ function Steps({ block }: { block: Block<"processSteps"> }) {
 }
 
 /**
- * Questions. Anything entered in Content → FAQs under the chosen placement
- * replaces the list written into the section, so an editor can reword them in
- * either place.
+ * Questions. Anything entered in Content → FAQs and published to this page -
+ * or to the page the section names - replaces the list written into the
+ * section, so an editor can reword them in either place.
  */
-async function Faq({ block }: { block: Block<"faqSection"> }) {
+async function Faq({ block, page }: { block: Block<"faqSection">; page: SectionContext }) {
   const written = (block.items ?? []).map((item) => [item.question, item.answer] as [string, string]);
-  const items = block.placement ? await getFaqPairs(block.placement, written) : written;
+  const wanted = [placementKeyFor(page.path), block.placement].filter(
+    (key): key is string => Boolean(key),
+  );
+  const items = wanted.length > 0 ? await getFaqPairs(wanted, written) : written;
   if (items.length === 0) return null;
 
   return (
@@ -360,14 +364,23 @@ async function CategoryGroups() {
   );
 }
 
-async function Showcase({ block }: { block: Block<"mediaShowcase"> }) {
+async function Showcase({ block, page }: { block: Block<"mediaShowcase">; page: SectionContext }) {
   const business = await getBusiness();
-  return <MediaShowcase mediaKey={block.mediaKey} title={block.heading || business.shortName} />;
+  return (
+    <MediaShowcase
+      mediaKey={block.mediaKey}
+      title={block.heading || business.shortName}
+      placement={placementKeyFor(page.path)}
+    />
+  );
 }
 
-/** The people added in Content → Team. Hidden while nobody has been added. */
-async function TeamGrid({ block }: { block: Block<"teamSection"> }) {
-  const team = await getTeam();
+/**
+ * The people added in Content → Team, less anyone published to other pages.
+ * Hidden while nobody has been added.
+ */
+async function TeamGrid({ block, page }: { block: Block<"teamSection">; page: SectionContext }) {
+  const team = onPage(await getTeam(), placementKeyFor(page.path));
   if (team.length === 0) return null;
 
   return (
@@ -502,12 +515,15 @@ const typeLabels: Record<string, string> = {
   investigation: "Investigation",
 };
 
-async function PostList({ block }: { block: Block<"postList"> }) {
-  const posts = await getCollection("posts", {
-    where: liveWhere(),
-    limit: block.limit ?? 60,
-    sort: "-publishedAt",
-  });
+async function PostList({ block, page }: { block: Block<"postList">; page: SectionContext }) {
+  const posts = onPage(
+    await getCollection("posts", {
+      where: liveWhere(),
+      limit: block.limit ?? 60,
+      sort: "-publishedAt",
+    }),
+    placementKeyFor(page.path),
+  );
 
   return (
     <section className="content-section">
@@ -540,12 +556,15 @@ async function PostList({ block }: { block: Block<"postList"> }) {
 const formatDate = (value?: string | null) =>
   value ? new Date(value).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" }) : null;
 
-async function OfferList({ block }: { block: Block<"offerList"> }) {
-  const offers = await getCollection("offers", {
-    where: liveWhere(),
-    limit: block.limit ?? 40,
-    sort: "-createdAt",
-  });
+async function OfferList({ block, page }: { block: Block<"offerList">; page: SectionContext }) {
+  const offers = onPage(
+    await getCollection("offers", {
+      where: liveWhere(),
+      limit: block.limit ?? 40,
+      sort: "-createdAt",
+    }),
+    placementKeyFor(page.path),
+  );
 
   return (
     <section className="content-section">
@@ -702,7 +721,7 @@ async function Section({ block, page }: { block: PageSection; page: SectionConte
     case "processSteps":
       return <Steps block={block} />;
     case "faqSection":
-      return <Faq block={block} />;
+      return <Faq block={block} page={page} />;
     case "serviceCards":
       return <Services block={block} />;
     case "categoryBar":
@@ -710,15 +729,16 @@ async function Section({ block, page }: { block: PageSection; page: SectionConte
     case "categoryGroups":
       return <CategoryGroups />;
     case "mediaShowcase":
-      return <Showcase block={block} />;
+      return <Showcase block={block} page={page} />;
     case "teamSection":
-      return <TeamGrid block={block} />;
+      return <TeamGrid block={block} page={page} />;
     case "socialResponsibilitySection":
       return (
         <SocialResponsibilitySection
           kicker={block.kicker}
           heading={block.heading}
           description={block.description}
+          placement={placementKeyFor(page.path)}
         />
       );
     case "contactDetails":
@@ -734,9 +754,9 @@ async function Section({ block, page }: { block: PageSection; page: SectionConte
     case "portalLinks":
       return <PortalLinks block={block} />;
     case "postList":
-      return <PostList block={block} />;
+      return <PostList block={block} page={page} />;
     case "offerList":
-      return <OfferList block={block} />;
+      return <OfferList block={block} page={page} />;
     case "homeHero": {
       const [business, home] = await Promise.all([getBusiness(), getHomepage()]);
       return <HomeHero block={block} business={business} home={home} />;
@@ -776,7 +796,7 @@ async function Section({ block, page }: { block: PageSection; page: SectionConte
     }
     default:
       // The free-form page-builder blocks (cms/blocks.ts) draw themselves.
-      return <RenderBlocks layout={[block]} />;
+      return <RenderBlocks layout={[block]} path={page.path} />;
   }
 }
 

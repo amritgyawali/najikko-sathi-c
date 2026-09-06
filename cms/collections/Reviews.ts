@@ -1,6 +1,7 @@
 import type { CollectionConfig } from "payload";
 import { revalidateDoc, revalidateDocAfterDelete } from "../hooks/revalidate";
 import { isEditor, isEditorField } from "../access";
+import { placementsField } from "../fields";
 
 /**
  * Client testimonials. Reviews can arrive from the public submission endpoint,
@@ -10,7 +11,7 @@ export const Reviews: CollectionConfig = {
   slug: "reviews",
   admin: {
     useAsTitle: "name",
-    defaultColumns: ["name", "rating", "approved", "featured", "createdAt"],
+    defaultColumns: ["name", "rating", "approved", "featured", "placements"],
     group: "Content",
     description: "Client testimonials shown on the website.",
   },
@@ -54,5 +55,11 @@ export const Reviews: CollectionConfig = {
       access: { create: isEditorField, update: isEditorField },
       admin: { position: "sidebar" },
     },
+    placementsField({
+      thing: "review",
+      everywhere: "on every page that carries a reviews band",
+      // A visitor submitting a review must not choose where it is published.
+      access: { create: isEditorField, update: isEditorField },
+    }),
   ],
 };

@@ -170,6 +170,12 @@
 .social-album figcaption { margin-top: 8px; color: var(--muted); font-size: 12.5px; line-height: 1.5; }
 .social-entry .text-link { margin-top: 20px; }
 
+/* Photographs and films published to a page in Content → Media. */
+.media-album { display: grid; grid-template-columns: repeat(auto-fill, minmax(215px, 1fr)); gap: 14px; margin-top: 24px; }
+.media-album figure { margin: 0; }
+.media-album img, .media-album video { display: block; width: 100%; height: 190px; object-fit: cover; border-radius: 12px; background: var(--primary); }
+.media-album figcaption { margin-top: 8px; color: var(--muted); font-size: 12.5px; line-height: 1.5; }
+
 @media (max-width: 1100px) {
   .header-inner { gap: 14px; }
   .header-actions .inquiry-button { min-width: 0; padding-inline: 12px; font-size: 10px; }
@@ -246,8 +252,8 @@
   .leadership-copy p { font-size: 15.5px; }
   .discipline-grid, .topic-grid { grid-template-columns: 1fr; }
   .discipline-card, .social-entry { padding: 24px; }
-  .social-album { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
-  .social-album img { height: 145px; }
+  .social-album, .media-album { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+  .social-album img, .media-album img, .media-album video { height: 145px; }
   .chairman-section, .foundation-section, .verticals-section, .value-section { padding-block: 52px; }
   .chairman-grid, .foundation-grid { grid-template-columns: 1fr; gap: 40px; }
   .portrait-wrap { width: min(100%, 360px); }

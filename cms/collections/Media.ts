@@ -1,6 +1,7 @@
 import type { CollectionConfig } from "payload";
 import { revalidateDoc, revalidateDocAfterDelete } from "../hooks/revalidate";
 import { isEditor } from "../access";
+import { placementsField } from "../fields";
 
 /**
  * Central file library. Every photograph and film on the website is uploaded
@@ -55,5 +56,13 @@ export const Media: CollectionConfig = {
       type: "text",
       admin: { description: "Optional photographer or source credit." },
     },
+    placementsField({
+      thing: "file",
+      everywhere: "nowhere on its own",
+      description:
+        "Choose the pages this photograph or film is published on. It joins the " +
+        "“in pictures & film” band on each of them. Leave it empty and the file is " +
+        "only used where something else points at it.",
+    }),
   ],
 };

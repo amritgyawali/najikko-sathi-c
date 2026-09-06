@@ -9,6 +9,8 @@ import * as migration_20260906_060900_secure_page_section_tables from './2026090
 import * as migration_20260906_062914_add_page_noindex from './20260906_062914_add_page_noindex';
 import * as migration_20260906_090000_page_media_uploads from './20260906_090000_page_media_uploads';
 import * as migration_20260906_110000_import_website_pages from './20260906_110000_import_website_pages';
+import * as migration_20260906_120908_add_content_placements from './20260906_120908_add_content_placements';
+import * as migration_20260906_121056_move_faq_placements from './20260906_121056_move_faq_placements';
 
 export const migrations = [
   {
@@ -65,5 +67,15 @@ export const migrations = [
     up: migration_20260906_110000_import_website_pages.up,
     down: migration_20260906_110000_import_website_pages.down,
     name: '20260906_110000_import_website_pages',
+  },
+  {
+    up: migration_20260906_120908_add_content_placements.up,
+    down: migration_20260906_120908_add_content_placements.down,
+    name: '20260906_120908_add_content_placements',
+  },
+  {
+    up: migration_20260906_121056_move_faq_placements.up,
+    down: migration_20260906_121056_move_faq_placements.down,
+    name: '20260906_121056_move_faq_placements'
   },
 ];

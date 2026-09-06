@@ -20,7 +20,7 @@ export function LiveLink() {
 
   const slug = useFormFields(([fields]) => fields?.slug?.value);
   const status = useFormFields(([fields]) => fields?.status?.value);
-  const placement = useFormFields(([fields]) => fields?.placement?.value);
+  const placements = useFormFields(([fields]) => fields?.placements?.value);
   const key = useFormFields(([fields]) => fields?.key?.value);
   const from = useFormFields(([fields]) => fields?.from?.value);
   const approved = useFormFields(([fields]) => fields?.approved?.value);
@@ -35,7 +35,7 @@ export function LiveLink() {
       // The form holds the newest value; the saved document covers fields the
       // form does not expose, such as an upload's own URL.
       slug: slug ?? saved.slug,
-      placement: placement ?? saved.placement,
+      placements: placements ?? saved.placements,
       key: key ?? saved.key,
       from: from ?? saved.from,
       approved: approved ?? saved.approved,

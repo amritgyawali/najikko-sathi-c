@@ -2,6 +2,7 @@ import Image from "next/image";
 import { ArrowUpRight, HeartHandshake } from "lucide-react";
 
 import { getSocialResponsibility } from "@/lib/content";
+import { onPage } from "@/lib/placements";
 import { mediaAlt, mediaUrl } from "@/lib/media";
 import { youtubeEmbedUrl, youtubeId, youtubeWatchUrl } from "@/lib/youtube";
 import { SectionHeading } from "./page-content";
@@ -16,12 +17,15 @@ export async function SocialResponsibilitySection({
   kicker,
   heading,
   description,
+  placement,
 }: {
   kicker?: string | null;
   heading?: string | null;
   description?: string | null;
+  /** The page this band is on, so entries published elsewhere stay there. */
+  placement?: string | null;
 } = {}) {
-  const entries = await getSocialResponsibility();
+  const entries = onPage(await getSocialResponsibility(), placement);
   if (entries.length === 0) return null;
 
   return (

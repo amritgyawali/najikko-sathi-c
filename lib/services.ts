@@ -5,7 +5,8 @@ import {
   servicePortfolio as fallbackServices,
   type ServiceCategory as FallbackCategoryId,
 } from "@/app/(frontend)/_data/services";
-import { getFaqs, getServiceCategories, getServices } from "@/lib/content";
+import { getAllFaqs, getServiceCategories, getServices } from "@/lib/content";
+import { appliesTo } from "@/lib/placements";
 import { mediaUrl } from "@/lib/media";
 
 /**
@@ -126,13 +127,20 @@ export const getServiceView = cache(async (slug: string): Promise<ServiceView | 
 /**
  * Questions for a page. Anything entered in the dashboard replaces the copy
  * that ships with the page, so an editor can reword them without a deploy.
+ *
+ * A questions band takes the questions published to the page it is on, and the
+ * ones published to whichever page the band names - so the four placements that
+ * existed before this ("contact", "services", "training", "production") keep
+ * feeding the bands that ask for them, and publishing a question to any other
+ * page now shows it there too. A question is only ever listed once.
  */
 export const getFaqPairs = cache(
   async (
-    placement: "contact" | "services" | "training" | "production",
+    placements: string[],
     fallback: [string, string][],
   ): Promise<[string, string][]> => {
-    const rows = await getFaqs(placement);
+    const all = await getAllFaqs();
+    const rows = all.filter((row) => placements.some((placement) => appliesTo(row, placement)));
     if (rows.length === 0) return fallback;
     return rows.map((row) => [row.question, row.answer] as [string, string]);
   },

@@ -1,7 +1,7 @@
 import type { CollectionConfig } from "payload";
 import { revalidateDoc, revalidateDocAfterDelete } from "../hooks/revalidate";
 import { isEditor, isPublishedOrStaff } from "../access";
-import { slugField, statusField } from "../fields";
+import { placementsField, slugField, statusField } from "../fields";
 
 /** Promotions and packages, with an optional run window. */
 export const Offers: CollectionConfig = {
@@ -28,6 +28,7 @@ export const Offers: CollectionConfig = {
     { name: "title", type: "text", required: true },
     slugField(),
     statusField,
+    placementsField({ thing: "offer", everywhere: "on every page that lists offers" }),
     {
       name: "publishAt",
       type: "date",

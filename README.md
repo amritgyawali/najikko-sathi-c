@@ -19,14 +19,14 @@ Content is managed through a full admin dashboard powered by
 | Every photo and film placeholder, filled or not | Dashboard home → Photos & films | - |
 | The 16 services and their detail pages | Services → Services | `/services`, `/services/<slug>`, `/our-work`, and every discipline page |
 | Service groupings | Services → Service categories | `/services` sections |
-| News, blogs, commentary, investigations | Content → Posts | `/posts`, `/posts/<slug>` |
-| Promotions and packages | Content → Offers | `/offers` |
-| Client testimonials, with an approval queue | Content → Reviews | Review blocks |
-| Social responsibility films and photo albums | Content → Social responsibility | `/our-work` |
+| News, blogs, commentary, investigations | Content → Posts | `/posts/<slug>`, and the pages chosen in **Where this appears** |
+| Promotions and packages | Content → Offers | The pages chosen in **Where this appears** |
+| Client testimonials, with an approval queue | Content → Reviews | Review bands on the pages chosen in **Where this appears** |
+| Social responsibility films and photo albums | Content → Social responsibility | The pages chosen in **Where this appears** |
 | Every page: its hero, its sections, their order and wording, its address, and whether it is on the website at all | Content → Website pages | Every page, and `/<slug>` for new ones |
-| Questions and answers | Content → FAQs | Contact, services, training, production |
-| The people on the about page | Content → Team | `/about` |
-| Photos, films and files | Content → Media | Everywhere |
+| Questions and answers | Content → FAQs | The pages chosen in **Where this appears** |
+| The people on the about page | Content → Team | The pages chosen in **Where this appears** |
+| Photos, films and files | Content → Media | Wherever they are used, plus the pages chosen in **Where this appears** |
 | The photo or film in each blue placeholder | Content → Page media | Every showcase band and panel |
 | Contact form messages, with triage and notes | Enquiries | Sent from `/contact` |
 | Front page copy and imagery | Site → Homepage & page copy → Home | `/` |
@@ -159,6 +159,42 @@ rebuild and no cache to clear.
 Two more tools sit on the dashboard home: **Download backup**, which exports every
 collection and global as one JSON file (administrators only), and the **search page**
 at `/search`, which searches services, writing, offers, and pages.
+
+### Choosing where content is published
+
+Every kind of content carries a **Where this appears** list in the sidebar of
+its edit screen: posts, offers, reviews, questions, social responsibility
+entries, team members, and the files in Content → Media. Tick the pages the
+document belongs on and it is published there and nowhere else.
+
+The list offers every page of the website, and it comes from `lib/site-map.ts`,
+so a page added to the site is offered here on the next load with nothing to
+update. `lib/placements.ts` holds the keys and the two rules that decide what a
+page shows:
+
+- **Leave the list empty and nothing changes.** The document appears wherever a
+  band of its kind has been placed, which is how the site behaved before this
+  existed.
+- **A page nobody could have ticked shows everything.** A post's own page, a
+  service page, or a page invented in Content → Website pages is not in the
+  list, so bands there are not filtered.
+
+A page shows a kind of content only if it carries the band that draws it - a
+writing list, an offer list, a reviews band, a questions band, the team, or the
+social responsibility band. Ticking **About Us** on a post publishes it to the
+about page; adding a **Writing list** section to that page in Content → Website
+pages is what puts it on the screen. Photographs and films are the exception:
+a file in Content → Media joins the "in pictures & film" band of every page it
+is published to, which every built-in page already has.
+
+Questions work the way they always did as well. A questions band takes the
+questions published to the page it is on, plus the questions published to
+whichever page the band names, so the four placements that existed before -
+contact, services, training and production - keep feeding the bands that ask
+for them.
+
+Saving a document purges the pages it names as well as its own, so a tick shows
+up on the live site straight away.
 
 ### Finding a page on the live website
 
@@ -441,6 +477,7 @@ API live in `app/(payload)/`.
 - `cms/site-pages.ts` - Importing the website's own pages into the dashboard, and restoring them
 - `lib/content.ts` - CMS reads, with the static fallback
 - `lib/page-media.ts` - How a Page media entry becomes the photograph or film a page renders
+- `lib/placements.ts` - The pages content can be published to, and the rules deciding what a page shows
 - `lib/services.ts` - One shape for a service, whether it came from the CMS or the fallback
 - `proxy.ts` - Applies the redirects managed in the dashboard
 - `migrations/` - Database migrations (commit these)

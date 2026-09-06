@@ -386,9 +386,26 @@ export interface Page {
              */
             description?: string | null;
             /**
-             * Questions saved in Content → FAQs with this placement replace the list below. Leave the placement empty to use only the list below.
+             * Questions saved in Content → FAQs replace the list below: the ones published to this page, plus the ones published to the page named here. Leave this empty to use the questions published to this page, and the list below when there are none.
              */
-            placement?: ('contact' | 'services' | 'training' | 'production') | null;
+            placement?:
+              | (
+                  | 'home'
+                  | 'services'
+                  | 'our-work'
+                  | 'contact'
+                  | 'about'
+                  | 'production'
+                  | 'social-media-handling'
+                  | 'training'
+                  | 'research'
+                  | 'it'
+                  | 'advertisement'
+                  | 'right-sanchar'
+                  | 'posts'
+                  | 'offers'
+                )
+              | null;
             items?:
               | {
                   question: string;
@@ -786,6 +803,27 @@ export interface Media {
    * Optional photographer or source credit.
    */
   credit?: string | null;
+  /**
+   * Choose the pages this photograph or film is published on. It joins the “in pictures & film” band on each of them. Leave it empty and the file is only used where something else points at it.
+   */
+  placements?:
+    | (
+        | 'home'
+        | 'services'
+        | 'our-work'
+        | 'contact'
+        | 'about'
+        | 'production'
+        | 'social-media-handling'
+        | 'training'
+        | 'research'
+        | 'it'
+        | 'advertisement'
+        | 'right-sanchar'
+        | 'posts'
+        | 'offers'
+      )[]
+    | null;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -839,6 +877,27 @@ export interface Post {
   slug?: string | null;
   type: 'news' | 'blog' | 'commentary' | 'investigation';
   status: 'draft' | 'published';
+  /**
+   * Choose the pages this post is published on. Leave it empty to show it on every page that lists writing.
+   */
+  placements?:
+    | (
+        | 'home'
+        | 'services'
+        | 'our-work'
+        | 'contact'
+        | 'about'
+        | 'production'
+        | 'social-media-handling'
+        | 'training'
+        | 'research'
+        | 'it'
+        | 'advertisement'
+        | 'right-sanchar'
+        | 'posts'
+        | 'offers'
+      )[]
+    | null;
   /**
    * Optional. The post stays hidden until this time.
    */
@@ -1044,6 +1103,27 @@ export interface Offer {
   slug?: string | null;
   status: 'draft' | 'published';
   /**
+   * Choose the pages this offer is published on. Leave it empty to show it on every page that lists offers.
+   */
+  placements?:
+    | (
+        | 'home'
+        | 'services'
+        | 'our-work'
+        | 'contact'
+        | 'about'
+        | 'production'
+        | 'social-media-handling'
+        | 'training'
+        | 'research'
+        | 'it'
+        | 'advertisement'
+        | 'right-sanchar'
+        | 'posts'
+        | 'offers'
+      )[]
+    | null;
+  /**
    * Optional. The offer stays hidden until this time.
    */
   publishAt?: string | null;
@@ -1104,6 +1184,27 @@ export interface Review {
    */
   approved?: boolean | null;
   featured?: boolean | null;
+  /**
+   * Choose the pages this review is published on. Leave it empty to show it on every page that carries a reviews band.
+   */
+  placements?:
+    | (
+        | 'home'
+        | 'services'
+        | 'our-work'
+        | 'contact'
+        | 'about'
+        | 'production'
+        | 'social-media-handling'
+        | 'training'
+        | 'research'
+        | 'it'
+        | 'advertisement'
+        | 'right-sanchar'
+        | 'posts'
+        | 'offers'
+      )[]
+    | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1117,7 +1218,27 @@ export interface Faq {
   id: number;
   question: string;
   answer: string;
-  placement: 'contact' | 'services' | 'training' | 'production';
+  /**
+   * Choose the pages this question is published on. Leave it empty to show it on every page that carries a questions band.
+   */
+  placements?:
+    | (
+        | 'home'
+        | 'services'
+        | 'our-work'
+        | 'contact'
+        | 'about'
+        | 'production'
+        | 'social-media-handling'
+        | 'training'
+        | 'research'
+        | 'it'
+        | 'advertisement'
+        | 'right-sanchar'
+        | 'posts'
+        | 'offers'
+      )[]
+    | null;
   order?: number | null;
   updatedAt: string;
   createdAt: string;
@@ -1155,6 +1276,27 @@ export interface SocialResponsibility {
    */
   order?: number | null;
   status: 'draft' | 'published';
+  /**
+   * Choose the pages this entry is published on. Leave it empty to show it on every page that carries a social responsibility band.
+   */
+  placements?:
+    | (
+        | 'home'
+        | 'services'
+        | 'our-work'
+        | 'contact'
+        | 'about'
+        | 'production'
+        | 'social-media-handling'
+        | 'training'
+        | 'research'
+        | 'it'
+        | 'advertisement'
+        | 'right-sanchar'
+        | 'posts'
+        | 'offers'
+      )[]
+    | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1172,6 +1314,27 @@ export interface Team {
   photo?: (number | null) | Media;
   email?: string | null;
   order?: number | null;
+  /**
+   * Choose the pages this person is published on. Leave it empty to show it on every page that carries a team band.
+   */
+  placements?:
+    | (
+        | 'home'
+        | 'services'
+        | 'our-work'
+        | 'contact'
+        | 'about'
+        | 'production'
+        | 'social-media-handling'
+        | 'training'
+        | 'research'
+        | 'it'
+        | 'advertisement'
+        | 'right-sanchar'
+        | 'posts'
+        | 'offers'
+      )[]
+    | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1855,6 +2018,7 @@ export interface PostsSelect<T extends boolean = true> {
   slug?: T;
   type?: T;
   status?: T;
+  placements?: T;
   publishAt?: T;
   unpublishAt?: T;
   publishedAt?: T;
@@ -1952,6 +2116,7 @@ export interface OffersSelect<T extends boolean = true> {
   title?: T;
   slug?: T;
   status?: T;
+  placements?: T;
   publishAt?: T;
   unpublishAt?: T;
   badge?: T;
@@ -1978,6 +2143,7 @@ export interface ReviewsSelect<T extends boolean = true> {
   avatar?: T;
   approved?: T;
   featured?: T;
+  placements?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -1988,7 +2154,7 @@ export interface ReviewsSelect<T extends boolean = true> {
 export interface FaqsSelect<T extends boolean = true> {
   question?: T;
   answer?: T;
-  placement?: T;
+  placements?: T;
   order?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -2011,6 +2177,7 @@ export interface SocialResponsibilitySelect<T extends boolean = true> {
   date?: T;
   order?: T;
   status?: T;
+  placements?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -2025,6 +2192,7 @@ export interface TeamSelect<T extends boolean = true> {
   photo?: T;
   email?: T;
   order?: T;
+  placements?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -2052,6 +2220,7 @@ export interface EnquiriesSelect<T extends boolean = true> {
 export interface MediaSelect<T extends boolean = true> {
   alt?: T;
   credit?: T;
+  placements?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;
