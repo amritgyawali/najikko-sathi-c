@@ -5,40 +5,63 @@ import React from "react";
 import {
   navItemsFromPages,
   resolveNavItems,
-  sitePageByPath,
   sitePages,
   type AdminLink,
   type NavItem,
 } from "@/lib/site-map";
+import { routePageByPath, routePages } from "../site-pages";
+import { ImportPagesButton } from "./ImportPagesButton";
 
 /**
  * "Website pages" - the panel under the traffic overview on the dashboard home.
  *
- * It answers the question an editor actually has when they open the dashboard:
- * *the site has these pages, so where do I change this one?*
+ * It is the list of every page this website has, and what can be done to each
+ * one: open it, edit it, add it to the dashboard, or build a new page beside it.
  *
- * The menu it lists is not a copy. It is resolved on every load with
- * `resolveNavItems`, the same function the public header calls, from the same
- * two sources: the links saved in Site → Navigation and the pages published
- * with "show in navigation" ticked. Reorder the menu, rename a link, or publish
- * a new page, and this panel shows it on the next dashboard load - there is
- * nothing here to keep in step by hand.
+ * Three sources are folded into one list, and none of them is a copy kept in
+ * step by hand:
  *
- * The "where to edit it" links come from lib/site-map.ts, the one list of the
- * site's pages, which `npm run check:pages` verifies against the routes on disk.
+ * - the pages the site ships with (cms/site-pages.ts), whose addresses are
+ *   fixed by the routes that serve them;
+ * - the pages created in Content → Pages, which go live at their own address;
+ * - the menu, resolved on every load with `resolveNavItems` - the same function
+ *   the public header calls, from the same two sources - so reordering the menu
+ *   or publishing a page shows here on the next load.
+ *
+ * A built-in page that has been added to the dashboard is edited like any
+ * other; one that has not shows an "Add" button, and until then renders the
+ * copy it ships with.
  */
 
 type Props = { payload?: Payload };
 
-/** A page in the menu, with everything the panel needs to draw its row. */
+/** A page document, as much of it as this panel needs. */
+type PageDoc = {
+  id: string | number;
+  title: string;
+  slug?: string | null;
+  path?: string | null;
+  kind?: "route" | "custom" | null;
+  status?: "draft" | "published" | null;
+  summary?: string | null;
+  showInNav?: boolean | null;
+  navOrder?: number | null;
+  updatedAt?: string | null;
+};
+
+/** Everything the panel needs to draw one row. */
 type Row = {
   label: string;
-  href: string;
-  /** Prose describing the page, when we know which page it is. */
-  summary?: string;
-  /** Where in the dashboard the page's content is written. */
+  /** The public address, or null for a menu link with no page behind it. */
+  href: string | null;
+  summary: string;
+  /** The document behind the page, once it is in the dashboard. */
+  doc?: PageDoc;
+  /** Is this one of the pages the site ships with? */
+  builtIn: boolean;
+  /** The other places this page's content is written. */
   edit: AdminLink[];
-  /** Pages that sit under this menu item without a link of their own. */
+  /** Pages that sit under this one in the menu. */
   children: Row[];
   /** A menu link with nothing behind it: an editor needs to know. */
   unknown?: boolean;
@@ -48,55 +71,29 @@ type Row = {
 
 const isExternal = (href: string) => !href.startsWith("/");
 
-/** Build the row for one path, from the registry or from a dashboard page. */
-function rowFor(item: NavItem, cmsPages: Map<string, { id: string | number; title: string }>): Row {
-  const base = { label: item.label, href: item.href, children: [] as Row[] };
+const shortDate = (value?: string | null): string =>
+  value
+    ? new Date(value).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })
+    : "";
 
-  if (isExternal(item.href)) {
-    return { ...base, edit: [], external: true, summary: "Links away from the page structure." };
-  }
-
-  const known = sitePageByPath[item.href];
-  if (known) {
-    return {
-      ...base,
-      summary: known.summary,
-      edit: known.edit,
-      children: sitePages
-        .filter((page) => page.parent === known.path)
-        .map((page) => ({
-          label: page.label,
-          href: page.path,
-          summary: page.summary,
-          edit: page.edit,
-          children: [],
-        })),
-    };
-  }
-
-  // A page built in Content → Pages: it is edited in its own document.
-  const doc = cmsPages.get(item.href);
-  if (doc) {
-    return {
-      ...base,
-      summary: "Built from layout blocks in the dashboard.",
-      edit: [{ label: "Pages", href: `/admin/collections/pages/${doc.id}`, note: doc.title }],
-    };
-  }
+/** Build a row for one address, from whichever sources know about it. */
+function rowFor(path: string, docs: Map<string, PageDoc>, label?: string): Row {
+  const known = routePageByPath[path];
+  const doc = docs.get(path);
 
   return {
-    ...base,
-    unknown: true,
-    summary: "No page answers this address. Fix the link, or publish a page at this address.",
-    edit: [{ label: "Navigation", href: "/admin/globals/navigation" }],
+    label: doc?.title || label || known?.label || path,
+    href: path,
+    summary:
+      doc?.summary ||
+      known?.summary ||
+      (doc ? "Built from sections in the dashboard." : "No page answers this address."),
+    doc,
+    builtIn: Boolean(known),
+    edit: known?.edit ?? [],
+    children: [],
   };
 }
-
-/** The pages that are not in the menu and do not sit under a menu item. */
-const unlisted = sitePages.filter((page) => !page.dynamic && !page.navOrder && !page.parent);
-
-/** Routes generated from CMS content rather than from a page of their own. */
-const generated = sitePages.filter((page) => page.dynamic);
 
 function EditLinks({ links }: { links: AdminLink[] }) {
   if (links.length === 0) return null;
@@ -112,42 +109,83 @@ function EditLinks({ links }: { links: AdminLink[] }) {
   );
 }
 
+/** Open, edit, or add - whichever apply to this row. */
+function Actions({ row }: { row: Row }) {
+  const removed = row.doc && row.doc.status !== "published";
+
+  return (
+    <span className="ns-page__actions">
+      {row.doc ? (
+        <Link className="ns-page__action ns-page__action--go" href={`/admin/collections/pages/${row.doc.id}`}>
+          Edit this page
+        </Link>
+      ) : row.builtIn && row.href ? (
+        <ImportPagesButton paths={[row.href]} label="Add to dashboard" busyLabel="Adding…" />
+      ) : null}
+      {row.href && !row.external ? (
+        <a className="ns-page__action" href={row.href} target="_blank" rel="noreferrer">
+          Open page
+        </a>
+      ) : null}
+      {removed ? <span className="ns-page__flag">Taken off the website</span> : null}
+      {row.doc?.updatedAt ? (
+        <span className="ns-page__stamp">Changed {shortDate(row.doc.updatedAt)}</span>
+      ) : row.builtIn && !row.doc ? (
+        <span className="ns-page__stamp">Not in the dashboard yet</span>
+      ) : null}
+    </span>
+  );
+}
+
 function PageRow({ row, depth = 0 }: { row: Row; depth?: number }) {
   return (
     <>
-      <li className={`ns-page${depth > 0 ? " ns-page--child" : ""}${row.unknown ? " ns-page--broken" : ""}`}>
+      <li
+        className={`ns-page${depth > 0 ? " ns-page--child" : ""}${row.unknown ? " ns-page--broken" : ""}`}
+      >
         <div className="ns-page__head">
           <span className="ns-page__name">{row.label}</span>
-          {row.external ? (
-            <span className="ns-page__path">{row.href}</span>
-          ) : (
-            <a className="ns-page__path" href={row.href} target="_blank" rel="noreferrer">
-              {row.href}
-            </a>
-          )}
+          {row.href ? (
+            row.external ? (
+              <span className="ns-page__path">{row.href}</span>
+            ) : (
+              <a className="ns-page__path" href={row.href} target="_blank" rel="noreferrer">
+                {row.href}
+              </a>
+            )
+          ) : null}
         </div>
         {row.summary ? <p className="ns-page__summary">{row.summary}</p> : null}
+        <Actions row={row} />
         <EditLinks links={row.edit} />
       </li>
       {row.children.map((child) => (
-        <PageRow depth={depth + 1} key={child.href} row={child} />
+        <PageRow depth={depth + 1} key={child.href ?? child.label} row={child} />
       ))}
     </>
   );
 }
 
+/** Routes generated from CMS content rather than from a page of their own. */
+const generated = sitePages.filter((page) => page.dynamic);
+
 export async function SitePages({ payload }: Props) {
   if (!payload) return null;
 
-  // Exactly what the public header reads, resolved the same way.
+  let docs: PageDoc[] = [];
   let saved: NavItem[] | undefined;
-  // Every published page, so a menu link that points at one can offer a link
-  // straight to that document.
-  let cmsPages = new Map<string, { id: string | number; title: string }>();
-  // Only the pages the header itself appends: published, and ticked for the menu.
-  let navPages: NavItem[] = [];
 
   try {
+    const found = await payload.find({
+      collection: "pages",
+      limit: 200,
+      depth: 0,
+      sort: "title",
+      pagination: false,
+      overrideAccess: true,
+    });
+    docs = found.docs as PageDoc[];
+
     const nav = (await payload.findGlobal({ slug: "navigation", depth: 0, overrideAccess: true })) as {
       items?: { label?: string | null; href?: string | null; newTab?: boolean | null }[] | null;
     };
@@ -156,68 +194,130 @@ export async function SitePages({ payload }: Props) {
         Boolean(item.label && item.href),
       )
       .map((item) => ({ label: item.label, href: item.href, newTab: item.newTab ?? false }));
-
-    const published = await payload.find({
-      collection: "pages",
-      where: { status: { equals: "published" } },
-      limit: 200,
-      depth: 0,
-      sort: "title",
-      overrideAccess: true,
-    });
-    const docs = (
-      published.docs as {
-        id: string | number;
-        title: string;
-        slug?: string | null;
-        showInNav?: boolean | null;
-      }[]
-    ).filter((page) => page.slug);
-
-    cmsPages = new Map(docs.map((page) => [`/${page.slug}`, { id: page.id, title: page.title }]));
-    // The same rule the header applies, from the same place.
-    navPages = navItemsFromPages(docs);
   } catch {
-    // Before the database is migrated there is no menu to read. Fall through
-    // with nothing saved, which resolves to the site's built-in menu.
+    // Before the database is migrated there is nothing to read. Fall through
+    // with the pages the site ships with, and the menu it ships with.
   }
 
-  const items = resolveNavItems(saved, navPages);
-  const rows = items.map((item) => rowFor(item, cmsPages));
-  const broken = rows.filter((row) => row.unknown).length;
+  const byPath = new Map<string, PageDoc>();
+  for (const doc of docs) {
+    const path = doc.path || (doc.slug ? `/${doc.slug}` : null);
+    if (path) byPath.set(path, doc);
+  }
+
+  // Exactly what the public header shows, resolved the same way.
+  const published = docs.filter((doc) => doc.status === "published");
+  const hidden = docs
+    .filter((doc) => doc.status !== "published")
+    .map((doc) => doc.path)
+    .filter((path): path is string => Boolean(path));
+  const menu = resolveNavItems(
+    saved,
+    navItemsFromPages(
+      published.map((doc) => ({
+        title: doc.title,
+        slug: doc.slug,
+        path: doc.path,
+        navOrder: doc.navOrder,
+        showInNav: doc.showInNav,
+      })),
+    ),
+    hidden,
+  );
+
+  const inMenu = new Set(menu.map((item) => item.href));
+
+  const menuRows: Row[] = menu.map((item) => {
+    if (isExternal(item.href)) {
+      return {
+        label: item.label,
+        href: item.href,
+        summary: "Links away from this website.",
+        builtIn: false,
+        edit: [],
+        children: [],
+        external: true,
+      };
+    }
+
+    const row = rowFor(item.href, byPath, item.label);
+    if (!row.doc && !row.builtIn) {
+      return {
+        ...row,
+        unknown: true,
+        summary: "No page answers this address. Fix the link, or publish a page at this address.",
+        edit: [{ label: "Navigation", href: "/admin/globals/navigation" }],
+      };
+    }
+
+    // The pages that sit under this menu item without a link of their own.
+    row.children = routePages
+      .filter((page) => page.parent === item.href && !inMenu.has(page.path))
+      .map((page) => rowFor(page.path, byPath));
+    return row;
+  });
+
+  const covered = new Set([
+    ...menuRows.map((row) => row.href),
+    ...menuRows.flatMap((row) => row.children.map((child) => child.href)),
+  ]);
+
+  // Everything else: built-in pages that are not in the menu, and pages created
+  // in the dashboard that nobody has linked yet.
+  const otherRows: Row[] = [
+    ...routePages.filter((page) => !covered.has(page.path)).map((page) => rowFor(page.path, byPath)),
+    ...[...byPath.entries()]
+      .filter(([path, doc]) => doc.kind !== "route" && !covered.has(path))
+      .map(([path]) => rowFor(path, byPath)),
+  ];
+
+  const missing = routePages.filter((page) => !byPath.has(page.path));
+  const removed = hidden.length;
 
   return (
     <section className="ns-pages">
       <div className="ns-panel__head">
         <h3 className="ns-panel__title">Website pages</h3>
         <span className="ns-panel__meta">
-          {broken > 0
-            ? `${broken} menu ${broken === 1 ? "link has" : "links have"} no page behind ${broken === 1 ? "it" : "them"}`
-            : "In navbar order, as visitors see them"}
+          {`${routePages.length + docs.filter((doc) => doc.kind !== "route").length} pages`}
+          {removed > 0 ? ` · ${removed} taken off the website` : ""}
+          {missing.length > 0 ? ` · ${missing.length} not in the dashboard yet` : ""}
+        </span>
+      </div>
+
+      <div className="ns-pages__bar">
+        <Link className="ns-page__action ns-page__action--go" href="/admin/collections/pages/create">
+          Build a new page
+        </Link>
+        <Link className="ns-page__action" href="/admin/collections/pages">
+          All pages
+        </Link>
+        {missing.length > 0 ? <ImportPagesButton /> : null}
+        <span className="ns-pages__barnote">
+          {missing.length > 0
+            ? "Adding a page copies what it already says into the dashboard, where every word of it can be changed. The website looks the same until you change something."
+            : "Every page is in the dashboard. Editing one changes the website; deleting one puts it back to the copy it shipped with."}
         </span>
       </div>
 
       <ul className="ns-pages__list">
-        {rows.map((row) => (
-          <PageRow key={row.href} row={row} />
+        {menuRows.map((row) => (
+          <PageRow key={row.href ?? row.label} row={row} />
         ))}
       </ul>
 
-      <div className="ns-pages__foot">
-        <div>
+      {otherRows.length > 0 ? (
+        <>
           <h4 className="ns-pages__subtitle">Not in the menu</h4>
-          <ul className="ns-pages__minor">
-            {unlisted.map((page) => (
-              <li key={page.path}>
-                <a href={page.path} target="_blank" rel="noreferrer">
-                  {page.label}
-                </a>{" "}
-                <span className="ns-page__path">{page.path}</span>
-                <EditLinks links={page.edit} />
-              </li>
+          <ul className="ns-pages__list">
+            {otherRows.map((row) => (
+              <PageRow key={row.href ?? row.label} row={row} />
             ))}
           </ul>
-        </div>
+        </>
+      ) : null}
+
+      <div className="ns-pages__foot">
         <div>
           <h4 className="ns-pages__subtitle">Made from dashboard content</h4>
           <ul className="ns-pages__minor">
@@ -233,8 +333,9 @@ export async function SitePages({ payload }: Props) {
       </div>
 
       <p className="ns-pages__hint">
-        The menu itself is set in <Link href="/admin/globals/navigation">Site → Navigation</Link>. Tick
-        &ldquo;show in navigation&rdquo; on a published page to add it here without editing the menu.
+        The menu itself is set in <Link href="/admin/globals/navigation">Site → Navigation</Link>. A page
+        with &ldquo;show in navigation&rdquo; ticked adds itself to the menu, and setting a page back to
+        Draft takes it off the website altogether.
       </p>
     </section>
   );

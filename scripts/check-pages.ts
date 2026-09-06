@@ -3,6 +3,7 @@ import { readdir } from "node:fs/promises";
 import path from "node:path";
 
 import { liveTargetFor } from "../cms/live-urls";
+import { routePageContent } from "../lib/page-defaults";
 import { mediaKeyToPath, sitePages } from "../lib/site-map";
 
 /**
@@ -17,6 +18,11 @@ import { mediaKeyToPath, sitePages } from "../lib/site-map";
  * opposite question - given a document, which page does it come out on. The two
  * describe the same website from different ends, so a page media entry has to
  * lead back to the page the site map says it belongs to.
+ *
+ * Finally it checks lib/page-defaults.ts, the copy each page ships with and the
+ * copy the dashboard imports. Every page needs an entry there, or it would
+ * render blank; and every entry needs a page, or the dashboard would offer to
+ * import something that does not exist.
  *
  * Needs no database, no build and no browser, so it can run on its own:
  *   npm run check:pages
@@ -99,9 +105,58 @@ for (const [key, pagePath] of Object.entries(mediaKeyToPath)) {
   );
 }
 
+// Every page needs the copy it ships with, and every piece of shipped copy
+// needs a page. Routes generated from other content have no copy of their own.
+const fixed = sitePages.filter((page) => !page.dynamic).map((page) => page.path);
+const withoutContent = fixed.filter((path) => !(path in routePageContent));
+const withoutPage = Object.keys(routePageContent).filter((path) => !fixed.includes(path));
+
+assert.deepEqual(
+  withoutContent,
+  [],
+  `These pages have no sections in lib/page-defaults.ts, so they would render blank:\n  ${withoutContent.join("\n  ")}`,
+);
+assert.deepEqual(
+  withoutPage,
+  [],
+  `lib/page-defaults.ts holds copy for pages that do not exist:\n  ${withoutPage.join("\n  ")}`,
+);
+
+// The photo and film band is a section now. The key it names has to be the one
+// the site map - and therefore the dashboard - says belongs to this page.
+for (const [path, content] of Object.entries(routePageContent)) {
+  const keys = content.sections
+    .filter((section) => section.blockType === "mediaShowcase")
+    .map((section) => (section as { mediaKey: string }).mediaKey);
+  const expected = sitePages.find((page) => page.path === path)?.mediaKey;
+
+  for (const key of keys) {
+    assert.equal(
+      key,
+      expected,
+      `${path} shows the "${key}" page media entry, but lib/site-map.ts says it owns ` +
+        `${expected ? `"${expected}"` : "none"}.`,
+    );
+  }
+  if (expected) {
+    assert(
+      keys.includes(expected),
+      `lib/site-map.ts says ${path} owns the "${expected}" page media entry, but the page ` +
+        "has no photo and film band to show it.",
+    );
+  }
+}
+
+// Every page ships with a search-engine title and description.
+for (const [path, content] of Object.entries(routePageContent)) {
+  assert(content.seo.title, `${path} has no title in lib/page-defaults.ts.`);
+  assert(content.seo.description, `${path} has no description in lib/page-defaults.ts.`);
+}
+
 const inMenu = sitePages.filter((page) => typeof page.navOrder === "number");
 console.log(
   `PASS ${routes.length} routes, all in lib/site-map.ts, ` +
+    `${Object.keys(routePageContent).length} of them with the copy they ship with, ` +
     `${Object.keys(mediaKeyToPath).length} page media keys agreeing with cms/live-urls.ts. ` +
     `Menu: ${inMenu.map((page) => page.label).join(", ")}.`,
 );

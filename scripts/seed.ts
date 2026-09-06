@@ -2,6 +2,7 @@ import { existsSync } from "fs";
 
 import { getPayload } from "payload";
 
+import { importRoutePages } from "../cms/site-pages";
 import { pageMedia } from "../app/(frontend)/_data/media";
 import { categories, servicePortfolio } from "../app/(frontend)/_data/services";
 import {
@@ -252,6 +253,17 @@ async function seed() {
     }
   }
   payload.logger.info(`Seeded ${contactFaqs.length} contact questions.`);
+
+  // The website's own pages, as documents anyone can edit. Nothing on the site
+  // changes: each one is created holding exactly the copy that page already
+  // shows, and pages that are already there are left alone.
+  const pages = await importRoutePages(payload);
+  payload.logger.info(
+    `Website pages in the dashboard: ${pages.imported.length} added, ${pages.alreadyThere.length} already there.`,
+  );
+  for (const failure of pages.failed) {
+    payload.logger.error(`Could not add ${failure.path}: ${failure.reason}`);
+  }
 
   // Writing Appearance persists the colour defaults so the fields are
   // populated the first time an admin opens the page.

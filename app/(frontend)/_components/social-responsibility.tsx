@@ -12,7 +12,15 @@ import { SectionHeading } from "./page-content";
  * pasting its link and an album by uploading photographs. Nothing here is
  * hard-coded, and the section disappears entirely while it is empty.
  */
-export async function SocialResponsibilitySection() {
+export async function SocialResponsibilitySection({
+  kicker,
+  heading,
+  description,
+}: {
+  kicker?: string | null;
+  heading?: string | null;
+  description?: string | null;
+} = {}) {
   const entries = await getSocialResponsibility();
   if (entries.length === 0) return null;
 
@@ -20,9 +28,12 @@ export async function SocialResponsibilitySection() {
     <section className="content-section social-section" id="social-responsibility">
       <div className="site-container">
         <SectionHeading
-          kicker="Social responsibility"
-          title="The work we do beyond our clients."
-          description="Films and photographs from the community work we take part in, alongside the organizations and people it is made with."
+          kicker={kicker || "Social responsibility"}
+          title={heading || "The work we do beyond our clients."}
+          description={
+            description ||
+            "Films and photographs from the community work we take part in, alongside the organizations and people it is made with."
+          }
         />
         <div className="social-entries">
           {entries.map((entry) => {

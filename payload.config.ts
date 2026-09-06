@@ -28,6 +28,7 @@ import { Footer } from "./cms/globals/Footer";
 import { Homepage } from "./cms/globals/Homepage";
 import { Navigation } from "./cms/globals/Navigation";
 import { SiteSettings } from "./cms/globals/SiteSettings";
+import { sitePagesEndpoint } from "./cms/endpoints/site-pages";
 import { cloudinaryStorage } from "./cms/storage/cloudinary";
 import { databasePoolConfig } from "./cms/database";
 
@@ -140,6 +141,8 @@ export default buildConfig({
     PageViews,
   ].map(withLiveLink),
   globals: [Homepage, Navigation, Announcement, Appearance, Footer, SiteSettings].map(withGlobalLiveLink),
+  // The dashboard's "add the website's pages" button posts here.
+  endpoints: [sitePagesEndpoint],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || "",
   db: postgresAdapter({

@@ -46,15 +46,37 @@ export const statusField: Field = {
   admin: { position: "sidebar" },
 };
 
-/** Search-engine metadata. Falls back to the page title when left empty. */
-export const seoField: Field = {
+const searchFields: Field[] = [
+  { name: "title", type: "text" },
+  { name: "description", type: "textarea" },
+  { name: "image", type: "upload", relationTo: "media" },
+];
+
+const seoGroup = (fields: Field[]): Field => ({
   name: "seo",
   type: "group",
   label: "SEO",
   admin: { description: "Overrides the title and description shown in search results." },
-  fields: [
-    { name: "title", type: "text" },
-    { name: "description", type: "textarea" },
-    { name: "image", type: "upload", relationTo: "media" },
-  ],
-};
+  fields,
+});
+
+/** Search-engine metadata. Falls back to the page title when left empty. */
+export const seoField: Field = seoGroup(searchFields);
+
+/**
+ * The SEO group a page gets: the same fields, plus the tick that keeps a page
+ * out of search engines. Only pages carry it, because only pages are listed in
+ * the sitemap on their own account.
+ */
+export const pageSeoField: Field = seoGroup([
+  ...searchFields,
+  {
+    name: "noindex",
+    type: "checkbox",
+    label: "Keep out of search engines",
+    admin: {
+      description:
+        "The page stays on the website and keeps working. It asks not to be indexed, and it leaves the sitemap.",
+    },
+  },
+]);

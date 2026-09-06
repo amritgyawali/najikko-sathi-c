@@ -1,8 +1,17 @@
 import type { Block } from "payload";
 
+import { sectionBlocks } from "./sections";
+
 /**
- * The building blocks available in the page builder. An admin composes a new
- * page by stacking these in any order, without touching code.
+ * The building blocks available in the page builder. An admin composes a page
+ * by stacking these in any order, without touching code.
+ *
+ * Two families sit side by side. The blocks below are the free-form ones - a
+ * hero, some text, a card grid, a gallery - for a page invented in the
+ * dashboard. cms/sections.ts holds the sections the website's own pages are
+ * built from, so those pages can be edited in exactly the same way. Both are
+ * offered on every page, and both render through
+ * app/(frontend)/_components/PageSections.tsx.
  */
 
 export const HeroBlock: Block = {
@@ -140,7 +149,8 @@ export const OffersBlock: Block = {
   ],
 };
 
-export const layoutBlocks = [
+/** The free-form page-builder blocks, on their own. */
+export const builderBlocks: Block[] = [
   HeroBlock,
   RichTextBlock,
   CardGridBlock,
@@ -150,3 +160,6 @@ export const layoutBlocks = [
   PostsBlock,
   OffersBlock,
 ];
+
+/** Everything a page can be made of: the website's sections, then the builder. */
+export const layoutBlocks: Block[] = [...sectionBlocks, ...builderBlocks];
