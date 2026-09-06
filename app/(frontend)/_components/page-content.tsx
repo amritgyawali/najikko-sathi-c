@@ -4,6 +4,7 @@ import { ArrowRight, ArrowUpRight, Camera, Clapperboard, GraduationCap, ImageIco
 import { business } from "../_data/site";
 import { getMediaSlot, getPlacedMedia } from "@/lib/content";
 import { slotFilm, slotPhoto, type SlotFilm } from "@/lib/page-media";
+import { showcaseCopyFor } from "@/lib/showcase-copy";
 import type { CategoryView, ServiceView } from "@/lib/services";
 import { absoluteUrl, siteUrl } from "../_lib/seo";
 import { StructuredData } from "./structured-data";
@@ -132,22 +133,43 @@ async function PlacedMedia({ placement }: { placement: string | null }) {
  * `placement` is the page the band is on. Files in Content → Media published to
  * that page join the band underneath, so a photograph reaches the website
  * without an editor having to find something to attach it to.
+ *
+ * The label and the line under the heading are per page. They used to be the
+ * same two strings everywhere, which on a dozen pages plus every service page
+ * described nothing and gave search engines the same paragraph a dozen times.
+ * The order is: what the editor typed into this block, then the wording the
+ * page ships with in lib/showcase-copy.ts, and no description at all rather
+ * than a generic one.
  */
 export async function MediaShowcase({
   mediaKey,
   title,
   placement = null,
+  kicker,
+  description,
+  service,
 }: {
   mediaKey: string;
   title: string;
   placement?: string | null;
+  /** Overrides the label above the heading, from the dashboard. */
+  kicker?: string | null;
+  /** Overrides the line under the heading, from the dashboard. */
+  description?: string | null;
+  /** A service page's short title, which its band describes itself from. */
+  service?: string;
 }) {
   const slot = await getMediaSlot(mediaKey);
   const image = slotPhoto(slot, title);
   const film = slotFilm(slot, title);
+  const copy = showcaseCopyFor(mediaKey, service);
 
   return <section className="content-section media-section"><div className="site-container">
-    <SectionHeading kicker="In focus" title={`${title} in pictures & film`} description="A space for images and films from our work." />
+    <SectionHeading
+      kicker={kicker?.trim() || copy.kicker}
+      title={`${title} in pictures & film`}
+      description={description?.trim() || copy.description}
+    />
     <div className="media-showcase-grid">
       <figure className="media-frame">
         {image ? <><div className="media-photo"><Image src={image.src} alt={image.alt} fill sizes="(max-width: 760px) 100vw, 50vw" /></div>{image.caption ? <figcaption>{image.caption}</figcaption> : null}</> : <><div className="media-placeholder"><ImageIcon aria-hidden="true" /><span>Photography</span><strong>{title}</strong><small>Photos coming soon</small></div><figcaption>Photography will be added to this page.</figcaption></>}

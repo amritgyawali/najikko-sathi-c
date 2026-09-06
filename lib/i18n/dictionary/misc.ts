@@ -81,6 +81,10 @@ export const patterns: [RegExp, (...parts: string[]) => string][] = [
   [/^Let’s talk about (.+)\.$/, (value) => `${value}बारे कुरा गरौं।`],
   [/^Let's talk about (.+)\.$/, (value) => `${value}बारे कुरा गरौं।`],
   [/^(.+) in pictures & film$/, (value) => `तस्बिर र फिल्ममा ${value}`],
+  [
+    /^Photographs and films from (.+) projects we have delivered\.$/,
+    (value) => `हामीले सम्पन्न गरेका ${value} परियोजनाका तस्बिर र फिल्म।`,
+  ],
   [/^(.+) in Nepal$/, (value) => `नेपालमा ${value}`],
   [/^(.+) · Kathmandu, Nepal$/, (value) => `${value} · काठमाडौं, नेपाल`],
   [/^Explore (.+)$/, (value) => `${value} हेर्नुहोस्`],

@@ -64,6 +64,39 @@ export const common: Record<string, string> = {
   "A Najikko Sathi media platform": "नजिकको साथीको मिडिया प्लेटफर्म",
   "Core capabilities": "मुख्य क्षमताहरू",
   "In focus": "फोकसमा",
+
+  // Each page's own wording for its photo & film band (lib/showcase-copy.ts).
+  "Our work in frame": "फ्रेममा हाम्रो काम",
+  "A short look at the productions, campaigns and training we have delivered from Kathmandu.":
+    "काठमाडौंबाट हामीले गरेका प्रडक्सन, अभियान र तालिमको छोटो झलक।",
+  "Inside the studio": "स्टुडियो भित्र",
+  "Our team at work, the space we work from, and the kit we shoot on.":
+    "काम गर्दै गरेको हाम्रो टोली, हाम्रो कार्यस्थल र हामीले प्रयोग गर्ने उपकरण।",
+  "Selected work": "छानिएका कामहरू",
+  "Stills and films from recent client projects, picked to show the range.":
+    "हालका ग्राहक परियोजनाका तस्बिर र फिल्म, कामको दायरा देखाउन छानिएका।",
+  "On location": "सुटिङ स्थलमा",
+  "Filming, direction and post-production, from the shoot floor to the edit suite.":
+    "सुटिङ, निर्देशन र पोस्ट-प्रडक्सन — सेटदेखि एडिट सुटसम्म।",
+  "Made for feeds": "फिडका लागि बनाइएको",
+  "Short-form video and campaign artwork cut for the platforms they run on.":
+    "जुन प्लेटफर्ममा चल्छन् त्यसैअनुसार तयार पारिएका छोटा भिडियो र अभियान डिजाइन।",
+  "In the classroom": "कक्षाकोठामा",
+  "Workshops and mentoring sessions, and the work participants make in them.":
+    "कार्यशाला र मेन्टरिङ सत्र, र सहभागीहरूले त्यहाँ बनाएका कामहरू।",
+  Fieldwork: "फिल्डवर्क",
+  "Interviews, data gathering and the documentation behind our reports.":
+    "अन्तर्वार्ता, तथ्यांक संकलन र हाम्रा प्रतिवेदनपछाडिको दस्तावेजीकरण।",
+  "Built and shipped": "बनाइएका र हस्तान्तरण गरिएका",
+  "Screens and walkthroughs from the systems and websites we have built.":
+    "हामीले बनाएका प्रणाली र वेबसाइटका स्क्रिन र वाकथ्रु।",
+  "On air": "प्रसारणमा",
+  "Commercials and print artwork, shown beside the campaigns they belong to.":
+    "विज्ञापन र प्रिन्ट डिजाइन, सम्बन्धित अभियानसँगै राखिएका।",
+  "From the newsroom": "न्यूजरुमबाट",
+  "Reporting, studio recordings and coverage published on Right Sanchar.":
+    "राइट सञ्चारमा प्रकाशित रिपोर्टिङ, स्टुडियो रेकर्डिङ र कभरेज।",
+  "This service in frame": "फ्रेममा यो सेवा",
   "Photography": "फोटोग्राफी",
   "Film & video": "फिल्म तथा भिडियो",
   "Photos coming soon": "फोटो चाँडै आउँदैछन्",

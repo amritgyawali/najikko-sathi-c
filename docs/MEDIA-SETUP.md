@@ -65,9 +65,11 @@ the still image, the transcript, and structured data describing that real film.
 
 ## Which placeholder is which
 
-Each page's band is keyed by the page: `home`, `about`, `services`, `our-work`,
+Each page's band is keyed by the page: `home`, `about`, `our-work`,
 `production`, `social-media-handling`, `training`, `research`, `it`,
-`advertisement`, `right-sanchar` and `contact`. The two decorative panels are
+`advertisement` and `right-sanchar`. The contact and services pages have no
+band - a contact page is a form and an address, and the services index links to
+service pages that each carry their own band. The two decorative panels are
 `home-about` (beside the introduction on the front page) and `production-band`
 (on the production page). A service page's band is keyed by the service's own
 slug, such as `biography-videos`, and its entry is created with the service.
@@ -75,6 +77,45 @@ slug, such as `biography-videos`, and its entry is created with the service.
 You should never have to type one of these keys. The **Photos & films** panel
 links to the right entry for each placeholder, and every entry shows the address
 of the page it appears on.
+
+## Change or remove one later
+
+Every one of these is a save in the dashboard, and the website follows on the
+next request. Nothing here needs a deployment.
+
+- **Replace a photograph.** Open the same entry, click the photograph, and
+  choose or upload a different file. The old file stays in **Content → Media**
+  until you delete it there.
+- **Change a caption, a title, or a transcript.** Edit the field and save.
+- **Take a photograph off a page.** Open the entry, remove the file from the
+  **Photograph** field, and save. The blue placeholder comes back. The file
+  itself is untouched.
+- **Swap an uploaded film for a YouTube link.** Clear **Upload a film**, paste
+  the link into **YouTube link**, and save. The page uses the first source that
+  is filled in - upload, then YouTube link, then film address - so leaving the
+  upload in place would keep it winning.
+- **Delete a file for good.** Open **Content → Media**, select it, and delete.
+  Do this after removing it from any entry that points at it, or those pages
+  fall back to their placeholder.
+- **Delete a whole entry.** Open it from **Content → Page media** and delete it.
+  The page returns to its placeholder, and the entry reappears empty the next
+  time the placeholder is listed.
+
+## What each band says
+
+The line above each band and the sentence under it are per page, so a reader
+learns something about the page they are on rather than reading the same
+sentence a dozen times. The wording each page ships with is in
+`lib/showcase-copy.ts`.
+
+To change it for one page without touching code, open **Content → Website
+pages**, open the page, find its **Photo & film band** block, and fill in
+**Kicker** or **Description**. What you type wins; leaving them empty keeps the
+page's own wording. A band with no wording of its own prints no sentence at all
+rather than a generic one.
+
+To take the band off a page entirely, delete that block from the page's layout
+and save.
 
 ## Where the files are kept
 

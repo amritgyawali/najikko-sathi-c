@@ -303,6 +303,22 @@ export const MediaShowcaseSection: Block = {
       admin: { description: 'The Page media entry to show, for example "about".' },
     },
     { name: "heading", type: "text", admin: { description: "Names the band: “<title> in pictures & film”." } },
+    {
+      name: "kicker",
+      type: "text",
+      admin: {
+        description:
+          "The small label above the heading. Left empty, the page uses its own wording rather than one label shared by every page.",
+      },
+    },
+    {
+      name: "description",
+      type: "textarea",
+      admin: {
+        description:
+          "One line under the heading, saying what is in this page's pictures. Left empty, the page uses its own wording; a page with none prints no line at all.",
+      },
+    },
   ],
 };
 

@@ -473,6 +473,14 @@ export interface Page {
              * Names the band: “<title> in pictures & film”.
              */
             heading?: string | null;
+            /**
+             * The small label above the heading. Left empty, the page uses its own wording rather than one label shared by every page.
+             */
+            kicker?: string | null;
+            /**
+             * One line under the heading, saying what is in this page's pictures. Left empty, the page uses its own wording; a page with none prints no line at all.
+             */
+            description?: string | null;
             id?: string | null;
             blockName?: string | null;
             blockType: 'mediaShowcase';
@@ -1507,7 +1515,7 @@ export interface Enquiry {
 export interface MediaSlot {
   id: number;
   /**
-   * Which placeholder this fills: "home" (/), "home-about" (/), "services" (/services), "our-work" (/our-work), "contact" (/contact), "about" (/about), "production" (/production), "production-band" (/production), "social-media-handling" (/social-media-handling), "training" (/training), "research" (/research), "it" (/it), "advertisement" (/advertisement), "right-sanchar" (/right-sanchar), or a service slug such as "documentary-film-production" for a service page.
+   * Which placeholder this fills: "home" (/), "home-about" (/), "our-work" (/our-work), "about" (/about), "production" (/production), "production-band" (/production), "social-media-handling" (/social-media-handling), "training" (/training), "research" (/research), "it" (/it), "advertisement" (/advertisement), "right-sanchar" (/right-sanchar), or a service slug such as "documentary-film-production" for a service page.
    */
   key: string;
   /**
@@ -1897,6 +1905,8 @@ export interface PagesSelect<T extends boolean = true> {
           | {
               mediaKey?: T;
               heading?: T;
+              kicker?: T;
+              description?: T;
               id?: T;
               blockName?: T;
             };

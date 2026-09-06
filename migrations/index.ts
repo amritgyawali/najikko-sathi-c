@@ -8,11 +8,13 @@ import * as migration_20260906_060756_add_page_sections from './20260906_060756_
 import * as migration_20260906_060900_secure_page_section_tables from './20260906_060900_secure_page_section_tables';
 import * as migration_20260906_062914_add_page_noindex from './20260906_062914_add_page_noindex';
 import * as migration_20260906_090000_page_media_uploads from './20260906_090000_page_media_uploads';
+import * as migration_20260906_100000_add_showcase_kicker_description from './20260906_100000_add_showcase_kicker_description';
 import * as migration_20260906_110000_import_website_pages from './20260906_110000_import_website_pages';
 import * as migration_20260906_120908_add_content_placements from './20260906_120908_add_content_placements';
 import * as migration_20260906_121056_move_faq_placements from './20260906_121056_move_faq_placements';
 import * as migration_20260906_145554_add_reviews_and_well_wishers_bands from './20260906_145554_add_reviews_and_well_wishers_bands';
 import * as migration_20260906_150000_home_reviews_and_well_wishers from './20260906_150000_home_reviews_and_well_wishers';
+import * as migration_20260906_190000_drop_filler_showcase_bands from './20260906_190000_drop_filler_showcase_bands';
 
 export const migrations = [
   {
@@ -66,6 +68,11 @@ export const migrations = [
     name: '20260906_090000_page_media_uploads',
   },
   {
+    up: migration_20260906_100000_add_showcase_kicker_description.up,
+    down: migration_20260906_100000_add_showcase_kicker_description.down,
+    name: '20260906_100000_add_showcase_kicker_description',
+  },
+  {
     up: migration_20260906_110000_import_website_pages.up,
     down: migration_20260906_110000_import_website_pages.down,
     name: '20260906_110000_import_website_pages',
@@ -83,11 +90,16 @@ export const migrations = [
   {
     up: migration_20260906_145554_add_reviews_and_well_wishers_bands.up,
     down: migration_20260906_145554_add_reviews_and_well_wishers_bands.down,
-    name: '20260906_145554_add_reviews_and_well_wishers_bands'
+    name: '20260906_145554_add_reviews_and_well_wishers_bands',
   },
   {
     up: migration_20260906_150000_home_reviews_and_well_wishers.up,
     down: migration_20260906_150000_home_reviews_and_well_wishers.down,
     name: '20260906_150000_home_reviews_and_well_wishers',
+  },
+  {
+    up: migration_20260906_190000_drop_filler_showcase_bands.up,
+    down: migration_20260906_190000_drop_filler_showcase_bands.down,
+    name: '20260906_190000_drop_filler_showcase_bands',
   },
 ];
