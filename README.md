@@ -15,14 +15,14 @@ Content is managed through a full admin dashboard powered by
 | Area | Where in the dashboard | Appears on |
 | --- | --- | --- |
 | Traffic, top pages, referrers, devices, enquiry queue | Dashboard home | - |
-| The website's pages, in navbar order, and where each one is edited | Dashboard home → Website pages | - |
+| Every page of the website: open it, edit it, add it to the dashboard, or build a new one | Dashboard home → Website pages | - |
 | The 16 services and their detail pages | Services → Services | `/services`, `/services/<slug>`, `/our-work`, and every discipline page |
 | Service groupings | Services → Service categories | `/services` sections |
 | News, blogs, commentary, investigations | Content → Posts | `/posts`, `/posts/<slug>` |
 | Promotions and packages | Content → Offers | `/offers` |
 | Client testimonials, with an approval queue | Content → Reviews | Review blocks |
 | Social responsibility films and photo albums | Content → Social responsibility | `/our-work` |
-| New website pages, built from layout blocks | Content → Pages | `/<slug>` |
+| Every page: its hero, its sections, their order and wording, its address, and whether it is on the website at all | Content → Pages | Every page, and `/<slug>` for new ones |
 | Questions and answers | Content → FAQs | Contact, services, training, production |
 | The people on the about page | Content → Team | `/about` |
 | Photos and files | Content → Media | Everywhere |
@@ -63,24 +63,67 @@ on the homepage as soon as the first message is saved there. Add one entry for
 the chairman and one for the director: the carousel then moves on by itself
 every five seconds, with arrows for stepping through it by hand.
 
+### Every page is editable
+
+Every page on this website is a document in **Content → Pages**, and everything
+on it - the hero at the top, the written sections, the card grids, the numbered
+process, the questions, the photo and film band, the closing call to action - is
+a *section* in a list you can rewrite, reorder, add to, or delete.
+
+The pages the site ships with (Home, Services, Our Work, Contact, About, and the
+discipline pages) start out held in code, in `lib/page-defaults.ts`. Press **Add
+them to the dashboard** on the dashboard home and each one becomes a document
+holding exactly the copy it already shows. Nothing on the website changes; what
+changes is that every word of it can now be edited. `npm run sync:pages` does
+the same thing from a terminal, and `npm run seed` does it for a fresh install.
+
+From then on:
+
+- **Edit** - open the page and change any section. Saving reaches the website on
+  the next request.
+- **Create** - **Build a new page** makes a page from the same sections. Give it
+  a slug and publish it, and it is live at `/<slug>` with no deploy. Tick *show
+  in navigation* to put it in the menu, and use the position number to say where.
+- **Delete** - deleting a page you built removes it. Deleting one of the pages
+  the site ships with puts that page back to the copy it shipped with, so the
+  action is never destructive.
+- **Take a page off the website** - set it back to **Draft**. The address stops
+  answering, and the page leaves the menu and the sitemap. Publishing it puts it
+  back.
+- **Keep a page out of search results** - tick *keep out of search engines* under
+  SEO. The page keeps working; it just stops being advertised.
+
+A few sections read their content from where it is already written rather than
+repeating it: the front page's hero, introduction and leadership messages, and
+the production, services and Right Sanchar bands, all take their words from
+**Site → Homepage & page copy**; the questions can take theirs from
+**Content → FAQs**; the service grids list what is in **Content → Services**;
+and the photo and film band shows the entry named in **Content → Page media**.
+Each of those sections says so in the dashboard. The page still decides whether
+the band appears at all and where.
+
 ### Website pages, on the dashboard home
 
-Under the traffic overview, **Website pages** lists the menu exactly as a
-visitor sees it — in order, with the pages that sit under **Our Work**, and with
-the pages built in **Content → Pages** appended just as the header appends them.
-Each row links to every dashboard area that writes that page's content.
+Under the traffic overview, **Website pages** is the list of every page the
+website has: the menu in the order a visitor sees it, the pages that sit under
+**Our Work**, the pages not in the menu, and the ones built in the dashboard.
+Each row opens the page, edits it, or - for a page not yet in the dashboard -
+adds it, and shows when it was last changed. A page taken off the website is
+marked as such.
 
 Nothing here is a copy that someone has to keep up to date. The panel resolves
 the menu on every load from the same two sources as the public header (the links
 in **Site → Navigation** and pages published with *show in navigation* ticked),
-through the same function, so reordering the menu or publishing a page shows up
-on the next dashboard load. A menu link with no page behind it is called out in
-red, which is how a typo in a link gets noticed before a visitor finds it.
+through the same function, so reordering the menu, renaming a page or publishing
+one shows up on the next dashboard load. A menu link with no page behind it is
+called out in red, which is how a typo in a link gets noticed before a visitor
+finds it.
 
-Which dashboard areas edit which page comes from `lib/site-map.ts`, the one list
-of the site's pages. `npm run check:pages` fails if a route exists with no entry
-there, or an entry names a route that no longer exists, so a page cannot be
-added to the site and quietly missed by the dashboard.
+Which other dashboard areas write into a page comes from `lib/site-map.ts`, the
+one list of the site's pages. `npm run check:pages` fails if a route exists with
+no entry there, if an entry names a route that no longer exists, or if a page has
+no copy to ship with, so a page cannot be added to the site and quietly missed by
+the dashboard.
 
 ### Social responsibility
 
@@ -177,11 +220,17 @@ SEED_ADMIN_PASSWORD='choose-a-strong-password' npm run seed
 npm run dev
 ```
 
-`npm run seed` loads the site's existing copy into the CMS and creates the first
-administrator, so the dashboard opens pre-filled rather than blank. Re-running
-it overwrites seeded globals, services, categories, and FAQs with repository
-content. Existing users are preserved. Run it once during initial setup; avoid
+`npm run seed` loads the site's existing copy into the CMS, adds every page of
+the website to **Content → Pages**, and creates the first administrator, so the
+dashboard opens pre-filled rather than blank. Re-running it overwrites seeded
+globals, services, categories, and FAQs with repository content; existing users
+and existing pages are preserved. Run it once during initial setup; avoid
 running it after editors have customized that content.
+
+`npm run sync:pages` adds the website's pages on their own, without touching
+anything else - useful on a database that was seeded before pages were editable.
+Add addresses to import only some of them (`npm run sync:pages -- /about`), or
+`--restore` to put a page back to the copy it ships with.
 
 Automatic development schema changes are disabled. Run `npm run migrate` before
 starting development against a newly created database.
@@ -290,6 +339,13 @@ The navbar links five separate pages, in this order: `/`, `/services`, `/our-wor
 
 The portfolio covers four production services, five social media services, five training programs, and two research and development services. The source is retained in `docs/Service_Portfolio_Overview.pdf`.
 
+Each of those pages is a list of sections rather than a hand-written file. The
+route (`app/(frontend)/about/page.tsx` and its siblings) names its address; the
+sections come from the page's document in **Content → Pages**, or, until it is
+imported there, from `lib/page-defaults.ts`. `cms/sections.ts` defines what a
+section can be and `app/(frontend)/_components/PageSections.tsx` draws it, so a
+page reads the same whether its words come from the dashboard or from the code.
+
 ## Quality checks
 
 ```bash
@@ -301,10 +357,11 @@ npm run check:site
 ```
 
 `check:pages` needs no database, build or browser: it compares the routes on
-disk with `lib/site-map.ts` and fails when the two have drifted apart.
+disk with `lib/site-map.ts` and with the copy each page ships with in
+`lib/page-defaults.ts`, and fails when they have drifted apart.
 `check:site` runs it first.
 
-The browser installation is only needed once per machine. `check:site` starts a production server on port 3100, checks all 28 pages at desktop and mobile widths, checks internal destinations and anchors, renders all social preview images, and exercises navigation history, the mobile menu, FAQs, and inquiry validation. Screenshots go to ignored `tmp/site-check/`. Set `CHECK_BASE_URL` to test an already running preview. No email is sent during checks.
+The browser installation is only needed once per machine. `check:site` starts a production server on port 3100, checks all 30 pages at desktop and mobile widths, checks internal destinations and anchors, renders all social preview images, and exercises navigation history, the mobile menu, FAQs, and inquiry validation. Screenshots go to ignored `tmp/site-check/`. Set `CHECK_BASE_URL` to test an already running preview. No email is sent during checks.
 
 ## Owner-managed photos and videos
 
@@ -346,6 +403,10 @@ API live in `app/(payload)/`.
 - `app/(payload)/` - The admin dashboard and Payload REST/GraphQL routes
 - `cms/` - Collections, globals, blocks, and access control
 - `lib/site-map.ts` - The one list of the site's pages: menu order, sub-pages, and where each is edited
+- `lib/page-defaults.ts` - The sections and copy each built-in page ships with, and what the dashboard imports
+- `lib/page-content.ts` - Resolves an address to a page: the dashboard's version if there is one, the shipped copy otherwise
+- `cms/sections.ts` - What a page section can be; `app/(frontend)/_components/PageSections.tsx` draws them
+- `cms/site-pages.ts` - Importing the website's own pages into the dashboard, and restoring them
 - `lib/content.ts` - CMS reads, with the static fallback
 - `lib/services.ts` - One shape for a service, whether it came from the CMS or the fallback
 - `proxy.ts` - Applies the redirects managed in the dashboard

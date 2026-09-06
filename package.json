@@ -11,6 +11,7 @@
     "check:pages": "node --import tsx scripts/check-pages.ts",
     "check:site": "npm run check:pages && node scripts/check-site.mjs",
     "seed": "node --import tsx scripts/seed.ts",
+    "sync:pages": "node --import tsx scripts/sync-pages.ts",
     "generate:types": "payload generate:types",
     "generate:importmap": "payload generate:importmap",
     "migrate": "payload migrate",

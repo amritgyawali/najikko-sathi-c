@@ -4,6 +4,9 @@ import * as migration_20260905_110000_secure_cms_tables from './20260905_110000_
 import * as migration_20260905_140000_navbar_our_work from './20260905_140000_navbar_our_work';
 import * as migration_20260905_145200_add_account_approval from './20260905_145200_add_account_approval';
 import * as migration_20260905_184631_add_leadership_and_social_responsibility from './20260905_184631_add_leadership_and_social_responsibility';
+import * as migration_20260906_060756_add_page_sections from './20260906_060756_add_page_sections';
+import * as migration_20260906_060900_secure_page_section_tables from './20260906_060900_secure_page_section_tables';
+import * as migration_20260906_062914_add_page_noindex from './20260906_062914_add_page_noindex';
 
 export const migrations = [
   {
@@ -34,6 +37,21 @@ export const migrations = [
   {
     up: migration_20260905_184631_add_leadership_and_social_responsibility.up,
     down: migration_20260905_184631_add_leadership_and_social_responsibility.down,
-    name: '20260905_184631_add_leadership_and_social_responsibility'
+    name: '20260905_184631_add_leadership_and_social_responsibility',
+  },
+  {
+    up: migration_20260906_060756_add_page_sections.up,
+    down: migration_20260906_060756_add_page_sections.down,
+    name: '20260906_060756_add_page_sections',
+  },
+  {
+    up: migration_20260906_060900_secure_page_section_tables.up,
+    down: migration_20260906_060900_secure_page_section_tables.down,
+    name: '20260906_060900_secure_page_section_tables',
+  },
+  {
+    up: migration_20260906_062914_add_page_noindex.up,
+    down: migration_20260906_062914_add_page_noindex.down,
+    name: '20260906_062914_add_page_noindex'
   },
 ];

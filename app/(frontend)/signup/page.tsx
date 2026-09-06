@@ -1,28 +1,18 @@
-import { PageHero } from "../_components/page-content";
-import { pageMetadata } from "../_lib/seo";
-import { SignupForm } from "./SignupForm";
+import { RoutePage, routeMetadata } from "../_components/route-page";
 
-// Not a page we want indexed, and it must always reflect the current state.
+// Rendered per request so the page always reflects what is in the dashboard.
+// A prerendered page cannot be regenerated reliably on demand here, and giving
+// it a revalidate window makes Next loop on link prefetches, so this small
+// site trades a cached render for content that is never stale.
 export const dynamic = "force-dynamic";
 
-export const metadata = {
-  ...pageMetadata("Create a dashboard account", "Register for access to the Najikko Sathi dashboard.", "/signup"),
-  robots: { index: false, follow: false },
-};
+/**
+ * Everything on this page - its heading, its sections and their order - is
+ * edited in the dashboard at Content → Pages. Until the page is imported there,
+ * it renders the copy it ships with, in lib/page-defaults.ts.
+ */
+export const generateMetadata = () => routeMetadata("/signup");
 
 export default function SignupPage() {
-  return <>
-    <PageHero
-      eyebrow="Dashboard access"
-      title="Create an account."
-      description="Register to manage content on this website. New accounts need an administrator's approval before they can sign in."
-      path="/signup"
-      label="Sign up"
-    />
-    <section className="content-section">
-      <div className="site-container signup-grid">
-        <SignupForm />
-      </div>
-    </section>
-  </>;
+  return <RoutePage path="/signup" />;
 }

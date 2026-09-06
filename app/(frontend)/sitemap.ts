@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 
-import { getCollection, getNavigation, liveWhere } from "@/lib/content";
+import { getCollection, getHiddenPaths, getNavigation, liveWhere } from "@/lib/content";
+import { getNoIndexPaths } from "@/lib/page-content";
 import { getServiceViews } from "@/lib/services";
 import { absoluteUrl } from "./_lib/seo";
 
@@ -12,23 +13,28 @@ export const dynamic = "force-dynamic";
  * the dashboard appears in the sitemap without a code change.
  */
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [nav, services, posts, pages, offers] = await Promise.all([
+  const [nav, services, posts, pages, offers, hidden, unlisted] = await Promise.all([
     getNavigation(),
     getServiceViews(),
     getCollection("posts", { where: liveWhere(), limit: 500, depth: 0 }),
     getCollection("pages", { where: { status: { equals: "published" } }, limit: 500, depth: 0 }),
     getCollection("offers", { where: liveWhere(), limit: 1, depth: 0 }),
+    getHiddenPaths(),
+    getNoIndexPaths(),
   ]);
 
   const entries = new Map<string, MetadataRoute.Sitemap[number]>();
   const add = (path: string, lastModified?: string | null) => {
+    // A page taken off the website, or asked to stay out of search results, is
+    // not advertised here.
+    if (hidden.includes(path) || unlisted.includes(path)) return;
     const url = absoluteUrl(path);
     if (entries.has(url)) return;
     entries.set(url, { url, ...(lastModified ? { lastModified: new Date(lastModified) } : {}) });
   };
 
-  // Always published. /search is deliberately absent: it is noindex, and a
-  // sitemap should only advertise pages we want indexed.
+  // Always published. /search is deliberately absent: it is marked "keep out of
+  // search engines", and a sitemap should only advertise pages we want indexed.
   for (const path of ["/", "/services"]) add(path);
   // The listing pages only earn a place once they have something on them.
   if (posts.length > 0) add("/posts");
@@ -47,7 +53,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }
   for (const service of services) add(`/services/${service.slug}`);
   for (const post of posts) if (post.slug) add(`/posts/${post.slug}`, post.updatedAt);
-  for (const page of pages) if (page.slug) add(`/${page.slug}`, page.updatedAt);
+  for (const page of pages) {
+    const path = page.path || (page.slug ? `/${page.slug}` : null);
+    if (path) add(path, page.updatedAt);
+  }
 
   return [...entries.values()];
 }

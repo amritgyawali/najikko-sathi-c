@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
-import { getBySlug } from "@/lib/content";
+import { getPageAt } from "@/lib/page-content";
 import { pageMetadata } from "../_lib/seo";
 import { Breadcrumbs } from "../_components/page-content";
-import { RenderBlocks } from "../_components/RenderBlocks";
+import { PageSections } from "../_components/PageSections";
 
 // Rendered per request so the page always reflects what is in the dashboard.
 // A prerendered page cannot be regenerated reliably on demand here, and giving
@@ -12,37 +12,42 @@ import { RenderBlocks } from "../_components/RenderBlocks";
 // site trades a cached render for content that is never stale.
 export const dynamic = "force-dynamic";
 
-
-
-
 type Args = { params: Promise<{ slug: string }> };
 
 /**
  * Renders any page created in the dashboard at /<slug>. Pages are rendered on
- * demand, so a newly published page is live without a redeploy.
+ * demand, so a newly published page is live without a redeploy, and setting one
+ * back to Draft takes its address off the website.
  */
 
 export async function generateMetadata({ params }: Args): Promise<Metadata> {
   const { slug } = await params;
-  const page = await getBySlug("pages", slug);
-  if (!page) return {};
-  return pageMetadata(
-    page.seo?.title || page.title,
-    page.seo?.description ||
+  const page = await getPageAt(`/${slug}`);
+  if (!page || page.hidden) return {};
+
+  const meta = pageMetadata(
+    page.seo.title || page.title,
+    page.seo.description ||
       `${page.title} - Najikko Sathi Media Pvt. Ltd., a media house in Anamnagar, Kathmandu, Nepal.`,
-    `/${page.slug}`,
+    page.path,
   );
+  return page.noindex ? { ...meta, robots: { index: false, follow: false } } : meta;
 }
 
 export default async function CmsPage({ params }: Args) {
   const { slug } = await params;
-  const page = await getBySlug("pages", slug);
-  if (!page) notFound();
+  const page = await getPageAt(`/${slug}`);
+  if (!page || page.hidden || !page.doc) notFound();
+
+  // A page that opens with its own hero draws its own breadcrumb trail.
+  const hasHero = page.sections.some((section) => section.blockType === "pageHero");
 
   return <>
-    <div className="site-container cms-breadcrumbs">
-      <Breadcrumbs items={[{ label: page.title, href: `/${page.slug}` }]} />
-    </div>
-    <RenderBlocks layout={page.layout} />
+    {hasHero ? null : (
+      <div className="site-container cms-breadcrumbs">
+        <Breadcrumbs items={[{ label: page.title, href: page.path }]} />
+      </div>
+    )}
+    <PageSections sections={page.sections} page={{ path: page.path, label: page.title }} />
   </>;
 }
