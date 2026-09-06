@@ -9,6 +9,7 @@ import type {
   Homepage,
   Navigation,
   Faq,
+  Media,
   MediaSlot,
   Offer,
   Page,
@@ -245,6 +246,7 @@ type CollectionMap = {
   team: Team;
   "social-responsibility": SocialResponsibility;
   "media-slots": MediaSlot;
+  media: Media;
   redirects: Redirect;
 };
 
@@ -314,8 +316,13 @@ export const getServiceCategories = cache(async (): Promise<ServiceCategory[]> =
   getCollection("service-categories", { limit: 50, sort: "order", depth: 0 }),
 );
 
-export const getFaqs = cache(async (placement: Faq["placement"]): Promise<Faq[]> =>
-  getCollection("faqs", { where: { placement: { equals: placement } }, limit: 50, sort: "order", depth: 0 }),
+/**
+ * Every question written in the dashboard, in the editor's order. Which of them
+ * a page shows is decided by "Where this appears" on each question, which
+ * lib/services.ts applies when a questions band asks for them.
+ */
+export const getAllFaqs = cache(async (): Promise<Faq[]> =>
+  getCollection("faqs", { limit: 200, sort: "order", depth: 0 }),
 );
 
 export const getTeam = cache(async (): Promise<Team[]> =>
@@ -331,6 +338,20 @@ export const getSocialResponsibility = cache(async (): Promise<SocialResponsibil
     sort: "order",
   }),
 );
+
+/**
+ * Photographs and films from the library that an editor has published to a
+ * page, in the order they were uploaded. A file with no page chosen is not
+ * here: it is only used where something else points at it.
+ */
+export const getPlacedMedia = cache(async (placement: string | null): Promise<Media[]> => {
+  if (!placement) return [];
+  const files = await getCollection("media", { limit: 200, sort: "createdAt", depth: 0 });
+  return files.filter((file) => {
+    const chosen = file.placements;
+    return Array.isArray(chosen) && chosen.includes(placement as NonNullable<Media["placements"]>[number]);
+  });
+});
 
 export const getMediaSlot = cache(async (key: string): Promise<MediaSlot | null> => {
   const rows = await getCollection("media-slots", { where: { key: { equals: key } }, limit: 1 });

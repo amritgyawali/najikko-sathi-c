@@ -1,6 +1,6 @@
 import type { CollectionConfig } from "payload";
 import { isEditor, isPublishedOrStaff } from "../access";
-import { statusField } from "../fields";
+import { placementsField, statusField } from "../fields";
 import { revalidateDoc, revalidateDocAfterDelete } from "../hooks/revalidate";
 
 /**
@@ -16,7 +16,7 @@ export const SocialResponsibility: CollectionConfig = {
   labels: { singular: "Social responsibility entry", plural: "Social responsibility" },
   admin: {
     useAsTitle: "title",
-    defaultColumns: ["title", "status", "date", "order"],
+    defaultColumns: ["title", "status", "date", "order", "placements"],
     group: "Content",
     description:
       "Films and photo albums from our social responsibility work, shown together on /our-work.",
@@ -74,5 +74,9 @@ export const SocialResponsibility: CollectionConfig = {
       admin: { position: "sidebar", description: "Lower numbers appear first." },
     },
     statusField,
+    placementsField({
+      thing: "entry",
+      everywhere: "on every page that carries a social responsibility band",
+    }),
   ],
 };

@@ -1,7 +1,7 @@
 import type { CollectionConfig } from "payload";
 import { revalidateDoc, revalidateDocAfterDelete } from "../hooks/revalidate";
 import { isEditorOrOwner, isPublishedOrStaff } from "../access";
-import { seoField, slugField, statusField, THUMB_CELL } from "../fields";
+import { placementsField, seoField, slugField, statusField, THUMB_CELL } from "../fields";
 
 /**
  * News articles, blog entries, commentary and investigations. One collection
@@ -48,6 +48,7 @@ export const Posts: CollectionConfig = {
       admin: { position: "sidebar" },
     },
     statusField,
+    placementsField({ thing: "post", everywhere: "on every page that lists writing" }),
     {
       name: "publishAt",
       type: "date",

@@ -1,4 +1,6 @@
-import type { Field } from "payload";
+import type { Field, SelectField } from "payload";
+
+import { placementOptions } from "../lib/placements";
 
 const toSlug = (value: string): string =>
   value
@@ -61,6 +63,47 @@ export const statusField: Field = {
     components: { Cell: STATE_CELL },
   },
 };
+
+/**
+ * "Where this appears": the pages a document is published on.
+ *
+ * Every content collection carries this, so an editor writing a post, an offer,
+ * a review, a question, a social responsibility entry, a team member or
+ * uploading a photograph chooses in the same place which pages it belongs on.
+ * The pages offered are the website's own (lib/placements.ts), so a page added
+ * to the site turns up here by itself.
+ *
+ * Leaving it empty keeps the behaviour the site has always had: the document
+ * appears wherever a section of its kind has been placed.
+ */
+export const placementsField = ({
+  thing,
+  everywhere,
+  description,
+  access,
+}: {
+  /** Names the content in the sentence shown under the field. */
+  thing: string;
+  /** Where an empty choice leaves it. */
+  everywhere: string;
+  /** Replaces the generated sentence outright. */
+  description?: string;
+  /** Field-level rules, for a collection the public can write to. */
+  access?: SelectField["access"];
+}): SelectField => ({
+  name: "placements",
+  type: "select",
+  hasMany: true,
+  index: true,
+  label: "Where this appears",
+  options: [...placementOptions],
+  ...(access ? { access } : {}),
+  admin: {
+    position: "sidebar",
+    description:
+      description ?? `Choose the pages this ${thing} is published on. Leave it empty to show it ${everywhere}.`,
+  },
+});
 
 const searchFields: Field[] = [
   { name: "title", type: "text" },

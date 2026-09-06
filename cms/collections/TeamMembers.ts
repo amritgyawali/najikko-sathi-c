@@ -1,6 +1,6 @@
 import type { CollectionConfig } from "payload";
 import { isEditor } from "../access";
-import { THUMB_CELL } from "../fields";
+import { placementsField, THUMB_CELL } from "../fields";
 import { revalidateDoc, revalidateDocAfterDelete } from "../hooks/revalidate";
 
 /** People shown on the about page. */
@@ -9,7 +9,7 @@ export const TeamMembers: CollectionConfig = {
   labels: { singular: "Team member", plural: "Team" },
   admin: {
     useAsTitle: "name",
-    defaultColumns: ["photo", "name", "role", "order"],
+    defaultColumns: ["photo", "name", "role", "order", "placements"],
     group: "Content",
     description: "The people introduced on the about page, in the order set here.",
     listSearchableFields: ["name", "role"],
@@ -52,5 +52,6 @@ export const TeamMembers: CollectionConfig = {
       defaultValue: 0,
       admin: { position: "sidebar", description: "Lower numbers appear first." },
     },
+    placementsField({ thing: "person", everywhere: "on every page that carries a team band" }),
   ],
 };

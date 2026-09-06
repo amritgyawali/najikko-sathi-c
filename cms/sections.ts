@@ -1,5 +1,6 @@
 import type { Block, Field } from "payload";
 
+import { placementOptions } from "../lib/placements";
 import { sectionIcons } from "../lib/section-icons";
 
 /**
@@ -216,15 +217,13 @@ export const FaqSection: Block = {
     {
       name: "placement",
       type: "select",
-      options: [
-        { label: "Contact", value: "contact" },
-        { label: "Services", value: "services" },
-        { label: "Training", value: "training" },
-        { label: "Production", value: "production" },
-      ],
+      label: "Show the questions published to",
+      options: [...placementOptions],
       admin: {
         description:
-          "Questions saved in Content → FAQs with this placement replace the list below. Leave the placement empty to use only the list below.",
+          "Questions saved in Content → FAQs replace the list below: the ones published to this page, " +
+          "plus the ones published to the page named here. Leave this empty to use the questions " +
+          "published to this page, and the list below when there are none.",
       },
     },
     {

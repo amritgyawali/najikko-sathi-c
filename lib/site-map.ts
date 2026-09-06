@@ -112,7 +112,7 @@ export const sitePages: SitePage[] = [
     edit: [
       collectionLink("services", "Services"),
       collectionLink("social-responsibility", "Social responsibility"),
-      collectionLink("faqs", "FAQs", 'placement "services"'),
+      collectionLink("faqs", "FAQs", "questions published to this page"),
       pageMedia("our-work"),
     ],
   },
@@ -124,7 +124,7 @@ export const sitePages: SitePage[] = [
     mediaKey: "contact",
     edit: [
       globalLink("site-settings", "Site settings", "address, phones, email"),
-      collectionLink("faqs", "FAQs", 'placement "contact"'),
+      collectionLink("faqs", "FAQs", "questions published to this page"),
       collectionLink("enquiries", "Enquiries", "messages sent from this form"),
       pageMedia("contact"),
     ],
@@ -153,7 +153,7 @@ export const sitePages: SitePage[] = [
     edit: [
       globalLink("homepage", "Homepage", "the Production page tab"),
       collectionLink("services", "Services", "the production category"),
-      collectionLink("faqs", "FAQs", 'placement "production"'),
+      collectionLink("faqs", "FAQs", "questions published to this page"),
       pageMedia("production"),
       pageMedia("production-band"),
     ],
@@ -177,7 +177,7 @@ export const sitePages: SitePage[] = [
     mediaKey: "training",
     edit: [
       collectionLink("services", "Services", "the training category"),
-      collectionLink("faqs", "FAQs", 'placement "training"'),
+      collectionLink("faqs", "FAQs", "questions published to this page"),
       pageMedia("training"),
     ],
   },

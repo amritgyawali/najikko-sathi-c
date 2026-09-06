@@ -250,7 +250,7 @@ async function seed() {
       limit: 1,
       overrideAccess: true,
     });
-    const data = { question, answer, placement: "contact" as const, order: index };
+    const data = { question, answer, placements: ["contact" as const], order: index };
     if (existing.docs[0]) {
       await payload.update({ collection: "faqs", id: existing.docs[0].id, data, overrideAccess: true });
     } else {

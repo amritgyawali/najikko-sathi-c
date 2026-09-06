@@ -5,6 +5,7 @@ import { ArrowRight, Star } from "lucide-react";
 import type { Page } from "@/payload-types";
 import { getCollection } from "@/lib/content";
 import { mediaAlt, mediaUrl } from "@/lib/media";
+import { onPage, placementKeyFor } from "@/lib/placements";
 
 type Block = NonNullable<Page["layout"]>[number];
 
@@ -91,14 +92,23 @@ function Gallery({ block }: { block: Extract<Block, { blockType: "gallery" }> })
   );
 }
 
-async function Reviews({ block }: { block: Extract<Block, { blockType: "reviewsBlock" }> }) {
-  const reviews = await getCollection("reviews", {
-    where:
-      block.source === "featured"
-        ? { and: [{ approved: { equals: true } }, { featured: { equals: true } }] }
-        : { approved: { equals: true } },
-    limit: block.limit ?? 6,
-  });
+async function Reviews({
+  block,
+  placement,
+}: {
+  block: Extract<Block, { blockType: "reviewsBlock" }>;
+  placement: string | null;
+}) {
+  const reviews = onPage(
+    await getCollection("reviews", {
+      where:
+        block.source === "featured"
+          ? { and: [{ approved: { equals: true } }, { featured: { equals: true } }] }
+          : { approved: { equals: true } },
+      limit: block.limit ?? 6,
+    }),
+    placement,
+  );
   if (reviews.length === 0) return null;
 
   return (
@@ -126,15 +136,24 @@ async function Reviews({ block }: { block: Extract<Block, { blockType: "reviewsB
   );
 }
 
-async function Posts({ block }: { block: Extract<Block, { blockType: "postsBlock" }> }) {
-  const posts = await getCollection("posts", {
-    where:
-      block.type && block.type !== "any"
-        ? { and: [{ status: { equals: "published" } }, { type: { equals: block.type } }] }
-        : { status: { equals: "published" } },
-    limit: block.limit ?? 3,
-    sort: "-publishedAt",
-  });
+async function Posts({
+  block,
+  placement,
+}: {
+  block: Extract<Block, { blockType: "postsBlock" }>;
+  placement: string | null;
+}) {
+  const posts = onPage(
+    await getCollection("posts", {
+      where:
+        block.type && block.type !== "any"
+          ? { and: [{ status: { equals: "published" } }, { type: { equals: block.type } }] }
+          : { status: { equals: "published" } },
+      limit: block.limit ?? 3,
+      sort: "-publishedAt",
+    }),
+    placement,
+  );
   if (posts.length === 0) return null;
 
   return (
@@ -158,11 +177,20 @@ async function Posts({ block }: { block: Extract<Block, { blockType: "postsBlock
   );
 }
 
-async function Offers({ block }: { block: Extract<Block, { blockType: "offersBlock" }> }) {
-  const offers = await getCollection("offers", {
-    where: { status: { equals: "published" } },
-    limit: block.limit ?? 3,
-  });
+async function Offers({
+  block,
+  placement,
+}: {
+  block: Extract<Block, { blockType: "offersBlock" }>;
+  placement: string | null;
+}) {
+  const offers = onPage(
+    await getCollection("offers", {
+      where: { status: { equals: "published" } },
+      limit: block.limit ?? 3,
+    }),
+    placement,
+  );
   if (offers.length === 0) return null;
 
   return (
@@ -192,8 +220,14 @@ async function Offers({ block }: { block: Extract<Block, { blockType: "offersBlo
   );
 }
 
-export function RenderBlocks({ layout }: { layout: Page["layout"] }) {
+/**
+ * `path` is the address the blocks are being drawn at. The blocks that list
+ * content use it to leave out anything an editor has published to other pages.
+ */
+export function RenderBlocks({ layout, path }: { layout: Page["layout"]; path?: string }) {
   if (!layout?.length) return null;
+
+  const placement = placementKeyFor(path);
 
   return (
     <>
@@ -228,11 +262,11 @@ export function RenderBlocks({ layout }: { layout: Page["layout"] }) {
               </section>
             );
           case "reviewsBlock":
-            return <Reviews block={block} key={key} />;
+            return <Reviews block={block} key={key} placement={placement} />;
           case "postsBlock":
-            return <Posts block={block} key={key} />;
+            return <Posts block={block} key={key} placement={placement} />;
           case "offersBlock":
-            return <Offers block={block} key={key} />;
+            return <Offers block={block} key={key} placement={placement} />;
           default:
             return null;
         }

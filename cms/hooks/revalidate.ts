@@ -5,6 +5,8 @@ import type {
   GlobalAfterChangeHook,
 } from "payload";
 
+import { placementPath } from "../../lib/placements";
+
 /**
  * Keeps the public site in step with the dashboard.
  *
@@ -51,9 +53,31 @@ export const revalidateSite: GlobalAfterChangeHook = ({ doc }) => {
 };
 
 /**
+ * The pages a document has been published to, as addresses.
+ *
+ * Moving a post from one page to another has to clear both, so the version
+ * before the save is read as well as the one after it.
+ */
+const placedPaths = (...docs: unknown[]): string[] => {
+  const paths = new Set<string>();
+  for (const doc of docs) {
+    const chosen = (doc as { placements?: unknown } | null | undefined)?.placements;
+    if (!Array.isArray(chosen)) continue;
+    for (const key of chosen) {
+      const path = typeof key === "string" ? placementPath[key] : undefined;
+      if (path) paths.add(path);
+    }
+  }
+  return [...paths];
+};
+
+/**
  * Collections purge their own URL plus the pages that list them. `prefix` is
  * the public route the collection renders under, e.g. "/posts"; pass "" for
  * documents that live at the site root.
+ *
+ * The pages named in "Where this appears" are purged too, so ticking a page
+ * shows the content there on the next request.
  */
 export const revalidateDoc = (
   prefix: string,
@@ -66,7 +90,11 @@ export const revalidateDoc = (
       const slug = (candidate as { slug?: unknown } | undefined)?.slug;
       if (typeof slug === "string" && slug) slugs.add(slug);
     }
-    purge([...[...slugs].map((slug) => `${prefix}/${slug}`), ...extraPaths]);
+    purge([
+      ...[...slugs].map((slug) => `${prefix}/${slug}`),
+      ...extraPaths,
+      ...placedPaths(doc, previousDoc),
+    ]);
     return doc;
   };
 };
@@ -80,6 +108,7 @@ export const revalidateDocAfterDelete = (
     purge([
       ...(typeof slug === "string" && slug ? [`${prefix}/${slug}`] : []),
       ...extraPaths,
+      ...placedPaths(doc),
     ]);
     return doc;
   };
