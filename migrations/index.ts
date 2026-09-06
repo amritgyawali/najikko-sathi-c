@@ -11,6 +11,8 @@ import * as migration_20260906_090000_page_media_uploads from './20260906_090000
 import * as migration_20260906_110000_import_website_pages from './20260906_110000_import_website_pages';
 import * as migration_20260906_120908_add_content_placements from './20260906_120908_add_content_placements';
 import * as migration_20260906_121056_move_faq_placements from './20260906_121056_move_faq_placements';
+import * as migration_20260906_145554_add_reviews_and_well_wishers_bands from './20260906_145554_add_reviews_and_well_wishers_bands';
+import * as migration_20260906_150000_home_reviews_and_well_wishers from './20260906_150000_home_reviews_and_well_wishers';
 
 export const migrations = [
   {
@@ -76,6 +78,16 @@ export const migrations = [
   {
     up: migration_20260906_121056_move_faq_placements.up,
     down: migration_20260906_121056_move_faq_placements.down,
-    name: '20260906_121056_move_faq_placements'
+    name: '20260906_121056_move_faq_placements',
+  },
+  {
+    up: migration_20260906_145554_add_reviews_and_well_wishers_bands.up,
+    down: migration_20260906_145554_add_reviews_and_well_wishers_bands.down,
+    name: '20260906_145554_add_reviews_and_well_wishers_bands'
+  },
+  {
+    up: migration_20260906_150000_home_reviews_and_well_wishers.up,
+    down: migration_20260906_150000_home_reviews_and_well_wishers.down,
+    name: '20260906_150000_home_reviews_and_well_wishers',
   },
 ];

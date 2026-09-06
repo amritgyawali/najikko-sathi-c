@@ -136,6 +136,42 @@ export async function importRoutePages(
 }
 
 /**
+ * A read that failed because the database is younger than the config.
+ *
+ * A migration using the local API queries every table the *current* config
+ * knows about - including the ones a later migration has yet to create - so on
+ * an empty database, running the chain from the beginning, that read fails
+ * until the schema has caught up.
+ */
+const schemaBehindConfig = (error: unknown): boolean =>
+  error instanceof Error && /relation "[^"]+" does not exist/i.test(`${error.message} ${String((error as { cause?: unknown }).cause ?? "")}`);
+
+/**
+ * Imports the built-in pages, and says nothing if the database is not ready for
+ * it yet.
+ *
+ * Every migration that adds a section to a page must call this, because it is
+ * the newest such migration that ends up doing the import on a database being
+ * built from scratch - by which time every table its query touches exists. On a
+ * database that is already up to date, this reports the pages are there and
+ * changes nothing.
+ */
+export async function ensureRoutePagesImported(
+  payload: Payload,
+  req?: PayloadRequest,
+): Promise<SyncReport | null> {
+  try {
+    return await importRoutePages(payload, undefined, req);
+  } catch (error) {
+    if (!schemaBehindConfig(error)) throw error;
+    payload.logger.info(
+      "[pages] the database has not caught up with the sections yet; a later migration adds them.",
+    );
+    return null;
+  }
+}
+
+/**
  * Puts a built-in page back to the copy it ships with, by deleting the document
  * that overrides it. The page keeps working: it simply renders from
  * lib/page-defaults.ts again.

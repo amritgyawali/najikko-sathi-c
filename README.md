@@ -26,6 +26,7 @@ Content is managed through a full admin dashboard powered by
 | Every page: its hero, its sections, their order and wording, its address, and whether it is on the website at all | Content → Website pages | Every page, and `/<slug>` for new ones |
 | Questions and answers | Content → FAQs | The pages chosen in **Where this appears** |
 | The people on the about page | Content → Team | The pages chosen in **Where this appears** |
+| Advisers, patrons and friends of the house | Content → Well-wishers | The pages chosen in **Where this appears**, the front page to begin with |
 | Photos, films and files | Content → Media | Wherever they are used, plus the pages chosen in **Where this appears** |
 | The photo or film in each blue placeholder | Content → Page media | Every showcase band and panel |
 | Contact form messages, with triage and notes | Enquiries | Sent from `/contact` |
@@ -44,7 +45,8 @@ Content is managed through a full admin dashboard powered by
 ### The homepage
 
 The front page is the media system wheel, the introduction, the leadership
-messages, and the page's own photo and film. The wheel's six petals -
+messages, the reviews and well-wishers bands, and the page's own photo and
+film. The wheel's six petals -
 production, social media handling, training, research and development, IT, and
 advertisement - each link to that discipline's page, and the company logo
 uploaded in **Site → Site Settings** sits at its centre. Until a logo is
@@ -63,6 +65,25 @@ The **Home - leadership** tab is empty to begin with, and the carousel appears
 on the homepage as soon as the first message is saved there. Add one entry for
 the chairman and one for the director: the carousel then moves on by itself
 every five seconds, with arrows for stepping through it by hand.
+
+Under the leadership messages sit two bands that fill themselves from the
+dashboard, and both stay invisible until they have something to show:
+
+- **Reviews**, from Content → Reviews. Only reviews you have ticked as
+  **Approved** appear, so the band can be on the page while the moderation
+  queue is still being worked through.
+- **Well-wishers**, from Content → Well-wishers. Advisers, patrons and friends
+  of the house: a portrait and a name are enough, and a line of goodwill is
+  shown under them when one is written. Someone with no photograph is drawn as
+  their initial, so the row stays even.
+
+Both are ordinary sections, so Content → Website pages → Home is where you
+reorder them, reword their headings, or take one off the page - and either can
+be added to any other page from the same place.
+
+The hero carries one button. Writing a label into **Second button** on the
+front page hero adds a second one beside it, pointing at the Right Sanchar
+address in Site settings; leaving it empty is what keeps it off.
 
 ### Every page is editable
 
@@ -184,8 +205,8 @@ at `/search`, which searches services, writing, offers, and pages.
 
 Every kind of content carries a **Where this appears** list in the sidebar of
 its edit screen: posts, offers, reviews, questions, social responsibility
-entries, team members, and the files in Content → Media. Tick the pages the
-document belongs on and it is published there and nowhere else.
+entries, team members, well-wishers, and the files in Content → Media. Tick the
+pages the document belongs on and it is published there and nowhere else.
 
 The list offers every page of the website, and it comes from `lib/site-map.ts`,
 so a page added to the site is offered here on the next load with nothing to
@@ -200,10 +221,10 @@ page shows:
   list, so bands there are not filtered.
 
 A page shows a kind of content only if it carries the band that draws it - a
-writing list, an offer list, a reviews band, a questions band, the team, or the
-social responsibility band. Ticking **About Us** on a post publishes it to the
-about page; adding a **Writing list** section to that page in Content → Website
-pages is what puts it on the screen. Photographs and films are the exception:
+writing list, an offer list, a reviews band, a questions band, the team, the
+well-wishers, or the social responsibility band. Ticking **About Us** on a post
+publishes it to the about page; adding a **Writing list** section to that page
+in Content → Website pages is what puts it on the screen. Photographs and films are the exception:
 a file in Content → Media joins the "in pictures & film" band of every page it
 is published to, which every built-in page already has.
 

@@ -114,6 +114,10 @@ export function liveTargetFor({
       return chosen
         ? { path: chosen.path, where: `The team band on ${chosen.named}.` }
         : { path: "/about", where: "The team section of the about page." };
+    case "well-wishers":
+      return chosen
+        ? { path: chosen.path, where: `The well-wishers band on ${chosen.named}.` }
+        : { path: "/", where: "The well-wishers band on the front page." };
     case "faqs":
       return chosen
         ? { path: chosen.path, where: `The questions band on ${chosen.named}.` }

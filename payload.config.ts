@@ -22,6 +22,7 @@ import { Services } from "./cms/collections/Services";
 import { SocialResponsibility } from "./cms/collections/SocialResponsibility";
 import { TeamMembers } from "./cms/collections/TeamMembers";
 import { Users } from "./cms/collections/Users";
+import { WellWishers } from "./cms/collections/WellWishers";
 import { Announcement } from "./cms/globals/Announcement";
 import { Appearance } from "./cms/globals/Appearance";
 import { Footer } from "./cms/globals/Footer";
@@ -142,6 +143,7 @@ export default buildConfig({
     Faqs,
     SocialResponsibility,
     TeamMembers,
+    WellWishers,
     Enquiries,
     Media,
     MediaSlots,

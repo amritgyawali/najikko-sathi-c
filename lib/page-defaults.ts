@@ -58,7 +58,7 @@ export const routePageContent: Record<string, RoutePageContent> = {
         "Najikko Sathi Media offers documentary and video production, social media management, media training, and research from Anamnagar, Kathmandu, Nepal.",
     },
     sections: [
-      { blockType: "homeHero", secondaryLabel: "Visit Right Sanchar", showMediaSystem: true },
+      { blockType: "homeHero", showMediaSystem: true },
       {
         blockType: "homeAbout",
         linkLabel: "Explore Our Services",
@@ -66,6 +66,24 @@ export const routePageContent: Record<string, RoutePageContent> = {
         captionTitle: "Your Media Partner",
       },
       { blockType: "leadershipSection" },
+      {
+        blockType: "reviewsSection",
+        kicker: "In their words",
+        heading: "What the people we work with say.",
+        description:
+          "Reviews left by the organizations and individuals whose stories we have helped tell.",
+        source: "all",
+        limit: 6,
+        tone: "plain",
+      },
+      {
+        blockType: "wellWishersSection",
+        kicker: "Our well-wishers",
+        heading: "The people who stand beside us.",
+        description:
+          "Advisers, patrons and friends of the house whose encouragement keeps this work moving.",
+        tone: "tinted",
+      },
       { blockType: "mediaShowcase", mediaKey: "home", heading: "" },
     ],
   },

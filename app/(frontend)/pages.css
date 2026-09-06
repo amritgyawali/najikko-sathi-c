@@ -170,6 +170,31 @@
 .social-album figcaption { margin-top: 8px; color: var(--muted); font-size: 12.5px; line-height: 1.5; }
 .social-entry .text-link { margin-top: 20px; }
 
+/* Client testimonials, from Content → Reviews. */
+/* min() lets a track shrink below its minimum on a narrow phone, rather than
+   pushing the page sideways. */
+.review-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(330px, 100%), 1fr)); gap: 20px; }
+.review-card { position: relative; display: flex; flex-direction: column; gap: 16px; margin: 0; padding: 30px; border: 1px solid var(--line); border-radius: 18px; background: #fff; }
+.review-mark { position: absolute; top: 24px; right: 26px; width: 30px; height: 30px; color: #dce8f8; stroke-width: 1.5; }
+.review-stars { display: flex; gap: 3px; color: var(--warm); }
+.review-stars svg { width: 17px; height: 17px; fill: currentcolor; stroke: none; }
+.review-card blockquote { margin: 0; color: var(--ink); font-size: 16px; line-height: 1.75; }
+.review-card figcaption { display: flex; align-items: center; gap: 14px; margin-top: auto; padding-top: 18px; border-top: 1px solid var(--line); }
+.review-card figcaption img, .review-initial { flex-shrink: 0; width: 46px; height: 46px; border-radius: 50%; object-fit: cover; }
+.review-initial { display: grid; place-items: center; color: var(--secondary); background: #edf4fe; font-size: 19px; font-weight: 650; }
+.review-card figcaption > span { display: flex; flex-direction: column; min-width: 0; }
+.review-card figcaption strong { color: var(--primary); font-size: 15.5px; }
+.review-card figcaption small { color: var(--muted); font-size: 13px; }
+
+/* The people who wish the company well, from Content → Well-wishers. */
+.wisher-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 20px; }
+.wisher-card { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 30px 24px; border: 1px solid var(--line); border-radius: 18px; background: #fff; text-align: center; }
+.wisher-card img, .wisher-initial { width: 96px; height: 96px; margin-bottom: 6px; border-radius: 50%; object-fit: cover; }
+.wisher-initial { display: grid; place-items: center; color: var(--secondary); background: #edf4fe; font-size: 34px; font-weight: 650; }
+.wisher-card strong { color: var(--primary); font-size: 17px; }
+.wisher-role { color: var(--secondary); font-size: 13px; font-weight: 600; }
+.wisher-card p { margin: 6px 0 0; color: var(--muted); font-size: 14.5px; line-height: 1.65; }
+
 /* Photographs and films published to a page in Content → Media. */
 .media-album { display: grid; grid-template-columns: repeat(auto-fill, minmax(215px, 1fr)); gap: 14px; margin-top: 24px; }
 .media-album figure { margin: 0; }
@@ -252,6 +277,9 @@
   .leadership-copy p { font-size: 15.5px; }
   .discipline-grid, .topic-grid { grid-template-columns: 1fr; }
   .discipline-card, .social-entry { padding: 24px; }
+  .review-card, .wisher-card { padding: 24px; }
+  .wisher-grid { grid-template-columns: repeat(auto-fit, minmax(min(160px, 100%), 1fr)); }
+  .wisher-card img, .wisher-initial { width: 76px; height: 76px; }
   .social-album, .media-album { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
   .social-album img, .media-album img, .media-album video { height: 145px; }
   .chairman-section, .foundation-section, .verticals-section, .value-section { padding-block: 52px; }
