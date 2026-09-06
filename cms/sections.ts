@@ -344,6 +344,54 @@ export const TeamSection: Block = {
   fields: headingFields,
 };
 
+/** Client testimonials, from Content → Reviews. Hidden while there are none. */
+export const ReviewsSection: Block = {
+  slug: "reviewsSection",
+  labels: { singular: "Reviews", plural: "Reviews" },
+  fields: [
+    ...headingFields,
+    {
+      name: "source",
+      type: "select",
+      required: true,
+      defaultValue: "featured",
+      options: [
+        { label: "Featured reviews only", value: "featured" },
+        { label: "Every approved review", value: "all" },
+      ],
+      admin: { description: "Only approved reviews are ever shown." },
+    },
+    { name: "limit", type: "number", defaultValue: 6, min: 1, max: 24 },
+    {
+      name: "tone",
+      type: "select",
+      defaultValue: "plain",
+      options: [
+        { label: "Plain", value: "plain" },
+        { label: "Tinted band", value: "tinted" },
+      ],
+    },
+  ],
+};
+
+/** The people who wish the company well, from Content → Well-wishers. */
+export const WellWishersSection: Block = {
+  slug: "wellWishersSection",
+  labels: { singular: "Well-wishers", plural: "Well-wishers" },
+  fields: [
+    ...headingFields,
+    {
+      name: "tone",
+      type: "select",
+      defaultValue: "tinted",
+      options: [
+        { label: "Plain", value: "plain" },
+        { label: "Tinted band", value: "tinted" },
+      ],
+    },
+  ],
+};
+
 /** The social responsibility films and albums, from their own collection. */
 export const SocialResponsibilitySection: Block = {
   slug: "socialResponsibilitySection",
@@ -399,9 +447,11 @@ export const HomeHeroSection: Block = {
     {
       name: "secondaryLabel",
       type: "text",
+      label: "Second button",
       admin: {
         description:
-          "The second button. Its address is the Right Sanchar link in Site settings. " +
+          "Leave this empty and the hero carries one button. Write a label and a second " +
+          "button appears beside it, pointing at the Right Sanchar link in Site settings. " +
           globalCopyNote("Home - hero"),
       },
     },
@@ -558,6 +608,8 @@ export const sectionBlocks: Block[] = [
   CategoryGroupsSection,
   MediaShowcaseSection,
   TeamSection,
+  ReviewsSection,
+  WellWishersSection,
   SocialResponsibilitySection,
   ContactDetailsSection,
   ContactCtaSection,

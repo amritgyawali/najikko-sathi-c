@@ -21,6 +21,7 @@ import type {
   SiteSetting,
   SocialResponsibility,
   Team,
+  WellWisher,
 } from "@/payload-types";
 import { mediaAlt, mediaUrl } from "@/lib/media";
 import {
@@ -245,6 +246,7 @@ type CollectionMap = {
   faqs: Faq;
   team: Team;
   "social-responsibility": SocialResponsibility;
+  "well-wishers": WellWisher;
   "media-slots": MediaSlot;
   media: Media;
   redirects: Redirect;
@@ -327,6 +329,11 @@ export const getAllFaqs = cache(async (): Promise<Faq[]> =>
 
 export const getTeam = cache(async (): Promise<Team[]> =>
   getCollection("team", { limit: 50, sort: "order" }),
+);
+
+/** Advisers, patrons and friends of the house, in the editor's order. */
+export const getWellWishers = cache(async (): Promise<WellWisher[]> =>
+  getCollection("well-wishers", { limit: 100, sort: "order" }),
 );
 
 /** The photo/video featured on a given page, keyed by page or service slug. */

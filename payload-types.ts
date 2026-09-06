@@ -76,6 +76,7 @@ export interface Config {
     faqs: Faq;
     'social-responsibility': SocialResponsibility;
     team: Team;
+    'well-wishers': WellWisher;
     enquiries: Enquiry;
     media: Media;
     'media-slots': MediaSlot;
@@ -98,6 +99,7 @@ export interface Config {
     faqs: FaqsSelect<false> | FaqsSelect<true>;
     'social-responsibility': SocialResponsibilitySelect<false> | SocialResponsibilitySelect<true>;
     team: TeamSelect<false> | TeamSelect<true>;
+    'well-wishers': WellWishersSelect<false> | WellWishersSelect<true>;
     enquiries: EnquiriesSelect<false> | EnquiriesSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     'media-slots': MediaSlotsSelect<false> | MediaSlotsSelect<true>;
@@ -499,6 +501,41 @@ export interface Page {
              * One or two lines under the heading.
              */
             description?: string | null;
+            /**
+             * Only approved reviews are ever shown.
+             */
+            source: 'featured' | 'all';
+            limit?: number | null;
+            tone?: ('plain' | 'tinted') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'reviewsSection';
+          }
+        | {
+            /**
+             * The small label above the heading.
+             */
+            kicker?: string | null;
+            heading?: string | null;
+            /**
+             * One or two lines under the heading.
+             */
+            description?: string | null;
+            tone?: ('plain' | 'tinted') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'wellWishersSection';
+          }
+        | {
+            /**
+             * The small label above the heading.
+             */
+            kicker?: string | null;
+            heading?: string | null;
+            /**
+             * One or two lines under the heading.
+             */
+            description?: string | null;
             id?: string | null;
             blockName?: string | null;
             blockType: 'socialResponsibilitySection';
@@ -597,7 +634,7 @@ export interface Page {
           }
         | {
             /**
-             * The second button. Its address is the Right Sanchar link in Site settings. The words in this band are written in Site → Homepage & page copy, on the "Home - hero" tab.
+             * Leave this empty and the hero carries one button. Write a label and a second button appears beside it, pointing at the Right Sanchar link in Site settings. The words in this band are written in Site → Homepage & page copy, on the "Home - hero" tab.
              */
             secondaryLabel?: string | null;
             showMediaSystem?: boolean | null;
@@ -1378,6 +1415,55 @@ export interface Team {
   createdAt: string;
 }
 /**
+ * Advisers, patrons and friends of the house, in the order set here.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "well-wishers".
+ */
+export interface WellWisher {
+  id: number;
+  name: string;
+  /**
+   * Their title or organisation, as it should read on the page.
+   */
+  role?: string | null;
+  /**
+   * Optional. A sentence or two of goodwill.
+   */
+  message?: string | null;
+  /**
+   * Optional. Their initials are drawn in its place while there is none.
+   */
+  photo?: (number | null) | Media;
+  /**
+   * Lower numbers appear first.
+   */
+  order?: number | null;
+  /**
+   * Choose the pages this well-wisher is published on. Leave it empty to show it on every page that carries a well-wishers band.
+   */
+  placements?:
+    | (
+        | 'home'
+        | 'services'
+        | 'our-work'
+        | 'contact'
+        | 'about'
+        | 'production'
+        | 'social-media-handling'
+        | 'training'
+        | 'research'
+        | 'it'
+        | 'advertisement'
+        | 'right-sanchar'
+        | 'posts'
+        | 'offers'
+      )[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * Messages sent through the website contact form. Private: nothing here is ever published.
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1567,6 +1653,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'team';
         value: number | Team;
+      } | null)
+    | ({
+        relationTo: 'well-wishers';
+        value: number | WellWisher;
       } | null)
     | ({
         relationTo: 'enquiries';
@@ -1816,6 +1906,28 @@ export interface PagesSelect<T extends boolean = true> {
               kicker?: T;
               heading?: T;
               description?: T;
+              id?: T;
+              blockName?: T;
+            };
+        reviewsSection?:
+          | T
+          | {
+              kicker?: T;
+              heading?: T;
+              description?: T;
+              source?: T;
+              limit?: T;
+              tone?: T;
+              id?: T;
+              blockName?: T;
+            };
+        wellWishersSection?:
+          | T
+          | {
+              kicker?: T;
+              heading?: T;
+              description?: T;
+              tone?: T;
               id?: T;
               blockName?: T;
             };
@@ -2236,6 +2348,20 @@ export interface TeamSelect<T extends boolean = true> {
   bio?: T;
   photo?: T;
   email?: T;
+  order?: T;
+  placements?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "well-wishers_select".
+ */
+export interface WellWishersSelect<T extends boolean = true> {
+  name?: T;
+  role?: T;
+  message?: T;
+  photo?: T;
   order?: T;
   placements?: T;
   updatedAt?: T;

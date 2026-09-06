@@ -68,6 +68,16 @@ export const pages: Record<string, string> = {
     "हालका समाचार पढ्न पोर्टल खोल्नुहोस्। समाचार सुझाव वा हाम्रो मिडिया कामबारे जिज्ञासाका लागि नजिकको साथीलाई सीधै सम्पर्क गर्नुहोस्।",
   "Find published stories on Right Sanchar.": "राइट सञ्चारमा प्रकाशित समाचारहरू हेर्नुहोस्।",
 
+  // ---- Homepage: reviews & well-wishers -------------------------------
+  "In their words": "उनीहरूकै शब्दमा",
+  "What the people we work with say.": "हामीसँग काम गर्नेहरू के भन्छन्।",
+  "Reviews left by the organizations and individuals whose stories we have helped tell.":
+    "हामीले कथा भन्न सघाएका संस्था र व्यक्तिहरूले लेखेका प्रतिक्रियाहरू।",
+  "Our well-wishers": "हाम्रा शुभचिन्तकहरू",
+  "The people who stand beside us.": "हामीसँगै उभिने मानिसहरू।",
+  "Advisers, patrons and friends of the house whose encouragement keeps this work moving.":
+    "सल्लाहकार, संरक्षक र संस्थाका मित्रहरू, जसको हौसलाले यो काम अघि बढिरहेको छ।",
+
   // ---- About page -----------------------------------------------------
   "About Our Kathmandu Media House": "हाम्रो काठमाडौं मिडिया हाउसको बारेमा",
   "About Najikko Sathi Media": "नजिकको साथी मिडियाको बारेमा",

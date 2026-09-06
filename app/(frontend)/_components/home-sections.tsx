@@ -65,9 +65,11 @@ export function HomeHero({
             <Link className="hero-cta" href={home?.heroCtaHref || "/services"}>
               {home?.heroCtaLabel || "Explore our services"} <ArrowRight aria-hidden="true" />
             </Link>
-            <a className="hero-secondary" href={business.rightSanchar} target="_blank" rel="noreferrer">
-              {block.secondaryLabel || "Visit Right Sanchar"} <ArrowUpRight aria-hidden="true" />
-            </a>
+            {block.secondaryLabel ? (
+              <a className="hero-secondary" href={business.rightSanchar} target="_blank" rel="noreferrer">
+                {block.secondaryLabel} <ArrowUpRight aria-hidden="true" />
+              </a>
+            ) : null}
           </div>
         </div>
       </section>

@@ -1,6 +1,6 @@
 import { MigrateUpArgs, MigrateDownArgs } from '@payloadcms/db-postgres'
 
-import { importRoutePages, restoreRoutePages, routePages } from '../cms/site-pages'
+import { ensureRoutePagesImported, restoreRoutePages, routePages } from '../cms/site-pages'
 
 /**
  * Puts the website's own pages into the dashboard.
@@ -20,10 +20,15 @@ import { importRoutePages, restoreRoutePages, routePages } from '../cms/site-pag
  * the dashboard, say) is reported and skipped rather than failing the deploy:
  * the site runs perfectly well on the copy it ships with, and the button on the
  * dashboard is still there to try again.
+ *
+ * On a database being built from scratch this does nothing at all: the sections
+ * a page can hold are still being created by the migrations after this one, and
+ * the newest of those does the import instead. See ensureRoutePagesImported.
  */
 
 export async function up({ payload, req }: MigrateUpArgs): Promise<void> {
-  const report = await importRoutePages(payload, undefined, req);
+  const report = await ensureRoutePagesImported(payload, req);
+  if (!report) return;
 
   if (report.imported.length > 0) {
     payload.logger.info(`[pages] now editable in the dashboard: ${report.imported.join(', ')}`);

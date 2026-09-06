@@ -86,6 +86,8 @@ export const sitePages: SitePage[] = [
     edit: [
       globalLink("homepage", "Homepage", "the Home tab"),
       globalLink("site-settings", "Site settings", "logo and company details"),
+      collectionLink("reviews", "Reviews", "the testimonials band"),
+      collectionLink("well-wishers", "Well-wishers", "the well-wishers band"),
       pageMedia("home"),
       pageMedia("home-about"),
     ],

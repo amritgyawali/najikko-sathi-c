@@ -1,10 +1,18 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
-import { ArrowRight, ArrowUpRight, Check, Mail, MapPin, Phone, Search as SearchIcon } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Check, Mail, MapPin, Phone, Quote, Search as SearchIcon, Star } from "lucide-react";
 
 import type { PageSection } from "@/lib/page-defaults";
-import { getBusiness, getCollection, getHomepage, getTeam, liveWhere, type BusinessInfo } from "@/lib/content";
+import {
+  getBusiness,
+  getCollection,
+  getHomepage,
+  getTeam,
+  getWellWishers,
+  liveWhere,
+  type BusinessInfo,
+} from "@/lib/content";
 import { getCategoryViews, getFaqPairs, getServiceViews, type CategoryView, type ServiceView } from "@/lib/services";
 import { mediaAlt, mediaUrl } from "@/lib/media";
 import { onPage, placementKeyFor } from "@/lib/placements";
@@ -416,6 +424,115 @@ async function TeamGrid({ block, page }: { block: Block<"teamSection">; page: Se
   );
 }
 
+/**
+ * Client testimonials from Content → Reviews. Only approved reviews are read,
+ * and the band disappears entirely while there are none to show, so putting it
+ * on a page before any review has been approved changes nothing.
+ */
+async function ReviewWall({ block, page }: { block: Block<"reviewsSection">; page: SectionContext }) {
+  const reviews = onPage(
+    await getCollection("reviews", {
+      where:
+        block.source === "all"
+          ? { approved: { equals: true } }
+          : { and: [{ approved: { equals: true } }, { featured: { equals: true } }] },
+      limit: block.limit ?? 6,
+      sort: "-createdAt",
+    }),
+    placementKeyFor(page.path),
+  );
+  if (reviews.length === 0) return null;
+
+  return (
+    <section className={band(block.tone)}>
+      <div className="site-container">
+        <Heading kicker={block.kicker} heading={block.heading} description={block.description} />
+        <div className="review-grid">
+          {reviews.map((review) => {
+            const avatar = mediaUrl(review.avatar);
+            return (
+              <figure className="review-card" key={review.id}>
+                <Quote className="review-mark" aria-hidden="true" />
+                <div className="review-stars" aria-label={`${review.rating} out of 5`}>
+                  {Array.from({ length: review.rating }, (_, index) => (
+                    <Star key={index} aria-hidden="true" />
+                  ))}
+                </div>
+                <blockquote>{review.quote}</blockquote>
+                <figcaption>
+                  {avatar ? (
+                    <Image
+                      src={avatar}
+                      alt={mediaAlt(review.avatar, review.name)}
+                      width={96}
+                      height={96}
+                    />
+                  ) : (
+                    <span className="review-initial" aria-hidden="true">
+                      {review.name.slice(0, 1)}
+                    </span>
+                  )}
+                  <span>
+                    <strong>{review.name}</strong>
+                    {review.role ? <small>{review.role}</small> : null}
+                  </span>
+                </figcaption>
+              </figure>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/**
+ * The people who wish the company well, from Content → Well-wishers. A portrait
+ * and a name are enough; their words are shown when someone has written them.
+ */
+async function WellWisherWall({
+  block,
+  page,
+}: {
+  block: Block<"wellWishersSection">;
+  page: SectionContext;
+}) {
+  const wishers = onPage(await getWellWishers(), placementKeyFor(page.path));
+  if (wishers.length === 0) return null;
+
+  return (
+    <section className={band(block.tone)}>
+      <div className="site-container">
+        <Heading kicker={block.kicker} heading={block.heading} description={block.description} />
+        <div className="wisher-grid">
+          {wishers.map((wisher) => {
+            const photo = mediaUrl(wisher.photo);
+            return (
+              <article className="wisher-card" key={wisher.id}>
+                {photo ? (
+                  <Image
+                    src={photo}
+                    alt={mediaAlt(wisher.photo, wisher.name)}
+                    width={200}
+                    height={200}
+                  />
+                ) : (
+                  <span className="wisher-initial" aria-hidden="true">
+                    {wisher.name.slice(0, 1)}
+                  </span>
+                )}
+                <strong>{wisher.name}</strong>
+                {wisher.role ? <span className="wisher-role">{wisher.role}</span> : null}
+                {wisher.message ? <p>{wisher.message}</p> : null}
+              </article>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 /** Address, phones and email, with the enquiry form beside them. */
 async function ContactDetails({ block }: { block: Block<"contactDetails"> }) {
   const [business, services] = await Promise.all([getBusiness(), getServiceViews()]);
@@ -732,6 +849,10 @@ async function Section({ block, page }: { block: PageSection; page: SectionConte
       return <Showcase block={block} page={page} />;
     case "teamSection":
       return <TeamGrid block={block} page={page} />;
+    case "reviewsSection":
+      return <ReviewWall block={block} page={page} />;
+    case "wellWishersSection":
+      return <WellWisherWall block={block} page={page} />;
     case "socialResponsibilitySection":
       return (
         <SocialResponsibilitySection
