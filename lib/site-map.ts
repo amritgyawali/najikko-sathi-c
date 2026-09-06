@@ -83,6 +83,7 @@ export const sitePages: SitePage[] = [
       globalLink("homepage", "Homepage", "the Home tab"),
       globalLink("site-settings", "Site settings", "logo and company details"),
       pageMedia("home"),
+      pageMedia("home-about"),
     ],
   },
   {
@@ -150,6 +151,7 @@ export const sitePages: SitePage[] = [
       collectionLink("services", "Services", "the production category"),
       collectionLink("faqs", "FAQs", 'placement "production"'),
       pageMedia("production"),
+      pageMedia("production-band"),
     ],
   },
   {
@@ -268,10 +270,85 @@ export const sitePages: SitePage[] = [
   },
 ];
 
+/**
+ * The picture and film placeholders on the website, in page order.
+ *
+ * Every blue placeholder a visitor can see has an entry here, and every entry
+ * is one row in Content → Page media. Uploading a photograph or a film into
+ * that row replaces the placeholder on the page named below.
+ *
+ * Two shapes of placeholder exist:
+ *
+ * - `showcase` - the "in pictures & film" band near the foot of a page, which
+ *   holds one photograph and one film side by side.
+ * - `panel` - a single decorative blue panel drawn from icons, which a
+ *   photograph replaces outright.
+ *
+ * Service detail pages carry a showcase band too. Those are not listed here
+ * because services are written in the dashboard: their placeholder key is the
+ * service's own slug, and a row is created with the service.
+ */
+export type MediaPlaceholderKind = "showcase" | "panel";
+
+export type MediaPlaceholder = {
+  /** The Page media key that fills it. */
+  key: string;
+  /** How the placeholder is named in the dashboard. */
+  label: string;
+  /** The page it appears on. */
+  path: string;
+  kind: MediaPlaceholderKind;
+  /** Where on the page it is, in one line. */
+  note: string;
+};
+
+/** The decorative panels, each of which sits on a page listed above. */
+const panelPlaceholders: MediaPlaceholder[] = [
+  {
+    key: "home-about",
+    label: "Who we are panel",
+    path: "/",
+    kind: "panel",
+    note: "The blue camera panel beside the introduction. A photograph replaces the artwork.",
+  },
+  {
+    key: "production-band",
+    label: "Production craft panel",
+    path: "/production",
+    kind: "panel",
+    note: "The blue panel beside “Stories brought to life”. A photograph replaces the artwork.",
+  },
+];
+
+/**
+ * Every placeholder, with each page's showcase band followed by any panels on
+ * that page. A panel whose page is not in `sitePages` is dropped, and
+ * `check:pages` fails so it cannot go unnoticed.
+ */
+export const mediaPlaceholders: MediaPlaceholder[] = sitePages.flatMap((page) => [
+  ...(page.mediaKey
+    ? [
+        {
+          key: page.mediaKey,
+          label: `${page.label} photo & film`,
+          path: page.path,
+          kind: "showcase" as const,
+          note: "The photograph and film in the “in pictures & film” band.",
+        },
+      ]
+    : []),
+  ...panelPlaceholders.filter((panel) => panel.path === page.path),
+]);
+
 /** Every page that has a Page media entry, as its key → the page's path. */
 export const mediaKeyToPath: Record<string, string> = Object.fromEntries(
-  sitePages.filter((page) => page.mediaKey).map((page) => [page.mediaKey as string, page.path]),
+  mediaPlaceholders.map((placeholder) => [placeholder.key, placeholder.path]),
 );
+
+/** The pages holding a placeholder, for purging their cached render on save. */
+export const mediaPlaceholderPaths: string[] = [
+  ...new Set(mediaPlaceholders.map((placeholder) => placeholder.path)),
+];
 
 /** Indexed by path, for looking up the entry behind a menu link. */
 export const sitePageByPath: Record<string, SitePage> = Object.fromEntries(

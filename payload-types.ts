@@ -295,7 +295,7 @@ export interface Page {
   _status?: ('draft' | 'published') | null;
 }
 /**
- * Photos and files used across the website.
+ * Photos, films and files used across the website.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "media".
@@ -303,7 +303,7 @@ export interface Page {
 export interface Media {
   id: number;
   /**
-   * Describe the image for screen readers and search engines.
+   * Describe the picture or film for screen readers and search engines.
    */
   alt: string;
   /**
@@ -729,7 +729,7 @@ export interface Enquiry {
   createdAt: string;
 }
 /**
- * The photo or video featured on each page.
+ * The photograph or film featured on each page. Open a row, upload a picture or a film, and save.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "media-slots".
@@ -737,22 +737,46 @@ export interface Enquiry {
 export interface MediaSlot {
   id: number;
   /**
-   * Which page this belongs to: "home", "about", "services", "contact", or a service slug such as "documentary-film-production".
+   * Which placeholder this fills: "home" (/), "home-about" (/), "services" (/services), "our-work" (/our-work), "contact" (/contact), "about" (/about), "production" (/production), "production-band" (/production), "social-media-handling" (/social-media-handling), "training" (/training), "research" (/research), "it" (/it), "advertisement" (/advertisement), "right-sanchar" (/right-sanchar), or a service slug such as "documentary-film-production" for a service page.
    */
   key: string;
+  /**
+   * Replaces the blue photo placeholder on this page.
+   */
   image?: (number | null) | Media;
+  /**
+   * Printed under the photograph. Optional.
+   */
   caption?: string | null;
+  /**
+   * Fill in one of the three sources below. An uploaded file is used first, then a YouTube link, then an address.
+   */
   video?: {
     /**
-     * URL of the video file.
+     * An MP4 or WebM file. Large films are better published on YouTube and linked below - a host usually caps how much can be uploaded in one request.
+     */
+    file?: (number | null) | Media;
+    /**
+     * Paste an ordinary watch or share link.
+     */
+    youtubeUrl?: string | null;
+    /**
+     * The address of a film hosted somewhere else.
      */
     src?: string | null;
     /**
-     * URL of the still shown before playback.
+     * Shown before the film is played. Optional.
+     */
+    posterImage?: (number | null) | Media;
+    /**
+     * Only needed when the still is hosted elsewhere.
      */
     poster?: string | null;
     title?: string | null;
     description?: string | null;
+    /**
+     * What is said in the film, as readable text. Helps search engines.
+     */
     transcript?: string | null;
     /**
      * ISO 8601, e.g. "PT2M30S".
@@ -1307,7 +1331,10 @@ export interface MediaSlotsSelect<T extends boolean = true> {
   video?:
     | T
     | {
+        file?: T;
+        youtubeUrl?: T;
         src?: T;
+        posterImage?: T;
         poster?: T;
         title?: T;
         description?: T;
@@ -1407,7 +1434,7 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   createdAt?: T;
 }
 /**
- * All the text and imagery on the front page.
+ * Written copy for the front page and for three pages that grew out of it. Each tab says which address it appears at.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "homepage".
@@ -1516,7 +1543,7 @@ export interface Navigation {
   items: {
     label: string;
     /**
-     * Section anchor such as "#services", or a path such as "/about".
+     * A path such as "/about", or a full address for another website. The pages the site has are listed on the dashboard home.
      */
     href: string;
     newTab?: boolean | null;

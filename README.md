@@ -16,6 +16,7 @@ Content is managed through a full admin dashboard powered by
 | --- | --- | --- |
 | Traffic, top pages, referrers, devices, enquiry queue | Dashboard home | - |
 | The website's pages, in navbar order, and where each one is edited | Dashboard home → Website pages | - |
+| Every photo and film placeholder, filled or not | Dashboard home → Photos & films | - |
 | The 16 services and their detail pages | Services → Services | `/services`, `/services/<slug>`, `/our-work`, and every discipline page |
 | Service groupings | Services → Service categories | `/services` sections |
 | News, blogs, commentary, investigations | Content → Posts | `/posts`, `/posts/<slug>` |
@@ -25,8 +26,8 @@ Content is managed through a full admin dashboard powered by
 | New website pages, built from layout blocks | Content → Pages | `/<slug>` |
 | Questions and answers | Content → FAQs | Contact, services, training, production |
 | The people on the about page | Content → Team | `/about` |
-| Photos and files | Content → Media | Everywhere |
-| The photo or video featured on each page | Content → Page media | Every page's showcase band |
+| Photos, films and files | Content → Media | Everywhere |
+| The photo or film in each blue placeholder | Content → Page media | Every showcase band and panel |
 | Contact form messages, with triage and notes | Enquiries | Sent from `/contact` |
 | Front page copy and imagery | Site → Homepage & page copy → Home | `/` |
 | Chairman and director messages | Site → Homepage & page copy → Home - leadership | `/` |
@@ -81,6 +82,17 @@ Which dashboard areas edit which page comes from `lib/site-map.ts`, the one list
 of the site's pages. `npm run check:pages` fails if a route exists with no entry
 there, or an entry names a route that no longer exists, so a page cannot be
 added to the site and quietly missed by the dashboard.
+
+### Photos & films, on the dashboard home
+
+Below it, **Photos & films** lists every blue placeholder on the website: each
+page's photo and film band, the decorative panels on the home and production
+pages, and one row per service page. Each row shows the page it appears on,
+whether a photograph and a film have been added yet, and a link straight to the
+entry that fills it — so putting a picture on a page never means working out
+which key names it. The placeholders come from the same `lib/site-map.ts`, and
+the service rows from the services themselves, so the list cannot fall behind
+the site.
 
 ### Social responsibility
 
@@ -306,11 +318,26 @@ disk with `lib/site-map.ts` and fails when the two have drifted apart.
 
 The browser installation is only needed once per machine. `check:site` starts a production server on port 3100, checks all 28 pages at desktop and mobile widths, checks internal destinations and anchors, renders all social preview images, and exercises navigation history, the mobile menu, FAQs, and inquiry validation. Screenshots go to ignored `tmp/site-check/`. Set `CHECK_BASE_URL` to test an already running preview. No email is sent during checks.
 
-## Owner-managed photos and videos
+## Photos and films
 
-Media sections start with clearly labeled placeholders. Add approved files to `public/media/` and configure the corresponding page in `app/_data/media.ts`. Follow [the media setup guide](docs/MEDIA-SETUP.md) for photo captions, accessible videos, and publication metadata.
+Every blue placeholder on the site is filled from the dashboard. The **Photos &
+films** panel on the dashboard home lists all of them - each page's "in pictures
+& film" band, the panels on the home and production pages, and one band per
+service page - says whether each has been filled yet, and links straight to the
+entry behind it. Open one, upload a photograph or a film, save, and the page
+shows it on the next load. Nothing is copied into the repository and nothing is
+redeployed.
 
-There is no public upload feature. Initial media setup and any future changes require repository write access and a deployment. Videos are not represented as published work or included in video structured data until actual media is configured.
+A film can be uploaded as a file, given as a YouTube link, or given as the
+address of a film hosted elsewhere; the first of those that is filled in is what
+the page plays. Use the YouTube link for anything longer than a short clip,
+since the host caps how large a single upload can be - on Vercel a request
+cannot carry more than 4.5 MB. [The media setup guide](docs/MEDIA-SETUP.md)
+covers captions, transcripts, stills, and publication metadata.
+
+There is no public upload feature: no form, no API, and no first-visitor setup
+screen. Only a signed-in editor or administrator can add a file. A page is not
+given a player or video structured data until a real film has been added to it.
 
 ## Contact behaviour
 
@@ -339,7 +366,6 @@ API live in `app/(payload)/`.
 - `app/(frontend)/_components/` - Shared navigation, footer, page sections, structured data, and inquiry form
 - `app/(frontend)/_data/site.ts` - Business identity, contact information, and footer links; the navigation comes from `lib/site-map.ts`
 - `app/(frontend)/_data/services.ts` - Fallback copy of the 16 services, used only when the CMS is unreachable
-- `app/(frontend)/_data/media.ts` - Fallback media slots, superseded by Content → Page media
 - `app/(frontend)/_lib/seo.ts` - Canonical URLs, metadata, and organization data
 - `app/(frontend)/pages.css` - Interior page design and responsive styles
 - `app/(frontend)/services/[slug]/page.tsx` - Generated service detail pages
@@ -347,6 +373,7 @@ API live in `app/(payload)/`.
 - `cms/` - Collections, globals, blocks, and access control
 - `lib/site-map.ts` - The one list of the site's pages: menu order, sub-pages, and where each is edited
 - `lib/content.ts` - CMS reads, with the static fallback
+- `lib/page-media.ts` - How a Page media entry becomes the photograph or film a page renders
 - `lib/services.ts` - One shape for a service, whether it came from the CMS or the fallback
 - `proxy.ts` - Applies the redirects managed in the dashboard
 - `migrations/` - Database migrations (commit these)

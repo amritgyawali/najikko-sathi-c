@@ -6,7 +6,16 @@ import { cloudStoragePlugin } from "@payloadcms/plugin-cloud-storage";
 import type { Adapter } from "@payloadcms/plugin-cloud-storage/types";
 import { v2 as cloudinary } from "cloudinary";
 
-/** Store originals and Payload's resized images without using Vercel's disk. */
+/**
+ * Extensions Cloudinary treats as video. Audio shares the same resource type
+ * there, so a soundtrack uploaded on its own is stored correctly too.
+ */
+const VIDEO_EXTENSIONS = new Set([
+  ".mp4", ".m4v", ".mov", ".webm", ".ogv", ".avi", ".mkv", ".m3u8", ".mpeg", ".mpg", ".3gp",
+  ".mp3", ".m4a", ".aac", ".wav", ".ogg",
+]);
+
+/** Store originals, Payload's resized images and uploaded films off Vercel's disk. */
 export function cloudinaryStorage(connectionString: string) {
   let connection: URL;
   try {
@@ -32,7 +41,11 @@ export function cloudinaryStorage(connectionString: string) {
 
   const asset = (filename: string) => {
     const extension = path.extname(filename).toLowerCase();
-    const resourceType: "raw" | "image" = extension === ".pdf" ? "raw" : "image";
+    // Cloudinary stores films under its own resource type, and serves them from
+    // a different address, so a film uploaded in the dashboard has to be handed
+    // over as one rather than as a picture it cannot decode.
+    const resourceType: "raw" | "image" | "video" =
+      extension === ".pdf" ? "raw" : VIDEO_EXTENSIONS.has(extension) ? "video" : "image";
     // Hash the whole filename so different extensions and Unicode names cannot
     // collide or be interpreted as Cloudinary transformation parameters.
     const id = createHash("sha256").update(filename).digest("hex");
@@ -42,7 +55,7 @@ export function cloudinaryStorage(connectionString: string) {
       secure: true,
       resource_type: resourceType,
       type: "upload",
-      ...(resourceType === "image" && extension ? { format: extension.slice(1) } : {}),
+      ...(resourceType !== "raw" && extension ? { format: extension.slice(1) } : {}),
     });
     return { publicId, resourceType, url };
   };

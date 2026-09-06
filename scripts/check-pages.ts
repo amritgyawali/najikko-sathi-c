@@ -3,7 +3,7 @@ import { readdir } from "node:fs/promises";
 import path from "node:path";
 
 import { liveTargetFor } from "../cms/live-urls";
-import { mediaKeyToPath, sitePages } from "../lib/site-map";
+import { mediaPlaceholders, mediaKeyToPath, sitePages } from "../lib/site-map";
 
 /**
  * Keeps lib/site-map.ts honest.
@@ -99,9 +99,23 @@ for (const [key, pagePath] of Object.entries(mediaKeyToPath)) {
   );
 }
 
+// Every placeholder belongs to a page that exists, and no two share a key.
+const placeholderKeys = mediaPlaceholders.map((placeholder) => placeholder.key);
+assert.equal(
+  new Set(placeholderKeys).size,
+  placeholderKeys.length,
+  "lib/site-map.ts gives two placeholders the same Page media key.",
+);
+for (const placeholder of mediaPlaceholders) {
+  assert(
+    listed.includes(placeholder.path),
+    `Page media "${placeholder.key}" belongs to ${placeholder.path}, which is not a page.`,
+  );
+}
+
 const inMenu = sitePages.filter((page) => typeof page.navOrder === "number");
 console.log(
   `PASS ${routes.length} routes, all in lib/site-map.ts, ` +
-    `${Object.keys(mediaKeyToPath).length} page media keys agreeing with cms/live-urls.ts. ` +
+    `${Object.keys(mediaKeyToPath).length} page media placeholders agreeing with cms/live-urls.ts. ` +
     `Menu: ${inMenu.map((page) => page.label).join(", ")}.`,
 );

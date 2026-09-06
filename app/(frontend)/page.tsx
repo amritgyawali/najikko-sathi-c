@@ -3,8 +3,9 @@ import Link from "next/link";
 import { ArrowRight, ArrowUpRight, Camera, Film, Mic2 } from "lucide-react";
 
 import type { Homepage } from "@/payload-types";
-import { getBusiness, getHomepage, type BusinessInfo } from "@/lib/content";
+import { getBusiness, getHomepage, getMediaSlot, type BusinessInfo } from "@/lib/content";
 import { mediaAlt, mediaUrl } from "@/lib/media";
+import { slotPhoto } from "@/lib/page-media";
 import { MediaShowcase } from "./_components/page-content";
 import { LeadershipCarousel, type LeadershipMessage } from "./_components/leadership-carousel";
 import { MediaSystem } from "./_components/media-system";
@@ -76,12 +77,18 @@ function Hero({ business, home }: { business: BusinessInfo; home: Homepage | nul
   );
 }
 
-function About({ business, home }: { business: BusinessInfo; home: Homepage | null }) {
+/**
+ * The introduction, and the panel beside it. The panel is drawn from icons
+ * until someone uploads a photograph to the "home-about" Page media entry, at
+ * which point the photograph fills the panel instead.
+ */
+async function About({ business, home }: { business: BusinessInfo; home: Homepage | null }) {
   const capabilities = labels(home?.aboutCapabilities, [
     "Truthful news",
     "Visual production",
     "Skill development",
   ]);
+  const photo = slotPhoto(await getMediaSlot("home-about"), `${business.shortName} at work`);
 
   return (
     <section className="chairman-section" id="about">
@@ -89,13 +96,19 @@ function About({ business, home }: { business: BusinessInfo; home: Homepage | nu
       <div className="site-container chairman-grid">
         <div className="portrait-wrap">
           <div className="portrait-glow" aria-hidden="true" />
-          <div className="media-visual" aria-hidden="true">
-            <Camera className="media-visual-main" />
-            <Mic2 className="media-visual-mic" />
-            <Film className="media-visual-film" />
-            <span>Information</span>
-            <span>Entertainment</span>
-            <span>Responsibility</span>
+          <div className={`media-visual${photo ? " media-visual--photo" : ""}`} aria-hidden={photo ? undefined : true}>
+            {photo ? (
+              <Image src={photo.src} alt={photo.alt} fill sizes="(max-width: 900px) 100vw, 400px" />
+            ) : (
+              <>
+                <Camera className="media-visual-main" />
+                <Mic2 className="media-visual-mic" />
+                <Film className="media-visual-film" />
+                <span>Information</span>
+                <span>Entertainment</span>
+                <span>Responsibility</span>
+              </>
+            )}
           </div>
           <div className="portrait-caption">
             <strong>Your Media Partner</strong>

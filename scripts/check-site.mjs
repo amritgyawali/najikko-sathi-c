@@ -83,7 +83,10 @@ try {
       links: [...document.querySelectorAll("a[href]")].map((a) => a.getAttribute("href")),
       brokenImages: [...document.images].filter((image) => !image.complete || image.naturalWidth === 0).map((image) => image.src),
       uploads: document.querySelectorAll('input[type="file"]').length,
-      videos: document.querySelectorAll("video").length,
+      // A film added in the dashboard plays either in the browser's own player
+      // or, when it was given as a YouTube link, in YouTube's frame. Both are
+      // real players, and both are described by a VideoObject.
+      videos: document.querySelectorAll('video, iframe[src*="youtube"]').length,
       activeNav: document.querySelectorAll(".primary-nav a.active").length,
       overflow: document.documentElement.scrollWidth > window.innerWidth,
     }));
@@ -113,6 +116,16 @@ try {
 
   for (const href of links) {
     const target = new URL(href);
+    // A film or photograph uploaded in the dashboard is served by the storage
+    // provider rather than by a page of its own - the fallback link inside a
+    // video player points straight at the file - so those are checked by
+    // fetching them instead of by looking them up in the page list.
+    if (target.pathname.startsWith("/api/media/file/")) {
+      const upload = await fetch(target);
+      await upload.body?.cancel();
+      assert(upload.ok, `Broken uploaded file: ${href}`);
+      continue;
+    }
     assert(paths.includes(target.pathname), `Broken internal destination: ${href}`);
     if (target.hash) {
       await page.goto(`${origin}${target.pathname}`);

@@ -2,9 +2,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, ArrowUpRight, Camera, Clapperboard, GraduationCap, ImageIcon, Megaphone, Newspaper, Play, Search } from "lucide-react";
 import { business } from "../_data/site";
-import { pageMedia } from "../_data/media";
 import { getMediaSlot } from "@/lib/content";
-import { mediaUrl } from "@/lib/media";
+import { slotFilm, slotPhoto, type SlotFilm } from "@/lib/page-media";
 import type { CategoryView, ServiceView } from "@/lib/services";
 import { absoluteUrl, siteUrl } from "../_lib/seo";
 import { StructuredData } from "./structured-data";
@@ -69,33 +68,32 @@ export function Questions({ items }: { items: [string, string][] }) {
   return <div className="faq-list">{items.map(([question, answer]) => <details key={question}><summary>{question}</summary><p>{answer}</p></details>)}</div>;
 }
 
+/**
+ * One film, played the way it was given to us: an uploaded or linked file in
+ * the browser's own player, a YouTube link in YouTube's privacy-enhanced embed.
+ */
+function Film({ film }: { film: SlotFilm }) {
+  if (film.kind === "youtube") {
+    return <div className="media-embed">
+      <iframe src={film.src} title={film.title} loading="lazy" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen />
+    </div>;
+  }
+
+  return <video controls playsInline preload="none" poster={film.poster || undefined} aria-label={film.title}>
+    <source src={film.src} />
+    <p>Your browser cannot play this video. <a href={film.src}>Download the video</a>.</p>
+  </video>;
+}
+
+/**
+ * The "in pictures & film" band. Both frames show a labelled placeholder until
+ * someone uploads a photograph or adds a film to this page's Page media entry
+ * in the dashboard, at which point the placeholder is replaced here.
+ */
 export async function MediaShowcase({ mediaKey, title }: { mediaKey: string; title: string }) {
-  // A photo uploaded in the dashboard wins; the static table is the fallback
-  // for anything that has not been filled in there yet.
   const slot = await getMediaSlot(mediaKey);
-  const uploaded = mediaUrl(slot?.image);
-  const fallback = pageMedia[mediaKey];
-
-  const image = uploaded
-    ? {
-        src: uploaded,
-        alt: (typeof slot?.image === "object" && slot?.image?.alt) || title,
-        caption: slot?.caption || "",
-      }
-    : fallback?.image;
-
-  const video = slot?.video?.src
-    ? {
-        src: slot.video.src,
-        poster: slot.video.poster ?? "",
-        title: slot.video.title || title,
-        description: slot.video.description ?? "",
-        captions: "",
-        transcript: slot.video.transcript ?? "",
-        uploadDate: slot.video.uploadDate ?? "",
-        duration: slot.video.duration ?? "",
-      }
-    : fallback?.video;
+  const image = slotPhoto(slot, title);
+  const film = slotFilm(slot, title);
 
   return <section className="content-section media-section"><div className="site-container">
     <SectionHeading kicker="In focus" title={`${title} in pictures & film`} description="A space for images and films from our work." />
@@ -104,7 +102,12 @@ export async function MediaShowcase({ mediaKey, title }: { mediaKey: string; tit
         {image ? <><div className="media-photo"><Image src={image.src} alt={image.alt} fill sizes="(max-width: 760px) 100vw, 50vw" /></div>{image.caption ? <figcaption>{image.caption}</figcaption> : null}</> : <><div className="media-placeholder"><ImageIcon aria-hidden="true" /><span>Photography</span><strong>{title}</strong><small>Photos coming soon</small></div><figcaption>Photography will be added to this page.</figcaption></>}
       </figure>
       <figure className="media-frame">
-        {video ? <><video controls playsInline preload="none" poster={video.poster} aria-label={video.title}><source src={video.src} type="video/mp4" />{video.captions ? <track default kind="captions" src={video.captions} srcLang="en" label="English" /> : null}<p>Your browser cannot play this video. <a href={video.src}>Download the video</a>.</p></video><figcaption>{video.description}</figcaption>{video.transcript ? <details className="video-transcript"><summary>Read video transcript</summary><p>{video.transcript}</p></details> : null}<StructuredData data={{ "@context": "https://schema.org", "@type": "VideoObject", name: video.title, description: video.description, thumbnailUrl: video.poster ? absoluteUrl(video.poster) : undefined, contentUrl: absoluteUrl(video.src), uploadDate: video.uploadDate, duration: video.duration, publisher: { "@id": `${siteUrl}/#organization` } }} /></> : <><div className="media-placeholder video-placeholder"><Play aria-hidden="true" /><span>Film & video</span><strong>{title}</strong><small>Video coming soon</small></div><figcaption>A video will be added when available.</figcaption></>}
+        {film ? <>
+          <Film film={film} />
+          {film.description ? <figcaption>{film.description}</figcaption> : null}
+          {film.transcript ? <details className="video-transcript"><summary>Read video transcript</summary><p>{film.transcript}</p></details> : null}
+          <StructuredData data={{ "@context": "https://schema.org", "@type": "VideoObject", name: film.title, description: film.description || undefined, thumbnailUrl: film.poster ? absoluteUrl(film.poster) : undefined, ...(film.kind === "youtube" ? { embedUrl: film.src, url: film.watchUrl ?? undefined } : { contentUrl: absoluteUrl(film.src) }), uploadDate: film.uploadDate || undefined, duration: film.duration || undefined, publisher: { "@id": `${siteUrl}/#organization` } }} />
+        </> : <><div className="media-placeholder video-placeholder"><Play aria-hidden="true" /><span>Film & video</span><strong>{title}</strong><small>Video coming soon</small></div><figcaption>A video will be added when available.</figcaption></>}
       </figure>
     </div>
   </div></section>;

@@ -108,11 +108,13 @@ export default buildConfig({
     // renders a broken image whenever that request is blocked.
     avatar: "default",
     components: {
-      // Traffic and content statistics, then the live list of the site's
-      // pages and where each one is edited, at the top of the dashboard.
+      // Traffic and content statistics, the live list of the site's pages and
+      // where each one is edited, and then every photo and film placeholder on
+      // the site with a link to the entry that fills it.
       beforeDashboard: [
         "/cms/components/DashboardStats#DashboardStats",
         "/cms/components/SitePages#SitePages",
+        "/cms/components/PageMedia#PageMedia",
       ],
       // A way to register, shown under the login form.
       afterLogin: ["/cms/components/LoginSignupLink#LoginSignupLink"],
