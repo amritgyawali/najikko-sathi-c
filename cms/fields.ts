@@ -32,7 +32,19 @@ export const slugField = (from = "title"): Field => ({
   },
 });
 
-/** Publishing state, shown in the sidebar of every content collection. */
+/**
+ * A column that draws its value as a coloured pill rather than as plain text,
+ * so a list can be read at a glance. Point any state-like column at this.
+ */
+export const STATE_CELL = "/cms/components/cells/StateCell#StateCell";
+
+/** A column that shows the picture itself instead of the file's name. */
+export const THUMB_CELL = "/cms/components/cells/ThumbCell#ThumbCell";
+
+/**
+ * Publishing state, shown in the sidebar of every content collection and as a
+ * pill in its list.
+ */
 export const statusField: Field = {
   name: "status",
   type: "select",
@@ -40,10 +52,14 @@ export const statusField: Field = {
   defaultValue: "draft",
   index: true,
   options: [
-    { label: "Draft", value: "draft" },
-    { label: "Published", value: "published" },
+    { label: "Draft - only you can see it", value: "draft" },
+    { label: "Published - live on the website", value: "published" },
   ],
-  admin: { position: "sidebar" },
+  admin: {
+    position: "sidebar",
+    description: "Publishing puts this on the website; a draft stays here.",
+    components: { Cell: STATE_CELL },
+  },
 };
 
 const searchFields: Field[] = [

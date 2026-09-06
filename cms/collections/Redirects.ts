@@ -1,5 +1,6 @@
 import type { CollectionConfig } from "payload";
 import { isEditor } from "../access";
+import { STATE_CELL } from "../fields";
 import { revalidateSite } from "../hooks/revalidate";
 
 /**
@@ -12,7 +13,8 @@ export const Redirects: CollectionConfig = {
     useAsTitle: "from",
     defaultColumns: ["from", "to", "permanent"],
     group: "Administration",
-    description: "Send an old URL to a new one.",
+    description:
+      "Send an old address to a new one, so a link published elsewhere keeps working.",
   },
   access: { read: () => true, create: isEditor, update: isEditor, delete: isEditor },
   hooks: {
@@ -37,7 +39,10 @@ export const Redirects: CollectionConfig = {
       name: "permanent",
       type: "checkbox",
       defaultValue: true,
-      admin: { description: "Permanent (301) tells search engines the move is final." },
+      admin: {
+        description: "Permanent (301) tells search engines the move is final.",
+        components: { Cell: STATE_CELL },
+      },
     },
   ],
 };

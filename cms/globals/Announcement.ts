@@ -9,12 +9,26 @@ import { revalidateSite } from "../hooks/revalidate";
 export const Announcement: GlobalConfig = {
   slug: "announcement",
   label: "Announcement bar",
-  admin: { group: "Site", description: "A notice shown at the top of every page." },
+  admin: {
+    group: "Site",
+    description:
+      "A strip above the header, for a campaign or a notice. Switch it on, or give it dates and let it appear and disappear on its own.",
+  },
   access: { read: () => true, update: isEditor },
   hooks: { afterChange: [revalidateSite] },
   fields: [
-    { name: "enabled", type: "checkbox", defaultValue: false },
-    { name: "message", type: "text" },
+    {
+      name: "enabled",
+      type: "checkbox",
+      label: "Show the notice",
+      defaultValue: false,
+      admin: { description: "Nothing appears on the website until this is ticked." },
+    },
+    {
+      name: "message",
+      type: "text",
+      admin: { description: "One sentence. It is read before anything else on the page." },
+    },
     {
       type: "row",
       fields: [
@@ -40,6 +54,8 @@ export const Announcement: GlobalConfig = {
     {
       name: "tone",
       type: "select",
+      label: "Colour",
+      admin: { description: "How loud the strip should look." },
       defaultValue: "info",
       options: [
         { label: "Information", value: "info" },

@@ -2,7 +2,7 @@ import type { CollectionConfig } from "payload";
 import { isEditor, isPublishedOrStaff } from "../access";
 import { ensureMediaSlot } from "../hooks/media-slot";
 import { revalidateDoc, revalidateDocAfterDelete } from "../hooks/revalidate";
-import { seoField, slugField, statusField } from "../fields";
+import { seoField, slugField, statusField, THUMB_CELL } from "../fields";
 
 /**
  * The service portfolio. Each document renders its own page at
@@ -13,9 +13,11 @@ export const Services: CollectionConfig = {
   slug: "services",
   admin: {
     useAsTitle: "title",
-    defaultColumns: ["title", "category", "status", "order"],
+    defaultColumns: ["image", "title", "category", "status", "order"],
     group: "Services",
-    description: "Everything the company offers, one document per service.",
+    description:
+      "Everything the company offers, one document per service. Each published one gets its own page.",
+    listSearchableFields: ["title", "shortTitle", "description"],
   },
   versions: { drafts: true },
   access: {
@@ -50,7 +52,13 @@ export const Services: CollectionConfig = {
               required: true,
               admin: { description: "One or two sentences, shown on cards and in the page header." },
             },
-            { name: "image", type: "upload", relationTo: "media" },
+            {
+              name: "image",
+              type: "upload",
+              relationTo: "media",
+              label: "Photograph",
+              admin: { components: { Cell: THUMB_CELL } },
+            },
             { name: "intro", type: "textarea", required: true },
             { name: "audience", type: "textarea", label: "Who this is for" },
             { name: "preparation", type: "textarea", label: "What to prepare" },
