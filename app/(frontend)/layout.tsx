@@ -9,7 +9,7 @@ import { LanguageProvider } from "./_components/language-provider";
 import { StructuredData } from "./_components/structured-data";
 import { TrackPageView } from "./_components/TrackPageView";
 import { organization, siteUrl } from "./_lib/seo";
-import { getBusiness, getTheme } from "@/lib/content";
+import { getBusiness, getNepaliFont, getTheme } from "@/lib/content";
 import { LANGUAGE_COOKIE, normalizeLanguage } from "@/lib/i18n/config";
 
 const hanken = Hanken_Grotesk({
@@ -24,11 +24,12 @@ const inter = Inter({
   display: "swap",
 });
 
-// Every face on the site switches to this one while the site is read in
-// Nepali; globals.css points the heading and body variables at it.
+// The Nepali face is Akriti, fetched from the internet (lib/fonts.ts). This
+// one sits behind it in the stack so any Unicode Devanagari that Akriti does
+// not carry is still drawn, rather than coming out as empty boxes.
 const devanagari = Noto_Sans_Devanagari({
   subsets: ["devanagari", "latin"],
-  variable: "--font-devanagari",
+  variable: "--font-devanagari-fallback",
   display: "swap",
 });
 
@@ -65,17 +66,28 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
   // Colours saved in the dashboard override the defaults declared in
   // globals.css. Injecting them here means a branding change takes effect on
   // the next request, with no rebuild.
-  const [business, theme, cookieStore] = await Promise.all([getBusiness(), getTheme(), cookies()]);
+  const [business, theme, nepaliFont, cookieStore] = await Promise.all([
+    getBusiness(),
+    getTheme(),
+    getNepaliFont(),
+    cookies(),
+  ]);
   // Reading the choice here means the document is already marked with the
   // right language, and the right font, on the first paint.
   const language = normalizeLanguage(cookieStore.get(LANGUAGE_COOKIE)?.value);
-  const overrides = Object.entries(theme)
+  const overrides = Object.entries({ ...theme, "--font-nepali": nepaliFont.family })
     .map(([token, value]) => `${token}:${value};`)
     .join("");
 
   return (
     <html lang={language} data-language={language} className={`${hanken.variable} ${inter.variable} ${devanagari.variable}`}>
-      <head>{overrides ? <style>{`:root{${overrides}}`}</style> : null}</head>
+      <head>
+        {/* Akriti, the Nepali face, is fetched rather than bundled. Only the
+            pages read in Nepali use it, so the request is left to the browser
+            to make rather than being preloaded for every visitor. */}
+        {nepaliFont.url ? <link rel="stylesheet" href={nepaliFont.url} /> : null}
+        {overrides ? <style>{`:root{${overrides}}`}</style> : null}
+      </head>
       <body>
         <LanguageProvider initialLanguage={language}>
           <a className="skip-link" href="#main-content">Skip to content</a>

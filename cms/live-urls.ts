@@ -52,6 +52,7 @@ const pageForMediaSlot: Record<string, string> = {
   it: "/it",
   advertisement: "/advertisement",
   "right-sanchar": "/right-sanchar",
+  "social-work": "/social-work",
   contact: "/contact",
 };
 
@@ -110,6 +111,10 @@ export function liveTargetFor({
             path: "/our-work#social-responsibility",
             where: "The social responsibility section of Our Work.",
           };
+    case "social-work":
+      return chosen
+        ? { path: chosen.path, where: `The social work band on ${chosen.named}.` }
+        : { path: "/social-work", where: "The Social Work page." };
     case "team":
       return chosen
         ? { path: chosen.path, where: `The team band on ${chosen.named}.` }

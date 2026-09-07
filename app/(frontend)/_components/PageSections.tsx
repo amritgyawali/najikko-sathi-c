@@ -27,10 +27,12 @@ import {
   SectionHeading,
   ServiceCards,
 } from "./page-content";
+import { PartnerMarquee } from "./partner-marquee";
 import { RenderBlocks } from "./RenderBlocks";
 import { SectionIcon } from "./section-icons";
 import { ProductionBand, SancharBand, ServicesGrid } from "./site-sections";
 import { SocialResponsibilitySection } from "./social-responsibility";
+import { SocialWorkSection } from "./social-work";
 
 /**
  * Draws a page from the sections it is made of.
@@ -853,9 +855,20 @@ async function Section({ block, page }: { block: PageSection; page: SectionConte
       return <ReviewWall block={block} page={page} />;
     case "wellWishersSection":
       return <WellWisherWall block={block} page={page} />;
+    case "partnerMarquee":
+      return <PartnerMarquee block={block} />;
     case "socialResponsibilitySection":
       return (
         <SocialResponsibilitySection
+          kicker={block.kicker}
+          heading={block.heading}
+          description={block.description}
+          placement={placementKeyFor(page.path)}
+        />
+      );
+    case "socialWorkSection":
+      return (
+        <SocialWorkSection
           kicker={block.kicker}
           heading={block.heading}
           description={block.description}

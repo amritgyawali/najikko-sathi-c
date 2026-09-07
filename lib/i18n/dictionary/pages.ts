@@ -23,6 +23,46 @@ export const pages: Record<string, string> = {
   "Beyond our core media services, we support social initiatives that help transform communities. True to our name, we aim to walk beside people and organizations as a trusted, close companion in communication.":
     "मुख्य मिडिया सेवाबाहेक हामी समुदाय रूपान्तरणमा सघाउने सामाजिक अभियानहरूलाई पनि साथ दिन्छौं। आफ्नो नामअनुरूप हामी सञ्चारमा भरपर्दो र नजिकको साथी बनेर मानिस तथा संस्थाहरूसँगै हिँड्न चाहन्छौं।",
 
+  "To give true and responsible news that helps the people of Nepal.":
+    "नेपाली जनतालाई सघाउने सत्य र उत्तरदायी समाचार दिनु।",
+  "At Najik Ko Sathi Media our mission is simple but very meaningful. To give true and responsible news that helps the people of Nepal. As a media company we believe that information can change things make democracy stronger and bring people together.":
+    "नजिकको साथी मिडियामा हाम्रो लक्ष्य सरल भए पनि निकै अर्थपूर्ण छ - नेपाली जनतालाई सघाउने सत्य र उत्तरदायी समाचार दिनु। मिडिया संस्थाका रूपमा हामी विश्वास गर्छौं कि सूचनाले परिवर्तन ल्याउन, लोकतन्त्रलाई सुदृढ बनाउन र मानिसहरूलाई जोड्न सक्छ।",
+  "We know there are difficulties in being a news platform but we are still focused on keeping good journalism and being open. Our team works hard to make sure that every story we share shows the truth gives both sides and treats our audience with respect.":
+    "समाचार मञ्च चलाउनुका कठिनाइहरू हामीलाई थाहा छ, तर पनि हामी असल पत्रकारिता र पारदर्शिता कायम राख्नमै केन्द्रित छौं। हामीले बाँड्ने हरेक समाचारले सत्य देखाओस्, दुवै पक्षलाई ठाउँ दिओस् र हाम्रा पाठकलाई सम्मान गरोस् भन्नका लागि हाम्रो टोली परिश्रम गर्छ।",
+  "Najik Ko Sathi Media is more than a news place. It is a voice for the people, a place for conversation and a link, between society and the government. We will keep trying things changing when needed and growing while staying real with our beliefs of being honest and taking responsibility.":
+    "नजिकको साथी मिडिया समाचार मञ्च मात्र होइन। यो जनताको आवाज हो, संवादको थलो हो र समाज तथा सरकारबीचको सेतु हो। इमानदारी र उत्तरदायित्वप्रतिको आफ्नो आस्थामा अडिग रहँदै हामी नयाँ प्रयास गर्दै, आवश्यक परे बदलिँदै र बढ्दै जानेछौं।",
+  "Thank you for believing in us as your news and information source. Together let us create an informed and stronger Nepal.":
+    "आफ्नो समाचार र सूचनाको स्रोतका रूपमा हामीमाथि विश्वास गर्नुभएकोमा धन्यवाद। आउनुहोस्, सँगै मिलेर सुसूचित र सबल नेपाल बनाऔं।",
+
+  // ---- Homepage: partners ---------------------------------------------
+  "We worked with": "हामीले काम गरेका संस्थाहरू",
+
+  // ---- Homepage: leadership -------------------------------------------
+  "Media is more than information.": "मिडिया सूचनाभन्दा धेरै हो।",
+  "Director's message": "निर्देशकको सन्देश",
+
+  // ---- Social Work page ------------------------------------------------
+  "The work we do beside our communities.": "हामीले आफ्ना समुदायसँगै गर्ने काम।",
+  "Media is only half of what we do. This is the community work we take part in, project by project, in photographs and film.":
+    "मिडिया हाम्रो कामको आधा हिस्सा मात्र हो। यहाँ हामी सहभागी भएका सामुदायिक कामहरू परियोजनाअनुसार तस्बिर र फिल्ममार्फत राखिएका छन्।",
+  "In photographs & film": "तस्बिर र फिल्ममा",
+  "Every project, as it happened.": "हरेक परियोजना, जस्तो भयो त्यस्तै।",
+  "Each entry carries the photographs taken on the day and the films made of it. New work is added as it is finished.":
+    "हरेक प्रविष्टिमा त्यस दिन खिचिएका तस्बिर र बनाइएका फिल्महरू छन्। नयाँ काम सम्पन्न भएपछि थपिँदै जान्छ।",
+  "Photographs and films from the social work we take part in, alongside the people and organizations it is done with.":
+    "हामी सहभागी भएका सामाजिक कार्यका तस्बिर र फिल्म, तिनका सहकर्मी व्यक्ति तथा संस्थाहरूसहित।",
+  "Working on something for your community?": "आफ्नो समुदायका लागि केही गर्दै हुनुहुन्छ?",
+  "Tell us about the project and the people it is for. We can help plan how it is documented and shared.":
+    "परियोजना र यो जसका लागि हो, तिनका बारेमा हामीलाई बताउनुहोस्। यसलाई कसरी अभिलेखीकरण गरी बाँड्ने भन्नेमा हामी योजना बनाउन सघाउन सक्छौं।",
+  "Work with us": "हामीसँग काम गर्नुहोस्",
+  "Social Work | Community Projects in Photographs & Film":
+    "सामाजिक कार्य | तस्बिर र फिल्ममा सामुदायिक परियोजनाहरू",
+  "The community work Najikko Sathi Media takes part in across Nepal, in photographs and film. Albums and videos from each project, with the people and organizations behind them.":
+    "नजिकको साथी मिडिया नेपालभर सहभागी हुने सामुदायिक कामहरू, तस्बिर र फिल्ममा। हरेक परियोजनाका एल्बम र भिडियो, तिनका पछाडिका व्यक्ति तथा संस्थासहित।",
+  "The community work we take part in, in photographs and film.":
+    "हामी सहभागी हुने सामुदायिक कामहरू, तस्बिर र फिल्ममा।",
+  "Watch on YouTube": "युट्युबमा हेर्नुहोस्",
+
   // ---- Homepage: services --------------------------------------------
   "One Media House.<br />Many Ways to Communicate.": "एउटै मिडिया हाउस। सञ्चारका अनेक बाटा।",
   "From verified information to cinematic storytelling, every service is built around clarity, truth, and impact.":

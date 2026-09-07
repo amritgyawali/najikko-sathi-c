@@ -154,6 +154,31 @@
 .topic-grid p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.7; }
 
 /* Social responsibility: dashboard-managed films and photo albums. */
+/* "We worked with": a row of client logos sliding across the page.
+   The row is rendered twice and the track moved by half its own width, so the
+   second copy takes over exactly where the first ends and the loop is seamless. */
+.partner-section { padding-bottom: 56px; }
+.partner-heading { margin: 0 0 30px; color: var(--primary); font-size: clamp(24px, 3vw, 34px); font-weight: 650; letter-spacing: -.02em; text-align: center; }
+.partner-marquee { overflow: hidden; width: 100%; -webkit-mask-image: linear-gradient(90deg, transparent, #000 9%, #000 91%, transparent); mask-image: linear-gradient(90deg, transparent, #000 9%, #000 91%, transparent); }
+.partner-track { display: flex; width: max-content; animation: partner-slide 34s linear infinite; }
+.partner-marquee:hover .partner-track, .partner-marquee:focus-within .partner-track { animation-play-state: paused; }
+.partner-row { display: flex; align-items: center; gap: 64px; margin: 0; padding: 0 32px; list-style: none; }
+.partner-logo { display: grid; place-items: center; min-width: 150px; height: 78px; padding: 0 10px; opacity: .72; filter: grayscale(1); transition: opacity .25s ease, filter .25s ease; }
+.partner-logo:hover, .partner-logo:focus-visible { opacity: 1; filter: grayscale(0); }
+.partner-logo img { max-width: 190px; max-height: 68px; width: auto; height: auto; object-fit: contain; }
+.partner-name { color: var(--primary); font-size: 21px; font-weight: 750; letter-spacing: -.02em; white-space: nowrap; }
+
+@keyframes partner-slide {
+  to { transform: translateX(-50%); }
+}
+
+/* Motion here is decoration. Anyone who has asked for less of it gets a row
+   that simply sits still, scrollable by hand. */
+@media (prefers-reduced-motion: reduce) {
+  .partner-marquee { overflow-x: auto; -webkit-mask-image: none; mask-image: none; }
+  .partner-track { animation: none; }
+}
+
 .social-section { background: var(--surface); }
 .social-entries { display: grid; gap: 28px; }
 .social-entry { padding: 30px; border: 1px solid var(--line); border-radius: 18px; background: #fff; }
@@ -169,6 +194,18 @@
 .social-album img { display: block; width: 100%; height: 190px; object-fit: cover; border-radius: 12px; }
 .social-album figcaption { margin-top: 8px; color: var(--muted); font-size: 12.5px; line-height: 1.5; }
 .social-entry .text-link { margin-top: 20px; }
+
+/* Social work: a cover photograph, then the films, then the album. Each film
+   carries its own title and description, so they are stacked rather than laid
+   out in a grid that would break a caption across a column edge. */
+.social-cover { margin: 0 0 24px; }
+.social-cover img { display: block; width: 100%; height: auto; max-height: 420px; object-fit: cover; border-radius: 14px; }
+.social-videos { display: grid; gap: 30px; }
+.social-video-item { margin: 0; }
+.social-video-item h4 { margin: 0 0 12px; color: var(--primary); font-size: 18px; font-weight: 650; letter-spacing: -.01em; }
+.social-video-item figcaption { margin-top: 12px; color: var(--muted); font-size: 14.5px; line-height: 1.7; }
+.social-video-item .text-link { margin-top: 12px; }
+.social-videos + .social-album { margin-top: 26px; }
 
 /* Client testimonials, from Content → Reviews. */
 /* min() lets a track shrink below its minimum on a narrow phone, rather than
@@ -280,6 +317,10 @@
   .review-card, .wisher-card { padding: 24px; }
   .wisher-grid { grid-template-columns: repeat(auto-fit, minmax(min(160px, 100%), 1fr)); }
   .wisher-card img, .wisher-initial { width: 76px; height: 76px; }
+  .partner-row { gap: 38px; padding: 0 19px; }
+  .partner-logo { min-width: 112px; height: 62px; }
+  .partner-logo img { max-width: 138px; max-height: 54px; }
+  .partner-name { font-size: 17px; }
   .social-album, .media-album { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
   .social-album img, .media-album img, .media-album video { height: 145px; }
   .chairman-section, .foundation-section, .verticals-section, .value-section { padding-block: 52px; }

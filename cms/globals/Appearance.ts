@@ -1,6 +1,7 @@
 import type { Field, GlobalConfig } from "payload";
 import { revalidateSite } from "../hooks/revalidate";
 import { isAdmin } from "../access";
+import { NEPALI_FONT_FAMILY, NEPALI_FONT_URL, safeFontUrl } from "../../lib/fonts";
 
 const HEX = /^#([0-9a-f]{3}|[0-9a-f]{6})$/i;
 
@@ -97,6 +98,48 @@ export const Appearance: GlobalConfig = {
           options: [
             { label: "Hanken Grotesk", value: "hanken" },
             { label: "Inter", value: "inter" },
+          ],
+        },
+      ],
+    },
+    {
+      type: "collapsible",
+      label: "Nepali type",
+      admin: {
+        description:
+          "The face used everywhere while the website is being read in Nepali. It is fetched " +
+          "from the internet rather than shipped with the site, so it can be changed here.",
+      },
+      fields: [
+        {
+          type: "row",
+          fields: [
+            {
+              name: "nepaliFontFamily",
+              type: "text",
+              label: "Font name",
+              defaultValue: NEPALI_FONT_FAMILY,
+              admin: {
+                width: "40%",
+                description: 'The family the stylesheet defines, spelled exactly as it names itself.',
+              },
+            },
+            {
+              name: "nepaliFontUrl",
+              type: "text",
+              label: "Stylesheet address",
+              defaultValue: NEPALI_FONT_URL,
+              validate: (value: unknown) =>
+                !value || safeFontUrl(value as string)
+                  ? true
+                  : "Enter an https address for a font stylesheet, or leave it empty.",
+              admin: {
+                width: "60%",
+                description:
+                  "Where the font is fetched from. Leave both empty to fall back to Noto Sans " +
+                  "Devanagari, which ships with the site.",
+              },
+            },
           ],
         },
       ],

@@ -7,6 +7,8 @@ import type { PageSection } from "@/lib/page-defaults";
 import { getMediaSlot, type BusinessInfo } from "@/lib/content";
 import { mediaAlt, mediaUrl } from "@/lib/media";
 import { slotPhoto } from "@/lib/page-media";
+import { leadershipMessages as defaultLeadershipMessages } from "@/lib/leadership";
+import { missionParagraphs, missionQuote } from "@/lib/mission";
 import { LeadershipCarousel, type LeadershipMessage } from "./leadership-carousel";
 import { MediaSystem } from "./media-system";
 
@@ -104,6 +106,15 @@ export async function HomeAbout({
     "Skill development",
   ]);
   const photo = slotPhoto(await getMediaSlot("home-about"), `${business.shortName} at work`);
+  // The first two paragraphs have fields of their own and the rest are an
+  // array, so an editor can write a mission of any length. Nothing saved in the
+  // dashboard yet means the whole statement comes from lib/mission.ts.
+  const written = [
+    home?.aboutBody,
+    home?.aboutBodySecondary,
+    ...(home?.aboutParagraphs ?? []).map((row) => row.text),
+  ].filter((text): text is string => Boolean(text?.trim()));
+  const paragraphs = written.length > 0 ? written : [...missionParagraphs];
 
   return (
     <section className="chairman-section" id="about">
@@ -138,18 +149,10 @@ export async function HomeAbout({
             <i /> {home?.aboutEyebrow || "Who We Are"}
           </div>
           <h2>{home?.aboutHeading || business.legalName}</h2>
-          <blockquote>
-            {home?.aboutQuote ||
-              "Information, entertainment, and social responsibility - advanced together through honest communication and purposeful media."}
-          </blockquote>
-          <p>
-            {home?.aboutBody ||
-              "We are a dynamic, multi-dimensional media house delivering truthful news through Right Sanchar, high-quality documentary and video production, impactful advertising, and training focused on media and skill development."}
-          </p>
-          <p>
-            {home?.aboutBodySecondary ||
-              "Beyond our core media services, we support social initiatives that help transform communities. True to our name, we aim to walk beside people and organizations as a trusted, close companion in communication."}
-          </p>
+          <blockquote>{home?.aboutQuote || missionQuote}</blockquote>
+          {paragraphs.map((text, index) => (
+            <p key={index}>{text}</p>
+          ))}
           <div className="about-capabilities" aria-label="Core capabilities">
             {capabilities.map((item) => (
               <span key={item}>{item}</span>
@@ -167,11 +170,15 @@ export async function HomeAbout({
 }
 
 /**
- * The chairman's and director's messages. Both are written in the dashboard,
- * so the section only appears once there is something to show.
+ * The chairman's and director's messages.
+ *
+ * The heading sits inside the carousel rather than above it, so it moves on
+ * with the message it belongs to. Both are written in the dashboard, and the
+ * band falls back to the messages below until they are - so the front page
+ * reads correctly before anyone has opened it.
  */
 export function Leadership({ home }: { home: Homepage | null }) {
-  const messages: LeadershipMessage[] = (home?.leadershipMessages ?? [])
+  const written: LeadershipMessage[] = (home?.leadershipMessages ?? [])
     .filter((row) => row.message && row.name)
     .map((row) => ({
       role: row.role,
@@ -182,19 +189,17 @@ export function Leadership({ home }: { home: Homepage | null }) {
       photoAlt: mediaAlt(row.photo, `${row.name}, ${row.role}`),
     }));
 
+  const messages = written.length > 0 ? written : defaultLeadershipMessages;
   if (messages.length === 0) return null;
 
   return (
     <section className="content-section leadership-section" id="leadership">
       <div className="site-container">
-        <div className="section-heading">
-          <span className="eyebrow">
-            <i />
-            {home?.leadershipKicker || "From our leadership"}
-          </span>
-          <h2>{home?.leadershipHeading || "Messages from the people who guide our work."}</h2>
-        </div>
-        <LeadershipCarousel messages={messages} />
+        <LeadershipCarousel
+          messages={messages}
+          kicker={home?.leadershipKicker || "From our leadership"}
+          heading={home?.leadershipHeading || "Messages from the people who guide our work."}
+        />
       </div>
     </section>
   );
