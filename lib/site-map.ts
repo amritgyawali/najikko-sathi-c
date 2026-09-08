@@ -8,7 +8,7 @@
  * 1. The navbar's built-in fallback and the "pages underneath a menu item"
  *    grouping - app/(frontend)/_data/site.ts.
  * 2. The "Website pages" panel on the dashboard home, which lists every page
- *    with what can be done to it - cms/components/SitePages.tsx.
+ *    with what can be done to it - cms/components/dashboard/PageStudio.tsx.
  * 3. cms/site-pages.ts, which turns each of these into a document an editor can
  *    change, holding the copy in lib/page-defaults.ts.
  * 4. `npm run check:pages`, which fails when a route exists with no entry here,

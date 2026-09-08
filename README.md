@@ -164,32 +164,85 @@ and the photo and film band shows the entry named in **Content → Page media**.
 Each of those sections says so in the dashboard. The page still decides whether
 the band appears at all and where.
 
-### Website pages, on the dashboard home
+### The dashboard home
 
-Under the traffic overview, **Website pages** is the list of every page the
-website has: the menu in the order a visitor sees it, the pages that sit under
-**Our Work**, the pages not in the menu, and the ones built in the dashboard.
-Each row opens the page, edits it, or - for a page not yet in the dashboard -
-adds it, and shows when it was last changed. A page taken off the website is
-marked as such.
+Signing in lands on one screen that answers everything an owner opens this
+dashboard for. A header greets whoever is signed in and says what is waiting;
+under it, six figures - visits today, this week and this month, each against the
+period before it, then new enquiries, reviews to approve and how ready the site
+is to be found. Below that the screen is in tabs, and the tab you were last on is
+the one you come back to.
 
-Nothing here is a copy that someone has to keep up to date. The panel resolves
+**Overview** carries the traffic chart - seven, fourteen, thirty or ninety days,
+with the period before it drawn behind so a rise or fall is visible rather than
+guessed - beside everything waiting on you, then what changed lately across the
+whole site and what is on the website by the number.
+
+**Pages** is every page the website has, and every change that can be made to
+one. Each page shows whether it is live, how many people read it last month, how
+many sections it is built from, whether it has a picture, whether search engines
+have anything to show for it, and when it last changed. Beside that: edit it,
+open it, publish or take it off the website without leaving the list, and one
+link per part of it that can be changed - its sections, its search listing, its
+photograph, where it sits in the menu, and whichever other dashboard areas write
+into it.
+
+Nothing there is a copy that someone has to keep up to date. The list resolves
 the menu on every load from the same two sources as the public header (the links
 in **Site → Navigation** and pages published with *show in navigation* ticked),
 through the same function, so reordering the menu, renaming a page or publishing
-one shows up on the next dashboard load. A menu link with no page behind it is
-called out in red, which is how a typo in a link gets noticed before a visitor
-finds it.
+one shows up on the next load. A menu link with no page behind it is called out
+in red, which is how a typo in a link gets noticed before a visitor finds it.
 
-Which other dashboard areas write into a page comes from `lib/site-map.ts`, the
-one list of the site's pages. `npm run check:pages` fails if a route exists with
-no entry there, if an entry names a route that no longer exists, or if a page has
-no copy to ship with, so a page cannot be added to the site and quietly missed by
-the dashboard.
+**Photos & films** lists every place a picture can go on the website - the
+photograph beside each page's title, each page's photo and film band, the panels
+beside the words on the home and production pages, and both of those for every
+service page - split into the ones still empty and the ones already filled, with
+a link straight to the entry that fills each. Putting a picture on a page never
+means working out which key names it. Beside the list sits the file library
+itself: how much has been uploaded, how much of it nobody has described, and
+which files are heavy enough to be slowing a page down.
+
+**Traffic** breaks the same thirty days down by page, by where the visitor came
+from, by device, and by hour of the day.
+
+**Being found** checks every page, post and service for the things that decide
+what a search engine shows - a missing description, one too short or too long to
+be shown whole, a title that will be cut off, a page quietly asked to be ignored,
+a post with no cover photograph, two pages sharing an address - scores what it
+found, and links each one to where it is fixed. Under it, the schedule: what the
+website will publish or take down on its own, and when.
+
+**Health** reads six things that are true or not on the server itself: when the
+last backup was taken, whether uploads are going somewhere a deploy will not
+wipe, whether the nightly copy is signed, whether visits are being recorded,
+whether more than one person can administer the site, and how many old addresses
+are being forwarded.
+
+**Tools** holds the jobs that are not editing anything: rebuild the website,
+take a copy of it, download one, put one back, and export any collection as a
+spreadsheet.
+
+The figures come from `cms/dashboard/insights.ts`, which reads them all in one
+pass and returns nothing on failure rather than breaking the screen; the panels
+that draw them are in `cms/components/dashboard/`.
+
+### Search, from anywhere
+
+**⌘K** - Ctrl+K on Windows - opens a box on every screen of the dashboard, not
+only the home one. Type part of a title and it searches sixteen collections at
+once, returning only what the person typing is allowed to open. Type what you
+want to do instead and the same box offers it: build a page, upload a file,
+rebuild the website, back it up, export the enquiries. Arrow keys move, Enter
+opens, Escape closes.
+
+Destinations and jobs match in the browser, so the list answers every keystroke
+with no request at all; content is searched through `/api/site-tools/search`,
+which is one call rather than sixteen.
 
 ### How the dashboard itself is put together
 
-Two conventions run through every section, so a screen an editor has not seen
+Three conventions run through every section, so a screen an editor has not seen
 before still reads the way the last one did.
 
 **Lists show state, not words.** A publishing status, an enquiry's progress, a
@@ -207,16 +260,14 @@ segmented control with a line of explanation under them. The styling is in
 `app/(payload)/custom.css`, layered on Payload's own variables rather than
 fighting its components.
 
-### Photos & films, on the dashboard home
-
-Below it, **Photos & films** lists every place a picture can go on the website:
-the photograph beside each page's title, each page's photo and film band, the
-panels beside the words on the home and production pages, and both of those for
-every service page. Each row shows the page it appears on, whether a photograph
-and a film have been added yet, and a link straight to the entry that fills it —
-so putting a picture on a page never means working out which key names it. The
-rows come from the same `lib/site-map.ts`, and the service rows from the
-services themselves, so the list cannot fall behind the site.
+**Colour means something.** Two palettes are kept apart. The six discipline
+hues from the website's own media wheel identify things - which panel this is,
+which figure that is, which group of the menu you are in - and carry no verdict.
+Green, amber and red only ever say good, worth a look, and wrong, so a red edge
+is always something to deal with and never decoration. Both are defined once as
+tokens at the top of `custom.css`, and dark mode redefines the tokens rather than
+the rules, which is why light and dark are one design and not two. The dashboard
+home's own styling lives beside it in `app/(payload)/dashboard.css`.
 
 ### Social responsibility
 
@@ -560,7 +611,9 @@ help if the database itself is lost.
 Page views are recorded by `app/(frontend)/track/route.ts` into the `pageviews`
 collection: path, referring host and a coarse device class only. No cookies and
 nothing that identifies a visitor, so no consent banner is required. The
-dashboard summary is `cms/components/DashboardStats.tsx`.
+dashboard reads them in `cms/dashboard/insights.ts`: ninety days in one query,
+with every figure - today against yesterday, this week against last, the busiest
+hour, the most-read pages, who is on the site this half hour - counted from it.
 
 ## Reviews from visitors
 
@@ -672,6 +725,10 @@ API live in `app/(payload)/`.
 - `app/(frontend)/services/[slug]/page.tsx` - Generated service detail pages
 - `app/(payload)/` - The admin dashboard and Payload REST/GraphQL routes
 - `cms/` - Collections, globals, blocks, and access control
+- `cms/dashboard/insights.ts` - Everything the dashboard home knows: traffic, what is waiting, the audits, the health checks
+- `cms/components/dashboard/` - The dashboard home: its panels, the page studio, the command palette and the tabs
+- `cms/endpoints/site-tools.ts` - One search across every collection, "rebuild the website", and the spreadsheet exports
+- `app/(payload)/dashboard.css` - The dashboard home's own styling; `custom.css` retunes Payload itself
 - `lib/site-map.ts` - The one list of the site's pages: menu order, sub-pages, and where each is edited
 - `lib/page-defaults.ts` - The sections and copy each built-in page ships with, and what the dashboard imports
 - `lib/page-content.ts` - Resolves an address to a page: the dashboard's version if there is one, the shipped copy otherwise

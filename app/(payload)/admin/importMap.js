@@ -28,11 +28,10 @@ import { ThumbCell as ThumbCell_0481a919d3b843ac2a730b535275cf54 } from '../../.
 import { RatingCell as RatingCell_60e4215f973c36fe36569c284f582ac1 } from '../../../cms/components/cells/RatingCell'
 import { BackupNowButton as BackupNowButton_6d206b79e65e5bae25d706cf7e658037 } from '../../../cms/components/BackupNowButton'
 import { RestoreBackup as RestoreBackup_c39d1c0b6558e36324f8ed049deb6f4d } from '../../../cms/components/RestoreBackup'
+import { CommandPalette as CommandPalette_a16a3a2df81066b39288ec8e9376f8bc } from '../../../cms/components/dashboard/CommandPalette'
 import { ThemeToggle as ThemeToggle_03e2855782842afd8d454d76720a31ec } from '../../../cms/components/ThemeToggle'
 import { LoginSignupLink as LoginSignupLink_4ecb88133f73eab493d10ad23060fd42 } from '../../../cms/components/LoginSignupLink'
-import { DashboardStats as DashboardStats_9d6438ef9cd6fb98711ce5f3f44a3c38 } from '../../../cms/components/DashboardStats'
-import { SitePages as SitePages_9822e4ce3f3b2591dd4c3d250008a071 } from '../../../cms/components/SitePages'
-import { PageMedia as PageMedia_8386e2e5cdba040a7af810bcba2a0427 } from '../../../cms/components/PageMedia'
+import { DashboardHome as DashboardHome_b100ff2e91005655d7ea828d85a2707e } from '../../../cms/components/dashboard/DashboardHome'
 import { NavDashboardLink as NavDashboardLink_890d30fb0fa4343fca3dfba76ff31891 } from '../../../cms/components/NavDashboardLink'
 import { CollectionCards as CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1 } from '@payloadcms/next/rsc'
 
@@ -68,11 +67,10 @@ export const importMap = {
   "/cms/components/cells/RatingCell#RatingCell": RatingCell_60e4215f973c36fe36569c284f582ac1,
   "/cms/components/BackupNowButton#BackupNowButton": BackupNowButton_6d206b79e65e5bae25d706cf7e658037,
   "/cms/components/RestoreBackup#RestoreBackup": RestoreBackup_c39d1c0b6558e36324f8ed049deb6f4d,
+  "/cms/components/dashboard/CommandPalette#CommandPalette": CommandPalette_a16a3a2df81066b39288ec8e9376f8bc,
   "/cms/components/ThemeToggle#ThemeToggle": ThemeToggle_03e2855782842afd8d454d76720a31ec,
   "/cms/components/LoginSignupLink#LoginSignupLink": LoginSignupLink_4ecb88133f73eab493d10ad23060fd42,
-  "/cms/components/DashboardStats#DashboardStats": DashboardStats_9d6438ef9cd6fb98711ce5f3f44a3c38,
-  "/cms/components/SitePages#SitePages": SitePages_9822e4ce3f3b2591dd4c3d250008a071,
-  "/cms/components/PageMedia#PageMedia": PageMedia_8386e2e5cdba040a7af810bcba2a0427,
+  "/cms/components/dashboard/DashboardHome#DashboardHome": DashboardHome_b100ff2e91005655d7ea828d85a2707e,
   "/cms/components/NavDashboardLink#NavDashboardLink": NavDashboardLink_890d30fb0fa4343fca3dfba76ff31891,
   "@payloadcms/next/rsc#CollectionCards": CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1
 }

@@ -40,7 +40,7 @@ export function BackupNowButton() {
     <div className="ns-restore">
       <div className="ns-restore__actions">
         <button
-          className="ns-page__action ns-page__action--go"
+          className="ns-btn ns-btn--primary"
           disabled={busy}
           onClick={run}
           type="button"
@@ -49,7 +49,7 @@ export function BackupNowButton() {
         </button>
       </div>
       {saved ? <p className="ns-restore__note">Copy taken: {saved}</p> : null}
-      {error ? <span className="ns-pages__error">{error}</span> : null}
+      {error ? <span className="ns-run__said ns-run__said--bad">{error}</span> : null}
     </div>
   );
 }
