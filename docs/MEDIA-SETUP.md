@@ -1,9 +1,14 @@
 # Adding photos and films
 
-Every blue placeholder on the website - the "in pictures & film" band near the
-foot of each page, and the panels on the home and production pages - is filled
-from the dashboard. Uploading a photograph is a save, not a deployment: the page
-shows it on the next request.
+Every place on the website that can hold a picture - the photograph beside each
+page's title, the "in pictures & film" band near the foot of it, and the panels
+on the home and production pages - is filled from the dashboard. Uploading a
+photograph is a save, not a deployment: the page shows it on the next request.
+
+**A place with nothing in it is not drawn.** The website never shows a blue
+rectangle standing in for a photograph nobody has uploaded, and never tells a
+visitor that something is coming soon. Until a picture is added, the page is
+simply the page without it: no panel, no heading and no gap.
 
 Visitors cannot upload anything. There is no public upload form, no API for it,
 and no first-visitor setup screen. Only someone signed in to the dashboard with
@@ -12,18 +17,17 @@ an editor or administrator account can add or replace a file.
 ## Where to start
 
 Open the dashboard at `/admin`. Under the traffic overview and the list of
-website pages there is a panel called **Photos & films**. It lists every
-placeholder on the site, says whether a photograph or a film has been added to
-it yet, and links straight to the entry that fills it. Nothing here has to be
-worked out by hand - if you can see a blue placeholder on a page, it has a row
-in that panel.
+website pages there is a panel called **Photos & films**. It lists every place a
+picture can go, says whether a photograph or a film has been added to it yet,
+and links straight to the entry that fills it. Nothing here has to be worked out
+by hand: the panel is the list of everything the site can show, filled or not.
 
 The same entries live under **Content → Page media**, and each one names the
 page it belongs to.
 
 ## Add a photograph
 
-1. Open the placeholder's entry from the **Photos & films** panel.
+1. Open the entry from the **Photos & films** panel.
 2. Under **Photograph**, choose a file from the media library or upload a new
    one. Write alt text describing what is in the picture: screen readers and
    search engines read it.
@@ -59,22 +63,27 @@ for people who cannot watch it:
   the player behind a "Read video transcript" toggle.
 - **Duration** in ISO 8601 form, such as `PT1M30S`, and the **upload date**.
 
-Until a film is added, the page shows the placeholder and no player, no broken
-address, and no video metadata. Once one is added, the player carries controls,
-the still image, the transcript, and structured data describing that real film.
+Until a film is added there is no player on the page, no broken address, and no
+video metadata. Once one is added, the player carries controls, the still image,
+the transcript, and structured data describing that real film.
 
-## Which placeholder is which
+## Which entry is which
 
 Each page's band is keyed by the page: `home`, `about`, `services`, `our-work`,
 `production`, `social-media-handling`, `training`, `research`, `it`,
-`advertisement`, `right-sanchar` and `contact`. The two decorative panels are
-`home-about` (beside the introduction on the front page) and `production-band`
-(on the production page). A service page's band is keyed by the service's own
-slug, such as `biography-videos`, and its entry is created with the service.
+`advertisement`, `right-sanchar` and `contact`. The photograph beside a page's
+title is that key with `-hero` after it, such as `about-hero`. The two panels
+beside a band's words are `home-about` (beside the introduction on the front
+page) and `production-band` (on the production page). A service page has both a
+band, keyed by the service's own slug such as `biography-videos`, and a
+`biography-videos-hero` photograph; both entries are created with the service.
+
+The front page is the one page with no `-hero` entry: its opening photograph is
+the full-width one set in **Site → Homepage**.
 
 You should never have to type one of these keys. The **Photos & films** panel
-links to the right entry for each placeholder, and every entry shows the address
-of the page it appears on.
+links to the right entry for each of them, and every entry shows the address of
+the page it appears on.
 
 ## Where the files are kept
 

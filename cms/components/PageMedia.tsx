@@ -4,7 +4,7 @@ import React from "react";
 
 import type { MediaSlot } from "@/payload-types";
 import { slotFilm, slotPhoto } from "@/lib/page-media";
-import { mediaPlaceholders } from "@/lib/site-map";
+import { heroSlotKey, mediaPlaceholders, type MediaPlaceholderKind } from "@/lib/site-map";
 
 /**
  * "Photos & films" - the panel under the page list on the dashboard home.
@@ -30,21 +30,26 @@ type Row = {
   /** The page it appears on. */
   path: string;
   note: string;
+  /** What the row fills, which decides whether a film belongs in it. */
+  kind: MediaPlaceholderKind;
   /** The Page media document, once one exists. */
   id?: string | number;
   hasPhoto: boolean;
   hasFilm: boolean;
 };
 
+/** Only the showcase band plays a film, so only it is asked about one. */
 function StateTags({ row }: { row: Row }) {
   return (
     <span className="ns-slot__tags">
       <span className={`ns-slot__tag${row.hasPhoto ? " ns-slot__tag--on" : ""}`}>
         {row.hasPhoto ? "Photo added" : "No photo"}
       </span>
-      <span className={`ns-slot__tag${row.hasFilm ? " ns-slot__tag--on" : ""}`}>
-        {row.hasFilm ? "Film added" : "No film"}
-      </span>
+      {row.kind === "showcase" ? (
+        <span className={`ns-slot__tag${row.hasFilm ? " ns-slot__tag--on" : ""}`}>
+          {row.hasFilm ? "Film added" : "No film"}
+        </span>
+      ) : null}
     </span>
   );
 }
@@ -66,7 +71,13 @@ function SlotRow({ row }: { row: Row }) {
       <p className="ns-page__summary">{row.note}</p>
       <span className="ns-page__edits">
         <Link className="ns-page__edit" href={href}>
-          {row.hasPhoto || row.hasFilm ? "Change the photo or film" : "Add a photo or film"}
+          {row.kind === "showcase"
+            ? row.hasPhoto || row.hasFilm
+              ? "Change the photo or film"
+              : "Add a photo or film"
+            : row.hasPhoto
+              ? "Change the photograph"
+              : "Add a photograph"}
           {row.id ? null : <span className="ns-page__note"> · key “{row.key}”</span>}
         </Link>
       </span>
@@ -115,6 +126,7 @@ export async function PageMedia({ payload }: Props) {
     label: string,
     path: string,
     note: string,
+    kind: MediaPlaceholderKind,
   ): Row => {
     const slot = slots.get(key);
     return {
@@ -122,6 +134,7 @@ export async function PageMedia({ payload }: Props) {
       label,
       path,
       note,
+      kind,
       id: slot?.id,
       hasPhoto: Boolean(slotPhoto(slot, "")),
       hasFilm: Boolean(slotFilm(slot, "")),
@@ -130,16 +143,32 @@ export async function PageMedia({ payload }: Props) {
 
   const rows = [
     ...mediaPlaceholders.map((placeholder) =>
-      toRow(placeholder.key, placeholder.label, placeholder.path, placeholder.note),
+      toRow(
+        placeholder.key,
+        placeholder.label,
+        placeholder.path,
+        placeholder.note,
+        placeholder.kind,
+      ),
     ),
-    ...services.map((service) =>
+    // Each service page carries the same two: the photograph beside its title,
+    // then the band lower down.
+    ...services.flatMap((service) => [
+      toRow(
+        heroSlotKey(service.slug),
+        `${service.shortTitle || service.title} hero photo`,
+        `/services/${service.slug}`,
+        "The photograph beside this service's title. There is nothing there until one is uploaded.",
+        "hero",
+      ),
       toRow(
         service.slug,
         `${service.shortTitle || service.title} photo & film`,
         `/services/${service.slug}`,
         "The photograph and film in the band on this service's page.",
+        "showcase",
       ),
-    ),
+    ]),
   ];
 
   const filled = rows.filter((row) => row.hasPhoto || row.hasFilm).length;
@@ -149,13 +178,14 @@ export async function PageMedia({ payload }: Props) {
       <div className="ns-panel__head">
         <h3 className="ns-panel__title">Photos &amp; films</h3>
         <span className="ns-panel__meta">
-          {filled} of {rows.length} pages have pictures
+          {filled} of {rows.length} places have pictures
         </span>
       </div>
       <p className="ns-pages__hint">
-        Each row below is a page that can carry pictures. Open one, upload a photograph or a
-        film, and save - the page shows it straight away. Until then the page carries no picture
-        band at all, so an empty row is not something a visitor ever sees. A film that is too
+        Each row below is a place on the website that can carry a picture. Open one, upload a
+        photograph or a film, and save - the page shows it straight away. Until then nothing at
+        all is drawn there: no panel, no heading and no gap, so an empty row is never something
+        a visitor sees. A film that is too
         large to upload can be published on YouTube and pasted in as a link instead.
       </p>
 

@@ -115,34 +115,27 @@ export function ServicesGrid({ home, services }: { home: Homepage | null; servic
 }
 
 /**
- * The production band. Its panel is drawn from icons until someone uploads a
- * photograph to the "production-band" Page media entry in the dashboard.
+ * The production band, and the photograph beside its words.
+ *
+ * The photograph is uploaded to the "production-band" Page media entry in the
+ * dashboard. Until one is, the band is words alone: no panel, no badge and no
+ * blue rectangle promising a picture later.
  */
 export async function ProductionBand({ business, home }: { business: BusinessInfo; home: Homepage | null }) {
   const photo = slotPhoto(await getMediaSlot("production-band"), "Najikko Sathi on a production shoot");
 
   return (
     <section className="foundation-section" id="production-craft">
-      <div className="site-container foundation-grid">
-        <div className="foundation-image-wrap">
-          <div className="foundation-backplate" aria-hidden="true" />
-          {photo ? (
-            <div className="production-visual production-visual--photo">
+      <div className={`site-container foundation-grid${photo ? "" : " foundation-grid--copy-only"}`}>
+        {photo ? (
+          <div className="foundation-image-wrap">
+            <div className="foundation-backplate" aria-hidden="true" />
+            <div className="production-visual">
               <Image src={photo.src} alt={photo.alt} fill sizes="(max-width: 900px) 100vw, 520px" />
             </div>
-          ) : (
-            <div className="production-visual" aria-label="Production process: research, script, shoot, and edit">
-              <Clapperboard className="production-camera" aria-hidden="true" />
-              <div className="production-steps">
-                <span><Search aria-hidden="true" /> Research</span>
-                <span><FileText aria-hidden="true" /> Script</span>
-                <span><Camera aria-hidden="true" /> Shoot</span>
-                <span><Scissors aria-hidden="true" /> Edit</span>
-              </div>
-            </div>
-          )}
-          <div className="legacy-badge"><strong>4</strong><span>Complete Stages</span></div>
-        </div>
+            <div className="legacy-badge"><strong>4</strong><span>Complete Stages</span></div>
+          </div>
+        ) : null}
         <div className="foundation-copy">
           <span className="foundation-chip">{home?.productionChip || "Production"}</span>
           {home?.productionHeading ? (

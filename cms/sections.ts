@@ -42,10 +42,19 @@ const iconField: Field = {
 /** The band across the top of a page: breadcrumb, title, and one action. */
 export const PageHeroSection: Block = {
   slug: "pageHero",
-  labels: { singular: "Page hero", plural: "Page heroes" },
   fields: [
     { name: "eyebrow", type: "text", required: true, admin: { description: "The line above the title." } },
-    { name: "heading", type: "text", required: true },
+    {
+      name: "heading",
+      type: "text",
+      required: true,
+      // The photograph beside the title is a Page media entry rather than a
+      // field here, so it can be changed without opening the page's sections.
+      admin: {
+        description:
+          'A photograph can be put beside the title from Content → Page media, in this page\'s "-hero" entry. Without one the words span the whole band.',
+      },
+    },
     { name: "description", type: "textarea" },
     {
       type: "row",
@@ -544,7 +553,9 @@ export const HomeAboutSection: Block = {
     {
       name: "captionTitle",
       type: "text",
-      admin: { description: `The caption on the visual. ${globalCopyNote("Home - about")}` },
+      admin: {
+        description: `The caption on the photograph beside the introduction, shown only once one has been uploaded into the "home-about" Page media entry. ${globalCopyNote("Home - about")}`,
+      },
     },
   ],
 };

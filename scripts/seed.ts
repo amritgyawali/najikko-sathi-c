@@ -11,7 +11,7 @@ import {
   navigation,
   rightSancharTopics,
 } from "../app/(frontend)/_data/site";
-import { mediaPlaceholders } from "../lib/site-map";
+import { heroSlotKey, mediaPlaceholders } from "../lib/site-map";
 import {
   leadershipMessageRows,
   LEADERSHIP_HEADING,
@@ -231,7 +231,7 @@ async function seed() {
   // has to work out the right key before adding a photograph.
   const mediaKeys = [
     ...mediaPlaceholders.map((placeholder) => placeholder.key),
-    ...servicePortfolio.map((service) => service.slug),
+    ...servicePortfolio.flatMap((service) => [service.slug, heroSlotKey(service.slug)]),
   ];
   for (const key of mediaKeys) {
     const existing = await payload.find({
