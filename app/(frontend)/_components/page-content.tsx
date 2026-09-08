@@ -1,10 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, ArrowUpRight, Camera, Clapperboard, GraduationCap, ImageIcon, Megaphone, Newspaper, Play, Search } from "lucide-react";
-import { business } from "../_data/site";
+import { ArrowRight, ArrowUpRight, Camera, Clapperboard, GraduationCap, Megaphone, Newspaper, Search } from "lucide-react";
 import { getMediaSlot, getPlacedMedia } from "@/lib/content";
 import { slotFilm, slotPhoto, type SlotFilm } from "@/lib/page-media";
 import { showcaseCopyFor } from "@/lib/showcase-copy";
+import { heroSlotKey } from "@/lib/site-map";
 import type { CategoryView, ServiceView } from "@/lib/services";
 import { absoluteUrl, siteUrl } from "../_lib/seo";
 import { StructuredData } from "./structured-data";
@@ -27,16 +27,31 @@ export function Breadcrumbs({ items }: { items: { label: string; href: string }[
   </>;
 }
 
-export function PageHero({ eyebrow, title, description, path, label, parent, category, children }: { eyebrow: string; title: string; description: string; path: string; label: string; parent?: { label: string; href: string }; category?: CategoryView; children?: React.ReactNode }) {
-  const Icon = (category && categoryIcons[category.icon]) || Camera;
+/**
+ * The band at the top of every page a visitor reads.
+ *
+ * The right-hand side of it holds a photograph, uploaded into the
+ * "<page>-hero" entry of Content → Page media. Until one is uploaded there is
+ * nothing there at all: the heading and its words take the full width, rather
+ * than sitting beside an empty blue emblem standing in for a picture nobody has
+ * added yet.
+ *
+ * `mediaKey` is the page's Page media key - the page's own key, or a service's
+ * slug. A page without one simply never carries a hero photograph.
+ */
+export async function PageHero({ eyebrow, title, description, path, label, parent, category, mediaKey, children }: { eyebrow: string; title: string; description: string; path: string; label: string; parent?: { label: string; href: string }; category?: CategoryView; mediaKey?: string; children?: React.ReactNode }) {
+  const photo = mediaKey ? slotPhoto(await getMediaSlot(heroSlotKey(mediaKey)), title) : null;
   return <section className={`page-hero${category ? ` page-hero-${category.id}` : ""}`}>
     <Image className="page-hero-image" src="/images/nepal-himalayas-dawn-4k.jpg" alt="Himalayan peaks at dawn in Nepal" fill sizes="100vw" priority quality={88} />
     <div className="page-hero-shade" />
     <div className="site-container page-hero-inner">
       <Breadcrumbs items={[...(parent ? [parent] : []), { label, href: path }]} />
-      <div className="page-hero-grid">
+      <div className={`page-hero-grid${photo ? "" : " page-hero-grid--wide"}`}>
         <div><span className="hero-kicker"><i />{eyebrow}</span><h1>{title}</h1><p>{description}</p>{children && <div className="hero-actions">{children}</div>}</div>
-        <div className="page-hero-emblem" aria-hidden="true"><Icon /><span>{business.initials}</span><small>{category ? category.label : "Your media partner"}</small></div>
+        {photo ? <figure className="page-hero-photo">
+          <div className="page-hero-photo-frame"><Image src={photo.src} alt={photo.alt} fill sizes="(max-width: 900px) 100vw, 260px" /></div>
+          {photo.caption ? <figcaption>{photo.caption}</figcaption> : null}
+        </figure> : null}
       </div>
     </div>
   </section>;
@@ -86,19 +101,25 @@ function Film({ film }: { film: SlotFilm }) {
   </video>;
 }
 
+/** One file from the library, as much of it as the band draws. */
+type PlacedFile = Awaited<ReturnType<typeof getPlacedMedia>>[number];
+
+/** A library entry whose upload finished, so there is something to draw. */
+type ReadyFile = PlacedFile & { url: string };
+
+const isReady = (file: PlacedFile): file is ReadyFile => Boolean(file.url);
+
 /**
  * Anything in Content → Media that an editor published to this page, shown
- * under the band's two frames. Uploading a photograph and ticking the page is
- * all it takes; nothing else has to point at the file.
+ * under the band's frames. Uploading a photograph and ticking the page is all
+ * it takes; nothing else has to point at the file.
  */
-async function PlacedMedia({ placement }: { placement: string | null }) {
-  const files = await getPlacedMedia(placement);
+function PlacedMedia({ files }: { files: ReadyFile[] }) {
   if (files.length === 0) return null;
 
   return (
     <div className="media-album">
       {files.map((file) => {
-        if (!file.url) return null;
         const caption = file.credit || file.alt;
         return (
           <figure key={file.id}>
@@ -126,13 +147,21 @@ async function PlacedMedia({ placement }: { placement: string | null }) {
 }
 
 /**
- * The "in pictures & film" band. Both frames show a labelled placeholder until
- * someone uploads a photograph or adds a film to this page's Page media entry
- * in the dashboard, at which point the placeholder is replaced here.
+ * The "in pictures & film" band.
+ *
+ * It draws nothing at all until something has been uploaded for this page. An
+ * empty band used to show two captioned blue rectangles promising photographs
+ * "coming soon", which is an odd thing for a visitor to be told on nine pages
+ * at once - so now a page with no pictures simply has no picture band, and the
+ * band appears the moment the first photograph or film is saved.
+ *
+ * Half-filled is fine: a page with a photograph and no film shows the
+ * photograph on its own rather than beside an apology for the missing film.
  *
  * `placement` is the page the band is on. Files in Content → Media published to
  * that page join the band underneath, so a photograph reaches the website
- * without an editor having to find something to attach it to.
+ * without an editor having to find something to attach it to - and they count
+ * towards whether the band appears at all.
  *
  * The label and the line under the heading are per page. They used to be the
  * same two strings everywhere, which on a dozen pages plus every service page
@@ -159,10 +188,19 @@ export async function MediaShowcase({
   /** A service page's short title, which its band describes itself from. */
   service?: string;
 }) {
-  const slot = await getMediaSlot(mediaKey);
+  const [slot, placed] = await Promise.all([getMediaSlot(mediaKey), getPlacedMedia(placement)]);
   const image = slotPhoto(slot, title);
   const film = slotFilm(slot, title);
   const copy = showcaseCopyFor(mediaKey, service);
+  // A library entry whose upload never finished has nothing to draw, so it does
+  // not count towards the band appearing and is not counted into the album.
+  const files = placed.filter(isReady);
+
+  // Nothing uploaded anywhere for this page: no band, no heading, no gap.
+  if (!image && !film && files.length === 0) return null;
+
+  // One frame on its own is centred rather than left hanging in half a grid.
+  const frames = [image, film].filter(Boolean).length;
 
   return <section className="content-section media-section"><div className="site-container">
     <SectionHeading
@@ -170,20 +208,19 @@ export async function MediaShowcase({
       title={`${title} in pictures & film`}
       description={description?.trim() || copy.description}
     />
-    <div className="media-showcase-grid">
-      <figure className="media-frame">
-        {image ? <><div className="media-photo"><Image src={image.src} alt={image.alt} fill sizes="(max-width: 760px) 100vw, 50vw" /></div>{image.caption ? <figcaption>{image.caption}</figcaption> : null}</> : <><div className="media-placeholder"><ImageIcon aria-hidden="true" /><span>Photography</span><strong>{title}</strong><small>Photos coming soon</small></div><figcaption>Photography will be added to this page.</figcaption></>}
-      </figure>
-      <figure className="media-frame">
-        {film ? <>
-          <Film film={film} />
-          {film.description ? <figcaption>{film.description}</figcaption> : null}
-          {film.transcript ? <details className="video-transcript"><summary>Read video transcript</summary><p>{film.transcript}</p></details> : null}
-          <StructuredData data={{ "@context": "https://schema.org", "@type": "VideoObject", name: film.title, description: film.description || undefined, thumbnailUrl: film.poster ? absoluteUrl(film.poster) : undefined, ...(film.kind === "youtube" ? { embedUrl: film.src, url: film.watchUrl ?? undefined } : { contentUrl: absoluteUrl(film.src) }), uploadDate: film.uploadDate || undefined, duration: film.duration || undefined, publisher: { "@id": `${siteUrl}/#organization` } }} />
-        </> : <><div className="media-placeholder video-placeholder"><Play aria-hidden="true" /><span>Film & video</span><strong>{title}</strong><small>Video coming soon</small></div><figcaption>A video will be added when available.</figcaption></>}
-      </figure>
-    </div>
-    <PlacedMedia placement={placement} />
+    {frames > 0 ? <div className={`media-showcase-grid${frames === 1 ? " media-showcase-grid--one" : ""}`}>
+      {image ? <figure className="media-frame">
+        <div className="media-photo"><Image src={image.src} alt={image.alt} fill sizes="(max-width: 760px) 100vw, 50vw" /></div>
+        {image.caption ? <figcaption>{image.caption}</figcaption> : null}
+      </figure> : null}
+      {film ? <figure className="media-frame">
+        <Film film={film} />
+        {film.description ? <figcaption>{film.description}</figcaption> : null}
+        {film.transcript ? <details className="video-transcript"><summary>Read video transcript</summary><p>{film.transcript}</p></details> : null}
+        <StructuredData data={{ "@context": "https://schema.org", "@type": "VideoObject", name: film.title, description: film.description || undefined, thumbnailUrl: film.poster ? absoluteUrl(film.poster) : undefined, ...(film.kind === "youtube" ? { embedUrl: film.src, url: film.watchUrl ?? undefined } : { contentUrl: absoluteUrl(film.src) }), uploadDate: film.uploadDate || undefined, duration: film.duration || undefined, publisher: { "@id": `${siteUrl}/#organization` } }} />
+      </figure> : null}
+    </div> : null}
+    <PlacedMedia files={files} />
   </div></section>;
 }
 

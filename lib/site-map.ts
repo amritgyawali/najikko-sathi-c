@@ -8,7 +8,7 @@
  * 1. The navbar's built-in fallback and the "pages underneath a menu item"
  *    grouping - app/(frontend)/_data/site.ts.
  * 2. The "Website pages" panel on the dashboard home, which lists every page
- *    with what can be done to it - cms/components/SitePages.tsx.
+ *    with what can be done to it - cms/components/dashboard/PageStudio.tsx.
  * 3. cms/site-pages.ts, which turns each of these into a document an editor can
  *    change, holding the copy in lib/page-defaults.ts.
  * 4. `npm run check:pages`, which fails when a route exists with no entry here,
@@ -39,9 +39,11 @@ export type SitePage = {
    */
   parent?: string;
   /**
-   * The Page media entry that holds this page's photo or film, when it has
-   * one. cms/live-urls.ts resolves the same key back to this path, and
-   * check:pages fails if the two ever disagree.
+   * The Page media entry an editor uploads this page's photo or film into.
+   * Every page a visitor reads as content has one, so there is always somewhere
+   * to put a picture; the band stays off the page until something is uploaded.
+   * cms/live-urls.ts resolves the same key back to this path, and check:pages
+   * fails if the two ever disagree.
    */
   mediaKey?: string;
   /** Where in the dashboard this page's content is written. */
@@ -117,10 +119,21 @@ export const sitePages: SitePage[] = [
     ],
   },
   {
+    path: "/social-work",
+    label: "Social Work",
+    summary: "The community work we take part in, in photographs and film.",
+    navOrder: 4,
+    mediaKey: "social-work",
+    edit: [
+      collectionLink("social-work", "Social Work", "the albums and films on this page"),
+      pageMedia("social-work"),
+    ],
+  },
+  {
     path: "/contact",
     label: "Contact",
     summary: "Contact details, the enquiry form, and the questions people ask before writing in.",
-    navOrder: 4,
+    navOrder: 5,
     edit: [
       globalLink("site-settings", "Site settings", "address, phones, email"),
       collectionLink("faqs", "FAQs", "questions published to this page"),
@@ -131,7 +144,7 @@ export const sitePages: SitePage[] = [
     path: "/about",
     label: "About Us",
     summary: "Who the company is, what it stands for, and the people behind it.",
-    navOrder: 5,
+    navOrder: 6,
     mediaKey: "about",
     edit: [
       collectionLink("team", "Team"),
@@ -224,14 +237,16 @@ export const sitePages: SitePage[] = [
     label: "Writing",
     summary: "News, blogs, commentary and investigations. Listed once something is published.",
     parent: "/our-work",
-    edit: [collectionLink("posts", "Posts")],
+    mediaKey: "posts",
+    edit: [collectionLink("posts", "Posts"), pageMedia("posts")],
   },
   {
     path: "/offers",
     label: "Offers",
     summary: "Promotions and packages. Listed once something is published and in date.",
     parent: "/services",
-    edit: [collectionLink("offers", "Offers")],
+    mediaKey: "offers",
+    edit: [collectionLink("offers", "Offers"), pageMedia("offers")],
   },
 
   // Reached from links on the site rather than from the menu.
@@ -273,24 +288,40 @@ export const sitePages: SitePage[] = [
 ];
 
 /**
- * The picture and film placeholders on the website, in page order.
+ * The places a picture or a film can go on the website, in page order.
  *
- * Every blue placeholder a visitor can see has an entry here, and every entry
- * is one row in Content → Page media. Uploading a photograph or a film into
- * that row replaces the placeholder on the page named below.
+ * Every one is a row in Content → Page media. Uploading a photograph or a film
+ * into that row puts it on the page named below; leaving the row empty leaves
+ * the page as it is, with no band and no gap.
  *
- * Two shapes of placeholder exist:
+ * Three shapes exist:
  *
  * - `showcase` - the "in pictures & film" band near the foot of a page, which
- *   holds one photograph and one film side by side.
- * - `panel` - a single decorative blue panel drawn from icons, which a
- *   photograph replaces outright.
+ *   holds a photograph and a film side by side. It is drawn only once one of
+ *   them has been uploaded.
+ * - `hero` - the photograph beside the page's title at the top of the page.
+ *   Nothing is drawn there until one is uploaded.
+ * - `panel` - a picture panel beside a band's words. The panel is drawn only
+ *   once a photograph has been uploaded for it.
  *
  * Service detail pages carry a showcase band too. Those are not listed here
  * because services are written in the dashboard: their placeholder key is the
  * service's own slug, and a row is created with the service.
  */
-export type MediaPlaceholderKind = "showcase" | "panel";
+export type MediaPlaceholderKind = "showcase" | "panel" | "hero";
+
+/**
+ * The Page media entry holding a page's hero photograph, from the page's own
+ * media key (or a service's slug). One helper so the page that reads the row,
+ * the dashboard that lists it and the hook that creates it cannot disagree.
+ */
+const HERO_SUFFIX = "-hero";
+
+export const heroSlotKey = (key: string): string => `${key}${HERO_SUFFIX}`;
+
+/** The other way round: the page or service key a hero entry belongs to. */
+export const heroSlotBase = (key: string): string =>
+  key.endsWith(HERO_SUFFIX) ? key.slice(0, -HERO_SUFFIX.length) : key;
 
 export type MediaPlaceholder = {
   /** The Page media key that fills it. */
@@ -311,23 +342,36 @@ const panelPlaceholders: MediaPlaceholder[] = [
     label: "Who we are panel",
     path: "/",
     kind: "panel",
-    note: "The blue camera panel beside the introduction. A photograph replaces the artwork.",
+    note: "The picture beside the introduction. Nothing is shown there until one is uploaded.",
   },
   {
     key: "production-band",
     label: "Production craft panel",
     path: "/production",
     kind: "panel",
-    note: "The blue panel beside “Stories brought to life”. A photograph replaces the artwork.",
+    note: "The picture beside “Stories brought to life”. Nothing is shown there until one is uploaded.",
   },
 ];
 
 /**
- * Every placeholder, with each page's showcase band followed by any panels on
- * that page. A panel whose page is not in `sitePages` is dropped, and
- * `check:pages` fails so it cannot go unnoticed.
+ * Every placeholder, page by page: the photograph beside the title, then the
+ * showcase band, then any panels on that page. A panel whose page is not in
+ * `sitePages` is dropped, and `check:pages` fails so it cannot go unnoticed.
  */
 export const mediaPlaceholders: MediaPlaceholder[] = sitePages.flatMap((page) => [
+  // The front page has a full-width photograph of its own, set in Homepage, so
+  // it is the one page with no photograph beside its title.
+  ...(page.mediaKey && page.path !== "/"
+    ? [
+        {
+          key: heroSlotKey(page.mediaKey),
+          label: `${page.label} hero photo`,
+          path: page.path,
+          kind: "hero" as const,
+          note: "The photograph beside the page's title. There is nothing there until one is uploaded.",
+        },
+      ]
+    : []),
   ...(page.mediaKey
     ? [
         {
@@ -335,7 +379,7 @@ export const mediaPlaceholders: MediaPlaceholder[] = sitePages.flatMap((page) =>
           label: `${page.label} photo & film`,
           path: page.path,
           kind: "showcase" as const,
-          note: "The photograph and film in the “in pictures & film” band.",
+          note: "The photograph and film in the “in pictures & film” band, which appears once one of them is uploaded.",
         },
       ]
     : []),

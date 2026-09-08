@@ -10,6 +10,7 @@
  */
 
 import { placementLabel, placementPath } from "../lib/placements";
+import { heroSlotBase, mediaKeyToPath } from "../lib/site-map";
 
 /**
  * The pages an editor has chosen in "Where this appears": the address of the
@@ -36,24 +37,18 @@ export type LiveTarget = {
   where: string;
 };
 
-/** Page media slots are keyed by page name first, and by service slug otherwise. */
-const pageForMediaSlot: Record<string, string> = {
-  home: "/",
-  // The decorative panels, which hold one photograph rather than a band.
-  "home-about": "/",
-  "production-band": "/production",
-  about: "/about",
-  services: "/services",
-  "our-work": "/our-work",
-  production: "/production",
-  "social-media-handling": "/social-media-handling",
-  training: "/training",
-  research: "/research",
-  it: "/it",
-  advertisement: "/advertisement",
-  "right-sanchar": "/right-sanchar",
-  contact: "/contact",
-};
+/**
+ * Where a Page media row shows up. The site's own rows - each page's hero
+ * photograph, its band and its panels - come from lib/site-map.ts, so a row
+ * added there is resolved here without this file being touched. Anything else
+ * is a service, whose rows are keyed by its slug.
+ */
+function pageForMediaSlot(key: string): string {
+  const known = mediaKeyToPath[key];
+  if (known) return known;
+
+  return `/services/${heroSlotBase(key)}`;
+}
 
 const globalTargets: Record<string, LiveTarget> = {
   homepage: { path: "/", where: "The front page." },
@@ -110,6 +105,10 @@ export function liveTargetFor({
             path: "/our-work#social-responsibility",
             where: "The social responsibility section of Our Work.",
           };
+    case "social-work":
+      return chosen
+        ? { path: chosen.path, where: `The social work band on ${chosen.named}.` }
+        : { path: "/social-work", where: "The Social Work page." };
     case "team":
       return chosen
         ? { path: chosen.path, where: `The team band on ${chosen.named}.` }
@@ -125,7 +124,7 @@ export function liveTargetFor({
     case "media-slots": {
       const key = text(data.key);
       return {
-        path: key ? pageForMediaSlot[key] ?? `/services/${key}` : null,
+        path: key ? pageForMediaSlot(key) : null,
         where: "The photograph or film on the page this key names.",
       };
     }

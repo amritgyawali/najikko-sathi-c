@@ -11,7 +11,15 @@ import {
   navigation,
   rightSancharTopics,
 } from "../app/(frontend)/_data/site";
-import { mediaPlaceholders } from "../lib/site-map";
+import { heroSlotKey, mediaPlaceholders } from "../lib/site-map";
+import {
+  leadershipMessageRows,
+  LEADERSHIP_HEADING,
+  LEADERSHIP_HEADING_NE,
+  LEADERSHIP_KICKER,
+  LEADERSHIP_KICKER_NE,
+} from "../lib/leadership";
+import { missionBody, missionBodySecondary, missionExtraParagraphs, missionQuote } from "../lib/mission";
 
 /**
  * Fills the CMS with the site's existing content so the dashboard opens
@@ -113,28 +121,29 @@ async function seed() {
       brandPillars: brandPillars.map((label) => ({ label })),
       aboutEyebrow: "Who We Are",
       aboutHeading: business.legalName,
-      aboutQuote:
-        "Information, entertainment, and social responsibility - advanced together through " +
-        "honest communication and purposeful media.",
-      aboutBody:
-        "We are a dynamic, multi-dimensional media house delivering truthful news through " +
-        "Right Sanchar, high-quality documentary and video production, impactful advertising, " +
-        "and training focused on media and skill development.",
-      aboutBodySecondary:
-        "Beyond our core media services, we support social initiatives that help transform " +
-        "communities. True to our name, we aim to walk beside people and organizations as a " +
-        "trusted, close companion in communication.",
+      aboutQuote: missionQuote,
+      // The mission statement, from lib/mission.ts. The first two paragraphs
+      // have fields of their own and the rest are an array, so the statement
+      // can be any length.
+      aboutBody: missionBody,
+      aboutBodySecondary: missionBodySecondary,
+      aboutParagraphs: [...missionExtraParagraphs],
       aboutCapabilities: [
         { label: "Truthful news" },
         { label: "Visual production" },
         { label: "Skill development" },
       ],
-      leadershipKicker: "From our leadership",
-      leadershipHeading: "Messages from the people who guide our work.",
-      // Left empty on purpose: the chairman's and director's own words belong
-      // to them. Add the messages in Site -> Homepage -> Leadership and the
-      // carousel appears on the front page.
-      leadershipMessages: [],
+      leadershipKicker: LEADERSHIP_KICKER,
+      leadershipKickerNe: LEADERSHIP_KICKER_NE,
+      // Used for any message with no heading of its own. Each message carries
+      // one, and the carousel shows it in place of this - so the heading moves
+      // on with the message rather than standing still above it.
+      leadershipHeading: LEADERSHIP_HEADING,
+      leadershipHeadingNe: LEADERSHIP_HEADING_NE,
+      // The message, in English and in Nepali, from lib/leadership.ts. It is
+      // signed with the company rather than a person: put the real names in at
+      // Site -> Homepage -> Home - leadership.
+      leadershipMessages: [...leadershipMessageRows],
       servicesKicker: "Our Services",
       // Cleared on purpose: with no custom list the homepage grid shows the
       // full service portfolio, each card linking to its own service page.
@@ -222,7 +231,7 @@ async function seed() {
   // has to work out the right key before adding a photograph.
   const mediaKeys = [
     ...mediaPlaceholders.map((placeholder) => placeholder.key),
-    ...servicePortfolio.map((service) => service.slug),
+    ...servicePortfolio.flatMap((service) => [service.slug, heroSlotKey(service.slug)]),
   ];
   for (const key of mediaKeys) {
     const existing = await payload.find({

@@ -26,6 +26,8 @@ export const common: Record<string, string> = {
   "Our work": "हाम्रो काम",
   Contact: "सम्पर्क",
   "About Us": "हाम्रो बारेमा",
+  "Social Work": "सामाजिक कार्य",
+  "Social work": "सामाजिक कार्य",
   Training: "तालिम",
   Production: "प्रोडक्सन",
   Offers: "अफरहरू",
@@ -98,11 +100,6 @@ export const common: Record<string, string> = {
     "राइट सञ्चारमा प्रकाशित रिपोर्टिङ, स्टुडियो रेकर्डिङ र कभरेज।",
   "This service in frame": "फ्रेममा यो सेवा",
   "Photography": "फोटोग्राफी",
-  "Film & video": "फिल्म तथा भिडियो",
-  "Photos coming soon": "फोटो चाँडै आउँदैछन्",
-  "Video coming soon": "भिडियो चाँडै आउँदैछ",
-  "Photography will be added to this page.": "यस पृष्ठमा फोटोहरू थपिनेछन्।",
-  "A video will be added when available.": "उपलब्ध भएपछि भिडियो थपिनेछ।",
   "A space for images and films from our work.": "हाम्रो कामका तस्बिर र फिल्महरूका लागि छुट्याइएको ठाउँ।",
   "Read video transcript": "भिडियोको लिखित रूप पढ्नुहोस्",
   "Your browser cannot play this video.": "तपाईंको ब्राउजरले यो भिडियो चलाउन सक्दैन।",
@@ -111,6 +108,7 @@ export const common: Record<string, string> = {
   "Sunrise behind snow-covered Himalayan peaks in Nepal": "नेपालका हिउँले ढाकिएका हिमशिखरपछाडिको सूर्योदय",
 
   // Buttons and links used across pages
+  "Login": "लगइन",
   "Explore our services": "हाम्रा सेवाहरू हेर्नुहोस्",
   "Explore Our Services": "हाम्रा सेवाहरू हेर्नुहोस्",
   "Explore Production": "प्रोडक्सन हेर्नुहोस्",

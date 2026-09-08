@@ -5,13 +5,17 @@ import { mediaPlaceholderPaths, mediaPlaceholders } from "../../lib/site-map";
 import { THUMB_CELL } from "../fields";
 
 /**
- * The photograph and the film shown on a given page.
+ * The photographs and the films shown on a given page.
  *
- * Every blue placeholder on the website is one row here. An editor opens the
- * row for a page, uploads a picture or a film, saves, and the placeholder is
- * replaced on the next request - no file copied into the repository and no
- * deployment. The dashboard's "Page media" panel lists every placeholder and
- * links straight to its row, so nobody has to remember these keys.
+ * Every place on the website that can carry a picture is one row here: the
+ * photograph beside a page's title ("<page>-hero"), the "in pictures & film"
+ * band ("<page>"), and the panels beside the words on the home and production
+ * pages. An editor opens a row, uploads a picture or a film, saves, and it is
+ * on the page on the next request - no file copied into the repository and no
+ * deployment. Until then nothing is drawn in its place at all: an empty row
+ * shows a visitor no panel, no heading and no gap, rather than a blue rectangle
+ * promising a photograph later. The dashboard's "Photos & films" panel lists
+ * every row and links straight to it, so nobody has to remember these keys.
  *
  * A film can arrive three ways, and the page uses the first one that is filled
  * in: an uploaded file, a YouTube link, or the address of a film hosted
@@ -32,7 +36,7 @@ export const MediaSlots: CollectionConfig = {
     defaultColumns: ["image", "key", "updatedAt"],
     group: "Content",
     description:
-      "The photograph or film featured on each page. Open a row, upload a picture or a film, and save.",
+      "The photographs and films on each page. Open a row, upload a picture or a film, and save. An empty row is drawn nowhere.",
   },
   // Alphabetical, so the same placeholder is always in the same place.
   defaultSort: "key",
@@ -52,7 +56,7 @@ export const MediaSlots: CollectionConfig = {
       index: true,
       label: "Placeholder",
       admin: {
-        description: `Which placeholder this fills: ${knownKeys}, or a service slug such as "documentary-film-production" for a service page.`,
+        description: `Which page this fills: ${knownKeys}, or a service slug such as "documentary-film-production" for a service page.`,
       },
     },
     {
@@ -62,7 +66,7 @@ export const MediaSlots: CollectionConfig = {
       label: "Photograph",
       filterOptions: { mimeType: { contains: "image" } },
       admin: {
-        description: "Replaces the blue photo placeholder on this page.",
+        description: "The photograph shown in this place. Nothing is drawn there until this or a film is saved.",
         components: { Cell: THUMB_CELL },
       },
     },

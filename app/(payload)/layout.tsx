@@ -9,6 +9,8 @@ import React from "react";
 
 import { importMap } from "./admin/importMap";
 import "./custom.css";
+// The dashboard home, the command palette and the panels they are built from.
+import "./dashboard.css";
 
 // Self-hosted at build time, so the dashboard makes no request to a font CDN.
 const inter = Inter({ subsets: ["latin"], display: "swap" });

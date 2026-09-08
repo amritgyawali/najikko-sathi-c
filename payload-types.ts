@@ -75,6 +75,7 @@ export interface Config {
     reviews: Review;
     faqs: Faq;
     'social-responsibility': SocialResponsibility;
+    'social-work': SocialWork;
     team: Team;
     'well-wishers': WellWisher;
     enquiries: Enquiry;
@@ -83,6 +84,7 @@ export interface Config {
     redirects: Redirect;
     users: User;
     pageviews: Pageview;
+    backups: Backup;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -98,6 +100,7 @@ export interface Config {
     reviews: ReviewsSelect<false> | ReviewsSelect<true>;
     faqs: FaqsSelect<false> | FaqsSelect<true>;
     'social-responsibility': SocialResponsibilitySelect<false> | SocialResponsibilitySelect<true>;
+    'social-work': SocialWorkSelect<false> | SocialWorkSelect<true>;
     team: TeamSelect<false> | TeamSelect<true>;
     'well-wishers': WellWishersSelect<false> | WellWishersSelect<true>;
     enquiries: EnquiriesSelect<false> | EnquiriesSelect<true>;
@@ -106,6 +109,7 @@ export interface Config {
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     pageviews: PageviewsSelect<false> | PageviewsSelect<true>;
+    backups: BackupsSelect<false> | BackupsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -213,6 +217,9 @@ export interface Page {
              * The line above the title.
              */
             eyebrow: string;
+            /**
+             * A photograph can be put beside the title from Content → Page media, in this page's "-hero" entry. Without one the words span the whole band.
+             */
             heading: string;
             description?: string | null;
             ctaLabel?: string | null;
@@ -398,6 +405,7 @@ export interface Page {
                   | 'home'
                   | 'services'
                   | 'our-work'
+                  | 'social-work'
                   | 'contact'
                   | 'about'
                   | 'production'
@@ -536,6 +544,33 @@ export interface Page {
           }
         | {
             /**
+             * The line above the logos.
+             */
+            heading?: string | null;
+            /**
+             * Drag to reorder. The row slides on by itself and pauses when a visitor points at it.
+             */
+            partners?:
+              | {
+                  name: string;
+                  /**
+                   * Optional. The name is shown until a logo is uploaded.
+                   */
+                  logo?: (number | null) | Media;
+                  /**
+                   * Optional. Makes the logo a link, opened in a new tab.
+                   */
+                  href?: string | null;
+                  id?: string | null;
+                }[]
+              | null;
+            tone?: ('plain' | 'tinted') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'partnerMarquee';
+          }
+        | {
+            /**
              * The small label above the heading.
              */
             kicker?: string | null;
@@ -547,6 +582,24 @@ export interface Page {
             id?: string | null;
             blockName?: string | null;
             blockType: 'socialResponsibilitySection';
+          }
+        | {
+            /**
+             * The small label above the heading.
+             */
+            kicker?: string | null;
+            heading?: string | null;
+            /**
+             * One or two lines under the heading.
+             */
+            description?: string | null;
+            /**
+             * Each entry - its title, what it is about, its photographs and its videos - is added in Content → Social Work. This band shows everything published there.
+             */
+            emptyNote?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'socialWorkSection';
           }
         | {
             /**
@@ -654,7 +707,7 @@ export interface Page {
             linkLabel?: string | null;
             linkHref?: string | null;
             /**
-             * The caption on the visual. The words in this band are written in Site → Homepage & page copy, on the "Home - about" tab.
+             * The caption on the photograph beside the introduction, shown only once one has been uploaded into the "home-about" Page media entry. The words in this band are written in Site → Homepage & page copy, on the "Home - about" tab.
              */
             captionTitle?: string | null;
             id?: string | null;
@@ -859,6 +912,7 @@ export interface Media {
         | 'home'
         | 'services'
         | 'our-work'
+        | 'social-work'
         | 'contact'
         | 'about'
         | 'production'
@@ -936,6 +990,7 @@ export interface Post {
         | 'home'
         | 'services'
         | 'our-work'
+        | 'social-work'
         | 'contact'
         | 'about'
         | 'production'
@@ -1173,6 +1228,7 @@ export interface Offer {
         | 'home'
         | 'services'
         | 'our-work'
+        | 'social-work'
         | 'contact'
         | 'about'
         | 'production'
@@ -1261,6 +1317,7 @@ export interface Review {
         | 'home'
         | 'services'
         | 'our-work'
+        | 'social-work'
         | 'contact'
         | 'about'
         | 'production'
@@ -1295,6 +1352,7 @@ export interface Faq {
         | 'home'
         | 'services'
         | 'our-work'
+        | 'social-work'
         | 'contact'
         | 'about'
         | 'production'
@@ -1359,6 +1417,91 @@ export interface SocialResponsibility {
         | 'home'
         | 'services'
         | 'our-work'
+        | 'social-work'
+        | 'contact'
+        | 'about'
+        | 'production'
+        | 'social-media-handling'
+        | 'training'
+        | 'research'
+        | 'it'
+        | 'advertisement'
+        | 'right-sanchar'
+        | 'posts'
+        | 'offers'
+      )[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Photo albums and YouTube films from our social work, shown together on /social-work. Add an entry, upload its photographs, paste its video links, and publish.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "social-work".
+ */
+export interface SocialWork {
+  id: number;
+  title: string;
+  /**
+   * What the photographs and films below show. Printed under the title.
+   */
+  description?: string | null;
+  /**
+   * Optional. Leads the entry, and names it in the list here. The album below is used when this is left empty.
+   */
+  coverImage?: (number | null) | Media;
+  /**
+   * Upload as many as you like and drag to reorder them. Each one can carry a caption describing what it shows.
+   */
+  photos?:
+    | {
+        image: number | Media;
+        /**
+         * Printed under the photograph. Optional.
+         */
+        caption?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Paste a YouTube link for each film. Add as many as you like and drag to reorder them.
+   */
+  videos?:
+    | {
+        /**
+         * An ordinary watch or share link, for example https://www.youtube.com/watch?v=XXXXXXXXXXX.
+         */
+        youtubeUrl: string;
+        /**
+         * Printed above the player. Optional.
+         */
+        title?: string | null;
+        /**
+         * Printed under the player. Optional.
+         */
+        description?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  date?: string | null;
+  /**
+   * Lower numbers appear first.
+   */
+  order?: number | null;
+  /**
+   * Publishing puts this on the website; a draft stays here.
+   */
+  status: 'draft' | 'published';
+  /**
+   * Choose the pages this entry is published on. Leave it empty to show it on every page that carries a social work band.
+   */
+  placements?:
+    | (
+        | 'home'
+        | 'services'
+        | 'our-work'
+        | 'social-work'
         | 'contact'
         | 'about'
         | 'production'
@@ -1406,6 +1549,7 @@ export interface Team {
         | 'home'
         | 'services'
         | 'our-work'
+        | 'social-work'
         | 'contact'
         | 'about'
         | 'production'
@@ -1455,6 +1599,7 @@ export interface WellWisher {
         | 'home'
         | 'services'
         | 'our-work'
+        | 'social-work'
         | 'contact'
         | 'about'
         | 'production'
@@ -1507,7 +1652,7 @@ export interface Enquiry {
   createdAt: string;
 }
 /**
- * The photograph or film featured on each page. Open a row, upload a picture or a film, and save.
+ * The photographs and films on each page. Open a row, upload a picture or a film, and save. An empty row is drawn nowhere.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "media-slots".
@@ -1515,11 +1660,11 @@ export interface Enquiry {
 export interface MediaSlot {
   id: number;
   /**
-   * Which placeholder this fills: "home" (/), "home-about" (/), "our-work" (/our-work), "about" (/about), "production" (/production), "production-band" (/production), "social-media-handling" (/social-media-handling), "training" (/training), "research" (/research), "it" (/it), "advertisement" (/advertisement), "right-sanchar" (/right-sanchar), or a service slug such as "documentary-film-production" for a service page.
+   * Which page this fills: "home" (/), "home-about" (/), "our-work-hero" (/our-work), "our-work" (/our-work), "social-work-hero" (/social-work), "social-work" (/social-work), "about-hero" (/about), "about" (/about), "production-hero" (/production), "production" (/production), "production-band" (/production), "social-media-handling-hero" (/social-media-handling), "social-media-handling" (/social-media-handling), "training-hero" (/training), "training" (/training), "research-hero" (/research), "research" (/research), "it-hero" (/it), "it" (/it), "advertisement-hero" (/advertisement), "advertisement" (/advertisement), "right-sanchar-hero" (/right-sanchar), "right-sanchar" (/right-sanchar), "posts-hero" (/posts), "posts" (/posts), "offers-hero" (/offers), "offers" (/offers), or a service slug such as "documentary-film-production" for a service page.
    */
   key: string;
   /**
-   * Replaces the blue photo placeholder on this page.
+   * The photograph shown in this place. Nothing is drawn there until this or a film is saved.
    */
   image?: (number | null) | Media;
   /**
@@ -1603,6 +1748,44 @@ export interface Pageview {
   createdAt: string;
 }
 /**
+ * A copy of everything in the dashboard, taken once a day. Open one to put the site back to how it was.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "backups".
+ */
+export interface Backup {
+  id: number;
+  /**
+   * Names the moment this copy was taken.
+   */
+  label: string;
+  takenAt: string;
+  reason: 'daily' | 'manual' | 'beforeRestore';
+  /**
+   * What this copy holds.
+   */
+  summary?: string | null;
+  /**
+   * Documents in this copy.
+   */
+  documents?: number | null;
+  /**
+   * Anything that could not be read when this copy was taken. Empty means the copy is complete.
+   */
+  problems?: string | null;
+  data:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
@@ -1659,6 +1842,10 @@ export interface PayloadLockedDocument {
         value: number | SocialResponsibility;
       } | null)
     | ({
+        relationTo: 'social-work';
+        value: number | SocialWork;
+      } | null)
+    | ({
         relationTo: 'team';
         value: number | Team;
       } | null)
@@ -1689,6 +1876,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'pageviews';
         value: number | Pageview;
+      } | null)
+    | ({
+        relationTo: 'backups';
+        value: number | Backup;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -1941,12 +2132,38 @@ export interface PagesSelect<T extends boolean = true> {
               id?: T;
               blockName?: T;
             };
+        partnerMarquee?:
+          | T
+          | {
+              heading?: T;
+              partners?:
+                | T
+                | {
+                    name?: T;
+                    logo?: T;
+                    href?: T;
+                    id?: T;
+                  };
+              tone?: T;
+              id?: T;
+              blockName?: T;
+            };
         socialResponsibilitySection?:
           | T
           | {
               kicker?: T;
               heading?: T;
               description?: T;
+              id?: T;
+              blockName?: T;
+            };
+        socialWorkSection?:
+          | T
+          | {
+              kicker?: T;
+              heading?: T;
+              description?: T;
+              emptyNote?: T;
               id?: T;
               blockName?: T;
             };
@@ -2350,6 +2567,36 @@ export interface SocialResponsibilitySelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "social-work_select".
+ */
+export interface SocialWorkSelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
+  coverImage?: T;
+  photos?:
+    | T
+    | {
+        image?: T;
+        caption?: T;
+        id?: T;
+      };
+  videos?:
+    | T
+    | {
+        youtubeUrl?: T;
+        title?: T;
+        description?: T;
+        id?: T;
+      };
+  date?: T;
+  order?: T;
+  status?: T;
+  placements?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "team_select".
  */
 export interface TeamSelect<T extends boolean = true> {
@@ -2523,6 +2770,21 @@ export interface PageviewsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "backups_select".
+ */
+export interface BackupsSelect<T extends boolean = true> {
+  label?: T;
+  takenAt?: T;
+  reason?: T;
+  summary?: T;
+  documents?: T;
+  problems?: T;
+  data?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv_select".
  */
 export interface PayloadKvSelect<T extends boolean = true> {
@@ -2592,6 +2854,15 @@ export interface Homepage {
   aboutQuote?: string | null;
   aboutBody?: string | null;
   aboutBodySecondary?: string | null;
+  /**
+   * Anything after the second paragraph. Drag to reorder; they read in this order.
+   */
+  aboutParagraphs?:
+    | {
+        text: string;
+        id?: string | null;
+      }[]
+    | null;
   aboutCapabilities?:
     | {
         label: string;
@@ -2599,17 +2870,41 @@ export interface Homepage {
       }[]
     | null;
   leadershipKicker?: string | null;
+  /**
+   * Shown when the website is read in Nepali. Leave it empty to keep the English.
+   */
+  leadershipKickerNe?: string | null;
+  /**
+   * The heading sits inside the carousel and moves on with the message it belongs to. This one is used for any message that has no heading of its own.
+   */
   leadershipHeading?: string | null;
   /**
-   * Shown one at a time on the homepage. The carousel moves on every five seconds, and visitors can step through with the arrows.
+   * Shown when the website is read in Nepali. Leave it empty to keep the English.
+   */
+  leadershipHeadingNe?: string | null;
+  /**
+   * Shown one at a time on the homepage. The carousel moves on every five seconds, and visitors can step through with the arrows. Each message brings its own heading with it, so the heading changes as the carousel moves.
    */
   leadershipMessages?:
     | {
         role: string;
         name: string;
+        /**
+         * Replaces the leadership heading above while this message is on screen. Leave it empty to keep that one.
+         */
         heading?: string | null;
+        /**
+         * Leave a blank line between paragraphs.
+         */
         message: string;
         photo?: (number | null) | Media;
+        roleNe?: string | null;
+        nameNe?: string | null;
+        headingNe?: string | null;
+        /**
+         * Leave a blank line between paragraphs.
+         */
+        messageNe?: string | null;
         id?: string | null;
       }[]
     | null;
@@ -2757,6 +3052,14 @@ export interface Appearance {
   line: string;
   radius?: number | null;
   headingFont?: ('hanken' | 'inter') | null;
+  /**
+   * The family the stylesheet defines, spelled exactly as it names itself.
+   */
+  nepaliFontFamily?: string | null;
+  /**
+   * Where the font is fetched from. Leave both empty to fall back to Noto Sans Devanagari, which ships with the site.
+   */
+  nepaliFontUrl?: string | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -2881,6 +3184,12 @@ export interface HomepageSelect<T extends boolean = true> {
   aboutQuote?: T;
   aboutBody?: T;
   aboutBodySecondary?: T;
+  aboutParagraphs?:
+    | T
+    | {
+        text?: T;
+        id?: T;
+      };
   aboutCapabilities?:
     | T
     | {
@@ -2888,7 +3197,9 @@ export interface HomepageSelect<T extends boolean = true> {
         id?: T;
       };
   leadershipKicker?: T;
+  leadershipKickerNe?: T;
   leadershipHeading?: T;
+  leadershipHeadingNe?: T;
   leadershipMessages?:
     | T
     | {
@@ -2897,6 +3208,10 @@ export interface HomepageSelect<T extends boolean = true> {
         heading?: T;
         message?: T;
         photo?: T;
+        roleNe?: T;
+        nameNe?: T;
+        headingNe?: T;
+        messageNe?: T;
         id?: T;
       };
   servicesKicker?: T;
@@ -2984,6 +3299,8 @@ export interface AppearanceSelect<T extends boolean = true> {
   line?: T;
   radius?: T;
   headingFont?: T;
+  nepaliFontFamily?: T;
+  nepaliFontUrl?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

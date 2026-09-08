@@ -7,6 +7,7 @@ import { vercelBlobStorage } from "@payloadcms/storage-vercel-blob";
 import { buildConfig, type CollectionConfig, type Field, type GlobalConfig } from "payload";
 import sharp from "sharp";
 
+import { Backups } from "./cms/collections/Backups";
 import { Enquiries } from "./cms/collections/Enquiries";
 import { Faqs } from "./cms/collections/Faqs";
 import { Media } from "./cms/collections/Media";
@@ -20,6 +21,7 @@ import { Reviews } from "./cms/collections/Reviews";
 import { ServiceCategories } from "./cms/collections/ServiceCategories";
 import { Services } from "./cms/collections/Services";
 import { SocialResponsibility } from "./cms/collections/SocialResponsibility";
+import { SocialWork } from "./cms/collections/SocialWork";
 import { TeamMembers } from "./cms/collections/TeamMembers";
 import { Users } from "./cms/collections/Users";
 import { WellWishers } from "./cms/collections/WellWishers";
@@ -30,6 +32,8 @@ import { Homepage } from "./cms/globals/Homepage";
 import { Navigation } from "./cms/globals/Navigation";
 import { SiteSettings } from "./cms/globals/SiteSettings";
 import { sitePagesEndpoint } from "./cms/endpoints/site-pages";
+import { backupEndpoints } from "./cms/endpoints/backups";
+import { siteToolEndpoints } from "./cms/endpoints/site-tools";
 import { cloudinaryStorage } from "./cms/storage/cloudinary";
 import { databasePoolConfig } from "./cms/database";
 
@@ -62,9 +66,10 @@ const liveLinkColumn: Field = {
 /**
  * Collections whose documents never have a page of their own. A column of
  * em-dashes tells an editor nothing, so these keep the plain table they had
- * before the address column existed.
+ * before the address column existed. Backups are here for a second reason: the
+ * slot the address would occupy is the one the restore panel uses.
  */
-const PRIVATE_COLLECTIONS = new Set(["enquiries", "users", "pageviews", "reviews"]);
+const PRIVATE_COLLECTIONS = new Set(["enquiries", "users", "pageviews", "reviews", "backups"]);
 
 const withLiveLink = (config: CollectionConfig): CollectionConfig => (PRIVATE_COLLECTIONS.has(config.slug) ? config : {
   ...config,
@@ -117,20 +122,21 @@ export default buildConfig({
     // renders a broken image whenever that request is blocked.
     avatar: "default",
     components: {
-      // Traffic and content statistics, the live list of the site's pages and
-      // where each one is edited, and then every photo and film placeholder on
-      // the site with a link to the entry that fills it.
-      beforeDashboard: [
-        "/cms/components/DashboardStats#DashboardStats",
-        "/cms/components/SitePages#SitePages",
-        "/cms/components/PageMedia#PageMedia",
-      ],
+      // The whole dashboard home: traffic and what is waiting, every page with
+      // one link per thing that can be changed on it, every place a picture
+      // goes, what a search engine makes of the site, whether it is set up
+      // properly, and the jobs that are not editing anything.
+      beforeDashboard: ["/cms/components/dashboard/DashboardHome#DashboardHome"],
       // A way to register, shown under the login form.
       afterLogin: ["/cms/components/LoginSignupLink#LoginSignupLink"],
       // Back to the overview, and out to the public site, above the menu.
       beforeNavLinks: ["/cms/components/NavDashboardLink#NavDashboardLink"],
-      // Light / dark switch, in the header beside the account menu.
-      actions: ["/cms/components/ThemeToggle#ThemeToggle"],
+      // In the header, on every screen: the search box that reaches everything
+      // by name, and the light / dark switch.
+      actions: [
+        "/cms/components/dashboard/CommandPalette#CommandPalette",
+        "/cms/components/ThemeToggle#ThemeToggle",
+      ],
     },
   },
   collections: [
@@ -142,6 +148,7 @@ export default buildConfig({
     Reviews,
     Faqs,
     SocialResponsibility,
+    SocialWork,
     TeamMembers,
     WellWishers,
     Enquiries,
@@ -150,10 +157,13 @@ export default buildConfig({
     Redirects,
     Users,
     PageViews,
+    Backups,
   ].map(withLiveLink),
   globals: [Homepage, Navigation, Announcement, Appearance, Footer, SiteSettings].map(withGlobalLiveLink),
-  // The dashboard's "add the website's pages" button posts here.
-  endpoints: [sitePagesEndpoint],
+  // The dashboard's "add the website's pages" button posts here, and so do the
+  // daily backup schedule, the restore button, and the dashboard's own toolbox:
+  // one search across every collection, "rebuild the website", and the exports.
+  endpoints: [sitePagesEndpoint, ...backupEndpoints, ...siteToolEndpoints],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || "",
   db: postgresAdapter({

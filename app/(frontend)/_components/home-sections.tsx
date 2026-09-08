@@ -1,12 +1,20 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, ArrowUpRight, Camera, Film, Mic2 } from "lucide-react";
+import { ArrowRight, ArrowUpRight } from "lucide-react";
 
 import type { Homepage } from "@/payload-types";
 import type { PageSection } from "@/lib/page-defaults";
 import { getMediaSlot, type BusinessInfo } from "@/lib/content";
 import { mediaAlt, mediaUrl } from "@/lib/media";
 import { slotPhoto } from "@/lib/page-media";
+import {
+  leadershipMessages as defaultLeadershipMessages,
+  LEADERSHIP_HEADING,
+  LEADERSHIP_HEADING_NE,
+  LEADERSHIP_KICKER,
+  LEADERSHIP_KICKER_NE,
+} from "@/lib/leadership";
+import { missionParagraphs, missionQuote } from "@/lib/mission";
 import { LeadershipCarousel, type LeadershipMessage } from "./leadership-carousel";
 import { MediaSystem } from "./media-system";
 
@@ -75,9 +83,7 @@ export function HomeHero({
       </section>
       {block.showMediaSystem === false ? null : (
         <section className="stats-wrap" aria-label={`${business.shortName} media system`}>
-          <div className="stats-card">
-            <MediaSystem business={business} />
-          </div>
+          <MediaSystem business={business} />
         </section>
       )}
     </>
@@ -85,9 +91,12 @@ export function HomeHero({
 }
 
 /**
- * The introduction, and the panel beside it. The panel is drawn from icons
- * until someone uploads a photograph to the "home-about" Page media entry, at
- * which point the photograph fills the panel instead.
+ * The introduction, and the photograph beside it.
+ *
+ * The photograph is uploaded to the "home-about" Page media entry in the
+ * dashboard. Until one is, there is no panel at all and the introduction takes
+ * the full width - a visitor is never shown an empty blue rectangle standing in
+ * for a picture nobody has added yet.
  */
 export async function HomeAbout({
   block,
@@ -104,52 +113,41 @@ export async function HomeAbout({
     "Skill development",
   ]);
   const photo = slotPhoto(await getMediaSlot("home-about"), `${business.shortName} at work`);
+  // The first two paragraphs have fields of their own and the rest are an
+  // array, so an editor can write a mission of any length. Nothing saved in the
+  // dashboard yet means the whole statement comes from lib/mission.ts.
+  const written = [
+    home?.aboutBody,
+    home?.aboutBodySecondary,
+    ...(home?.aboutParagraphs ?? []).map((row) => row.text),
+  ].filter((text): text is string => Boolean(text?.trim()));
+  const paragraphs = written.length > 0 ? written : [...missionParagraphs];
 
   return (
     <section className="chairman-section" id="about">
       <div className="chairman-shape" aria-hidden="true" />
-      <div className="site-container chairman-grid">
-        <div className="portrait-wrap">
-          <div className="portrait-glow" aria-hidden="true" />
-          <div
-            className={`media-visual${photo ? " media-visual--photo" : ""}`}
-            aria-hidden={photo ? undefined : true}
-          >
-            {photo ? (
+      <div className={`site-container chairman-grid${photo ? "" : " chairman-grid--copy-only"}`}>
+        {photo ? (
+          <div className="portrait-wrap">
+            <div className="portrait-glow" aria-hidden="true" />
+            <div className="media-visual">
               <Image src={photo.src} alt={photo.alt} fill sizes="(max-width: 900px) 100vw, 400px" />
-            ) : (
-              <>
-                <Camera className="media-visual-main" />
-                <Mic2 className="media-visual-mic" />
-                <Film className="media-visual-film" />
-                <span>Information</span>
-                <span>Entertainment</span>
-                <span>Responsibility</span>
-              </>
-            )}
+            </div>
+            <div className="portrait-caption">
+              <strong>{block.captionTitle || "Your Media Partner"}</strong>
+              <span>{business.address}</span>
+            </div>
           </div>
-          <div className="portrait-caption">
-            <strong>{block.captionTitle || "Your Media Partner"}</strong>
-            <span>{business.address}</span>
-          </div>
-        </div>
+        ) : null}
         <div className="chairman-copy">
           <div className="eyebrow">
             <i /> {home?.aboutEyebrow || "Who We Are"}
           </div>
           <h2>{home?.aboutHeading || business.legalName}</h2>
-          <blockquote>
-            {home?.aboutQuote ||
-              "Information, entertainment, and social responsibility - advanced together through honest communication and purposeful media."}
-          </blockquote>
-          <p>
-            {home?.aboutBody ||
-              "We are a dynamic, multi-dimensional media house delivering truthful news through Right Sanchar, high-quality documentary and video production, impactful advertising, and training focused on media and skill development."}
-          </p>
-          <p>
-            {home?.aboutBodySecondary ||
-              "Beyond our core media services, we support social initiatives that help transform communities. True to our name, we aim to walk beside people and organizations as a trusted, close companion in communication."}
-          </p>
+          <blockquote>{home?.aboutQuote || missionQuote}</blockquote>
+          {paragraphs.map((text, index) => (
+            <p key={index}>{text}</p>
+          ))}
           <div className="about-capabilities" aria-label="Core capabilities">
             {capabilities.map((item) => (
               <span key={item}>{item}</span>
@@ -167,34 +165,44 @@ export async function HomeAbout({
 }
 
 /**
- * The chairman's and director's messages. Both are written in the dashboard,
- * so the section only appears once there is something to show.
+ * The chairman's and director's messages.
+ *
+ * The heading sits inside the carousel rather than above it, so it moves on
+ * with the message it belongs to. Both are written in the dashboard, and the
+ * band falls back to the messages below until they are - so the front page
+ * reads correctly before anyone has opened it.
  */
 export function Leadership({ home }: { home: Homepage | null }) {
-  const messages: LeadershipMessage[] = (home?.leadershipMessages ?? [])
+  const written: LeadershipMessage[] = (home?.leadershipMessages ?? [])
     .filter((row) => row.message && row.name)
     .map((row) => ({
       role: row.role,
       name: row.name,
       heading: row.heading ?? "",
       message: row.message,
+      // The Nepali half. Empty is meaningful: the carousel shows the English
+      // rather than translating it, so a blank field is never guessed at.
+      roleNe: row.roleNe ?? "",
+      nameNe: row.nameNe ?? "",
+      headingNe: row.headingNe ?? "",
+      messageNe: row.messageNe ?? "",
       photoUrl: mediaUrl(row.photo),
       photoAlt: mediaAlt(row.photo, `${row.name}, ${row.role}`),
     }));
 
+  const messages = written.length > 0 ? written : defaultLeadershipMessages;
   if (messages.length === 0) return null;
 
   return (
     <section className="content-section leadership-section" id="leadership">
       <div className="site-container">
-        <div className="section-heading">
-          <span className="eyebrow">
-            <i />
-            {home?.leadershipKicker || "From our leadership"}
-          </span>
-          <h2>{home?.leadershipHeading || "Messages from the people who guide our work."}</h2>
-        </div>
-        <LeadershipCarousel messages={messages} />
+        <LeadershipCarousel
+          messages={messages}
+          kicker={home?.leadershipKicker || LEADERSHIP_KICKER}
+          heading={home?.leadershipHeading || LEADERSHIP_HEADING}
+          kickerNe={home?.leadershipKickerNe || LEADERSHIP_KICKER_NE}
+          headingNe={home?.leadershipHeadingNe || LEADERSHIP_HEADING_NE}
+        />
       </div>
     </section>
   );

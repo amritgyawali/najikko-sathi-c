@@ -138,13 +138,26 @@ export async function importRoutePages(
 /**
  * A read that failed because the database is younger than the config.
  *
- * A migration using the local API queries every table the *current* config
- * knows about - including the ones a later migration has yet to create - so on
- * an empty database, running the chain from the beginning, that read fails
- * until the schema has caught up.
+ * A migration using the local API queries every table *and every column* the
+ * current config knows about - including the ones a later migration has yet to
+ * create - so on an empty database, running the chain from the beginning, that
+ * read fails until the schema has caught up. Adding one field to one collection
+ * is enough to do it, which is why this matches a missing column as well as a
+ * missing table.
+ *
+ * Every migration that reads a page through the local API has to allow for
+ * this, not just the import below: adding one section to the page builder adds
+ * a table to that query, and every earlier migration then reads a table that
+ * does not exist yet. That is what `readPageBySchemaAware` is for.
  */
-const schemaBehindConfig = (error: unknown): boolean =>
-  error instanceof Error && /relation "[^"]+" does not exist/i.test(`${error.message} ${String((error as { cause?: unknown }).cause ?? "")}`);
+export const schemaBehindConfig = (error: unknown): boolean => {
+  if (!(error instanceof Error)) return false;
+  const text = `${error.message} ${String((error as { cause?: unknown }).cause ?? "")}`;
+  // A table a later migration creates, or a column it adds to an existing one.
+  // Both come back from Postgres as "does not exist", and both mean the same
+  // thing here: this migration is older than the config it is reading through.
+  return /(relation|column) "?[\w.".]+"? does not exist/i.test(text);
+};
 
 /**
  * Imports the built-in pages, and says nothing if the database is not ready for
@@ -172,6 +185,41 @@ export async function ensureRoutePagesImported(
 }
 
 /**
+ * Finds one page by its address, or null when the database is not ready to be
+ * asked yet.
+ *
+ * A migration that edits a page has to survive being run on an empty database,
+ * where the tables for sections added after it do not exist. There is nothing
+ * for it to edit in that case - the page has not been imported yet - and the
+ * migration that does the import ships the section with it, so answering null
+ * is both correct and the only thing that can be done.
+ */
+export async function findPageByPath(
+  payload: Payload,
+  path: string,
+  req?: PayloadRequest,
+): Promise<{ id: string | number; layout: unknown } | null> {
+  try {
+    const found = await payload.find({
+      collection: "pages",
+      where: { path: { equals: path } },
+      limit: 1,
+      depth: 0,
+      overrideAccess: true,
+      ...(req ? { req } : {}),
+    });
+    const doc = found.docs[0] as { id: string | number; layout?: unknown } | undefined;
+    return doc ? { id: doc.id, layout: doc.layout } : null;
+  } catch (error) {
+    if (!schemaBehindConfig(error)) throw error;
+    payload.logger.info(
+      `[pages] ${path} cannot be read until the schema catches up; a later migration imports it.`,
+    );
+    return null;
+  }
+}
+
+/**
  * Puts a built-in page back to the copy it ships with, by deleting the document
  * that overrides it. The page keeps working: it simply renders from
  * lib/page-defaults.ts again.
@@ -182,7 +230,20 @@ export async function restoreRoutePages(
   req?: PayloadRequest,
 ): Promise<SyncReport> {
   const report = emptyReport();
-  const existing = await existingByPath(payload, req);
+
+  // Rolling a migration back tears the section tables down in the reverse
+  // order they were created, so by the time an early migration's `down` asks
+  // for a page, the tables the current config expects may already be gone.
+  // There is nothing left to restore in that case, and saying so beats
+  // failing the rollback.
+  let existing: Map<string, string | number>;
+  try {
+    existing = await existingByPath(payload, req);
+  } catch (error) {
+    if (!schemaBehindConfig(error)) throw error;
+    payload.logger.info("[pages] the section tables are already gone; nothing left to restore.");
+    return report;
+  }
 
   for (const path of paths) {
     const id = existing.get(path);

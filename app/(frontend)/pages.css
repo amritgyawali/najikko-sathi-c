@@ -23,10 +23,13 @@
 .page-hero h1 { max-width: 870px; margin: 0 0 22px; font-size: clamp(40px, 4.5vw, 64px); line-height: 1.03; font-weight: 650; letter-spacing: -.04em; }
 .page-hero p { max-width: 710px; margin: 0; color: #d7e2ff; font-size: 17px; line-height: 1.65; }
 .page-hero .hero-actions { margin-top: 28px; }
-.page-hero-emblem { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 225px; height: 225px; gap: 16px; border: 1px solid rgb(255 255 255 / 25%); border-radius: 50% 50% 50% 14%; background: rgb(6 43 92 / 46%); }
-.page-hero-emblem > svg { width: 64px; height: 64px; color: #aec6ff; stroke-width: 1.25; }
-.page-hero-emblem > span { color: #fff; font-size: 28px; font-weight: 800; letter-spacing: -.04em; }
-.page-hero-emblem small { color: var(--warm); font-size: 10px; text-transform: uppercase; letter-spacing: .17em; }
+/* The photograph beside a page's title, uploaded into that page's "-hero" Page
+   media entry. Without one the heading simply spans the band. */
+.page-hero-photo { margin: 0; }
+.page-hero-photo-frame { position: relative; width: 100%; height: 260px; overflow: hidden; border: 1px solid rgb(255 255 255 / 25%); border-radius: 20px; }
+.page-hero-photo-frame img { object-fit: cover; }
+.page-hero-photo figcaption { margin-top: 10px; color: #d7e2ff; font-size: 12px; text-align: center; }
+.page-hero-grid--wide { grid-template-columns: minmax(0, 1fr); }
 .content-section { padding-block: 72px; background: #fff; }
 .section-heading { max-width: 780px; margin-bottom: 32px; }
 .section-heading h2 { margin: 0; color: var(--primary); font-size: clamp(30px, 3.2vw, 44px); line-height: 1.12; font-weight: 600; letter-spacing: -.03em; }
@@ -69,15 +72,11 @@
 .process-list p { margin: 0; color: var(--muted); font-size: 15px; line-height: 1.7; }
 .media-section { background: #fbfcff; }
 .media-showcase-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+/* A page with a photograph but no film, or the other way round, shows the one
+   frame it has at a readable width rather than stretched across the grid. */
+.media-showcase-grid--one { grid-template-columns: minmax(0, 760px); justify-content: center; }
 .media-frame { min-width: 0; overflow: hidden; margin: 0; border: 1px solid var(--line); border-radius: 18px; background: #fff; }
-.media-placeholder, .media-photo { position: relative; aspect-ratio: 16 / 9; overflow: hidden; }
-.media-placeholder { display: flex; align-items: center; justify-content: center; flex-direction: column; padding: 24px; text-align: center; color: #fff; background: radial-gradient(circle at 80% 15%, rgb(91 147 243 / 32%), transparent 48%), var(--primary); }
-.media-placeholder::before { position: absolute; inset: 18px; border: 1px dashed rgb(255 255 255 / 22%); border-radius: 10px; content: ""; pointer-events: none; }
-.media-placeholder > svg { width: 40px; height: 40px; margin-bottom: 17px; color: #a9c9fa; stroke-width: 1.25; }
-.media-placeholder > span { margin-bottom: 8px; color: var(--warm); font-size: 9px; letter-spacing: .16em; text-transform: uppercase; }
-.media-placeholder strong { max-width: 400px; font-size: clamp(18px, 2vw, 27px); line-height: 1.15; font-weight: 600; }
-.media-placeholder small { margin-top: 17px; color: #b4c9e8; font-size: 11px; }
-.video-placeholder { background: linear-gradient(135deg, #103f79, var(--primary)); }
+.media-photo { position: relative; aspect-ratio: 16 / 9; overflow: hidden; }
 .media-photo img { object-fit: cover; }
 .media-frame video { display: block; width: 100%; aspect-ratio: 16 / 9; background: var(--primary); }
 /* A film added as a YouTube link, played in YouTube's own frame. */
@@ -154,6 +153,31 @@
 .topic-grid p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.7; }
 
 /* Social responsibility: dashboard-managed films and photo albums. */
+/* "We worked with": a row of client logos sliding across the page.
+   The row is rendered twice and the track moved by half its own width, so the
+   second copy takes over exactly where the first ends and the loop is seamless. */
+.partner-section { padding-bottom: 56px; }
+.partner-heading { margin: 0 0 30px; color: var(--primary); font-size: clamp(24px, 3vw, 34px); font-weight: 650; letter-spacing: -.02em; text-align: center; }
+.partner-marquee { overflow: hidden; width: 100%; -webkit-mask-image: linear-gradient(90deg, transparent, #000 9%, #000 91%, transparent); mask-image: linear-gradient(90deg, transparent, #000 9%, #000 91%, transparent); }
+.partner-track { display: flex; width: max-content; animation: partner-slide 34s linear infinite; }
+.partner-marquee:hover .partner-track, .partner-marquee:focus-within .partner-track { animation-play-state: paused; }
+.partner-row { display: flex; align-items: center; gap: 64px; margin: 0; padding: 0 32px; list-style: none; }
+.partner-logo { display: grid; place-items: center; min-width: 150px; height: 78px; padding: 0 10px; opacity: .72; filter: grayscale(1); transition: opacity .25s ease, filter .25s ease; }
+.partner-logo:hover, .partner-logo:focus-visible { opacity: 1; filter: grayscale(0); }
+.partner-logo img { max-width: 190px; max-height: 68px; width: auto; height: auto; object-fit: contain; }
+.partner-name { color: var(--primary); font-size: 21px; font-weight: 750; letter-spacing: -.02em; white-space: nowrap; }
+
+@keyframes partner-slide {
+  to { transform: translateX(-50%); }
+}
+
+/* Motion here is decoration. Anyone who has asked for less of it gets a row
+   that simply sits still, scrollable by hand. */
+@media (prefers-reduced-motion: reduce) {
+  .partner-marquee { overflow-x: auto; -webkit-mask-image: none; mask-image: none; }
+  .partner-track { animation: none; }
+}
+
 .social-section { background: var(--surface); }
 .social-entries { display: grid; gap: 28px; }
 .social-entry { padding: 30px; border: 1px solid var(--line); border-radius: 18px; background: #fff; }
@@ -169,6 +193,18 @@
 .social-album img { display: block; width: 100%; height: 190px; object-fit: cover; border-radius: 12px; }
 .social-album figcaption { margin-top: 8px; color: var(--muted); font-size: 12.5px; line-height: 1.5; }
 .social-entry .text-link { margin-top: 20px; }
+
+/* Social work: a cover photograph, then the films, then the album. Each film
+   carries its own title and description, so they are stacked rather than laid
+   out in a grid that would break a caption across a column edge. */
+.social-cover { margin: 0 0 24px; }
+.social-cover img { display: block; width: 100%; height: auto; max-height: 420px; object-fit: cover; border-radius: 14px; }
+.social-videos { display: grid; gap: 30px; }
+.social-video-item { margin: 0; }
+.social-video-item h4 { margin: 0 0 12px; color: var(--primary); font-size: 18px; font-weight: 650; letter-spacing: -.01em; }
+.social-video-item figcaption { margin-top: 12px; color: var(--muted); font-size: 14.5px; line-height: 1.7; }
+.social-video-item .text-link { margin-top: 12px; }
+.social-videos + .social-album { margin-top: 26px; }
 
 /* Client testimonials, from Content → Reviews. */
 /* min() lets a track shrink below its minimum on a narrow phone, rather than
@@ -206,13 +242,12 @@
   .header-actions .inquiry-button { min-width: 0; padding-inline: 12px; font-size: 10px; }
   .primary-nav { gap: 12px; }
   .page-hero-grid { gap: 36px; grid-template-columns: minmax(0, 1fr) 190px; }
-  .page-hero-emblem { width: 190px; height: 190px; }
+  .page-hero-grid--wide { grid-template-columns: minmax(0, 1fr); }
+  .page-hero-photo-frame { height: 220px; }
   .category-production .service-detail-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .service-overview, .about-story-grid, .contact-grid { gap: 40px; }
   .service-detail-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .foundation-grid { gap: 36px; }
-  .production-visual { padding: 25px; gap: 10px; }
-  .production-camera { width: 70px; height: 70px; }
   .discipline-grid, .topic-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
@@ -229,16 +264,12 @@
   .hero h1 { max-width: 700px; font-size: 60px; }
   .media-system-wheel { width: min(430px, 100%); }
   .leadership-message { grid-template-columns: 190px minmax(0, 1fr); gap: 32px; padding: 30px; }
+  .leadership-message--copy-only { grid-template-columns: minmax(0, 1fr); }
   .leadership-portrait { width: 190px; height: 190px; }
   .chairman-grid, .foundation-grid { gap: 40px; }
   .portrait-caption { right: 0; }
-  .media-visual > span { font-size: 7px; }
-  .media-visual > span:nth-of-type(1) { left: 18px; }
-  .media-visual > span:nth-of-type(3) { right: 18px; }
   .verticals-intro { gap: 24px; }
   .verticals-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .production-visual { grid-template-columns: 1fr; }
-  .production-camera { display: none; }
   .partners { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .connection-item { min-height: 80px; }
   .connection-item + .connection-item { border-left: 0; }
@@ -267,25 +298,27 @@
   .hero p { font-size: 15px; }
   .hero-actions { flex-wrap: wrap; gap: 16px; }
   .hero-cta { font-size: 10px; padding-inline: 18px; letter-spacing: .07em; }
-  .stats-wrap { margin-top: -70px; }
+  .stats-wrap { margin-top: -40px; }
   .media-system { padding: 16px 10px 20px; }
   .media-system-wheel { width: 100%; }
   .media-petal span { font-size: clamp(9px, 3.1vw, 13px); }
   .leadership-message { grid-template-columns: 1fr; justify-items: start; gap: 26px; padding: 24px; }
   .leadership-portrait { width: 150px; height: 150px; }
-  .leadership-portrait span { font-size: 46px; }
   .leadership-copy p { font-size: 15.5px; }
   .discipline-grid, .topic-grid { grid-template-columns: 1fr; }
   .discipline-card, .social-entry { padding: 24px; }
   .review-card, .wisher-card { padding: 24px; }
   .wisher-grid { grid-template-columns: repeat(auto-fit, minmax(min(160px, 100%), 1fr)); }
   .wisher-card img, .wisher-initial { width: 76px; height: 76px; }
+  .partner-row { gap: 38px; padding: 0 19px; }
+  .partner-logo { min-width: 112px; height: 62px; }
+  .partner-logo img { max-width: 138px; max-height: 54px; }
+  .partner-name { font-size: 17px; }
   .social-album, .media-album { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
   .social-album img, .media-album img, .media-album video { height: 145px; }
   .chairman-section, .foundation-section, .verticals-section, .value-section { padding-block: 52px; }
   .chairman-grid, .foundation-grid { grid-template-columns: 1fr; gap: 40px; }
   .portrait-wrap { width: min(100%, 360px); }
-  .media-visual > span { font-size: 8px; }
   .chairman-copy h2, .verticals-intro h2, .foundation-copy h2, .value-heading h2 { font-size: 34px; }
   .verticals-intro { align-items: flex-start; flex-direction: column; gap: 24px; }
   .verticals-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -293,10 +326,6 @@
   .vertical-card strong { padding-right: 4px; font-size: 15px; }
   .vertical-card .card-arrow { display: none; }
   .foundation-image-wrap { margin: 10px 8px 24px; }
-  .production-visual { grid-template-columns: .7fr 1.3fr; gap: 16px; padding: 24px; }
-  .production-camera { display: block; width: 65px; height: 65px; }
-  .production-steps { gap: 8px; }
-  .production-steps span { font-size: 10px; }
   .legacy-badge { left: 0; bottom: -25px; min-width: 125px; }
   .right-sanchar-card { grid-template-columns: 1fr; }
   .right-sanchar-identity { min-height: 290px; padding: 30px; }
@@ -315,7 +344,7 @@
   .page-hero-inner { padding-block: 22px 48px; }
   .breadcrumbs ol { margin-bottom: 32px; }
   .page-hero-grid { grid-template-columns: 1fr; gap: 0; }
-  .page-hero-emblem { display: none; }
+  .page-hero-photo { display: none; }
   .page-hero h1 { font-size: clamp(37px, 8.8vw, 55px); }
   .page-hero p { font-size: 15px; }
   .content-section { padding-block: 48px; }
@@ -334,9 +363,7 @@
   .scope-card { padding: 28px; }
   .process-list { grid-template-columns: 1fr; gap: 28px; }
   .process-list h3 { margin-top: 12px; }
-  .media-showcase-grid { grid-template-columns: 1fr; }
-  .media-placeholder { min-height: 215px; }
-  .media-placeholder strong { font-size: 23px; }
+  .media-showcase-grid, .media-showcase-grid--one { grid-template-columns: 1fr; }
   .faq-grid { gap: 0; }
   .faq-list summary { font-size: 16px; }
   .contact-cta { padding-block: 42px; }
@@ -347,11 +374,6 @@
   .identity-panel h2 { font-size: 32px; }
   .inquiry-form { padding: 25px; }
   .form-row { grid-template-columns: 1fr; gap: 0; }
-}
-
-@media (max-width: 420px) {
-  .production-visual { grid-template-columns: 1fr; }
-  .production-camera { display: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {

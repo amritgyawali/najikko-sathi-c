@@ -11,6 +11,14 @@ import { isEditor } from "../access";
  * the front page and now open pages of their own; the fields kept their names
  * so nothing anyone had written was lost when they moved.
  */
+/**
+ * Said under every Nepali field: the site is authored in English and translated
+ * against a phrase book, but the leadership band is exempt from that, so these
+ * are the only Nepali it will ever show.
+ */
+const NEPALI_NOTE =
+  "Shown when the website is read in Nepali. Leave it empty to keep the English.";
+
 export const Homepage: GlobalConfig = {
   slug: "homepage",
   label: "Homepage & page copy",
@@ -67,8 +75,19 @@ export const Homepage: GlobalConfig = {
             { name: "aboutEyebrow", type: "text", defaultValue: "Who We Are" },
             { name: "aboutHeading", type: "text" },
             { name: "aboutQuote", type: "textarea" },
-            { name: "aboutBody", type: "textarea" },
-            { name: "aboutBodySecondary", type: "textarea" },
+            { name: "aboutBody", type: "textarea", label: "First paragraph" },
+            { name: "aboutBodySecondary", type: "textarea", label: "Second paragraph" },
+            {
+              name: "aboutParagraphs",
+              type: "array",
+              label: "Further paragraphs",
+              labels: { singular: "Paragraph", plural: "Paragraphs" },
+              admin: {
+                description:
+                  "Anything after the second paragraph. Drag to reorder; they read in this order.",
+              },
+              fields: [{ name: "text", type: "textarea", required: true }],
+            },
             {
               name: "aboutCapabilities",
               type: "array",
@@ -84,8 +103,39 @@ export const Homepage: GlobalConfig = {
               "The carousel appears there as soon as the first message is saved.",
           },
           fields: [
-            { name: "leadershipKicker", type: "text", defaultValue: "From our leadership" },
-            { name: "leadershipHeading", type: "text" },
+            {
+              type: "row",
+              fields: [
+                {
+                  name: "leadershipKicker",
+                  type: "text",
+                  defaultValue: "From our leadership",
+                  admin: { width: "50%" },
+                },
+                {
+                  name: "leadershipKickerNe",
+                  type: "text",
+                  label: "Leadership kicker in Nepali",
+                  admin: { width: "50%", description: NEPALI_NOTE },
+                },
+              ],
+            },
+            {
+              name: "leadershipHeading",
+              type: "text",
+              label: "Leadership heading",
+              admin: {
+                description:
+                  "The heading sits inside the carousel and moves on with the message it belongs " +
+                  "to. This one is used for any message that has no heading of its own.",
+              },
+            },
+            {
+              name: "leadershipHeadingNe",
+              type: "text",
+              label: "Leadership heading in Nepali",
+              admin: { description: NEPALI_NOTE },
+            },
             {
               name: "leadershipMessages",
               type: "array",
@@ -94,7 +144,8 @@ export const Homepage: GlobalConfig = {
               admin: {
                 description:
                   "Shown one at a time on the homepage. The carousel moves on every five " +
-                  "seconds, and visitors can step through with the arrows.",
+                  "seconds, and visitors can step through with the arrows. Each message brings " +
+                  "its own heading with it, so the heading changes as the carousel moves.",
               },
               fields: [
                 {
@@ -104,9 +155,65 @@ export const Homepage: GlobalConfig = {
                     { name: "name", type: "text", required: true, admin: { width: "50%" } },
                   ],
                 },
-                { name: "heading", type: "text", label: "Message title" },
-                { name: "message", type: "textarea", required: true },
+                {
+                  name: "heading",
+                  type: "text",
+                  label: "Heading shown with this message",
+                  admin: {
+                    description:
+                      "Replaces the leadership heading above while this message is on screen. " +
+                      "Leave it empty to keep that one.",
+                  },
+                },
+                {
+                  name: "message",
+                  type: "textarea",
+                  required: true,
+                  admin: { description: "Leave a blank line between paragraphs." },
+                },
                 { name: "photo", type: "upload", relationTo: "media" },
+                {
+                  type: "collapsible",
+                  label: "Nepali version of this message",
+                  admin: {
+                    initCollapsed: true,
+                    description:
+                      "What a visitor reads after pressing ने. This band is never translated " +
+                      "automatically - a message in someone's own words is not something to guess " +
+                      "at - so whatever is written here is exactly what is shown. Anything left " +
+                      "empty falls back to the English above rather than to a machine translation.",
+                  },
+                  fields: [
+                    {
+                      type: "row",
+                      fields: [
+                        {
+                          name: "roleNe",
+                          type: "text",
+                          label: "Role in Nepali",
+                          admin: { width: "50%" },
+                        },
+                        {
+                          name: "nameNe",
+                          type: "text",
+                          label: "Name in Nepali",
+                          admin: { width: "50%" },
+                        },
+                      ],
+                    },
+                    {
+                      name: "headingNe",
+                      type: "text",
+                      label: "Heading in Nepali",
+                    },
+                    {
+                      name: "messageNe",
+                      type: "textarea",
+                      label: "Message in Nepali",
+                      admin: { description: "Leave a blank line between paragraphs." },
+                    },
+                  ],
+                },
               ],
             },
           ],

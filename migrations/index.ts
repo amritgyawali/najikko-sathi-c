@@ -15,6 +15,13 @@ import * as migration_20260906_121056_move_faq_placements from './20260906_12105
 import * as migration_20260906_145554_add_reviews_and_well_wishers_bands from './20260906_145554_add_reviews_and_well_wishers_bands';
 import * as migration_20260906_150000_home_reviews_and_well_wishers from './20260906_150000_home_reviews_and_well_wishers';
 import * as migration_20260906_190000_drop_filler_showcase_bands from './20260906_190000_drop_filler_showcase_bands';
+import * as migration_20260907_211422_add_social_work_and_partners from './20260907_211422_add_social_work_and_partners';
+import * as migration_20260907_212000_secure_social_work_tables from './20260907_212000_secure_social_work_tables';
+import * as migration_20260907_213000_social_work_page_and_home_copy from './20260907_213000_social_work_page_and_home_copy';
+import * as migration_20260908_015011_add_backups from './20260908_015011_add_backups';
+import * as migration_20260908_021604_add_nepali_leadership from './20260908_021604_add_nepali_leadership';
+import * as migration_20260908_022000_fold_nepali_leadership_message from './20260908_022000_fold_nepali_leadership_message';
+import * as migration_20260908_030000_media_band_on_every_page from './20260908_030000_media_band_on_every_page';
 
 export const migrations = [
   {
@@ -101,5 +108,40 @@ export const migrations = [
     up: migration_20260906_190000_drop_filler_showcase_bands.up,
     down: migration_20260906_190000_drop_filler_showcase_bands.down,
     name: '20260906_190000_drop_filler_showcase_bands',
+  },
+  {
+    up: migration_20260907_211422_add_social_work_and_partners.up,
+    down: migration_20260907_211422_add_social_work_and_partners.down,
+    name: '20260907_211422_add_social_work_and_partners',
+  },
+  {
+    up: migration_20260907_212000_secure_social_work_tables.up,
+    down: migration_20260907_212000_secure_social_work_tables.down,
+    name: '20260907_212000_secure_social_work_tables',
+  },
+  {
+    up: migration_20260907_213000_social_work_page_and_home_copy.up,
+    down: migration_20260907_213000_social_work_page_and_home_copy.down,
+    name: '20260907_213000_social_work_page_and_home_copy',
+  },
+  {
+    up: migration_20260908_015011_add_backups.up,
+    down: migration_20260908_015011_add_backups.down,
+    name: '20260908_015011_add_backups',
+  },
+  {
+    up: migration_20260908_021604_add_nepali_leadership.up,
+    down: migration_20260908_021604_add_nepali_leadership.down,
+    name: '20260908_021604_add_nepali_leadership',
+  },
+  {
+    up: migration_20260908_022000_fold_nepali_leadership_message.up,
+    down: migration_20260908_022000_fold_nepali_leadership_message.down,
+    name: '20260908_022000_fold_nepali_leadership_message',
+  },
+  {
+    up: migration_20260908_030000_media_band_on_every_page.up,
+    down: migration_20260908_030000_media_band_on_every_page.down,
+    name: '20260908_030000_media_band_on_every_page',
   },
 ];

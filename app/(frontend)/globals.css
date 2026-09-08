@@ -12,6 +12,11 @@
   --shadow-soft: 0 20px 55px rgb(6 43 92 / 10%);
   --radius: 18px;
   --font-heading: var(--font-hanken);
+  /* The Nepali face. Akriti is fetched from the internet - lib/fonts.ts holds
+     the address, and Site -> Appearance can change it - and the bundled Noto
+     Sans Devanagari behind it draws anything Akriti has no glyph for. */
+  --font-nepali: "Akriti";
+  --font-devanagari: var(--font-nepali), var(--font-devanagari-fallback), "Noto Sans Devanagari", sans-serif;
 }
 
 * {
@@ -413,25 +418,16 @@ summary:focus-visible {
   border-color: #fff;
 }
 
+/*
+ * The media system wheel sits straight on the page. It used to be boxed in a
+ * white panel, which was one frame too many under a hero that already fades
+ * into the page background - so the wheel now stands on that background alone.
+ */
 .stats-wrap {
   position: relative;
   z-index: 5;
   width: min(1200px, calc(100% - 64px));
-  margin: -82px auto 24px;
-}
-
-.stats-card {
-  padding: 6px;
-  overflow: hidden;
-  border: 1px solid rgb(6 43 92 / 8%);
-  border-radius: 20px;
-  background: var(--surface);
-  box-shadow: var(--shadow-soft);
-  transition: transform .35s ease;
-}
-
-.stats-card:hover {
-  transform: translateY(-5px);
+  margin: -54px auto 6px;
 }
 
 .chairman-section {
@@ -457,6 +453,18 @@ summary:focus-visible {
   grid-template-columns: .88fr 1.12fr;
   align-items: center;
   gap: clamp(54px, 6vw, 76px);
+}
+
+/* Nothing has been uploaded for the panel beside the words, so the words have
+   the band to themselves rather than sitting beside an empty rectangle. */
+.chairman-grid--copy-only,
+.foundation-grid--copy-only {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.chairman-grid--copy-only .chairman-copy,
+.foundation-grid--copy-only .foundation-copy {
+  max-width: 820px;
 }
 
 .portrait-wrap {
@@ -1002,6 +1010,40 @@ footer li a:hover {
   text-transform: uppercase;
 }
 
+/* The editors' way in, at the very foot of every page. */
+.footer-login-row {
+  display: flex;
+  justify-content: center;
+  padding-top: 18px;
+}
+
+.footer-login {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 20px;
+  border: 1px solid rgb(255 255 255 / 18%);
+  border-radius: 999px;
+  color: rgb(255 255 255 / 62%);
+  font-family: var(--font-inter), Arial, sans-serif;
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  transition: color .2s ease, border-color .2s ease, background-color .2s ease;
+}
+
+.footer-login svg {
+  width: 13px;
+  height: 13px;
+}
+
+.footer-login:hover {
+  color: #fff;
+  border-color: rgb(255 255 255 / 42%);
+  background: rgb(255 255 255 / 8%);
+}
+
 .sr-only {
   position: absolute;
   width: 1px;
@@ -1068,10 +1110,7 @@ footer li a:hover {
 }
 
 .media-system {
-  padding: 26px 20px 30px;
-  border-radius: 15px;
-  background:
-    radial-gradient(circle at 50% 46%, #ffffff 0%, #eef3f9 58%, #e6ecf5 100%);
+  padding: 18px 20px 26px;
 }
 
 .media-system-wheel {
@@ -1079,6 +1118,39 @@ footer li a:hover {
   width: min(520px, 100%);
   margin-inline: auto;
   aspect-ratio: 1;
+}
+
+/* The slow ring of ticks the wheel turns inside. */
+.media-system-ring {
+  position: absolute;
+  inset: -3%;
+  pointer-events: none;
+}
+
+/* Where a petal's sparks are drawn: over everything, and out of the way of
+   every link, so a burst in flight can never take a click. */
+.media-system-fx {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  overflow: visible;
+  pointer-events: none;
+}
+
+/* The colour the middle picks up from the petal being pointed at. */
+.media-system-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 58%;
+  height: 58%;
+  /* Its resting strength, so the middle is not ringed in colour on a page
+     that never got to run the wheel. */
+  opacity: .14;
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(6px);
+  transform: translate(-50%, -50%);
 }
 
 /*
@@ -1106,13 +1178,19 @@ footer li a:hover {
 .media-petal path {
   cursor: pointer;
   pointer-events: auto;
-  transform-box: view-box;
-  transform-origin: 50% 50%;
-  transition: transform .25s ease;
 }
 
-.media-petal:hover path {
-  transform: scale(1.045);
+/* The wedge being pointed at is lifted off the page as it is thrown. */
+.media-petal.is-active {
+  z-index: 1;
+}
+
+.media-petal.is-active svg {
+  filter: drop-shadow(0 16px 30px rgb(6 43 92 / 30%));
+}
+
+.media-petal.is-away svg {
+  filter: drop-shadow(0 6px 14px rgb(6 43 92 / 12%));
 }
 
 .media-petal span {
@@ -1134,7 +1212,7 @@ footer li a:hover {
   position: absolute;
   top: 50%;
   left: 50%;
-  z-index: 1;
+  z-index: 3;
   display: grid;
   place-items: center;
   width: 30%;
@@ -1175,6 +1253,10 @@ footer li a:hover {
   box-shadow: var(--shadow-soft);
 }
 
+.leadership-message--copy-only {
+  grid-template-columns: minmax(0, 1fr);
+}
+
 .leadership-portrait {
   display: grid;
   place-items: center;
@@ -1189,13 +1271,6 @@ footer li a:hover {
   width: 100%;
   height: 100%;
   object-fit: cover;
-}
-
-.leadership-portrait span {
-  color: #fff;
-  font-size: 64px;
-  font-weight: 800;
-  letter-spacing: -.04em;
 }
 
 .leadership-quote-mark {
@@ -1218,6 +1293,31 @@ footer li a:hover {
   font-size: 16.5px;
   line-height: 1.8;
   white-space: pre-line;
+}
+
+.leadership-copy p + p {
+  margin-top: 15px;
+}
+
+/* The heading travels with the message: both are keyed on the slide, so this
+   entrance replays on the pair together every time the carousel moves on. */
+.leadership-heading,
+.leadership-message {
+  animation: leadership-advance .45s ease both;
+}
+
+@keyframes leadership-advance {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .leadership-heading,
+  .leadership-message {
+    animation: none;
+  }
 }
 
 .leadership-attribution {
@@ -1296,151 +1396,36 @@ footer li a:hover {
   background: var(--secondary);
 }
 
+/* The photograph beside the introduction on the front page. It is drawn only
+   when one has been uploaded, so there is no artwork here standing in for a
+   picture that has not been added. */
 .media-visual {
   position: relative;
   z-index: 1;
   width: 100%;
   aspect-ratio: 1;
   overflow: hidden;
-  display: grid;
-  place-items: center;
   border-radius: 23px;
-  color: #fff;
-  background:
-    radial-gradient(circle at 30% 24%, rgb(101 157 254 / 60%), transparent 31%),
-    linear-gradient(145deg, #0f5eaf, #00275d 68%);
   box-shadow: 0 22px 36px rgb(0 39 93 / 20%);
 }
 
-.media-visual::after {
-  content: "";
-  position: absolute;
-  inset: 18%;
-  border: 1px solid rgb(255 255 255 / 20%);
-  border-radius: 50%;
-}
-
-/* A photograph uploaded in the dashboard fills the panel, so the ring drawn
-   behind the artwork it replaces is no longer wanted. */
-.media-visual--photo::after {
-  content: none;
-}
-
-.media-visual--photo img {
+.media-visual img {
   object-fit: cover;
 }
 
-.media-visual-main {
-  width: 142px;
-  height: 142px;
-  stroke-width: 1.15;
-}
-
-.media-visual-mic,
-.media-visual-film {
-  position: absolute;
-  width: 54px;
-  height: 54px;
-  padding: 13px;
-  border: 1px solid rgb(255 255 255 / 20%);
-  border-radius: 50%;
-  background: rgb(255 255 255 / 9%);
-}
-
-.media-visual-mic { top: 44px; right: 46px; }
-.media-visual-film { bottom: 84px; left: 43px; }
-
-.media-visual > span {
-  position: absolute;
-  bottom: 30px;
-  font-family: var(--font-inter), Arial, sans-serif;
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: .11em;
-  text-transform: uppercase;
-}
-
-.media-visual > span:nth-of-type(1) { left: 28px; }
-.media-visual > span:nth-of-type(2) { left: 50%; transform: translateX(-50%); }
-.media-visual > span:nth-of-type(3) { right: 28px; }
-
+/* The photograph beside the production band's words, on the same terms. */
 .production-visual {
   position: relative;
   z-index: 1;
   width: 100%;
   aspect-ratio: 16 / 9;
-  display: grid;
-  grid-template-columns: .85fr 1.15fr;
-  align-items: center;
-  gap: 22px;
-  padding: 34px;
   overflow: hidden;
   border-radius: 22px;
-  color: #fff;
-  background:
-    linear-gradient(135deg, rgb(101 157 254 / 22%), transparent 50%),
-    var(--primary);
   box-shadow: 0 20px 38px rgb(0 39 93 / 14%);
 }
 
-.production-visual::before {
-  content: "";
-  position: absolute;
-  width: 280px;
-  height: 280px;
-  top: -165px;
-  right: -70px;
-  border: 1px solid rgb(255 255 255 / 15%);
-  border-radius: 50%;
-}
-
-/* The same panel once a photograph has been uploaded for it: the picture fills
-   the frame, and the artwork it stands in for is dropped. */
-.production-visual--photo {
-  display: block;
-  padding: 0;
-}
-
-.production-visual--photo::before {
-  content: none;
-}
-
-.production-visual--photo img {
+.production-visual img {
   object-fit: cover;
-}
-
-.production-camera {
-  width: 96px;
-  height: 96px;
-  justify-self: center;
-  color: #aec6ff;
-  stroke-width: 1.15;
-}
-
-.production-steps {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-}
-
-.production-steps span {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  min-height: 48px;
-  padding: 10px;
-  border: 1px solid rgb(255 255 255 / 13%);
-  border-radius: 9px;
-  background: rgb(255 255 255 / 7%);
-  font-family: var(--font-inter), Arial, sans-serif;
-  font-size: 11px;
-  font-weight: 600;
-}
-
-.production-steps svg {
-  width: 17px;
-  height: 17px;
-  color: #ffdcc6;
 }
 
 .right-sanchar-card {
