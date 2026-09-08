@@ -142,19 +142,19 @@ export function LeadershipCarousel({
         <h2 aria-live="polite">{shownHeading}</h2>
       </div>
       <article
-        className="leadership-message"
+        className={`leadership-message${message.photoUrl ? "" : " leadership-message--copy-only"}`}
         key={`message-${current}`}
         aria-live="polite"
         data-no-translate
         lang={nepali && message.messageNe ? "ne" : "en"}
       >
-        <div className="leadership-portrait">
-          {message.photoUrl ? (
+        {/* No portrait uploaded for this message: the message has the card to
+            itself rather than sitting beside a blue blob standing in for one. */}
+        {message.photoUrl ? (
+          <div className="leadership-portrait">
             <Image src={message.photoUrl} alt={message.photoAlt} width={360} height={360} />
-          ) : (
-            <span aria-hidden="true">{shownName.slice(0, 1)}</span>
-          )}
-        </div>
+          </div>
+        ) : null}
         <div className="leadership-copy">
           <Quote className="leadership-quote-mark" aria-hidden="true" />
           {shownMessage

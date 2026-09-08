@@ -298,19 +298,34 @@ export const sitePages: SitePage[] = [
  * into that row puts it on the page named below; leaving the row empty leaves
  * the page as it is, with no band and no gap.
  *
- * Two shapes exist:
+ * Three shapes exist:
  *
  * - `showcase` - the "in pictures & film" band near the foot of a page, which
  *   holds a photograph and a film side by side. It is drawn only once one of
  *   them has been uploaded.
- * - `panel` - a decorative panel that is part of the page's design, which a
- *   photograph replaces outright when one is uploaded.
+ * - `hero` - the photograph beside the page's title at the top of the page.
+ *   Nothing is drawn there until one is uploaded.
+ * - `panel` - a picture panel beside a band's words. The panel is drawn only
+ *   once a photograph has been uploaded for it.
  *
  * Service detail pages carry a showcase band too. Those are not listed here
  * because services are written in the dashboard: their placeholder key is the
  * service's own slug, and a row is created with the service.
  */
-export type MediaPlaceholderKind = "showcase" | "panel";
+export type MediaPlaceholderKind = "showcase" | "panel" | "hero";
+
+/**
+ * The Page media entry holding a page's hero photograph, from the page's own
+ * media key (or a service's slug). One helper so the page that reads the row,
+ * the dashboard that lists it and the hook that creates it cannot disagree.
+ */
+const HERO_SUFFIX = "-hero";
+
+export const heroSlotKey = (key: string): string => `${key}${HERO_SUFFIX}`;
+
+/** The other way round: the page or service key a hero entry belongs to. */
+export const heroSlotBase = (key: string): string =>
+  key.endsWith(HERO_SUFFIX) ? key.slice(0, -HERO_SUFFIX.length) : key;
 
 export type MediaPlaceholder = {
   /** The Page media key that fills it. */
@@ -331,23 +346,36 @@ const panelPlaceholders: MediaPlaceholder[] = [
     label: "Who we are panel",
     path: "/",
     kind: "panel",
-    note: "The blue camera panel beside the introduction. A photograph replaces the artwork.",
+    note: "The picture beside the introduction. Nothing is shown there until one is uploaded.",
   },
   {
     key: "production-band",
     label: "Production craft panel",
     path: "/production",
     kind: "panel",
-    note: "The blue panel beside “Stories brought to life”. A photograph replaces the artwork.",
+    note: "The picture beside “Stories brought to life”. Nothing is shown there until one is uploaded.",
   },
 ];
 
 /**
- * Every placeholder, with each page's showcase band followed by any panels on
- * that page. A panel whose page is not in `sitePages` is dropped, and
- * `check:pages` fails so it cannot go unnoticed.
+ * Every placeholder, page by page: the photograph beside the title, then the
+ * showcase band, then any panels on that page. A panel whose page is not in
+ * `sitePages` is dropped, and `check:pages` fails so it cannot go unnoticed.
  */
 export const mediaPlaceholders: MediaPlaceholder[] = sitePages.flatMap((page) => [
+  // The front page has a full-width photograph of its own, set in Homepage, so
+  // it is the one page with no photograph beside its title.
+  ...(page.mediaKey && page.path !== "/"
+    ? [
+        {
+          key: heroSlotKey(page.mediaKey),
+          label: `${page.label} hero photo`,
+          path: page.path,
+          kind: "hero" as const,
+          note: "The photograph beside the page's title. There is nothing there until one is uploaded.",
+        },
+      ]
+    : []),
   ...(page.mediaKey
     ? [
         {

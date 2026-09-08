@@ -464,6 +464,18 @@ summary:focus-visible {
   gap: clamp(54px, 6vw, 76px);
 }
 
+/* Nothing has been uploaded for the panel beside the words, so the words have
+   the band to themselves rather than sitting beside an empty rectangle. */
+.chairman-grid--copy-only,
+.foundation-grid--copy-only {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.chairman-grid--copy-only .chairman-copy,
+.foundation-grid--copy-only .foundation-copy {
+  max-width: 820px;
+}
+
 .portrait-wrap {
   position: relative;
   width: min(100%, 400px);
@@ -1180,6 +1192,10 @@ footer li a:hover {
   box-shadow: var(--shadow-soft);
 }
 
+.leadership-message--copy-only {
+  grid-template-columns: minmax(0, 1fr);
+}
+
 .leadership-portrait {
   display: grid;
   place-items: center;
@@ -1194,13 +1210,6 @@ footer li a:hover {
   width: 100%;
   height: 100%;
   object-fit: cover;
-}
-
-.leadership-portrait span {
-  color: #fff;
-  font-size: 64px;
-  font-weight: 800;
-  letter-spacing: -.04em;
 }
 
 .leadership-quote-mark {
@@ -1326,151 +1335,36 @@ footer li a:hover {
   background: var(--secondary);
 }
 
+/* The photograph beside the introduction on the front page. It is drawn only
+   when one has been uploaded, so there is no artwork here standing in for a
+   picture that has not been added. */
 .media-visual {
   position: relative;
   z-index: 1;
   width: 100%;
   aspect-ratio: 1;
   overflow: hidden;
-  display: grid;
-  place-items: center;
   border-radius: 23px;
-  color: #fff;
-  background:
-    radial-gradient(circle at 30% 24%, rgb(101 157 254 / 60%), transparent 31%),
-    linear-gradient(145deg, #0f5eaf, #00275d 68%);
   box-shadow: 0 22px 36px rgb(0 39 93 / 20%);
 }
 
-.media-visual::after {
-  content: "";
-  position: absolute;
-  inset: 18%;
-  border: 1px solid rgb(255 255 255 / 20%);
-  border-radius: 50%;
-}
-
-/* A photograph uploaded in the dashboard fills the panel, so the ring drawn
-   behind the artwork it replaces is no longer wanted. */
-.media-visual--photo::after {
-  content: none;
-}
-
-.media-visual--photo img {
+.media-visual img {
   object-fit: cover;
 }
 
-.media-visual-main {
-  width: 142px;
-  height: 142px;
-  stroke-width: 1.15;
-}
-
-.media-visual-mic,
-.media-visual-film {
-  position: absolute;
-  width: 54px;
-  height: 54px;
-  padding: 13px;
-  border: 1px solid rgb(255 255 255 / 20%);
-  border-radius: 50%;
-  background: rgb(255 255 255 / 9%);
-}
-
-.media-visual-mic { top: 44px; right: 46px; }
-.media-visual-film { bottom: 84px; left: 43px; }
-
-.media-visual > span {
-  position: absolute;
-  bottom: 30px;
-  font-family: var(--font-inter), Arial, sans-serif;
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: .11em;
-  text-transform: uppercase;
-}
-
-.media-visual > span:nth-of-type(1) { left: 28px; }
-.media-visual > span:nth-of-type(2) { left: 50%; transform: translateX(-50%); }
-.media-visual > span:nth-of-type(3) { right: 28px; }
-
+/* The photograph beside the production band's words, on the same terms. */
 .production-visual {
   position: relative;
   z-index: 1;
   width: 100%;
   aspect-ratio: 16 / 9;
-  display: grid;
-  grid-template-columns: .85fr 1.15fr;
-  align-items: center;
-  gap: 22px;
-  padding: 34px;
   overflow: hidden;
   border-radius: 22px;
-  color: #fff;
-  background:
-    linear-gradient(135deg, rgb(101 157 254 / 22%), transparent 50%),
-    var(--primary);
   box-shadow: 0 20px 38px rgb(0 39 93 / 14%);
 }
 
-.production-visual::before {
-  content: "";
-  position: absolute;
-  width: 280px;
-  height: 280px;
-  top: -165px;
-  right: -70px;
-  border: 1px solid rgb(255 255 255 / 15%);
-  border-radius: 50%;
-}
-
-/* The same panel once a photograph has been uploaded for it: the picture fills
-   the frame, and the artwork it stands in for is dropped. */
-.production-visual--photo {
-  display: block;
-  padding: 0;
-}
-
-.production-visual--photo::before {
-  content: none;
-}
-
-.production-visual--photo img {
+.production-visual img {
   object-fit: cover;
-}
-
-.production-camera {
-  width: 96px;
-  height: 96px;
-  justify-self: center;
-  color: #aec6ff;
-  stroke-width: 1.15;
-}
-
-.production-steps {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-}
-
-.production-steps span {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  min-height: 48px;
-  padding: 10px;
-  border: 1px solid rgb(255 255 255 / 13%);
-  border-radius: 9px;
-  background: rgb(255 255 255 / 7%);
-  font-family: var(--font-inter), Arial, sans-serif;
-  font-size: 11px;
-  font-weight: 600;
-}
-
-.production-steps svg {
-  width: 17px;
-  height: 17px;
-  color: #ffdcc6;
 }
 
 .right-sanchar-card {

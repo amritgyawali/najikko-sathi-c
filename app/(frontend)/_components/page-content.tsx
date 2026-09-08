@@ -1,9 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, ArrowUpRight, Camera, Clapperboard, GraduationCap, Megaphone, Newspaper, Search } from "lucide-react";
-import { business } from "../_data/site";
 import { getMediaSlot, getPlacedMedia } from "@/lib/content";
 import { slotFilm, slotPhoto, type SlotFilm } from "@/lib/page-media";
+import { heroSlotKey } from "@/lib/site-map";
 import type { CategoryView, ServiceView } from "@/lib/services";
 import { absoluteUrl, siteUrl } from "../_lib/seo";
 import { StructuredData } from "./structured-data";
@@ -26,16 +26,31 @@ export function Breadcrumbs({ items }: { items: { label: string; href: string }[
   </>;
 }
 
-export function PageHero({ eyebrow, title, description, path, label, parent, category, children }: { eyebrow: string; title: string; description: string; path: string; label: string; parent?: { label: string; href: string }; category?: CategoryView; children?: React.ReactNode }) {
-  const Icon = (category && categoryIcons[category.icon]) || Camera;
+/**
+ * The band at the top of every page a visitor reads.
+ *
+ * The right-hand side of it holds a photograph, uploaded into the
+ * "<page>-hero" entry of Content → Page media. Until one is uploaded there is
+ * nothing there at all: the heading and its words take the full width, rather
+ * than sitting beside an empty blue emblem standing in for a picture nobody has
+ * added yet.
+ *
+ * `mediaKey` is the page's Page media key - the page's own key, or a service's
+ * slug. A page without one simply never carries a hero photograph.
+ */
+export async function PageHero({ eyebrow, title, description, path, label, parent, category, mediaKey, children }: { eyebrow: string; title: string; description: string; path: string; label: string; parent?: { label: string; href: string }; category?: CategoryView; mediaKey?: string; children?: React.ReactNode }) {
+  const photo = mediaKey ? slotPhoto(await getMediaSlot(heroSlotKey(mediaKey)), title) : null;
   return <section className={`page-hero${category ? ` page-hero-${category.id}` : ""}`}>
     <Image className="page-hero-image" src="/images/nepal-himalayas-dawn-4k.jpg" alt="Himalayan peaks at dawn in Nepal" fill sizes="100vw" priority quality={88} />
     <div className="page-hero-shade" />
     <div className="site-container page-hero-inner">
       <Breadcrumbs items={[...(parent ? [parent] : []), { label, href: path }]} />
-      <div className="page-hero-grid">
+      <div className={`page-hero-grid${photo ? "" : " page-hero-grid--wide"}`}>
         <div><span className="hero-kicker"><i />{eyebrow}</span><h1>{title}</h1><p>{description}</p>{children && <div className="hero-actions">{children}</div>}</div>
-        <div className="page-hero-emblem" aria-hidden="true"><Icon /><span>{business.initials}</span><small>{category ? category.label : "Your media partner"}</small></div>
+        {photo ? <figure className="page-hero-photo">
+          <div className="page-hero-photo-frame"><Image src={photo.src} alt={photo.alt} fill sizes="(max-width: 900px) 100vw, 260px" /></div>
+          {photo.caption ? <figcaption>{photo.caption}</figcaption> : null}
+        </figure> : null}
       </div>
     </div>
   </section>;

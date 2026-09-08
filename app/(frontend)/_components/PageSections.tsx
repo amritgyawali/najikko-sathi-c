@@ -16,6 +16,7 @@ import {
 import { getCategoryViews, getFaqPairs, getServiceViews, type CategoryView, type ServiceView } from "@/lib/services";
 import { mediaAlt, mediaUrl } from "@/lib/media";
 import { onPage, placementKeyFor } from "@/lib/placements";
+import { sitePageByPath } from "@/lib/site-map";
 import { ContactForm } from "./contact-form";
 import { HomeAbout, HomeHero, Leadership } from "./home-sections";
 import {
@@ -113,6 +114,7 @@ async function Hero({ block, page }: { block: Block<"pageHero">; page: SectionCo
       label={page.label}
       parent={page.parent ?? undefined}
       category={category}
+      mediaKey={sitePageByPath[page.path]?.mediaKey}
     >
       <HeroAction block={block} business={business} />
     </PageHero>

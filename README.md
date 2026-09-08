@@ -16,7 +16,7 @@ Content is managed through a full admin dashboard powered by
 | --- | --- | --- |
 | Traffic, top pages, referrers, devices, enquiry queue | Dashboard home | - |
 | Every page of the website: open it, edit it, add it to the dashboard, or build a new one | Dashboard home → Website pages | - |
-| Every photo and film placeholder, filled or not | Dashboard home → Photos & films | - |
+| Every place a photo or film can go, filled or not | Dashboard home → Photos & films | - |
 | The 16 services and their detail pages | Services → Services | `/services`, `/services/<slug>`, `/our-work`, and every discipline page |
 | Service groupings | Services → Service categories | `/services` sections |
 | News, blogs, commentary, investigations | Content → Posts | `/posts/<slug>`, and the pages chosen in **Where this appears** |
@@ -29,7 +29,7 @@ Content is managed through a full admin dashboard powered by
 | The people on the about page | Content → Team | The pages chosen in **Where this appears** |
 | Advisers, patrons and friends of the house | Content → Well-wishers | The pages chosen in **Where this appears**, the front page to begin with |
 | Photos, films and files | Content → Media | Wherever they are used, plus the pages chosen in **Where this appears** |
-| The photo or film in each blue placeholder | Content → Page media | Every showcase band and panel |
+| The photo or film shown in each of those places | Content → Page media | Every hero photograph, showcase band and panel |
 | Contact form messages, with triage and notes | Enquiries | Sent from `/contact` |
 | Front page copy and imagery | Site → Homepage & page copy → Home | `/` |
 | Chairman and director messages | Site → Homepage & page copy → Home - leadership | `/` |
@@ -209,14 +209,14 @@ fighting its components.
 
 ### Photos & films, on the dashboard home
 
-Below it, **Photos & films** lists every blue placeholder on the website: each
-page's photo and film band, the decorative panels on the home and production
-pages, and one row per service page. Each row shows the page it appears on,
-whether a photograph and a film have been added yet, and a link straight to the
-entry that fills it — so putting a picture on a page never means working out
-which key names it. The placeholders come from the same `lib/site-map.ts`, and
-the service rows from the services themselves, so the list cannot fall behind
-the site.
+Below it, **Photos & films** lists every place a picture can go on the website:
+the photograph beside each page's title, each page's photo and film band, the
+panels beside the words on the home and production pages, and both of those for
+every service page. Each row shows the page it appears on, whether a photograph
+and a film have been added yet, and a link straight to the entry that fills it —
+so putting a picture on a page never means working out which key names it. The
+rows come from the same `lib/site-map.ts`, and the service rows from the
+services themselves, so the list cannot fall behind the site.
 
 ### Social responsibility
 
@@ -600,21 +600,25 @@ The browser installation is only needed once per machine. `check:site` starts a 
 
 ## Photos and films
 
-Every page a visitor reads can carry a photograph and a film, and both are
-uploaded from the dashboard. The **Photos & films** panel on the dashboard home
-lists every one of them - each page's "in pictures & film" band, the panels on
-the home and production pages, and one band per service page - says whether each
-has anything in it yet, and links straight to the entry behind it. Open one,
-upload a photograph or a film, save, and the page shows it on the next load.
-Nothing is copied into the repository and nothing is redeployed.
+Every page a visitor reads can carry a photograph beside its title and a
+photograph and a film lower down, and all of them are uploaded from the
+dashboard. The **Photos & films** panel on the dashboard home lists every one of
+them - each page's hero photograph and its "in pictures & film" band, the panels
+beside the words on the home and production pages, and both of those for every
+service page - says whether each has anything in it yet, and links straight to
+the entry behind it. Open one, upload a photograph or a film, save, and the page
+shows it on the next load. Nothing is copied into the repository and nothing is
+redeployed.
 
-**An empty page shows nothing.** The band is drawn only once a photograph or a
-film has been uploaded for that page. Until then there is no band, no heading
-and no gap - a page with no pictures simply has no picture section. A page with
-one of the two shows the one it has, on its own, rather than beside a rectangle
-apologising for the other. (This used not to be true: every page carried two
-captioned blue rectangles promising photographs "coming soon", which is an odd
-thing to tell a visitor on nine pages at once.)
+**The website never shows an empty picture.** Every one of these places is drawn
+only once something has been uploaded into it. Until then there is no panel, no
+heading and no gap - the page is simply the page without it, and the heading
+beside a missing hero photograph spans the full width. A band with one of its
+two frames shows the one it has, on its own, rather than beside a rectangle
+apologising for the other. (This used not to be true: pages carried blue
+rectangles promising photographs "coming soon", and a blue emblem stood in for
+the photograph beside every page title - which is an odd thing to show a visitor
+on nine pages at once.)
 
 Search and the sign-up form are the two pages with nowhere to put a picture.
 They are working pages rather than pages anyone reads, and neither is in the

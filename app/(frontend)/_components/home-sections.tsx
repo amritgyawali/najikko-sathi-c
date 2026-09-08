@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, ArrowUpRight, Camera, Film, Mic2 } from "lucide-react";
+import { ArrowRight, ArrowUpRight } from "lucide-react";
 
 import type { Homepage } from "@/payload-types";
 import type { PageSection } from "@/lib/page-defaults";
@@ -93,9 +93,12 @@ export function HomeHero({
 }
 
 /**
- * The introduction, and the panel beside it. The panel is drawn from icons
- * until someone uploads a photograph to the "home-about" Page media entry, at
- * which point the photograph fills the panel instead.
+ * The introduction, and the photograph beside it.
+ *
+ * The photograph is uploaded to the "home-about" Page media entry in the
+ * dashboard. Until one is, there is no panel at all and the introduction takes
+ * the full width - a visitor is never shown an empty blue rectangle standing in
+ * for a picture nobody has added yet.
  */
 export async function HomeAbout({
   block,
@@ -125,31 +128,19 @@ export async function HomeAbout({
   return (
     <section className="chairman-section" id="about">
       <div className="chairman-shape" aria-hidden="true" />
-      <div className="site-container chairman-grid">
-        <div className="portrait-wrap">
-          <div className="portrait-glow" aria-hidden="true" />
-          <div
-            className={`media-visual${photo ? " media-visual--photo" : ""}`}
-            aria-hidden={photo ? undefined : true}
-          >
-            {photo ? (
+      <div className={`site-container chairman-grid${photo ? "" : " chairman-grid--copy-only"}`}>
+        {photo ? (
+          <div className="portrait-wrap">
+            <div className="portrait-glow" aria-hidden="true" />
+            <div className="media-visual">
               <Image src={photo.src} alt={photo.alt} fill sizes="(max-width: 900px) 100vw, 400px" />
-            ) : (
-              <>
-                <Camera className="media-visual-main" />
-                <Mic2 className="media-visual-mic" />
-                <Film className="media-visual-film" />
-                <span>Information</span>
-                <span>Entertainment</span>
-                <span>Responsibility</span>
-              </>
-            )}
+            </div>
+            <div className="portrait-caption">
+              <strong>{block.captionTitle || "Your Media Partner"}</strong>
+              <span>{business.address}</span>
+            </div>
           </div>
-          <div className="portrait-caption">
-            <strong>{block.captionTitle || "Your Media Partner"}</strong>
-            <span>{business.address}</span>
-          </div>
-        </div>
+        ) : null}
         <div className="chairman-copy">
           <div className="eyebrow">
             <i /> {home?.aboutEyebrow || "Who We Are"}
