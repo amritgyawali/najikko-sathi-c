@@ -600,13 +600,25 @@ The browser installation is only needed once per machine. `check:site` starts a 
 
 ## Photos and films
 
-Every blue placeholder on the site is filled from the dashboard. The **Photos &
-films** panel on the dashboard home lists all of them - each page's "in pictures
-& film" band, the panels on the home and production pages, and one band per
-service page - says whether each has been filled yet, and links straight to the
-entry behind it. Open one, upload a photograph or a film, save, and the page
-shows it on the next load. Nothing is copied into the repository and nothing is
-redeployed.
+Every page a visitor reads can carry a photograph and a film, and both are
+uploaded from the dashboard. The **Photos & films** panel on the dashboard home
+lists every one of them - each page's "in pictures & film" band, the panels on
+the home and production pages, and one band per service page - says whether each
+has anything in it yet, and links straight to the entry behind it. Open one,
+upload a photograph or a film, save, and the page shows it on the next load.
+Nothing is copied into the repository and nothing is redeployed.
+
+**An empty page shows nothing.** The band is drawn only once a photograph or a
+film has been uploaded for that page. Until then there is no band, no heading
+and no gap - a page with no pictures simply has no picture section. A page with
+one of the two shows the one it has, on its own, rather than beside a rectangle
+apologising for the other. (This used not to be true: every page carried two
+captioned blue rectangles promising photographs "coming soon", which is an odd
+thing to tell a visitor on nine pages at once.)
+
+Search and the sign-up form are the two pages with nowhere to put a picture.
+They are working pages rather than pages anyone reads, and neither is in the
+sitemap.
 
 A film can be uploaded as a file, given as a YouTube link, or given as the
 address of a film hosted elsewhere; the first of those that is filled in is what
@@ -618,6 +630,11 @@ covers captions, transcripts, stills, and publication metadata.
 There is no public upload feature: no form, no API, and no first-visitor setup
 screen. Only a signed-in editor or administrator can add a file. A page is not
 given a player or video structured data until a real film has been added to it.
+
+Files in **Content → Media** published to a page through **Where this appears**
+join that page's band underneath the two frames, and count towards whether the
+band is drawn at all - so a photograph reaches a page without an editor having
+to find something to attach it to.
 
 ## Contact behaviour
 

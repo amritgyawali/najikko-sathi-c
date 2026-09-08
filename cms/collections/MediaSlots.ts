@@ -7,11 +7,13 @@ import { THUMB_CELL } from "../fields";
 /**
  * The photograph and the film shown on a given page.
  *
- * Every blue placeholder on the website is one row here. An editor opens the
- * row for a page, uploads a picture or a film, saves, and the placeholder is
- * replaced on the next request - no file copied into the repository and no
- * deployment. The dashboard's "Page media" panel lists every placeholder and
- * links straight to its row, so nobody has to remember these keys.
+ * Every page that can carry a picture is one row here. An editor opens the row
+ * for a page, uploads a picture or a film, saves, and it is on the page on the
+ * next request - no file copied into the repository and no deployment. Until
+ * then the page carries no picture band at all: an empty row shows a visitor
+ * nothing rather than a rectangle promising photographs later. The dashboard's
+ * "Page media" panel lists every row and links straight to it, so nobody has to
+ * remember these keys.
  *
  * A film can arrive three ways, and the page uses the first one that is filled
  * in: an uploaded file, a YouTube link, or the address of a film hosted
@@ -52,7 +54,7 @@ export const MediaSlots: CollectionConfig = {
       index: true,
       label: "Placeholder",
       admin: {
-        description: `Which placeholder this fills: ${knownKeys}, or a service slug such as "documentary-film-production" for a service page.`,
+        description: `Which page this fills: ${knownKeys}, or a service slug such as "documentary-film-production" for a service page.`,
       },
     },
     {
@@ -62,7 +64,7 @@ export const MediaSlots: CollectionConfig = {
       label: "Photograph",
       filterOptions: { mimeType: { contains: "image" } },
       admin: {
-        description: "Replaces the blue photo placeholder on this page.",
+        description: "The photograph shown on this page. The band appears once this or a film is saved.",
         components: { Cell: THUMB_CELL },
       },
     },

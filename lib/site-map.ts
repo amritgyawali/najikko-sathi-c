@@ -39,9 +39,11 @@ export type SitePage = {
    */
   parent?: string;
   /**
-   * The Page media entry that holds this page's photo or film, when it has
-   * one. cms/live-urls.ts resolves the same key back to this path, and
-   * check:pages fails if the two ever disagree.
+   * The Page media entry an editor uploads this page's photo or film into.
+   * Every page a visitor reads as content has one, so there is always somewhere
+   * to put a picture; the band stays off the page until something is uploaded.
+   * cms/live-urls.ts resolves the same key back to this path, and check:pages
+   * fails if the two ever disagree.
    */
   mediaKey?: string;
   /** Where in the dashboard this page's content is written. */
@@ -239,14 +241,16 @@ export const sitePages: SitePage[] = [
     label: "Writing",
     summary: "News, blogs, commentary and investigations. Listed once something is published.",
     parent: "/our-work",
-    edit: [collectionLink("posts", "Posts")],
+    mediaKey: "posts",
+    edit: [collectionLink("posts", "Posts"), pageMedia("posts")],
   },
   {
     path: "/offers",
     label: "Offers",
     summary: "Promotions and packages. Listed once something is published and in date.",
     parent: "/services",
-    edit: [collectionLink("offers", "Offers")],
+    mediaKey: "offers",
+    edit: [collectionLink("offers", "Offers"), pageMedia("offers")],
   },
 
   // Reached from links on the site rather than from the menu.
@@ -288,18 +292,19 @@ export const sitePages: SitePage[] = [
 ];
 
 /**
- * The picture and film placeholders on the website, in page order.
+ * The places a picture or a film can go on the website, in page order.
  *
- * Every blue placeholder a visitor can see has an entry here, and every entry
- * is one row in Content → Page media. Uploading a photograph or a film into
- * that row replaces the placeholder on the page named below.
+ * Every one is a row in Content → Page media. Uploading a photograph or a film
+ * into that row puts it on the page named below; leaving the row empty leaves
+ * the page as it is, with no band and no gap.
  *
- * Two shapes of placeholder exist:
+ * Two shapes exist:
  *
  * - `showcase` - the "in pictures & film" band near the foot of a page, which
- *   holds one photograph and one film side by side.
- * - `panel` - a single decorative blue panel drawn from icons, which a
- *   photograph replaces outright.
+ *   holds a photograph and a film side by side. It is drawn only once one of
+ *   them has been uploaded.
+ * - `panel` - a decorative panel that is part of the page's design, which a
+ *   photograph replaces outright when one is uploaded.
  *
  * Service detail pages carry a showcase band too. Those are not listed here
  * because services are written in the dashboard: their placeholder key is the
@@ -350,7 +355,7 @@ export const mediaPlaceholders: MediaPlaceholder[] = sitePages.flatMap((page) =>
           label: `${page.label} photo & film`,
           path: page.path,
           kind: "showcase" as const,
-          note: "The photograph and film in the “in pictures & film” band.",
+          note: "The photograph and film in the “in pictures & film” band, which appears once one of them is uploaded.",
         },
       ]
     : []),

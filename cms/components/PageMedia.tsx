@@ -9,15 +9,17 @@ import { mediaPlaceholders } from "@/lib/site-map";
 /**
  * "Photos & films" - the panel under the page list on the dashboard home.
  *
- * Every blue placeholder on the website is listed here with what it holds so
- * far and a link straight to the entry that fills it. That is the whole point
- * of the panel: an owner who wants to put a picture on a page should not have
- * to know that the picture lives in a collection called Page media under a key
- * that has to match the page's name.
+ * Every page that can carry a photograph or a film is listed here with what it
+ * holds so far and a link straight to the entry that fills it. That is the whole
+ * point of the panel: an owner who wants to put a picture on a page should not
+ * have to know that the picture lives in a collection called Page media under a
+ * key that has to match the page's name.
  *
- * The fixed placeholders come from lib/site-map.ts, which `npm run check:pages`
- * keeps honest. Service pages are read from the database, since services are
- * written in the dashboard and each one carries a band of its own.
+ * An empty row means that page simply has no picture band - nothing is shown to
+ * a visitor until something is uploaded here. The list comes from
+ * lib/site-map.ts, which `npm run check:pages` keeps honest. Service pages are
+ * read from the database, since services are written in the dashboard and each
+ * one carries a band of its own.
  */
 
 type Props = { payload?: Payload };
@@ -147,13 +149,14 @@ export async function PageMedia({ payload }: Props) {
       <div className="ns-panel__head">
         <h3 className="ns-panel__title">Photos &amp; films</h3>
         <span className="ns-panel__meta">
-          {filled} of {rows.length} placeholders filled
+          {filled} of {rows.length} pages have pictures
         </span>
       </div>
       <p className="ns-pages__hint">
-        Each row below is a blue placeholder on the website. Open one, upload a photograph or a
-        film, and save - the page shows it straight away. A film that is too large to upload can
-        be published on YouTube and pasted in as a link instead.
+        Each row below is a page that can carry pictures. Open one, upload a photograph or a
+        film, and save - the page shows it straight away. Until then the page carries no picture
+        band at all, so an empty row is not something a visitor ever sees. A film that is too
+        large to upload can be published on YouTube and pasted in as a link instead.
       </p>
 
       <ul className="ns-pages__list">

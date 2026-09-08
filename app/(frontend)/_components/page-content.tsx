@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, ArrowUpRight, Camera, Clapperboard, GraduationCap, ImageIcon, Megaphone, Newspaper, Play, Search } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Camera, Clapperboard, GraduationCap, Megaphone, Newspaper, Search } from "lucide-react";
 import { business } from "../_data/site";
 import { getMediaSlot, getPlacedMedia } from "@/lib/content";
 import { slotFilm, slotPhoto, type SlotFilm } from "@/lib/page-media";
@@ -85,13 +85,15 @@ function Film({ film }: { film: SlotFilm }) {
   </video>;
 }
 
+/** One file from the library, as much of it as the band draws. */
+type PlacedFile = Awaited<ReturnType<typeof getPlacedMedia>>[number];
+
 /**
  * Anything in Content → Media that an editor published to this page, shown
- * under the band's two frames. Uploading a photograph and ticking the page is
- * all it takes; nothing else has to point at the file.
+ * under the band's frames. Uploading a photograph and ticking the page is all
+ * it takes; nothing else has to point at the file.
  */
-async function PlacedMedia({ placement }: { placement: string | null }) {
-  const files = await getPlacedMedia(placement);
+function PlacedMedia({ files }: { files: PlacedFile[] }) {
   if (files.length === 0) return null;
 
   return (
@@ -125,13 +127,21 @@ async function PlacedMedia({ placement }: { placement: string | null }) {
 }
 
 /**
- * The "in pictures & film" band. Both frames show a labelled placeholder until
- * someone uploads a photograph or adds a film to this page's Page media entry
- * in the dashboard, at which point the placeholder is replaced here.
+ * The "in pictures & film" band.
+ *
+ * It draws nothing at all until something has been uploaded for this page. An
+ * empty band used to show two captioned blue rectangles promising photographs
+ * "coming soon", which is an odd thing for a visitor to be told on nine pages
+ * at once - so now a page with no pictures simply has no picture band, and the
+ * band appears the moment the first photograph or film is saved.
+ *
+ * Half-filled is fine: a page with a photograph and no film shows the
+ * photograph on its own rather than beside an apology for the missing film.
  *
  * `placement` is the page the band is on. Files in Content → Media published to
  * that page join the band underneath, so a photograph reaches the website
- * without an editor having to find something to attach it to.
+ * without an editor having to find something to attach it to - and they count
+ * towards whether the band appears at all.
  */
 export async function MediaShowcase({
   mediaKey,
@@ -142,26 +152,31 @@ export async function MediaShowcase({
   title: string;
   placement?: string | null;
 }) {
-  const slot = await getMediaSlot(mediaKey);
+  const [slot, files] = await Promise.all([getMediaSlot(mediaKey), getPlacedMedia(placement)]);
   const image = slotPhoto(slot, title);
   const film = slotFilm(slot, title);
 
+  // Nothing uploaded anywhere for this page: no band, no heading, no gap.
+  if (!image && !film && files.length === 0) return null;
+
+  // One frame on its own is centred rather than left hanging in half a grid.
+  const frames = [image, film].filter(Boolean).length;
+
   return <section className="content-section media-section"><div className="site-container">
     <SectionHeading kicker="In focus" title={`${title} in pictures & film`} description="A space for images and films from our work." />
-    <div className="media-showcase-grid">
-      <figure className="media-frame">
-        {image ? <><div className="media-photo"><Image src={image.src} alt={image.alt} fill sizes="(max-width: 760px) 100vw, 50vw" /></div>{image.caption ? <figcaption>{image.caption}</figcaption> : null}</> : <><div className="media-placeholder"><ImageIcon aria-hidden="true" /><span>Photography</span><strong>{title}</strong><small>Photos coming soon</small></div><figcaption>Photography will be added to this page.</figcaption></>}
-      </figure>
-      <figure className="media-frame">
-        {film ? <>
-          <Film film={film} />
-          {film.description ? <figcaption>{film.description}</figcaption> : null}
-          {film.transcript ? <details className="video-transcript"><summary>Read video transcript</summary><p>{film.transcript}</p></details> : null}
-          <StructuredData data={{ "@context": "https://schema.org", "@type": "VideoObject", name: film.title, description: film.description || undefined, thumbnailUrl: film.poster ? absoluteUrl(film.poster) : undefined, ...(film.kind === "youtube" ? { embedUrl: film.src, url: film.watchUrl ?? undefined } : { contentUrl: absoluteUrl(film.src) }), uploadDate: film.uploadDate || undefined, duration: film.duration || undefined, publisher: { "@id": `${siteUrl}/#organization` } }} />
-        </> : <><div className="media-placeholder video-placeholder"><Play aria-hidden="true" /><span>Film & video</span><strong>{title}</strong><small>Video coming soon</small></div><figcaption>A video will be added when available.</figcaption></>}
-      </figure>
-    </div>
-    <PlacedMedia placement={placement} />
+    {frames > 0 ? <div className={`media-showcase-grid${frames === 1 ? " media-showcase-grid--one" : ""}`}>
+      {image ? <figure className="media-frame">
+        <div className="media-photo"><Image src={image.src} alt={image.alt} fill sizes="(max-width: 760px) 100vw, 50vw" /></div>
+        {image.caption ? <figcaption>{image.caption}</figcaption> : null}
+      </figure> : null}
+      {film ? <figure className="media-frame">
+        <Film film={film} />
+        {film.description ? <figcaption>{film.description}</figcaption> : null}
+        {film.transcript ? <details className="video-transcript"><summary>Read video transcript</summary><p>{film.transcript}</p></details> : null}
+        <StructuredData data={{ "@context": "https://schema.org", "@type": "VideoObject", name: film.title, description: film.description || undefined, thumbnailUrl: film.poster ? absoluteUrl(film.poster) : undefined, ...(film.kind === "youtube" ? { embedUrl: film.src, url: film.watchUrl ?? undefined } : { contentUrl: absoluteUrl(film.src) }), uploadDate: film.uploadDate || undefined, duration: film.duration || undefined, publisher: { "@id": `${siteUrl}/#organization` } }} />
+      </figure> : null}
+    </div> : null}
+    <PlacedMedia files={files} />
   </div></section>;
 }
 
