@@ -138,18 +138,26 @@ export async function importRoutePages(
 /**
  * A read that failed because the database is younger than the config.
  *
- * A migration using the local API queries every table the *current* config
- * knows about - including the ones a later migration has yet to create - so on
- * an empty database, running the chain from the beginning, that read fails
- * until the schema has caught up.
+ * A migration using the local API queries every table *and every column* the
+ * current config knows about - including the ones a later migration has yet to
+ * create - so on an empty database, running the chain from the beginning, that
+ * read fails until the schema has caught up. Adding one field to one collection
+ * is enough to do it, which is why this matches a missing column as well as a
+ * missing table.
  *
  * Every migration that reads a page through the local API has to allow for
  * this, not just the import below: adding one section to the page builder adds
  * a table to that query, and every earlier migration then reads a table that
  * does not exist yet. That is what `readPageBySchemaAware` is for.
  */
-export const schemaBehindConfig = (error: unknown): boolean =>
-  error instanceof Error && /relation "[^"]+" does not exist/i.test(`${error.message} ${String((error as { cause?: unknown }).cause ?? "")}`);
+export const schemaBehindConfig = (error: unknown): boolean => {
+  if (!(error instanceof Error)) return false;
+  const text = `${error.message} ${String((error as { cause?: unknown }).cause ?? "")}`;
+  // A table a later migration creates, or a column it adds to an existing one.
+  // Both come back from Postgres as "does not exist", and both mean the same
+  // thing here: this migration is older than the config it is reading through.
+  return /(relation|column) "?[\w.".]+"? does not exist/i.test(text);
+};
 
 /**
  * Imports the built-in pages, and says nothing if the database is not ready for

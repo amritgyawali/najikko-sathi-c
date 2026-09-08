@@ -2858,9 +2858,17 @@ export interface Homepage {
     | null;
   leadershipKicker?: string | null;
   /**
+   * Shown when the website is read in Nepali. Leave it empty to keep the English.
+   */
+  leadershipKickerNe?: string | null;
+  /**
    * The heading sits inside the carousel and moves on with the message it belongs to. This one is used for any message that has no heading of its own.
    */
   leadershipHeading?: string | null;
+  /**
+   * Shown when the website is read in Nepali. Leave it empty to keep the English.
+   */
+  leadershipHeadingNe?: string | null;
   /**
    * Shown one at a time on the homepage. The carousel moves on every five seconds, and visitors can step through with the arrows. Each message brings its own heading with it, so the heading changes as the carousel moves.
    */
@@ -2877,6 +2885,13 @@ export interface Homepage {
          */
         message: string;
         photo?: (number | null) | Media;
+        roleNe?: string | null;
+        nameNe?: string | null;
+        headingNe?: string | null;
+        /**
+         * Leave a blank line between paragraphs.
+         */
+        messageNe?: string | null;
         id?: string | null;
       }[]
     | null;
@@ -3169,7 +3184,9 @@ export interface HomepageSelect<T extends boolean = true> {
         id?: T;
       };
   leadershipKicker?: T;
+  leadershipKickerNe?: T;
   leadershipHeading?: T;
+  leadershipHeadingNe?: T;
   leadershipMessages?:
     | T
     | {
@@ -3178,6 +3195,10 @@ export interface HomepageSelect<T extends boolean = true> {
         heading?: T;
         message?: T;
         photo?: T;
+        roleNe?: T;
+        nameNe?: T;
+        headingNe?: T;
+        messageNe?: T;
         id?: T;
       };
   servicesKicker?: T;

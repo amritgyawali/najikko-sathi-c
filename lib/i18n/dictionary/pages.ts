@@ -37,9 +37,9 @@ export const pages: Record<string, string> = {
   // ---- Homepage: partners ---------------------------------------------
   "We worked with": "हामीले काम गरेका संस्थाहरू",
 
-  // ---- Homepage: leadership -------------------------------------------
-  "Media is more than information.": "मिडिया सूचनाभन्दा धेरै हो।",
-  "Director's message": "निर्देशकको सन्देश",
+  // The leadership band is not in this phrase book on purpose. Those messages
+  // are someone's own words, so their Nepali is written by hand in
+  // Site → Homepage & page copy and the band is marked `data-no-translate`.
 
   // ---- Social Work page ------------------------------------------------
   "The work we do beside our communities.": "हामीले आफ्ना समुदायसँगै गर्ने काम।",

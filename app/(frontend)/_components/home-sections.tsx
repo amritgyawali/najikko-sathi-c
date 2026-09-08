@@ -7,7 +7,13 @@ import type { PageSection } from "@/lib/page-defaults";
 import { getMediaSlot, type BusinessInfo } from "@/lib/content";
 import { mediaAlt, mediaUrl } from "@/lib/media";
 import { slotPhoto } from "@/lib/page-media";
-import { leadershipMessages as defaultLeadershipMessages } from "@/lib/leadership";
+import {
+  leadershipMessages as defaultLeadershipMessages,
+  LEADERSHIP_HEADING,
+  LEADERSHIP_HEADING_NE,
+  LEADERSHIP_KICKER,
+  LEADERSHIP_KICKER_NE,
+} from "@/lib/leadership";
 import { missionParagraphs, missionQuote } from "@/lib/mission";
 import { LeadershipCarousel, type LeadershipMessage } from "./leadership-carousel";
 import { MediaSystem } from "./media-system";
@@ -185,6 +191,12 @@ export function Leadership({ home }: { home: Homepage | null }) {
       name: row.name,
       heading: row.heading ?? "",
       message: row.message,
+      // The Nepali half. Empty is meaningful: the carousel shows the English
+      // rather than translating it, so a blank field is never guessed at.
+      roleNe: row.roleNe ?? "",
+      nameNe: row.nameNe ?? "",
+      headingNe: row.headingNe ?? "",
+      messageNe: row.messageNe ?? "",
       photoUrl: mediaUrl(row.photo),
       photoAlt: mediaAlt(row.photo, `${row.name}, ${row.role}`),
     }));
@@ -197,8 +209,10 @@ export function Leadership({ home }: { home: Homepage | null }) {
       <div className="site-container">
         <LeadershipCarousel
           messages={messages}
-          kicker={home?.leadershipKicker || "From our leadership"}
-          heading={home?.leadershipHeading || "Messages from the people who guide our work."}
+          kicker={home?.leadershipKicker || LEADERSHIP_KICKER}
+          heading={home?.leadershipHeading || LEADERSHIP_HEADING}
+          kickerNe={home?.leadershipKickerNe || LEADERSHIP_KICKER_NE}
+          headingNe={home?.leadershipHeadingNe || LEADERSHIP_HEADING_NE}
         />
       </div>
     </section>
