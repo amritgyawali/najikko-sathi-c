@@ -392,11 +392,88 @@ export const WellWishersSection: Block = {
   ],
 };
 
+/**
+ * The band of client and partner logos that slides across the front page.
+ *
+ * The names are typed in the dashboard and a logo uploaded beside each one. A
+ * partner with no logo yet is drawn as its name, so the band reads correctly
+ * from the moment it is filled in rather than waiting on artwork.
+ */
+export const PartnerMarqueeSection: Block = {
+  slug: "partnerMarquee",
+  labels: { singular: "Partner logos", plural: "Partner logo bands" },
+  fields: [
+    {
+      name: "heading",
+      type: "text",
+      defaultValue: "We worked with",
+      admin: { description: "The line above the logos." },
+    },
+    {
+      name: "partners",
+      type: "array",
+      labels: { singular: "Partner", plural: "Partners" },
+      admin: {
+        description:
+          "Drag to reorder. The row slides on by itself and pauses when a visitor points at it.",
+      },
+      fields: [
+        { name: "name", type: "text", required: true },
+        {
+          name: "logo",
+          type: "upload",
+          relationTo: "media",
+          filterOptions: { mimeType: { contains: "image" } },
+          admin: { description: "Optional. The name is shown until a logo is uploaded." },
+        },
+        {
+          name: "href",
+          type: "text",
+          label: "Website",
+          admin: { description: "Optional. Makes the logo a link, opened in a new tab." },
+        },
+      ],
+    },
+    {
+      name: "tone",
+      type: "select",
+      defaultValue: "tinted",
+      options: [
+        { label: "Plain", value: "plain" },
+        { label: "Tinted band", value: "tinted" },
+      ],
+    },
+  ],
+};
+
 /** The social responsibility films and albums, from their own collection. */
 export const SocialResponsibilitySection: Block = {
   slug: "socialResponsibilitySection",
   labels: { singular: "Social responsibility", plural: "Social responsibility" },
   fields: headingFields,
+};
+
+/**
+ * The social work albums and films, from Content → Social Work. Hidden while
+ * nothing has been published there.
+ */
+export const SocialWorkSection: Block = {
+  slug: "socialWorkSection",
+  labels: { singular: "Social work", plural: "Social work" },
+  fields: [
+    ...headingFields,
+    {
+      name: "emptyNote",
+      type: "text",
+      label: "Where this is written",
+      admin: {
+        readOnly: true,
+        description:
+          "Each entry - its title, what it is about, its photographs and its videos - is added " +
+          "in Content → Social Work. This band shows everything published there.",
+      },
+    },
+  ],
 };
 
 /** The row of links that jumps to each category further down the page. */
@@ -610,7 +687,9 @@ export const sectionBlocks: Block[] = [
   TeamSection,
   ReviewsSection,
   WellWishersSection,
+  PartnerMarqueeSection,
   SocialResponsibilitySection,
+  SocialWorkSection,
   ContactDetailsSection,
   ContactCtaSection,
   PortalLinksSection,

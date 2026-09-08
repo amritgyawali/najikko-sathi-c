@@ -13,6 +13,9 @@ import * as migration_20260906_120908_add_content_placements from './20260906_12
 import * as migration_20260906_121056_move_faq_placements from './20260906_121056_move_faq_placements';
 import * as migration_20260906_145554_add_reviews_and_well_wishers_bands from './20260906_145554_add_reviews_and_well_wishers_bands';
 import * as migration_20260906_150000_home_reviews_and_well_wishers from './20260906_150000_home_reviews_and_well_wishers';
+import * as migration_20260907_211422_add_social_work_and_partners from './20260907_211422_add_social_work_and_partners';
+import * as migration_20260907_212000_secure_social_work_tables from './20260907_212000_secure_social_work_tables';
+import * as migration_20260907_213000_social_work_page_and_home_copy from './20260907_213000_social_work_page_and_home_copy';
 
 export const migrations = [
   {
@@ -83,11 +86,26 @@ export const migrations = [
   {
     up: migration_20260906_145554_add_reviews_and_well_wishers_bands.up,
     down: migration_20260906_145554_add_reviews_and_well_wishers_bands.down,
-    name: '20260906_145554_add_reviews_and_well_wishers_bands'
+    name: '20260906_145554_add_reviews_and_well_wishers_bands',
   },
   {
     up: migration_20260906_150000_home_reviews_and_well_wishers.up,
     down: migration_20260906_150000_home_reviews_and_well_wishers.down,
     name: '20260906_150000_home_reviews_and_well_wishers',
+  },
+  {
+    up: migration_20260907_211422_add_social_work_and_partners.up,
+    down: migration_20260907_211422_add_social_work_and_partners.down,
+    name: '20260907_211422_add_social_work_and_partners',
+  },
+  {
+    up: migration_20260907_212000_secure_social_work_tables.up,
+    down: migration_20260907_212000_secure_social_work_tables.down,
+    name: '20260907_212000_secure_social_work_tables',
+  },
+  {
+    up: migration_20260907_213000_social_work_page_and_home_copy.up,
+    down: migration_20260907_213000_social_work_page_and_home_copy.down,
+    name: '20260907_213000_social_work_page_and_home_copy',
   },
 ];

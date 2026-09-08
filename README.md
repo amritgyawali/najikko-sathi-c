@@ -23,6 +23,7 @@ Content is managed through a full admin dashboard powered by
 | Promotions and packages | Content → Offers | The pages chosen in **Where this appears** |
 | Client testimonials, with an approval queue | Content → Reviews | Review bands on the pages chosen in **Where this appears** |
 | Social responsibility films and photo albums | Content → Social responsibility | The pages chosen in **Where this appears** |
+| Social work: photo albums and YouTube films, project by project | Content → Social Work | `/social-work`, and the pages chosen in **Where this appears** |
 | Every page: its hero, its sections, their order and wording, its address, and whether it is on the website at all | Content → Website pages | Every page, and `/<slug>` for new ones |
 | Questions and answers | Content → FAQs | The pages chosen in **Where this appears** |
 | The people on the about page | Content → Team | The pages chosen in **Where this appears** |
@@ -37,6 +38,8 @@ Content is managed through a full admin dashboard powered by
 | Navbar links, order and header button | Site → Navigation | Every page |
 | Site-wide notice, with a schedule | Site → Announcement bar | Every page |
 | Website colours, corner radius, heading font | Site → Appearance | Every page |
+| The Nepali face, and where it is fetched from | Site → Appearance → Nepali type | Every page, while the site is read in Nepali |
+| "We worked with": the client logos that slide across the front page | Content → Website pages → Home → Partner logos | `/` |
 | Footer columns and links | Site → Footer | Every page |
 | Company name, address, phones, VAT, SEO | Site → Site Settings | Every page |
 | Old URLs redirected to new ones | Administration → Redirects | Applied by `proxy.ts` |
@@ -45,8 +48,8 @@ Content is managed through a full admin dashboard powered by
 ### The homepage
 
 The front page is the media system wheel, the introduction, the leadership
-messages, the reviews and well-wishers bands, and the page's own photo and
-film. The wheel's six petals -
+messages, the reviews and well-wishers bands, the "We worked with" logo band,
+and the page's own photo and film. The wheel's six petals -
 production, social media handling, training, research and development, IT, and
 advertisement - each link to that discipline's page, and the company logo
 uploaded in **Site → Site Settings** sits at its centre. Until a logo is
@@ -61,10 +64,14 @@ hero*, *Home - about*, *Home - leadership*, *Services page*, *Production page*,
 *Right Sanchar page* — so the dashboard never claims to be editing the front
 page when the words come out somewhere else.
 
-The **Home - leadership** tab is empty to begin with, and the carousel appears
-on the homepage as soon as the first message is saved there. Add one entry for
-the chairman and one for the director: the carousel then moves on by itself
-every five seconds, with arrows for stepping through it by hand.
+The **Home - leadership** tab ships with the director's message and the
+chairman's, and the carousel moves on by itself every five seconds, with arrows
+for stepping through it by hand. The heading is not fixed above the carousel: it
+travels with the message, because each message carries its own **Heading shown
+with this message**. A message left without one falls back to the **Leadership
+heading** field, which is how the band read before the headings were
+per-message. Both messages are signed with the company rather than a person -
+put the chairman's and the director's own names in the **Name** field.
 
 Under the leadership messages sit two bands that fill themselves from the
 dashboard, and both stay invisible until they have something to show:
@@ -77,9 +84,17 @@ dashboard, and both stay invisible until they have something to show:
   shown under them when one is written. Someone with no photograph is drawn as
   their initial, so the row stays even.
 
-Both are ordinary sections, so Content → Website pages → Home is where you
-reorder them, reword their headings, or take one off the page - and either can
-be added to any other page from the same place.
+Under those sits **We worked with**, the band of client logos that slides across
+the page. It is a section like any other, so Content → Website pages → Home →
+**Partner logos** is where the names are typed, reordered, or removed. Each one
+takes an optional logo and an optional website; a partner with no logo uploaded
+yet is drawn as its own name, so the band reads correctly before the artwork
+arrives. The row pauses while a visitor points at it, and stops moving
+altogether for anyone whose system asks for reduced motion.
+
+All of these are ordinary sections, so Content → Website pages → Home is where
+you reorder them, reword their headings, or take one off the page - and any of
+them can be added to another page from the same place.
 
 The hero carries one button. Writing a label into **Second button** on the
 front page hero adds a second one beside it, pointing at the Right Sanchar
@@ -92,9 +107,9 @@ everything on it - the hero at the top, the written sections, the card grids,
 the numbered process, the questions, the photo and film band, the closing call
 to action - is a *section* in a list you can rewrite, reorder, add to, or delete.
 
-All of them are already there: Home, Services, Our Work, Contact, About Us,
-Production, Social Media Handling, Training, Research & Development, IT,
-Advertisement, Right Sanchar, Writing, Offers, Search and the sign-up page. Each
+All of them are already there: Home, Services, Our Work, Social Work, Contact,
+About Us, Production, Social Media Handling, Training, Research & Development,
+IT, Advertisement, Right Sanchar, Writing, Offers, Search and the sign-up page. Each
 one arrived holding exactly the copy it already shows, put there by a migration
 (`migrations/20260906_110000_import_website_pages.ts`) so nobody has to find a
 button before they can change a page. The copy each one ships with still lives
@@ -193,6 +208,25 @@ film is embedded; upload photographs with captions and they become an album.
 An entry can be both, or either one on its own. Entries are ordered by the
 **Order** field and only appear once **Published**.
 
+### Social work
+
+**Content → Social Work** drives the `/social-work` page, which is in the menu
+between Our Work and Contact. One entry is one project, and everything about it
+is uploaded here:
+
+- a **title** and a description of the work,
+- an optional **cover photograph**,
+- **photographs** - as many as you like, each with its own caption, dragged into
+  the order they should read in,
+- **videos** - as many YouTube links as you like, each with its own title and
+  description, embedded as players on the page.
+
+Paste an ordinary watch or share link and the film is embedded; anything that is
+not a YouTube link is refused when you save, rather than leaving an empty player
+on the page. Entries are ordered by the **Order** field and appear only once
+**Published**, and the band on the page hides itself entirely while nothing has
+been published to it.
+
 Because the site renders per request, a photograph added, replaced, or removed
 in the dashboard is on the public page on the next load - there is nothing to
 rebuild and no cache to clear.
@@ -200,6 +234,27 @@ rebuild and no cache to clear.
 Two more tools sit on the dashboard home: **Download backup**, which exports every
 collection and global as one JSON file (administrators only), and the **search page**
 at `/search`, which searches services, writing, offers, and pages.
+
+### The Nepali face
+
+The site is written in English and translated in the browser against the phrase
+book in `lib/i18n/dictionary`. While it is being read in Nepali every face on
+the page swaps to a Devanagari one, and that face is **Akriti**, fetched from
+the internet rather than shipped with the site.
+
+**Site → Appearance → Nepali type** holds both halves of that: the family name
+and the stylesheet address it is fetched from. `lib/fonts.ts` holds the same two
+values as the defaults, so clearing the fields in the dashboard falls back to
+Noto Sans Devanagari, which is bundled.
+
+One thing to know before changing them. The cuts of Akriti in general
+circulation are *legacy* fonts: they draw Devanagari on to Latin code points
+rather than on to the Devanagari block, so they carry no glyph for the Unicode
+Nepali this site is written in. That is why Noto Sans Devanagari stays behind
+Akriti in the stack rather than being dropped - Akriti is used for every
+character it actually has, and anything it does not have is drawn by Noto
+instead of coming out as empty boxes. Point the **Stylesheet address** at a
+Unicode cut of Akriti and it will be used for everything, with no code change.
 
 ### Choosing where content is published
 
@@ -430,7 +485,7 @@ until someone approves it in the dashboard.
 
 ## Pages
 
-The navbar links five separate pages, in this order: `/`, `/services`, `/our-work`, `/contact`, and `/about`. `/our-work` gathers the areas that are not in the menu themselves - `/production`, `/social-media-handling`, `/training`, `/research`, `/it`, `/advertisement`, `/right-sanchar` and the writing index at `/posts` keep their own pages, stay in the sitemap, and highlight **Our Work** in the header while a visitor is on them; `/offers` sits under **Services** the same way (see `navSections` in `lib/site-map.ts`, which `app/(frontend)/_data/site.ts` re-exports). The first six are the disciplines in the homepage wheel, and each petal links straight to its page. Each of the 16 services has a statically generated `/services/[slug]` page with its own scope, preparation guidance, workflow, FAQs, related services, and contact link.
+The navbar links six separate pages, in this order: `/`, `/services`, `/our-work`, `/social-work`, `/contact`, and `/about`. `/our-work` gathers the areas that are not in the menu themselves - `/production`, `/social-media-handling`, `/training`, `/research`, `/it`, `/advertisement`, `/right-sanchar` and the writing index at `/posts` keep their own pages, stay in the sitemap, and highlight **Our Work** in the header while a visitor is on them; `/offers` sits under **Services** the same way (see `navSections` in `lib/site-map.ts`, which `app/(frontend)/_data/site.ts` re-exports). The first six are the disciplines in the homepage wheel, and each petal links straight to its page. Each of the 16 services has a statically generated `/services/[slug]` page with its own scope, preparation guidance, workflow, FAQs, related services, and contact link.
 
 The portfolio covers four production services, five social media services, five training programs, and two research and development services. The source is retained in `docs/Service_Portfolio_Overview.pdf`.
 
@@ -517,6 +572,10 @@ API live in `app/(payload)/`.
 - `cms/sections.ts` - What a page section can be; `app/(frontend)/_components/PageSections.tsx` draws them
 - `cms/site-pages.ts` - Importing the website's own pages into the dashboard, and restoring them
 - `lib/content.ts` - CMS reads, with the static fallback
+- `lib/fonts.ts` - The Nepali face: its family, where it is fetched from, and why Noto sits behind it
+- `lib/leadership.ts` - The chairman's and director's messages the carousel ships with
+- `lib/mission.ts` - The mission statement the front page ships with
+- `lib/partners.ts` - The organizations named in the "We worked with" band
 - `lib/page-media.ts` - How a Page media entry becomes the photograph or film a page renders
 - `lib/placements.ts` - The pages content can be published to, and the rules deciding what a page shows
 - `lib/services.ts` - One shape for a service, whether it came from the CMS or the fallback

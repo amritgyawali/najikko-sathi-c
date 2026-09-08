@@ -67,8 +67,19 @@ export const Homepage: GlobalConfig = {
             { name: "aboutEyebrow", type: "text", defaultValue: "Who We Are" },
             { name: "aboutHeading", type: "text" },
             { name: "aboutQuote", type: "textarea" },
-            { name: "aboutBody", type: "textarea" },
-            { name: "aboutBodySecondary", type: "textarea" },
+            { name: "aboutBody", type: "textarea", label: "First paragraph" },
+            { name: "aboutBodySecondary", type: "textarea", label: "Second paragraph" },
+            {
+              name: "aboutParagraphs",
+              type: "array",
+              label: "Further paragraphs",
+              labels: { singular: "Paragraph", plural: "Paragraphs" },
+              admin: {
+                description:
+                  "Anything after the second paragraph. Drag to reorder; they read in this order.",
+              },
+              fields: [{ name: "text", type: "textarea", required: true }],
+            },
             {
               name: "aboutCapabilities",
               type: "array",
@@ -85,7 +96,16 @@ export const Homepage: GlobalConfig = {
           },
           fields: [
             { name: "leadershipKicker", type: "text", defaultValue: "From our leadership" },
-            { name: "leadershipHeading", type: "text" },
+            {
+              name: "leadershipHeading",
+              type: "text",
+              label: "Leadership heading",
+              admin: {
+                description:
+                  "The heading sits inside the carousel and moves on with the message it belongs " +
+                  "to. This one is used for any message that has no heading of its own.",
+              },
+            },
             {
               name: "leadershipMessages",
               type: "array",
@@ -94,7 +114,8 @@ export const Homepage: GlobalConfig = {
               admin: {
                 description:
                   "Shown one at a time on the homepage. The carousel moves on every five " +
-                  "seconds, and visitors can step through with the arrows.",
+                  "seconds, and visitors can step through with the arrows. Each message brings " +
+                  "its own heading with it, so the heading changes as the carousel moves.",
               },
               fields: [
                 {
@@ -104,8 +125,22 @@ export const Homepage: GlobalConfig = {
                     { name: "name", type: "text", required: true, admin: { width: "50%" } },
                   ],
                 },
-                { name: "heading", type: "text", label: "Message title" },
-                { name: "message", type: "textarea", required: true },
+                {
+                  name: "heading",
+                  type: "text",
+                  label: "Heading shown with this message",
+                  admin: {
+                    description:
+                      "Replaces the leadership heading above while this message is on screen. " +
+                      "Leave it empty to keep that one.",
+                  },
+                },
+                {
+                  name: "message",
+                  type: "textarea",
+                  required: true,
+                  admin: { description: "Leave a blank line between paragraphs." },
+                },
                 { name: "photo", type: "upload", relationTo: "media" },
               ],
             },

@@ -20,6 +20,7 @@ import { Reviews } from "./cms/collections/Reviews";
 import { ServiceCategories } from "./cms/collections/ServiceCategories";
 import { Services } from "./cms/collections/Services";
 import { SocialResponsibility } from "./cms/collections/SocialResponsibility";
+import { SocialWork } from "./cms/collections/SocialWork";
 import { TeamMembers } from "./cms/collections/TeamMembers";
 import { Users } from "./cms/collections/Users";
 import { WellWishers } from "./cms/collections/WellWishers";
@@ -142,6 +143,7 @@ export default buildConfig({
     Reviews,
     Faqs,
     SocialResponsibility,
+    SocialWork,
     TeamMembers,
     WellWishers,
     Enquiries,

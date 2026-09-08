@@ -1,7 +1,7 @@
 import { MigrateUpArgs, MigrateDownArgs } from '@payloadcms/db-postgres'
 
 import type { Page } from '../payload-types'
-import { ensureRoutePagesImported } from '../cms/site-pages'
+import { ensureRoutePagesImported, findPageByPath } from '../cms/site-pages'
 
 /**
  * Puts the reviews and well-wishers bands on the front page, and takes the
@@ -20,10 +20,10 @@ import { ensureRoutePagesImported } from '../cms/site-pages'
  * Nothing appears on the page until there is something to show: both bands
  * draw themselves only once a review has been approved, or a well-wisher added.
  *
- * This is also the newest migration that reads a page through the local API, so
- * it is the one that puts the built-in pages in the dashboard on a database
- * being built from scratch - see ensureRoutePagesImported. On a database that
- * is already up to date that step finds them all there and changes nothing.
+ * It also calls ensureRoutePagesImported, as every migration that adds a section
+ * to a page must: it is the newest such migration that ends up doing the import
+ * on a database being built from scratch. On a database that is already up to
+ * date that step finds the pages all there and changes nothing.
  */
 
 /**
@@ -53,21 +53,21 @@ const wellWishersBand: Block = {
   tone: 'tinted',
 };
 
-/** The front page's document, or null when it has been deleted. */
+/**
+ * The front page's document, or null when it has been deleted - or when the
+ * database is younger than the config and cannot be asked yet.
+ *
+ * The second case is what happens on an empty database: this query names every
+ * section table the current config knows about, including the ones later
+ * migrations create. Reading through findPageByPath answers null there instead
+ * of failing the chain, and the migration that adds those sections imports the
+ * page with the bands below already on it.
+ */
 async function homePage(
   payload: MigrateUpArgs['payload'],
   req: MigrateUpArgs['req'],
 ): Promise<{ id: string | number; layout: Block[] } | null> {
-  const found = await payload.find({
-    collection: 'pages',
-    where: { path: { equals: '/' } },
-    limit: 1,
-    depth: 0,
-    overrideAccess: true,
-    req,
-  });
-
-  const doc = found.docs[0] as { id: string | number; layout?: unknown } | undefined;
+  const doc = await findPageByPath(payload, '/', req);
   if (!doc) return null;
   return { id: doc.id, layout: Array.isArray(doc.layout) ? (doc.layout as Block[]) : [] };
 }

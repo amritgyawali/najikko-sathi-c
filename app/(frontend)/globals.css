@@ -12,6 +12,11 @@
   --shadow-soft: 0 20px 55px rgb(6 43 92 / 10%);
   --radius: 18px;
   --font-heading: var(--font-hanken);
+  /* The Nepali face. Akriti is fetched from the internet - lib/fonts.ts holds
+     the address, and Site -> Appearance can change it - and the bundled Noto
+     Sans Devanagari behind it draws anything Akriti has no glyph for. */
+  --font-nepali: "Akriti";
+  --font-devanagari: var(--font-nepali), var(--font-devanagari-fallback), "Noto Sans Devanagari", sans-serif;
 }
 
 * {
@@ -1218,6 +1223,31 @@ footer li a:hover {
   font-size: 16.5px;
   line-height: 1.8;
   white-space: pre-line;
+}
+
+.leadership-copy p + p {
+  margin-top: 15px;
+}
+
+/* The heading travels with the message: both are keyed on the slide, so this
+   entrance replays on the pair together every time the carousel moves on. */
+.leadership-heading,
+.leadership-message {
+  animation: leadership-advance .45s ease both;
+}
+
+@keyframes leadership-advance {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .leadership-heading,
+  .leadership-message {
+    animation: none;
+  }
 }
 
 .leadership-attribution {

@@ -26,6 +26,8 @@ export const common: Record<string, string> = {
   "Our work": "हाम्रो काम",
   Contact: "सम्पर्क",
   "About Us": "हाम्रो बारेमा",
+  "Social Work": "सामाजिक कार्य",
+  "Social work": "सामाजिक कार्य",
   Training: "तालिम",
   Production: "प्रोडक्सन",
   Offers: "अफरहरू",

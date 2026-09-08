@@ -20,10 +20,12 @@ import type {
   ServiceCategory,
   SiteSetting,
   SocialResponsibility,
+  SocialWork,
   Team,
   WellWisher,
 } from "@/payload-types";
 import { mediaAlt, mediaUrl } from "@/lib/media";
+import { NEPALI_FONT_FAMILY, NEPALI_FONT_URL, cssFontFamily, safeFontUrl } from "@/lib/fonts";
 import {
   business as fallbackBusiness,
   footerGroups as fallbackFooterGroups,
@@ -201,6 +203,34 @@ export const getTheme = cache(async (): Promise<Record<string, string>> => {
   ) as Record<string, string>;
 });
 
+/** The face the site is set in while it is being read in Nepali. */
+export type NepaliFont = {
+  /** A quoted family name, ready to be assigned to a CSS custom property. */
+  family: string;
+  /** The stylesheet to fetch it from, or null when nothing valid is saved. */
+  url: string | null;
+};
+
+/**
+ * Akriti, or whatever has replaced it in Site → Appearance.
+ *
+ * An address that is not plain https is dropped rather than put in the
+ * document's head, and the family name is stripped of anything that could end
+ * the CSS declaration it is written into.
+ */
+export const getNepaliFont = cache(async (): Promise<NepaliFont> => {
+  const appearance = await readGlobal<Appearance>("appearance");
+  if (!appearance) {
+    return { family: cssFontFamily(NEPALI_FONT_FAMILY), url: NEPALI_FONT_URL };
+  }
+
+  // A cleared pair means "use the bundled Devanagari face and fetch nothing",
+  // so an empty field is honoured rather than replaced with the default.
+  const family = appearance.nepaliFontFamily ?? NEPALI_FONT_FAMILY;
+  const url = appearance.nepaliFontUrl ?? NEPALI_FONT_URL;
+  return { family: cssFontFamily(family), url: safeFontUrl(url) };
+});
+
 export type FooterGroup = { title: string; links: { label: string; href: string }[] };
 
 export type FooterConfig = { about: string | null; groups: FooterGroup[]; copyright: string | null };
@@ -246,6 +276,7 @@ type CollectionMap = {
   faqs: Faq;
   team: Team;
   "social-responsibility": SocialResponsibility;
+  "social-work": SocialWork;
   "well-wishers": WellWisher;
   "media-slots": MediaSlot;
   media: Media;
@@ -342,6 +373,15 @@ export const getSocialResponsibility = cache(async (): Promise<SocialResponsibil
   getCollection("social-responsibility", {
     where: { status: { equals: "published" } },
     limit: 50,
+    sort: "order",
+  }),
+);
+
+/** Social work albums and films, in the editor's order. */
+export const getSocialWork = cache(async (): Promise<SocialWork[]> =>
+  getCollection("social-work", {
+    where: { status: { equals: "published" } },
+    limit: 100,
     sort: "order",
   }),
 );

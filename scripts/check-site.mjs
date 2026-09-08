@@ -34,7 +34,7 @@ try {
   // Content is managed in the CMS, so the sitemap grows as pages are published.
   // Assert that everything reachable is listed rather than fixing a total.
   const sitemapPaths = new Set(publishedUrls.map((url) => new URL(url).pathname));
-  for (const required of ["/", "/about", "/services", "/our-work", "/production", "/social-media-handling", "/training", "/research", "/it", "/advertisement", "/right-sanchar", "/contact"]) {
+  for (const required of ["/", "/about", "/services", "/our-work", "/social-work", "/production", "/social-media-handling", "/training", "/research", "/it", "/advertisement", "/right-sanchar", "/contact"]) {
     assert(sitemapPaths.has(required), `Navigation page missing from the sitemap: ${required}`);
   }
   const serviceCount = [...sitemapPaths].filter((path) => path.startsWith("/services/")).length;

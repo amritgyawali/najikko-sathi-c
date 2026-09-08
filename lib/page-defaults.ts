@@ -1,4 +1,5 @@
 import type { Page } from "@/payload-types";
+import { PARTNER_HEADING, partners } from "@/lib/partners";
 
 /**
  * The content every built-in page ships with.
@@ -83,6 +84,12 @@ export const routePageContent: Record<string, RoutePageContent> = {
         description:
           "Advisers, patrons and friends of the house whose encouragement keeps this work moving.",
         tone: "tinted",
+      },
+      {
+        blockType: "partnerMarquee",
+        heading: PARTNER_HEADING,
+        partners: partners.map((partner) => ({ name: partner.name })),
+        tone: "plain",
       },
       { blockType: "mediaShowcase", mediaKey: "home", heading: "" },
     ],
@@ -245,6 +252,38 @@ export const routePageContent: Record<string, RoutePageContent> = {
         "Tell us what you want to make.",
         "Share your audience, your idea, and the areas of our work it touches.",
         "Our Work",
+      ),
+    ],
+  },
+
+  "/social-work": {
+    seo: {
+      title: "Social Work | Community Projects in Photographs & Film",
+      description:
+        "The community work Najikko Sathi Media takes part in across Nepal, in photographs and film. Albums and videos from each project, with the people and organizations behind them.",
+    },
+    sections: [
+      {
+        blockType: "pageHero",
+        eyebrow: "Social work",
+        heading: "The work we do beside our communities.",
+        description:
+          "Media is only half of what we do. This is the community work we take part in, project by project, in photographs and film.",
+        ctaLabel: "Work with us",
+        ctaHref: "/contact?service=Social%20Work",
+      },
+      {
+        blockType: "socialWorkSection",
+        kicker: "In photographs & film",
+        heading: "Every project, as it happened.",
+        description:
+          "Each entry carries the photographs taken on the day and the films made of it. New work is added as it is finished.",
+      },
+      mediaShowcase("social-work", "Our social work"),
+      contactCta(
+        "Working on something for your community?",
+        "Tell us about the project and the people it is for. We can help plan how it is documented and shared.",
+        "Social Work",
       ),
     ],
   },

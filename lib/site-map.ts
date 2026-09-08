@@ -119,10 +119,21 @@ export const sitePages: SitePage[] = [
     ],
   },
   {
+    path: "/social-work",
+    label: "Social Work",
+    summary: "The community work we take part in, in photographs and film.",
+    navOrder: 4,
+    mediaKey: "social-work",
+    edit: [
+      collectionLink("social-work", "Social Work", "the albums and films on this page"),
+      pageMedia("social-work"),
+    ],
+  },
+  {
     path: "/contact",
     label: "Contact",
     summary: "Contact details, the enquiry form, and the questions people ask before writing in.",
-    navOrder: 4,
+    navOrder: 5,
     mediaKey: "contact",
     edit: [
       globalLink("site-settings", "Site settings", "address, phones, email"),
@@ -135,7 +146,7 @@ export const sitePages: SitePage[] = [
     path: "/about",
     label: "About Us",
     summary: "Who the company is, what it stands for, and the people behind it.",
-    navOrder: 5,
+    navOrder: 6,
     mediaKey: "about",
     edit: [
       collectionLink("team", "Team"),
