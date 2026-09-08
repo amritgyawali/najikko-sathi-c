@@ -49,10 +49,10 @@ export function ImportPagesButton({
 
   return (
     <>
-      <button className="ns-page__action ns-page__action--go" disabled={busy} onClick={run} type="button">
+      <button className="ns-chip ns-chip--go" disabled={busy} onClick={run} type="button">
         {busy ? busyLabel : label}
       </button>
-      {error ? <span className="ns-pages__error">{error}</span> : null}
+      {error ? <span className="ns-run__said ns-run__said--bad">{error}</span> : null}
     </>
   );
 }

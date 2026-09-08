@@ -217,6 +217,9 @@ export interface Page {
              * The line above the title.
              */
             eyebrow: string;
+            /**
+             * A photograph can be put beside the title from Content → Page media, in this page's "-hero" entry. Without one the words span the whole band.
+             */
             heading: string;
             description?: string | null;
             ctaLabel?: string | null;
@@ -696,7 +699,7 @@ export interface Page {
             linkLabel?: string | null;
             linkHref?: string | null;
             /**
-             * The caption on the visual. The words in this band are written in Site → Homepage & page copy, on the "Home - about" tab.
+             * The caption on the photograph beside the introduction, shown only once one has been uploaded into the "home-about" Page media entry. The words in this band are written in Site → Homepage & page copy, on the "Home - about" tab.
              */
             captionTitle?: string | null;
             id?: string | null;
@@ -1641,7 +1644,7 @@ export interface Enquiry {
   createdAt: string;
 }
 /**
- * The photograph or film featured on each page. Open a row, upload a picture or a film, and save.
+ * The photographs and films on each page. Open a row, upload a picture or a film, and save. An empty row is drawn nowhere.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "media-slots".
@@ -1649,11 +1652,11 @@ export interface Enquiry {
 export interface MediaSlot {
   id: number;
   /**
-   * Which page this fills: "home" (/), "home-about" (/), "services" (/services), "our-work" (/our-work), "social-work" (/social-work), "contact" (/contact), "about" (/about), "production" (/production), "production-band" (/production), "social-media-handling" (/social-media-handling), "training" (/training), "research" (/research), "it" (/it), "advertisement" (/advertisement), "right-sanchar" (/right-sanchar), "posts" (/posts), "offers" (/offers), or a service slug such as "documentary-film-production" for a service page.
+   * Which page this fills: "home" (/), "home-about" (/), "services-hero" (/services), "services" (/services), "our-work-hero" (/our-work), "our-work" (/our-work), "social-work-hero" (/social-work), "social-work" (/social-work), "contact-hero" (/contact), "contact" (/contact), "about-hero" (/about), "about" (/about), "production-hero" (/production), "production" (/production), "production-band" (/production), "social-media-handling-hero" (/social-media-handling), "social-media-handling" (/social-media-handling), "training-hero" (/training), "training" (/training), "research-hero" (/research), "research" (/research), "it-hero" (/it), "it" (/it), "advertisement-hero" (/advertisement), "advertisement" (/advertisement), "right-sanchar-hero" (/right-sanchar), "right-sanchar" (/right-sanchar), "posts-hero" (/posts), "posts" (/posts), "offers-hero" (/offers), "offers" (/offers), or a service slug such as "documentary-film-production" for a service page.
    */
   key: string;
   /**
-   * The photograph shown on this page. The band appears once this or a film is saved.
+   * The photograph shown in this place. Nothing is drawn there until this or a film is saved.
    */
   image?: (number | null) | Media;
   /**

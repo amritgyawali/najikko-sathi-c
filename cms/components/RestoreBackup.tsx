@@ -112,7 +112,7 @@ export function RestoreBackup() {
           </p>
           <div className="ns-restore__actions">
             <button
-              className="ns-page__action ns-page__action--go"
+              className="ns-btn ns-btn--primary"
               disabled={busy}
               onClick={restore}
               type="button"
@@ -120,7 +120,7 @@ export function RestoreBackup() {
               {busy ? "Putting the site back…" : "Yes, put the site back"}
             </button>
             <button
-              className="ns-page__action"
+              className="ns-btn"
               disabled={busy}
               onClick={() => setAsking(false)}
               type="button"
@@ -131,15 +131,15 @@ export function RestoreBackup() {
         </>
       ) : (
         <div className="ns-restore__actions">
-          <button className="ns-page__action" onClick={() => setAsking(true)} type="button">
+          <button className="ns-btn" onClick={() => setAsking(true)} type="button">
             Put the site back to this
           </button>
-          <a className="ns-page__action" href={`/backup?snapshot=${id}`}>
+          <a className="ns-btn" href={`/backup?snapshot=${id}`}>
             Download this copy
           </a>
         </div>
       )}
-      {error ? <span className="ns-pages__error">{error}</span> : null}
+      {error ? <span className="ns-run__said ns-run__said--bad">{error}</span> : null}
     </div>
   );
 }
