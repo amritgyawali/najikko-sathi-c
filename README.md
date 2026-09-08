@@ -590,7 +590,15 @@ copying them daily would bloat every backup.
 ### The schedule
 
 `vercel.json` calls `/api/site-backup/run` at 20:15 UTC, which is 02:00 in
-Kathmandu. Two environment variables govern it:
+Kathmandu - the small hours, when nobody is editing and a copy is of a settled
+site rather than a half-finished edit.
+
+The schedule lives in `vercel.json` and nowhere else. Vercel checks that file
+against its own schema and refuses to build if it carries a key the schema does
+not know, so it cannot be annotated: anything worth saying about the schedule
+belongs here instead.
+
+Two environment variables govern it:
 
 | Variable | What it does |
 | --- | --- |
