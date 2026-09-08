@@ -1,4 +1,11 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "regions": ["syd1"]
+  "regions": ["syd1"],
+  "crons": [
+    {
+      "comment": "The daily backup. 20:15 UTC is 02:00 in Kathmandu, when nobody is editing. Vercel signs the call with CRON_SECRET; without that variable set the endpoint refuses it.",
+      "path": "/api/site-backup/run",
+      "schedule": "15 20 * * *"
+    }
+  ]
 }

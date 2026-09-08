@@ -84,6 +84,7 @@ export interface Config {
     redirects: Redirect;
     users: User;
     pageviews: Pageview;
+    backups: Backup;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -108,6 +109,7 @@ export interface Config {
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     pageviews: PageviewsSelect<false> | PageviewsSelect<true>;
+    backups: BackupsSelect<false> | BackupsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -1735,6 +1737,44 @@ export interface Pageview {
   createdAt: string;
 }
 /**
+ * A copy of everything in the dashboard, taken once a day. Open one to put the site back to how it was.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "backups".
+ */
+export interface Backup {
+  id: number;
+  /**
+   * Names the moment this copy was taken.
+   */
+  label: string;
+  takenAt: string;
+  reason: 'daily' | 'manual' | 'beforeRestore';
+  /**
+   * What this copy holds.
+   */
+  summary?: string | null;
+  /**
+   * Documents in this copy.
+   */
+  documents?: number | null;
+  /**
+   * Anything that could not be read when this copy was taken. Empty means the copy is complete.
+   */
+  problems?: string | null;
+  data:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
@@ -1825,6 +1865,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'pageviews';
         value: number | Pageview;
+      } | null)
+    | ({
+        relationTo: 'backups';
+        value: number | Backup;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -2713,6 +2757,21 @@ export interface PageviewsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "backups_select".
+ */
+export interface BackupsSelect<T extends boolean = true> {
+  label?: T;
+  takenAt?: T;
+  reason?: T;
+  summary?: T;
+  documents?: T;
+  problems?: T;
+  data?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv_select".
  */
 export interface PayloadKvSelect<T extends boolean = true> {
@@ -2799,9 +2858,17 @@ export interface Homepage {
     | null;
   leadershipKicker?: string | null;
   /**
+   * Shown when the website is read in Nepali. Leave it empty to keep the English.
+   */
+  leadershipKickerNe?: string | null;
+  /**
    * The heading sits inside the carousel and moves on with the message it belongs to. This one is used for any message that has no heading of its own.
    */
   leadershipHeading?: string | null;
+  /**
+   * Shown when the website is read in Nepali. Leave it empty to keep the English.
+   */
+  leadershipHeadingNe?: string | null;
   /**
    * Shown one at a time on the homepage. The carousel moves on every five seconds, and visitors can step through with the arrows. Each message brings its own heading with it, so the heading changes as the carousel moves.
    */
@@ -2818,6 +2885,13 @@ export interface Homepage {
          */
         message: string;
         photo?: (number | null) | Media;
+        roleNe?: string | null;
+        nameNe?: string | null;
+        headingNe?: string | null;
+        /**
+         * Leave a blank line between paragraphs.
+         */
+        messageNe?: string | null;
         id?: string | null;
       }[]
     | null;
@@ -3110,7 +3184,9 @@ export interface HomepageSelect<T extends boolean = true> {
         id?: T;
       };
   leadershipKicker?: T;
+  leadershipKickerNe?: T;
   leadershipHeading?: T;
+  leadershipHeadingNe?: T;
   leadershipMessages?:
     | T
     | {
@@ -3119,6 +3195,10 @@ export interface HomepageSelect<T extends boolean = true> {
         heading?: T;
         message?: T;
         photo?: T;
+        roleNe?: T;
+        nameNe?: T;
+        headingNe?: T;
+        messageNe?: T;
         id?: T;
       };
   servicesKicker?: T;

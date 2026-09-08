@@ -12,7 +12,13 @@ import {
   rightSancharTopics,
 } from "../app/(frontend)/_data/site";
 import { mediaPlaceholders } from "../lib/site-map";
-import { leadershipMessageRows } from "../lib/leadership";
+import {
+  leadershipMessageRows,
+  LEADERSHIP_HEADING,
+  LEADERSHIP_HEADING_NE,
+  LEADERSHIP_KICKER,
+  LEADERSHIP_KICKER_NE,
+} from "../lib/leadership";
 import { missionBody, missionBodySecondary, missionExtraParagraphs, missionQuote } from "../lib/mission";
 
 /**
@@ -127,14 +133,16 @@ async function seed() {
         { label: "Visual production" },
         { label: "Skill development" },
       ],
-      leadershipKicker: "From our leadership",
+      leadershipKicker: LEADERSHIP_KICKER,
+      leadershipKickerNe: LEADERSHIP_KICKER_NE,
       // Used for any message with no heading of its own. Each message carries
       // one, and the carousel shows it in place of this - so the heading moves
       // on with the message rather than standing still above it.
-      leadershipHeading: "Messages from the people who guide our work.",
-      // The director's and the chairman's messages, from lib/leadership.ts.
-      // They are signed with the company rather than a person: put the real
-      // names in at Site -> Homepage -> Home - leadership.
+      leadershipHeading: LEADERSHIP_HEADING,
+      leadershipHeadingNe: LEADERSHIP_HEADING_NE,
+      // The message, in English and in Nepali, from lib/leadership.ts. It is
+      // signed with the company rather than a person: put the real names in at
+      // Site -> Homepage -> Home - leadership.
       leadershipMessages: [...leadershipMessageRows],
       servicesKicker: "Our Services",
       // Cleared on purpose: with no custom list the homepage grid shows the

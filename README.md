@@ -44,6 +44,7 @@ Content is managed through a full admin dashboard powered by
 | Company name, address, phones, VAT, SEO | Site → Site Settings | Every page |
 | Old URLs redirected to new ones | Administration → Redirects | Applied by `proxy.ts` |
 | Dashboard accounts, roles and approving sign-ups | Administration → Users | - |
+| Daily copies of everything, and putting the site back to one | Administration → Backups | - |
 
 ### The homepage
 
@@ -64,14 +65,32 @@ hero*, *Home - about*, *Home - leadership*, *Services page*, *Production page*,
 *Right Sanchar page* — so the dashboard never claims to be editing the front
 page when the words come out somewhere else.
 
-The **Home - leadership** tab ships with the director's message and the
-chairman's, and the carousel moves on by itself every five seconds, with arrows
-for stepping through it by hand. The heading is not fixed above the carousel: it
-travels with the message, because each message carries its own **Heading shown
-with this message**. A message left without one falls back to the **Leadership
-heading** field, which is how the band read before the headings were
-per-message. Both messages are signed with the company rather than a person -
-put the chairman's and the director's own names in the **Name** field.
+The **Home - leadership** tab holds the messages the carousel shows. The heading
+is not fixed above it: it travels with the message, because each message carries
+its own **Heading shown with this message**. A message left without one falls
+back to the **Leadership heading** field. The messages ship signed with the
+company rather than a person - put the chairman's and the director's own names
+in the **Name** field.
+
+**When it moves.** A message stays for five seconds, and then the carousel moves
+on. It stops the moment a visitor points at it or tabs into it, and stays
+stopped for as long as they are there. Stepping through with the arrows stops it
+too. It only starts again after **ten seconds in which nobody has hovered over
+it or touched it** — long enough to finish a paragraph without the page moving
+under you.
+
+**Nepali.** The rest of the website is written in English and turned into Nepali
+against a phrase book, but a message in someone's own words is not something to
+guess at, so this band is exempt: it is marked "do not translate" and shows only
+what is written for it here. Every message therefore has a **Nepali version of
+this message** section — role, name, heading and body — and so do the kicker and
+the fallback heading above them. Anything left empty falls back to the English
+rather than to a machine translation, so a blank field is a visible "not written
+yet", never a wrong sentence.
+
+The English and the Nepali are two halves of one message, not two messages.
+Pressing ने changes the language of what a visitor is reading; it does not move
+them to a different slide.
 
 Under the leadership messages sit two bands that fill themselves from the
 dashboard, and both stay invisible until they have something to show:
@@ -238,9 +257,13 @@ at `/search`, which searches services, writing, offers, and pages.
 ### The Nepali face
 
 The site is written in English and translated in the browser against the phrase
-book in `lib/i18n/dictionary`. While it is being read in Nepali every face on
-the page swaps to a Devanagari one, and that face is **Akriti**, fetched from
-the internet rather than shipped with the site.
+book in `lib/i18n/dictionary`. The one exception is the leadership band, whose
+Nepali is written by hand in the dashboard rather than looked up — see above.
+Anything else can be exempted the same way, by marking it `data-no-translate`.
+
+While the site is being read in Nepali every face on the page swaps to a
+Devanagari one, and that face is **Akriti**, fetched from the internet rather
+than shipped with the site.
 
 **Site → Appearance → Nepali type** holds both halves of that: the family name
 and the stylesheet address it is fetched from. `lib/fonts.ts` holds the same two
@@ -470,6 +493,68 @@ configured — see `lib/content.ts`. This means the website keeps rendering
 exactly as it does today if the database is down or before it has been set up,
 rather than showing an error page.
 
+## Backups
+
+A copy of everything in the dashboard is taken **once a day, automatically**,
+and kept as a row in the same database. If something goes wrong, an
+administrator opens yesterday's copy and puts the site back to it.
+
+They live in **Administration → Backups**. Each row says when it was taken, why,
+and what it holds; **Take a copy now** at the top of that list takes one on the
+spot, which is worth doing before making a large change on purpose.
+
+### Putting the site back
+
+Open a backup and press **Put the site back to this**. It asks first, and then:
+
+- every page, post, service, question and setting returns to how it was;
+- anything deleted since comes back;
+- anything added since is removed;
+- **a copy of the site as it is right now is taken first**, so a restore made by
+  mistake is undone by restoring that one. The panel links straight to it.
+
+Three things are treated differently on purpose:
+
+- **Enquiries are only ever added to.** A message that arrived after the copy
+  was taken is real correspondence from a real person, and no restore deletes it.
+- **Dashboard accounts are never written back.** Restoring them could resurrect
+  a removed account, or lock out the person doing the restore. They are captured
+  so the copy is complete, and skipped when it is put back.
+- **Photographs and films are updated, never recreated.** The file itself lives
+  at Cloudinary or Vercel Blob, not in this database, so a row recreated here
+  would point at nothing. A backup protects the *record* of a photograph — its
+  alt text, its captions, where it is used — not the image file. Deleting a file
+  from Cloudinary is not something a restore can undo.
+
+One limit worth knowing. A document that was deleted and is brought back by a
+restore comes back with a **new reference number**, because Payload issues its
+own. Nothing points at a post or a question by reference, so those are clean;
+but if something did — a chosen photograph, say — it needs picking again. The
+panel lists by name anything this applies to, so it is never a surprise.
+
+Page views are deliberately not copied: they are append-only analytics that grow
+without bound, there is no sense in which they can be wrong yesterday, and
+copying them daily would bloat every backup.
+
+### The schedule
+
+`vercel.json` calls `/api/site-backup/run` at 20:15 UTC, which is 02:00 in
+Kathmandu. Two environment variables govern it:
+
+| Variable | What it does |
+| --- | --- |
+| `CRON_SECRET` | Vercel sends this as a bearer token. **Without it the daily copy is never taken** — the endpoint refuses every caller that is not a signed-in administrator, which is what stops anyone on the internet filling the table. Set it in the Vercel project. |
+| `BACKUP_RETENTION_DAYS` | How many days to keep. Defaults to 30. The newest seven are always kept whatever their age. |
+
+The scheduler can take a copy and nothing else. Restoring is an administrator
+signed in to the dashboard, never a timer.
+
+**Downloading one.** `/backup` hands an administrator a fresh copy of everything
+as a JSON file, and **Download this copy** on a backup does the same for a stored
+one. That is the way out to a file on your own machine — worth doing
+occasionally, since a backup that lives only in the database it protects will not
+help if the database itself is lost.
+
 ## Analytics
 
 Page views are recorded by `app/(frontend)/track/route.ts` into the `pageviews`
@@ -572,8 +657,9 @@ API live in `app/(payload)/`.
 - `cms/sections.ts` - What a page section can be; `app/(frontend)/_components/PageSections.tsx` draws them
 - `cms/site-pages.ts` - Importing the website's own pages into the dashboard, and restoring them
 - `lib/content.ts` - CMS reads, with the static fallback
+- `lib/backup.ts` - Taking a copy of everything and putting it back, and what "putting it back" means per collection
 - `lib/fonts.ts` - The Nepali face: its family, where it is fetched from, and why Noto sits behind it
-- `lib/leadership.ts` - The chairman's and director's messages the carousel ships with
+- `lib/leadership.ts` - The leadership message the carousel ships with, in English and in Nepali
 - `lib/mission.ts` - The mission statement the front page ships with
 - `lib/partners.ts` - The organizations named in the "We worked with" band
 - `lib/page-media.ts` - How a Page media entry becomes the photograph or film a page renders

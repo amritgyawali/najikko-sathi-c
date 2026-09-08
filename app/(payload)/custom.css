@@ -1779,3 +1779,58 @@ html[data-theme="dark"] .ns-page__flag {
   background: rgba(242, 150, 15, 0.18);
   color: #f3d6b4;
 }
+
+/* ---------------------------------------------------------------------------
+   Backups: the restore panel on a copy, and the "take one now" button above
+   the list. Both reuse the pill actions above, so a backup looks like the rest
+   of the dashboard rather than like a warning box bolted on.
+   --------------------------------------------------------------------------- */
+
+.ns-restore {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  margin-bottom: 14px;
+  padding: 14px 16px;
+  border: 1px solid var(--ns-line);
+  border-radius: 12px;
+  background: var(--ns-card);
+}
+
+.ns-restore strong {
+  font-size: 13px;
+  color: var(--theme-elevation-800);
+}
+
+.ns-restore p {
+  margin: 0;
+  max-width: 74ch;
+  font-size: 12px;
+  line-height: 1.65;
+  color: var(--ns-muted);
+}
+
+.ns-restore__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.ns-restore__note {
+  font-size: 11.5px;
+}
+
+.ns-restore__problems {
+  margin: 0;
+  padding-left: 18px;
+  font-size: 11.5px;
+  line-height: 1.6;
+  color: var(--ns-c1);
+}
+
+/* A finished restore is worth noticing on the way past. */
+.ns-restore--done {
+  border-color: var(--ns-blue);
+}
