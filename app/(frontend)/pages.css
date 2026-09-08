@@ -69,15 +69,11 @@
 .process-list p { margin: 0; color: var(--muted); font-size: 15px; line-height: 1.7; }
 .media-section { background: #fbfcff; }
 .media-showcase-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+/* A page with a photograph but no film, or the other way round, shows the one
+   frame it has at a readable width rather than stretched across the grid. */
+.media-showcase-grid--one { grid-template-columns: minmax(0, 760px); justify-content: center; }
 .media-frame { min-width: 0; overflow: hidden; margin: 0; border: 1px solid var(--line); border-radius: 18px; background: #fff; }
-.media-placeholder, .media-photo { position: relative; aspect-ratio: 16 / 9; overflow: hidden; }
-.media-placeholder { display: flex; align-items: center; justify-content: center; flex-direction: column; padding: 24px; text-align: center; color: #fff; background: radial-gradient(circle at 80% 15%, rgb(91 147 243 / 32%), transparent 48%), var(--primary); }
-.media-placeholder::before { position: absolute; inset: 18px; border: 1px dashed rgb(255 255 255 / 22%); border-radius: 10px; content: ""; pointer-events: none; }
-.media-placeholder > svg { width: 40px; height: 40px; margin-bottom: 17px; color: #a9c9fa; stroke-width: 1.25; }
-.media-placeholder > span { margin-bottom: 8px; color: var(--warm); font-size: 9px; letter-spacing: .16em; text-transform: uppercase; }
-.media-placeholder strong { max-width: 400px; font-size: clamp(18px, 2vw, 27px); line-height: 1.15; font-weight: 600; }
-.media-placeholder small { margin-top: 17px; color: #b4c9e8; font-size: 11px; }
-.video-placeholder { background: linear-gradient(135deg, #103f79, var(--primary)); }
+.media-photo { position: relative; aspect-ratio: 16 / 9; overflow: hidden; }
 .media-photo img { object-fit: cover; }
 .media-frame video { display: block; width: 100%; aspect-ratio: 16 / 9; background: var(--primary); }
 /* A film added as a YouTube link, played in YouTube's own frame. */
@@ -375,9 +371,7 @@
   .scope-card { padding: 28px; }
   .process-list { grid-template-columns: 1fr; gap: 28px; }
   .process-list h3 { margin-top: 12px; }
-  .media-showcase-grid { grid-template-columns: 1fr; }
-  .media-placeholder { min-height: 215px; }
-  .media-placeholder strong { font-size: 23px; }
+  .media-showcase-grid, .media-showcase-grid--one { grid-template-columns: 1fr; }
   .faq-grid { gap: 0; }
   .faq-list summary { font-size: 16px; }
   .contact-cta { padding-block: 42px; }

@@ -1649,11 +1649,11 @@ export interface Enquiry {
 export interface MediaSlot {
   id: number;
   /**
-   * Which placeholder this fills: "home" (/), "home-about" (/), "services" (/services), "our-work" (/our-work), "social-work" (/social-work), "contact" (/contact), "about" (/about), "production" (/production), "production-band" (/production), "social-media-handling" (/social-media-handling), "training" (/training), "research" (/research), "it" (/it), "advertisement" (/advertisement), "right-sanchar" (/right-sanchar), or a service slug such as "documentary-film-production" for a service page.
+   * Which page this fills: "home" (/), "home-about" (/), "services" (/services), "our-work" (/our-work), "social-work" (/social-work), "contact" (/contact), "about" (/about), "production" (/production), "production-band" (/production), "social-media-handling" (/social-media-handling), "training" (/training), "research" (/research), "it" (/it), "advertisement" (/advertisement), "right-sanchar" (/right-sanchar), "posts" (/posts), "offers" (/offers), or a service slug such as "documentary-film-production" for a service page.
    */
   key: string;
   /**
-   * Replaces the blue photo placeholder on this page.
+   * The photograph shown on this page. The band appears once this or a film is saved.
    */
   image?: (number | null) | Media;
   /**

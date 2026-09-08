@@ -54,6 +54,8 @@ const pageForMediaSlot: Record<string, string> = {
   "right-sanchar": "/right-sanchar",
   "social-work": "/social-work",
   contact: "/contact",
+  posts: "/posts",
+  offers: "/offers",
 };
 
 const globalTargets: Record<string, LiveTarget> = {
