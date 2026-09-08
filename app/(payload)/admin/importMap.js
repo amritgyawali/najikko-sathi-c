@@ -26,6 +26,8 @@ import { LiveLinkCell as LiveLinkCell_6e5b3db06df5388d321263279a4e7642 } from '.
 import { LiveLink as LiveLink_89a586d3b1a29ab446510ec755cf1d18 } from '../../../cms/components/LiveLink'
 import { ThumbCell as ThumbCell_0481a919d3b843ac2a730b535275cf54 } from '../../../cms/components/cells/ThumbCell'
 import { RatingCell as RatingCell_60e4215f973c36fe36569c284f582ac1 } from '../../../cms/components/cells/RatingCell'
+import { BackupNowButton as BackupNowButton_6d206b79e65e5bae25d706cf7e658037 } from '../../../cms/components/BackupNowButton'
+import { RestoreBackup as RestoreBackup_c39d1c0b6558e36324f8ed049deb6f4d } from '../../../cms/components/RestoreBackup'
 import { ThemeToggle as ThemeToggle_03e2855782842afd8d454d76720a31ec } from '../../../cms/components/ThemeToggle'
 import { LoginSignupLink as LoginSignupLink_4ecb88133f73eab493d10ad23060fd42 } from '../../../cms/components/LoginSignupLink'
 import { DashboardStats as DashboardStats_9d6438ef9cd6fb98711ce5f3f44a3c38 } from '../../../cms/components/DashboardStats'
@@ -64,6 +66,8 @@ export const importMap = {
   "/cms/components/LiveLink#LiveLink": LiveLink_89a586d3b1a29ab446510ec755cf1d18,
   "/cms/components/cells/ThumbCell#ThumbCell": ThumbCell_0481a919d3b843ac2a730b535275cf54,
   "/cms/components/cells/RatingCell#RatingCell": RatingCell_60e4215f973c36fe36569c284f582ac1,
+  "/cms/components/BackupNowButton#BackupNowButton": BackupNowButton_6d206b79e65e5bae25d706cf7e658037,
+  "/cms/components/RestoreBackup#RestoreBackup": RestoreBackup_c39d1c0b6558e36324f8ed049deb6f4d,
   "/cms/components/ThemeToggle#ThemeToggle": ThemeToggle_03e2855782842afd8d454d76720a31ec,
   "/cms/components/LoginSignupLink#LoginSignupLink": LoginSignupLink_4ecb88133f73eab493d10ad23060fd42,
   "/cms/components/DashboardStats#DashboardStats": DashboardStats_9d6438ef9cd6fb98711ce5f3f44a3c38,

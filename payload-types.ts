@@ -84,6 +84,7 @@ export interface Config {
     redirects: Redirect;
     users: User;
     pageviews: Pageview;
+    backups: Backup;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -108,6 +109,7 @@ export interface Config {
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     pageviews: PageviewsSelect<false> | PageviewsSelect<true>;
+    backups: BackupsSelect<false> | BackupsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -1735,6 +1737,44 @@ export interface Pageview {
   createdAt: string;
 }
 /**
+ * A copy of everything in the dashboard, taken once a day. Open one to put the site back to how it was.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "backups".
+ */
+export interface Backup {
+  id: number;
+  /**
+   * Names the moment this copy was taken.
+   */
+  label: string;
+  takenAt: string;
+  reason: 'daily' | 'manual' | 'beforeRestore';
+  /**
+   * What this copy holds.
+   */
+  summary?: string | null;
+  /**
+   * Documents in this copy.
+   */
+  documents?: number | null;
+  /**
+   * Anything that could not be read when this copy was taken. Empty means the copy is complete.
+   */
+  problems?: string | null;
+  data:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
@@ -1825,6 +1865,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'pageviews';
         value: number | Pageview;
+      } | null)
+    | ({
+        relationTo: 'backups';
+        value: number | Backup;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -2708,6 +2752,21 @@ export interface PageviewsSelect<T extends boolean = true> {
   path?: T;
   referrer?: T;
   device?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "backups_select".
+ */
+export interface BackupsSelect<T extends boolean = true> {
+  label?: T;
+  takenAt?: T;
+  reason?: T;
+  summary?: T;
+  documents?: T;
+  problems?: T;
+  data?: T;
   updatedAt?: T;
   createdAt?: T;
 }

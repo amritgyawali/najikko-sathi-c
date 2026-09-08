@@ -7,6 +7,7 @@ import { vercelBlobStorage } from "@payloadcms/storage-vercel-blob";
 import { buildConfig, type CollectionConfig, type Field, type GlobalConfig } from "payload";
 import sharp from "sharp";
 
+import { Backups } from "./cms/collections/Backups";
 import { Enquiries } from "./cms/collections/Enquiries";
 import { Faqs } from "./cms/collections/Faqs";
 import { Media } from "./cms/collections/Media";
@@ -31,6 +32,7 @@ import { Homepage } from "./cms/globals/Homepage";
 import { Navigation } from "./cms/globals/Navigation";
 import { SiteSettings } from "./cms/globals/SiteSettings";
 import { sitePagesEndpoint } from "./cms/endpoints/site-pages";
+import { backupEndpoints } from "./cms/endpoints/backups";
 import { cloudinaryStorage } from "./cms/storage/cloudinary";
 import { databasePoolConfig } from "./cms/database";
 
@@ -63,9 +65,10 @@ const liveLinkColumn: Field = {
 /**
  * Collections whose documents never have a page of their own. A column of
  * em-dashes tells an editor nothing, so these keep the plain table they had
- * before the address column existed.
+ * before the address column existed. Backups are here for a second reason: the
+ * slot the address would occupy is the one the restore panel uses.
  */
-const PRIVATE_COLLECTIONS = new Set(["enquiries", "users", "pageviews", "reviews"]);
+const PRIVATE_COLLECTIONS = new Set(["enquiries", "users", "pageviews", "reviews", "backups"]);
 
 const withLiveLink = (config: CollectionConfig): CollectionConfig => (PRIVATE_COLLECTIONS.has(config.slug) ? config : {
   ...config,
@@ -152,10 +155,12 @@ export default buildConfig({
     Redirects,
     Users,
     PageViews,
+    Backups,
   ].map(withLiveLink),
   globals: [Homepage, Navigation, Announcement, Appearance, Footer, SiteSettings].map(withGlobalLiveLink),
-  // The dashboard's "add the website's pages" button posts here.
-  endpoints: [sitePagesEndpoint],
+  // The dashboard's "add the website's pages" button posts here, and so do the
+  // daily backup schedule and the restore button.
+  endpoints: [sitePagesEndpoint, ...backupEndpoints],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || "",
   db: postgresAdapter({

@@ -44,6 +44,7 @@ Content is managed through a full admin dashboard powered by
 | Company name, address, phones, VAT, SEO | Site → Site Settings | Every page |
 | Old URLs redirected to new ones | Administration → Redirects | Applied by `proxy.ts` |
 | Dashboard accounts, roles and approving sign-ups | Administration → Users | - |
+| Daily copies of everything, and putting the site back to one | Administration → Backups | - |
 
 ### The homepage
 
@@ -470,6 +471,68 @@ configured — see `lib/content.ts`. This means the website keeps rendering
 exactly as it does today if the database is down or before it has been set up,
 rather than showing an error page.
 
+## Backups
+
+A copy of everything in the dashboard is taken **once a day, automatically**,
+and kept as a row in the same database. If something goes wrong, an
+administrator opens yesterday's copy and puts the site back to it.
+
+They live in **Administration → Backups**. Each row says when it was taken, why,
+and what it holds; **Take a copy now** at the top of that list takes one on the
+spot, which is worth doing before making a large change on purpose.
+
+### Putting the site back
+
+Open a backup and press **Put the site back to this**. It asks first, and then:
+
+- every page, post, service, question and setting returns to how it was;
+- anything deleted since comes back;
+- anything added since is removed;
+- **a copy of the site as it is right now is taken first**, so a restore made by
+  mistake is undone by restoring that one. The panel links straight to it.
+
+Three things are treated differently on purpose:
+
+- **Enquiries are only ever added to.** A message that arrived after the copy
+  was taken is real correspondence from a real person, and no restore deletes it.
+- **Dashboard accounts are never written back.** Restoring them could resurrect
+  a removed account, or lock out the person doing the restore. They are captured
+  so the copy is complete, and skipped when it is put back.
+- **Photographs and films are updated, never recreated.** The file itself lives
+  at Cloudinary or Vercel Blob, not in this database, so a row recreated here
+  would point at nothing. A backup protects the *record* of a photograph — its
+  alt text, its captions, where it is used — not the image file. Deleting a file
+  from Cloudinary is not something a restore can undo.
+
+One limit worth knowing. A document that was deleted and is brought back by a
+restore comes back with a **new reference number**, because Payload issues its
+own. Nothing points at a post or a question by reference, so those are clean;
+but if something did — a chosen photograph, say — it needs picking again. The
+panel lists by name anything this applies to, so it is never a surprise.
+
+Page views are deliberately not copied: they are append-only analytics that grow
+without bound, there is no sense in which they can be wrong yesterday, and
+copying them daily would bloat every backup.
+
+### The schedule
+
+`vercel.json` calls `/api/site-backup/run` at 20:15 UTC, which is 02:00 in
+Kathmandu. Two environment variables govern it:
+
+| Variable | What it does |
+| --- | --- |
+| `CRON_SECRET` | Vercel sends this as a bearer token. **Without it the daily copy is never taken** — the endpoint refuses every caller that is not a signed-in administrator, which is what stops anyone on the internet filling the table. Set it in the Vercel project. |
+| `BACKUP_RETENTION_DAYS` | How many days to keep. Defaults to 30. The newest seven are always kept whatever their age. |
+
+The scheduler can take a copy and nothing else. Restoring is an administrator
+signed in to the dashboard, never a timer.
+
+**Downloading one.** `/backup` hands an administrator a fresh copy of everything
+as a JSON file, and **Download this copy** on a backup does the same for a stored
+one. That is the way out to a file on your own machine — worth doing
+occasionally, since a backup that lives only in the database it protects will not
+help if the database itself is lost.
+
 ## Analytics
 
 Page views are recorded by `app/(frontend)/track/route.ts` into the `pageviews`
@@ -572,6 +635,7 @@ API live in `app/(payload)/`.
 - `cms/sections.ts` - What a page section can be; `app/(frontend)/_components/PageSections.tsx` draws them
 - `cms/site-pages.ts` - Importing the website's own pages into the dashboard, and restoring them
 - `lib/content.ts` - CMS reads, with the static fallback
+- `lib/backup.ts` - Taking a copy of everything and putting it back, and what "putting it back" means per collection
 - `lib/fonts.ts` - The Nepali face: its family, where it is fetched from, and why Noto sits behind it
 - `lib/leadership.ts` - The chairman's and director's messages the carousel ships with
 - `lib/mission.ts` - The mission statement the front page ships with
