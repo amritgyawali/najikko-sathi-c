@@ -418,25 +418,16 @@ summary:focus-visible {
   border-color: #fff;
 }
 
+/*
+ * The media system wheel sits straight on the page. It used to be boxed in a
+ * white panel, which was one frame too many under a hero that already fades
+ * into the page background - so the wheel now stands on that background alone.
+ */
 .stats-wrap {
   position: relative;
   z-index: 5;
   width: min(1200px, calc(100% - 64px));
-  margin: -82px auto 24px;
-}
-
-.stats-card {
-  padding: 6px;
-  overflow: hidden;
-  border: 1px solid rgb(6 43 92 / 8%);
-  border-radius: 20px;
-  background: var(--surface);
-  box-shadow: var(--shadow-soft);
-  transition: transform .35s ease;
-}
-
-.stats-card:hover {
-  transform: translateY(-5px);
+  margin: -54px auto 6px;
 }
 
 .chairman-section {
@@ -1019,6 +1010,40 @@ footer li a:hover {
   text-transform: uppercase;
 }
 
+/* The editors' way in, at the very foot of every page. */
+.footer-login-row {
+  display: flex;
+  justify-content: center;
+  padding-top: 18px;
+}
+
+.footer-login {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 20px;
+  border: 1px solid rgb(255 255 255 / 18%);
+  border-radius: 999px;
+  color: rgb(255 255 255 / 62%);
+  font-family: var(--font-inter), Arial, sans-serif;
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  transition: color .2s ease, border-color .2s ease, background-color .2s ease;
+}
+
+.footer-login svg {
+  width: 13px;
+  height: 13px;
+}
+
+.footer-login:hover {
+  color: #fff;
+  border-color: rgb(255 255 255 / 42%);
+  background: rgb(255 255 255 / 8%);
+}
+
 .sr-only {
   position: absolute;
   width: 1px;
@@ -1085,10 +1110,7 @@ footer li a:hover {
 }
 
 .media-system {
-  padding: 26px 20px 30px;
-  border-radius: 15px;
-  background:
-    radial-gradient(circle at 50% 46%, #ffffff 0%, #eef3f9 58%, #e6ecf5 100%);
+  padding: 18px 20px 26px;
 }
 
 .media-system-wheel {
@@ -1096,6 +1118,39 @@ footer li a:hover {
   width: min(520px, 100%);
   margin-inline: auto;
   aspect-ratio: 1;
+}
+
+/* The slow ring of ticks the wheel turns inside. */
+.media-system-ring {
+  position: absolute;
+  inset: -3%;
+  pointer-events: none;
+}
+
+/* Where a petal's sparks are drawn: over everything, and out of the way of
+   every link, so a burst in flight can never take a click. */
+.media-system-fx {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  overflow: visible;
+  pointer-events: none;
+}
+
+/* The colour the middle picks up from the petal being pointed at. */
+.media-system-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 58%;
+  height: 58%;
+  /* Its resting strength, so the middle is not ringed in colour on a page
+     that never got to run the wheel. */
+  opacity: .14;
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(6px);
+  transform: translate(-50%, -50%);
 }
 
 /*
@@ -1123,13 +1178,19 @@ footer li a:hover {
 .media-petal path {
   cursor: pointer;
   pointer-events: auto;
-  transform-box: view-box;
-  transform-origin: 50% 50%;
-  transition: transform .25s ease;
 }
 
-.media-petal:hover path {
-  transform: scale(1.045);
+/* The wedge being pointed at is lifted off the page as it is thrown. */
+.media-petal.is-active {
+  z-index: 1;
+}
+
+.media-petal.is-active svg {
+  filter: drop-shadow(0 16px 30px rgb(6 43 92 / 30%));
+}
+
+.media-petal.is-away svg {
+  filter: drop-shadow(0 6px 14px rgb(6 43 92 / 12%));
 }
 
 .media-petal span {
@@ -1151,7 +1212,7 @@ footer li a:hover {
   position: absolute;
   top: 50%;
   left: 50%;
-  z-index: 1;
+  z-index: 3;
   display: grid;
   place-items: center;
   width: 30%;

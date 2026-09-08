@@ -22,6 +22,14 @@ export const business = {
 } as const;
 
 /**
+ * Where the "Login" link at the very foot of every page goes: the dashboard an
+ * editor signs in to. It is written out in full rather than as "/admin"
+ * because the dashboard is served from the deployment address, which is not
+ * always the address a visitor is reading the site on.
+ */
+export const adminUrl = "https://najikkosathi.vercel.app/admin";
+
+/**
  * The navbar, and the pages that sit underneath a menu item without a link of
  * their own. Both are derived from lib/site-map.ts, the one list of the site's
  * pages, so the menu, the sitemap and the dashboard cannot drift apart.

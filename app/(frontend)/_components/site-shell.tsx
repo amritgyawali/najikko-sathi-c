@@ -1,7 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Mail, MapPin, Phone, Share2 } from "lucide-react";
+import { ArrowRight, LogIn, Mail, MapPin, Phone, Share2 } from "lucide-react";
 import { getBusiness, getFooter, getNavigation } from "@/lib/content";
+import { adminUrl } from "../_data/site";
 import { LanguageToggle } from "./language-toggle";
 import { Navigation } from "./navigation";
 
@@ -107,6 +108,13 @@ export async function Footer() {
             `© ${new Date().getFullYear()} ${business.legalName} All Rights Reserved.`}
         </span>
         <span>{business.address} &middot; VAT {business.vat}</span>
+      </div>
+      {/* The way in for the people who keep the site up to date. It is the last
+          thing on the page on purpose: it is for editors, not for readers. */}
+      <div className="site-container footer-login-row">
+        <a className="footer-login" href={adminUrl} rel="noreferrer">
+          <LogIn aria-hidden="true" /> Login
+        </a>
       </div>
     </footer>
   );

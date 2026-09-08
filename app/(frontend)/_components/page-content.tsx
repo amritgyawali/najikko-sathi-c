@@ -103,18 +103,22 @@ function Film({ film }: { film: SlotFilm }) {
 /** One file from the library, as much of it as the band draws. */
 type PlacedFile = Awaited<ReturnType<typeof getPlacedMedia>>[number];
 
+/** A library entry whose upload finished, so there is something to draw. */
+type ReadyFile = PlacedFile & { url: string };
+
+const isReady = (file: PlacedFile): file is ReadyFile => Boolean(file.url);
+
 /**
  * Anything in Content → Media that an editor published to this page, shown
  * under the band's frames. Uploading a photograph and ticking the page is all
  * it takes; nothing else has to point at the file.
  */
-function PlacedMedia({ files }: { files: PlacedFile[] }) {
+function PlacedMedia({ files }: { files: ReadyFile[] }) {
   if (files.length === 0) return null;
 
   return (
     <div className="media-album">
       {files.map((file) => {
-        if (!file.url) return null;
         const caption = file.credit || file.alt;
         return (
           <figure key={file.id}>
@@ -167,9 +171,12 @@ export async function MediaShowcase({
   title: string;
   placement?: string | null;
 }) {
-  const [slot, files] = await Promise.all([getMediaSlot(mediaKey), getPlacedMedia(placement)]);
+  const [slot, placed] = await Promise.all([getMediaSlot(mediaKey), getPlacedMedia(placement)]);
   const image = slotPhoto(slot, title);
   const film = slotFilm(slot, title);
+  // A library entry whose upload never finished has nothing to draw, so it does
+  // not count towards the band appearing and is not counted into the album.
+  const files = placed.filter(isReady);
 
   // Nothing uploaded anywhere for this page: no band, no heading, no gap.
   if (!image && !film && files.length === 0) return null;

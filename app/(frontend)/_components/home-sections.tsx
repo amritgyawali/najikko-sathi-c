@@ -83,9 +83,7 @@ export function HomeHero({
       </section>
       {block.showMediaSystem === false ? null : (
         <section className="stats-wrap" aria-label={`${business.shortName} media system`}>
-          <div className="stats-card">
-            <MediaSystem business={business} />
-          </div>
+          <MediaSystem business={business} />
         </section>
       )}
     </>
