@@ -383,6 +383,8 @@ async function Showcase({ block, page }: { block: Block<"mediaShowcase">; page: 
       mediaKey={block.mediaKey}
       title={block.heading || business.shortName}
       placement={placementKeyFor(page.path)}
+      kicker={block.kicker}
+      description={block.description}
     />
   );
 }

@@ -45,6 +45,15 @@ const contactCta = (
   ...(service ? { service } : {}),
 });
 
+/**
+ * A photo & film band.
+ *
+ * `kicker` and `description` are left unset on purpose: the wording each page
+ * uses lives in lib/showcase-copy.ts, keyed by the same media key, so a page
+ * already imported into the dashboard picks it up without being re-edited.
+ * Setting either here would freeze a copy of that wording into the page
+ * document instead.
+ */
 const mediaShowcase = (mediaKey: string, heading: string): PageSection => ({
   blockType: "mediaShowcase",
   mediaKey,
@@ -114,7 +123,6 @@ export const routePageContent: Record<string, RoutePageContent> = {
       { blockType: "categoryBar", ariaLabel: "Service categories" },
       { blockType: "servicesBand" },
       { blockType: "categoryGroups" },
-      mediaShowcase("services", "Our services"),
       contactCta(
         "A project can bring several disciplines together.",
         "Tell us what you need. We can discuss a scope that connects research, production, digital communication, and training.",
@@ -336,7 +344,6 @@ export const routePageContent: Record<string, RoutePageContent> = {
           },
         ],
       },
-      mediaShowcase("contact", "Visit Najikko Sathi"),
     ],
   },
 

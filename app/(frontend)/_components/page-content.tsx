@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ArrowRight, ArrowUpRight, Camera, Clapperboard, GraduationCap, Megaphone, Newspaper, Search } from "lucide-react";
 import { getMediaSlot, getPlacedMedia } from "@/lib/content";
 import { slotFilm, slotPhoto, type SlotFilm } from "@/lib/page-media";
+import { showcaseCopyFor } from "@/lib/showcase-copy";
 import { heroSlotKey } from "@/lib/site-map";
 import type { CategoryView, ServiceView } from "@/lib/services";
 import { absoluteUrl, siteUrl } from "../_lib/seo";
@@ -161,19 +162,36 @@ function PlacedMedia({ files }: { files: ReadyFile[] }) {
  * that page join the band underneath, so a photograph reaches the website
  * without an editor having to find something to attach it to - and they count
  * towards whether the band appears at all.
+ *
+ * The label and the line under the heading are per page. They used to be the
+ * same two strings everywhere, which on a dozen pages plus every service page
+ * described nothing and gave search engines the same paragraph a dozen times.
+ * The order is: what the editor typed into this block, then the wording the
+ * page ships with in lib/showcase-copy.ts, and no description at all rather
+ * than a generic one.
  */
 export async function MediaShowcase({
   mediaKey,
   title,
   placement = null,
+  kicker,
+  description,
+  service,
 }: {
   mediaKey: string;
   title: string;
   placement?: string | null;
+  /** Overrides the label above the heading, from the dashboard. */
+  kicker?: string | null;
+  /** Overrides the line under the heading, from the dashboard. */
+  description?: string | null;
+  /** A service page's short title, which its band describes itself from. */
+  service?: string;
 }) {
   const [slot, placed] = await Promise.all([getMediaSlot(mediaKey), getPlacedMedia(placement)]);
   const image = slotPhoto(slot, title);
   const film = slotFilm(slot, title);
+  const copy = showcaseCopyFor(mediaKey, service);
   // A library entry whose upload never finished has nothing to draw, so it does
   // not count towards the band appearing and is not counted into the album.
   const files = placed.filter(isReady);
@@ -185,7 +203,11 @@ export async function MediaShowcase({
   const frames = [image, film].filter(Boolean).length;
 
   return <section className="content-section media-section"><div className="site-container">
-    <SectionHeading kicker="In focus" title={`${title} in pictures & film`} description="A space for images and films from our work." />
+    <SectionHeading
+      kicker={kicker?.trim() || copy.kicker}
+      title={`${title} in pictures & film`}
+      description={description?.trim() || copy.description}
+    />
     {frames > 0 ? <div className={`media-showcase-grid${frames === 1 ? " media-showcase-grid--one" : ""}`}>
       {image ? <figure className="media-frame">
         <div className="media-photo"><Image src={image.src} alt={image.alt} fill sizes="(max-width: 760px) 100vw, 50vw" /></div>

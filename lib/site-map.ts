@@ -99,12 +99,10 @@ export const sitePages: SitePage[] = [
     label: "Services",
     summary: "The full service portfolio, grouped by category.",
     navOrder: 2,
-    mediaKey: "services",
     edit: [
       collectionLink("services", "Services"),
       collectionLink("service-categories", "Service categories"),
       globalLink("homepage", "Homepage", "the Services page tab"),
-      pageMedia("services"),
     ],
   },
   {
@@ -136,12 +134,10 @@ export const sitePages: SitePage[] = [
     label: "Contact",
     summary: "Contact details, the enquiry form, and the questions people ask before writing in.",
     navOrder: 5,
-    mediaKey: "contact",
     edit: [
       globalLink("site-settings", "Site settings", "address, phones, email"),
       collectionLink("faqs", "FAQs", "questions published to this page"),
       collectionLink("enquiries", "Enquiries", "messages sent from this form"),
-      pageMedia("contact"),
     ],
   },
   {

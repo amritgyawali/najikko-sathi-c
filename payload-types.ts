@@ -481,6 +481,14 @@ export interface Page {
              * Names the band: “<title> in pictures & film”.
              */
             heading?: string | null;
+            /**
+             * The small label above the heading. Left empty, the page uses its own wording rather than one label shared by every page.
+             */
+            kicker?: string | null;
+            /**
+             * One line under the heading, saying what is in this page's pictures. Left empty, the page uses its own wording; a page with none prints no line at all.
+             */
+            description?: string | null;
             id?: string | null;
             blockName?: string | null;
             blockType: 'mediaShowcase';
@@ -1652,7 +1660,7 @@ export interface Enquiry {
 export interface MediaSlot {
   id: number;
   /**
-   * Which page this fills: "home" (/), "home-about" (/), "services-hero" (/services), "services" (/services), "our-work-hero" (/our-work), "our-work" (/our-work), "social-work-hero" (/social-work), "social-work" (/social-work), "contact-hero" (/contact), "contact" (/contact), "about-hero" (/about), "about" (/about), "production-hero" (/production), "production" (/production), "production-band" (/production), "social-media-handling-hero" (/social-media-handling), "social-media-handling" (/social-media-handling), "training-hero" (/training), "training" (/training), "research-hero" (/research), "research" (/research), "it-hero" (/it), "it" (/it), "advertisement-hero" (/advertisement), "advertisement" (/advertisement), "right-sanchar-hero" (/right-sanchar), "right-sanchar" (/right-sanchar), "posts-hero" (/posts), "posts" (/posts), "offers-hero" (/offers), "offers" (/offers), or a service slug such as "documentary-film-production" for a service page.
+   * Which page this fills: "home" (/), "home-about" (/), "our-work-hero" (/our-work), "our-work" (/our-work), "social-work-hero" (/social-work), "social-work" (/social-work), "about-hero" (/about), "about" (/about), "production-hero" (/production), "production" (/production), "production-band" (/production), "social-media-handling-hero" (/social-media-handling), "social-media-handling" (/social-media-handling), "training-hero" (/training), "training" (/training), "research-hero" (/research), "research" (/research), "it-hero" (/it), "it" (/it), "advertisement-hero" (/advertisement), "advertisement" (/advertisement), "right-sanchar-hero" (/right-sanchar), "right-sanchar" (/right-sanchar), "posts-hero" (/posts), "posts" (/posts), "offers-hero" (/offers), "offers" (/offers), or a service slug such as "documentary-film-production" for a service page.
    */
   key: string;
   /**
@@ -2088,6 +2096,8 @@ export interface PagesSelect<T extends boolean = true> {
           | {
               mediaKey?: T;
               heading?: T;
+              kicker?: T;
+              description?: T;
               id?: T;
               blockName?: T;
             };
