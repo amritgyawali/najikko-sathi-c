@@ -218,11 +218,27 @@ export interface Page {
              */
             eyebrow: string;
             /**
+             * Shown when the website is read in Nepali. Leave it empty to keep the English.
+             */
+            eyebrowNe?: string | null;
+            /**
              * A photograph can be put beside the title from Content → Page media, in this page's "-hero" entry. Without one the words span the whole band.
              */
             heading: string;
+            /**
+             * Shown when the website is read in Nepali. Leave it empty to keep the English.
+             */
+            headingNe?: string | null;
             description?: string | null;
+            /**
+             * Shown when the website is read in Nepali. Leave it empty to keep the English.
+             */
+            descriptionNe?: string | null;
             ctaLabel?: string | null;
+            /**
+             * Shown when the website is read in Nepali. Leave it empty to keep the English.
+             */
+            ctaLabelNe?: string | null;
             ctaHref?: string | null;
             /**
              * Leave the address empty as well to send people to the Right Sanchar address in Site settings.
@@ -241,22 +257,49 @@ export interface Page {
              * The small label above the heading.
              */
             kicker?: string | null;
+            /**
+             * Shown when the website is read in Nepali. Leave it empty to keep the English.
+             */
+            kickerNe?: string | null;
             heading?: string | null;
+            /**
+             * Shown when the website is read in Nepali. Leave it empty to keep the English.
+             */
+            headingNe?: string | null;
             /**
              * One or two lines under the heading.
              */
             description?: string | null;
             /**
+             * Shown when the website is read in Nepali. Leave it empty to keep the English.
+             */
+            descriptionNe?: string | null;
+            /**
              * The opening paragraph, set larger.
              */
             lead?: string | null;
+            /**
+             * Shown when the website is read in Nepali. Leave it empty to keep the English.
+             */
+            leadNe?: string | null;
+            /**
+             * Every line is written twice: English on the left, Nepali on the right. Anything typed into a Nepali box is shown exactly as written; leaving it empty keeps the English, translated as before.
+             */
             paragraphs?:
               | {
                   text: string;
+                  /**
+                   * Shown when the website is read in Nepali. Leave it empty to keep the English.
+                   */
+                  textNe?: string | null;
                   id?: string | null;
                 }[]
               | null;
             linkLabel?: string | null;
+            /**
+             * Shown when the website is read in Nepali. Leave it empty to keep the English.
+             */
+            linkLabelNe?: string | null;
             linkHref?: string | null;
             /**
              * A tinted band sets the section apart from the white ones around it.
@@ -272,22 +315,53 @@ export interface Page {
              */
             panelQuote?: string | null;
             /**
+             * Shown when the website is read in Nepali. Leave it empty to keep the English.
+             */
+            panelQuoteNe?: string | null;
+            /**
              * The small label above the heading.
              */
             kicker?: string | null;
+            /**
+             * Shown when the website is read in Nepali. Leave it empty to keep the English.
+             */
+            kickerNe?: string | null;
             heading?: string | null;
+            /**
+             * Shown when the website is read in Nepali. Leave it empty to keep the English.
+             */
+            headingNe?: string | null;
             /**
              * One or two lines under the heading.
              */
             description?: string | null;
+            /**
+             * Shown when the website is read in Nepali. Leave it empty to keep the English.
+             */
+            descriptionNe?: string | null;
             lead?: string | null;
+            /**
+             * Shown when the website is read in Nepali. Leave it empty to keep the English.
+             */
+            leadNe?: string | null;
+            /**
+             * Every line is written twice: English on the left, Nepali on the right. Anything typed into a Nepali box is shown exactly as written; leaving it empty keeps the English, translated as before.
+             */
             paragraphs?:
               | {
                   text: string;
+                  /**
+                   * Shown when the website is read in Nepali. Leave it empty to keep the English.
+                   */
+                  textNe?: string | null;
                   id?: string | null;
                 }[]
               | null;
             linkLabel?: string | null;
+            /**
+             * Shown when the website is read in Nepali. Leave it empty to keep the English.
+             */
+            linkLabelNe?: string | null;
             linkHref?: string | null;
             id?: string | null;
             blockName?: string | null;
@@ -298,13 +372,28 @@ export interface Page {
              * The small label above the heading.
              */
             kicker?: string | null;
+            /**
+             * Shown when the website is read in Nepali. Leave it empty to keep the English.
+             */
+            kickerNe?: string | null;
             heading?: string | null;
+            /**
+             * Shown when the website is read in Nepali. Leave it empty to keep the English.
+             */
+            headingNe?: string | null;
             /**
              * One or two lines under the heading.
              */
             description?: string | null;
+            /**
+             * Shown when the website is read in Nepali. Leave it empty to keep the English.
+             */
+            descriptionNe?: string | null;
             style: 'values' | 'disciplines' | 'topics' | 'links';
             tone?: ('plain' | 'tinted') | null;
+            /**
+             * Every line is written twice: English on the left, Nepali on the right. Anything typed into a Nepali box is shown exactly as written; leaving it empty keeps the English, translated as before.
+             */
             cards?:
               | {
                   /**
@@ -340,24 +429,47 @@ export interface Page {
                       )
                     | null;
                   title: string;
+                  /**
+                   * Shown when the website is read in Nepali. Leave it empty to keep the English.
+                   */
+                  titleNe?: string | null;
                   text?: string | null;
+                  /**
+                   * Shown when the website is read in Nepali. Leave it empty to keep the English.
+                   */
+                  textNe?: string | null;
                   /**
                    * Shown as a ticked list on the discipline style.
                    */
                   points?:
                     | {
                         text: string;
+                        /**
+                         * Shown when the website is read in Nepali. Leave it empty to keep the English.
+                         */
+                        textNe?: string | null;
                         id?: string | null;
                       }[]
                     | null;
                   linkLabel?: string | null;
+                  /**
+                   * Shown when the website is read in Nepali. Leave it empty to keep the English.
+                   */
+                  linkLabelNe?: string | null;
                   linkHref?: string | null;
                   id?: string | null;
                 }[]
               | null;
+            /**
+             * Every line is written twice: English on the left, Nepali on the right. Anything typed into a Nepali box is shown exactly as written; leaving it empty keeps the English, translated as before.
+             */
             chips?:
               | {
                   text: string;
+                  /**
+                   * Shown when the website is read in Nepali. Leave it empty to keep the English.
+                   */
+                  textNe?: string | null;
                   id?: string | null;
                 }[]
               | null;
@@ -370,15 +482,38 @@ export interface Page {
              * The small label above the heading.
              */
             kicker?: string | null;
+            /**
+             * Shown when the website is read in Nepali. Leave it empty to keep the English.
+             */
+            kickerNe?: string | null;
             heading?: string | null;
+            /**
+             * Shown when the website is read in Nepali. Leave it empty to keep the English.
+             */
+            headingNe?: string | null;
             /**
              * One or two lines under the heading.
              */
             description?: string | null;
+            /**
+             * Shown when the website is read in Nepali. Leave it empty to keep the English.
+             */
+            descriptionNe?: string | null;
+            /**
+             * Every line is written twice: English on the left, Nepali on the right. Anything typed into a Nepali box is shown exactly as written; leaving it empty keeps the English, translated as before.
+             */
             steps?:
               | {
                   title: string;
+                  /**
+                   * Shown when the website is read in Nepali. Leave it empty to keep the English.
+                   */
+                  titleNe?: string | null;
                   text: string;
+                  /**
+                   * Shown when the website is read in Nepali. Leave it empty to keep the English.
+                   */
+                  textNe?: string | null;
                   id?: string | null;
                 }[]
               | null;
@@ -392,11 +527,23 @@ export interface Page {
              * The small label above the heading.
              */
             kicker?: string | null;
+            /**
+             * Shown when the website is read in Nepali. Leave it empty to keep the English.
+             */
+            kickerNe?: string | null;
             heading?: string | null;
+            /**
+             * Shown when the website is read in Nepali. Leave it empty to keep the English.
+             */
+            headingNe?: string | null;
             /**
              * One or two lines under the heading.
              */
             description?: string | null;
+            /**
+             * Shown when the website is read in Nepali. Leave it empty to keep the English.
+             */
+            descriptionNe?: string | null;
             /**
              * Questions saved in Content → FAQs replace the list below: the ones published to this page, plus the ones published to the page named here. Leave this empty to use the questions published to this page, and the list below when there are none.
              */
@@ -419,10 +566,21 @@ export interface Page {
                   | 'offers'
                 )
               | null;
+            /**
+             * Every line is written twice: English on the left, Nepali on the right. Anything typed into a Nepali box is shown exactly as written; leaving it empty keeps the English, translated as before.
+             */
             items?:
               | {
                   question: string;
+                  /**
+                   * Shown when the website is read in Nepali. Leave it empty to keep the English.
+                   */
+                  questionNe?: string | null;
                   answer: string;
+                  /**
+                   * Shown when the website is read in Nepali. Leave it empty to keep the English.
+                   */
+                  answerNe?: string | null;
                   id?: string | null;
                 }[]
               | null;
@@ -436,11 +594,23 @@ export interface Page {
              * The small label above the heading.
              */
             kicker?: string | null;
+            /**
+             * Shown when the website is read in Nepali. Leave it empty to keep the English.
+             */
+            kickerNe?: string | null;
             heading?: string | null;
+            /**
+             * Shown when the website is read in Nepali. Leave it empty to keep the English.
+             */
+            headingNe?: string | null;
             /**
              * One or two lines under the heading.
              */
             description?: string | null;
+            /**
+             * Shown when the website is read in Nepali. Leave it empty to keep the English.
+             */
+            descriptionNe?: string | null;
             source: 'category' | 'slugs' | 'all';
             /**
              * The category id, for example "production" or "training".
@@ -482,13 +652,25 @@ export interface Page {
              */
             heading?: string | null;
             /**
+             * Shown when the website is read in Nepali. Leave it empty to keep the English.
+             */
+            headingNe?: string | null;
+            /**
              * The small label above the heading. Left empty, the page uses its own wording rather than one label shared by every page.
              */
             kicker?: string | null;
             /**
+             * Shown when the website is read in Nepali. Leave it empty to keep the English.
+             */
+            kickerNe?: string | null;
+            /**
              * One line under the heading, saying what is in this page's pictures. Left empty, the page uses its own wording; a page with none prints no line at all.
              */
             description?: string | null;
+            /**
+             * Shown when the website is read in Nepali. Leave it empty to keep the English.
+             */
+            descriptionNe?: string | null;
             id?: string | null;
             blockName?: string | null;
             blockType: 'mediaShowcase';
@@ -498,11 +680,23 @@ export interface Page {
              * The small label above the heading.
              */
             kicker?: string | null;
+            /**
+             * Shown when the website is read in Nepali. Leave it empty to keep the English.
+             */
+            kickerNe?: string | null;
             heading?: string | null;
+            /**
+             * Shown when the website is read in Nepali. Leave it empty to keep the English.
+             */
+            headingNe?: string | null;
             /**
              * One or two lines under the heading.
              */
             description?: string | null;
+            /**
+             * Shown when the website is read in Nepali. Leave it empty to keep the English.
+             */
+            descriptionNe?: string | null;
             id?: string | null;
             blockName?: string | null;
             blockType: 'teamSection';
@@ -512,11 +706,23 @@ export interface Page {
              * The small label above the heading.
              */
             kicker?: string | null;
+            /**
+             * Shown when the website is read in Nepali. Leave it empty to keep the English.
+             */
+            kickerNe?: string | null;
             heading?: string | null;
+            /**
+             * Shown when the website is read in Nepali. Leave it empty to keep the English.
+             */
+            headingNe?: string | null;
             /**
              * One or two lines under the heading.
              */
             description?: string | null;
+            /**
+             * Shown when the website is read in Nepali. Leave it empty to keep the English.
+             */
+            descriptionNe?: string | null;
             /**
              * Only approved reviews are ever shown.
              */
@@ -532,11 +738,23 @@ export interface Page {
              * The small label above the heading.
              */
             kicker?: string | null;
+            /**
+             * Shown when the website is read in Nepali. Leave it empty to keep the English.
+             */
+            kickerNe?: string | null;
             heading?: string | null;
+            /**
+             * Shown when the website is read in Nepali. Leave it empty to keep the English.
+             */
+            headingNe?: string | null;
             /**
              * One or two lines under the heading.
              */
             description?: string | null;
+            /**
+             * Shown when the website is read in Nepali. Leave it empty to keep the English.
+             */
+            descriptionNe?: string | null;
             tone?: ('plain' | 'tinted') | null;
             id?: string | null;
             blockName?: string | null;
@@ -548,11 +766,19 @@ export interface Page {
              */
             heading?: string | null;
             /**
+             * Shown when the website is read in Nepali. Leave it empty to keep the English.
+             */
+            headingNe?: string | null;
+            /**
              * Drag to reorder. The row slides on by itself and pauses when a visitor points at it.
              */
             partners?:
               | {
                   name: string;
+                  /**
+                   * Shown when the website is read in Nepali. Leave it empty to keep the English.
+                   */
+                  nameNe?: string | null;
                   /**
                    * Optional. The name is shown until a logo is uploaded.
                    */
@@ -574,11 +800,23 @@ export interface Page {
              * The small label above the heading.
              */
             kicker?: string | null;
+            /**
+             * Shown when the website is read in Nepali. Leave it empty to keep the English.
+             */
+            kickerNe?: string | null;
             heading?: string | null;
+            /**
+             * Shown when the website is read in Nepali. Leave it empty to keep the English.
+             */
+            headingNe?: string | null;
             /**
              * One or two lines under the heading.
              */
             description?: string | null;
+            /**
+             * Shown when the website is read in Nepali. Leave it empty to keep the English.
+             */
+            descriptionNe?: string | null;
             id?: string | null;
             blockName?: string | null;
             blockType: 'socialResponsibilitySection';
@@ -588,11 +826,23 @@ export interface Page {
              * The small label above the heading.
              */
             kicker?: string | null;
+            /**
+             * Shown when the website is read in Nepali. Leave it empty to keep the English.
+             */
+            kickerNe?: string | null;
             heading?: string | null;
+            /**
+             * Shown when the website is read in Nepali. Leave it empty to keep the English.
+             */
+            headingNe?: string | null;
             /**
              * One or two lines under the heading.
              */
             description?: string | null;
+            /**
+             * Shown when the website is read in Nepali. Leave it empty to keep the English.
+             */
+            descriptionNe?: string | null;
             /**
              * Each entry - its title, what it is about, its photographs and its videos - is added in Content → Social Work. This band shows everything published there.
              */
@@ -606,16 +856,36 @@ export interface Page {
              * The small label above the heading.
              */
             kicker?: string | null;
+            /**
+             * Shown when the website is read in Nepali. Leave it empty to keep the English.
+             */
+            kickerNe?: string | null;
             heading?: string | null;
+            /**
+             * Shown when the website is read in Nepali. Leave it empty to keep the English.
+             */
+            headingNe?: string | null;
             /**
              * One or two lines under the heading.
              */
             description?: string | null;
             /**
+             * Shown when the website is read in Nepali. Leave it empty to keep the English.
+             */
+            descriptionNe?: string | null;
+            /**
              * The line under the company name and VAT number.
              */
             note?: string | null;
+            /**
+             * Shown when the website is read in Nepali. Leave it empty to keep the English.
+             */
+            noteNe?: string | null;
             linkLabel?: string | null;
+            /**
+             * Shown when the website is read in Nepali. Leave it empty to keep the English.
+             */
+            linkLabelNe?: string | null;
             linkHref?: string | null;
             showForm?: boolean | null;
             id?: string | null;
@@ -624,7 +894,15 @@ export interface Page {
           }
         | {
             heading: string;
+            /**
+             * Shown when the website is read in Nepali. Leave it empty to keep the English.
+             */
+            headingNe?: string | null;
             description?: string | null;
+            /**
+             * Shown when the website is read in Nepali. Leave it empty to keep the English.
+             */
+            descriptionNe?: string | null;
             /**
              * Preselects this service on the contact form.
              */
@@ -638,18 +916,42 @@ export interface Page {
              * The small label above the heading.
              */
             kicker?: string | null;
+            /**
+             * Shown when the website is read in Nepali. Leave it empty to keep the English.
+             */
+            kickerNe?: string | null;
             heading?: string | null;
+            /**
+             * Shown when the website is read in Nepali. Leave it empty to keep the English.
+             */
+            headingNe?: string | null;
             /**
              * One or two lines under the heading.
              */
             description?: string | null;
+            /**
+             * Shown when the website is read in Nepali. Leave it empty to keep the English.
+             */
+            descriptionNe?: string | null;
             body?: string | null;
+            /**
+             * Shown when the website is read in Nepali. Leave it empty to keep the English.
+             */
+            bodyNe?: string | null;
             primaryLabel?: string | null;
+            /**
+             * Shown when the website is read in Nepali. Leave it empty to keep the English.
+             */
+            primaryLabelNe?: string | null;
             /**
              * Leave empty to use the Right Sanchar address from Site settings.
              */
             primaryHref?: string | null;
             secondaryLabel?: string | null;
+            /**
+             * Shown when the website is read in Nepali. Leave it empty to keep the English.
+             */
+            secondaryLabelNe?: string | null;
             secondaryHref?: string | null;
             id?: string | null;
             blockName?: string | null;
@@ -660,16 +962,32 @@ export interface Page {
              * The small label above the heading.
              */
             kicker?: string | null;
+            /**
+             * Shown when the website is read in Nepali. Leave it empty to keep the English.
+             */
+            kickerNe?: string | null;
             heading?: string | null;
+            /**
+             * Shown when the website is read in Nepali. Leave it empty to keep the English.
+             */
+            headingNe?: string | null;
             /**
              * One or two lines under the heading.
              */
             description?: string | null;
+            /**
+             * Shown when the website is read in Nepali. Leave it empty to keep the English.
+             */
+            descriptionNe?: string | null;
             limit?: number | null;
             /**
              * Shown while nothing has been published.
              */
             emptyText?: string | null;
+            /**
+             * Shown when the website is read in Nepali. Leave it empty to keep the English.
+             */
+            emptyTextNe?: string | null;
             id?: string | null;
             blockName?: string | null;
             blockType: 'postList';
@@ -679,16 +997,32 @@ export interface Page {
              * The small label above the heading.
              */
             kicker?: string | null;
+            /**
+             * Shown when the website is read in Nepali. Leave it empty to keep the English.
+             */
+            kickerNe?: string | null;
             heading?: string | null;
+            /**
+             * Shown when the website is read in Nepali. Leave it empty to keep the English.
+             */
+            headingNe?: string | null;
             /**
              * One or two lines under the heading.
              */
             description?: string | null;
+            /**
+             * Shown when the website is read in Nepali. Leave it empty to keep the English.
+             */
+            descriptionNe?: string | null;
             limit?: number | null;
             /**
              * Shown while no offer is running.
              */
             emptyText?: string | null;
+            /**
+             * Shown when the website is read in Nepali. Leave it empty to keep the English.
+             */
+            emptyTextNe?: string | null;
             id?: string | null;
             blockName?: string | null;
             blockType: 'offerList';
@@ -698,6 +1032,10 @@ export interface Page {
              * Leave this empty and the hero carries one button. Write a label and a second button appears beside it, pointing at the Right Sanchar link in Site settings. The words in this band are written in Site → Homepage & page copy, on the "Home - hero" tab.
              */
             secondaryLabel?: string | null;
+            /**
+             * Shown when the website is read in Nepali. Leave it empty to keep the English.
+             */
+            secondaryLabelNe?: string | null;
             showMediaSystem?: boolean | null;
             id?: string | null;
             blockName?: string | null;
@@ -705,11 +1043,19 @@ export interface Page {
           }
         | {
             linkLabel?: string | null;
+            /**
+             * Shown when the website is read in Nepali. Leave it empty to keep the English.
+             */
+            linkLabelNe?: string | null;
             linkHref?: string | null;
             /**
              * The caption on the photograph beside the introduction, shown only once one has been uploaded into the "home-about" Page media entry. The words in this band are written in Site → Homepage & page copy, on the "Home - about" tab.
              */
             captionTitle?: string | null;
+            /**
+             * Shown when the website is read in Nepali. Leave it empty to keep the English.
+             */
+            captionTitleNe?: string | null;
             id?: string | null;
             blockName?: string | null;
             blockType: 'homeAbout';
@@ -755,29 +1101,64 @@ export interface Page {
              * The small label above the heading.
              */
             kicker?: string | null;
+            /**
+             * Shown when the website is read in Nepali. Leave it empty to keep the English.
+             */
+            kickerNe?: string | null;
             heading?: string | null;
+            /**
+             * Shown when the website is read in Nepali. Leave it empty to keep the English.
+             */
+            headingNe?: string | null;
             /**
              * One or two lines under the heading.
              */
             description?: string | null;
+            /**
+             * Shown when the website is read in Nepali. Leave it empty to keep the English.
+             */
+            descriptionNe?: string | null;
             id?: string | null;
             blockName?: string | null;
             blockType: 'searchSection';
           }
         | {
             note?: string | null;
+            /**
+             * Shown when the website is read in Nepali. Leave it empty to keep the English.
+             */
+            noteNe?: string | null;
             id?: string | null;
             blockName?: string | null;
             blockType: 'signupSection';
           }
         | {
             kicker?: string | null;
+            /**
+             * Shown when the website is read in Nepali. Leave it empty to keep the English.
+             */
+            kickerNe?: string | null;
             heading: string;
+            /**
+             * Shown when the website is read in Nepali. Leave it empty to keep the English.
+             */
+            headingNe?: string | null;
             subheading?: string | null;
+            /**
+             * Shown when the website is read in Nepali. Leave it empty to keep the English.
+             */
+            subheadingNe?: string | null;
             background?: (number | null) | Media;
+            /**
+             * Every line is written twice: English on the left, Nepali on the right. Anything typed into a Nepali box is shown exactly as written; leaving it empty keeps the English, translated as before.
+             */
             actions?:
               | {
                   label: string;
+                  /**
+                   * Shown when the website is read in Nepali. Leave it empty to keep the English.
+                   */
+                  labelNe?: string | null;
                   href: string;
                   style?: ('primary' | 'secondary') | null;
                   id?: string | null;
@@ -789,6 +1170,10 @@ export interface Page {
           }
         | {
             heading?: string | null;
+            /**
+             * Shown when the website is read in Nepali. Leave it empty to keep the English.
+             */
+            headingNe?: string | null;
             content: {
               root: {
                 type: string;
@@ -810,12 +1195,35 @@ export interface Page {
           }
         | {
             kicker?: string | null;
+            /**
+             * Shown when the website is read in Nepali. Leave it empty to keep the English.
+             */
+            kickerNe?: string | null;
             heading?: string | null;
+            /**
+             * Shown when the website is read in Nepali. Leave it empty to keep the English.
+             */
+            headingNe?: string | null;
             intro?: string | null;
+            /**
+             * Shown when the website is read in Nepali. Leave it empty to keep the English.
+             */
+            introNe?: string | null;
+            /**
+             * Every line is written twice: English on the left, Nepali on the right. Anything typed into a Nepali box is shown exactly as written; leaving it empty keeps the English, translated as before.
+             */
             cards?:
               | {
                   title: string;
+                  /**
+                   * Shown when the website is read in Nepali. Leave it empty to keep the English.
+                   */
+                  titleNe?: string | null;
                   description?: string | null;
+                  /**
+                   * Shown when the website is read in Nepali. Leave it empty to keep the English.
+                   */
+                  descriptionNe?: string | null;
                   href?: string | null;
                   image?: (number | null) | Media;
                   id?: string | null;
@@ -827,10 +1235,21 @@ export interface Page {
           }
         | {
             heading?: string | null;
+            /**
+             * Shown when the website is read in Nepali. Leave it empty to keep the English.
+             */
+            headingNe?: string | null;
+            /**
+             * Every line is written twice: English on the left, Nepali on the right. Anything typed into a Nepali box is shown exactly as written; leaving it empty keeps the English, translated as before.
+             */
             images?:
               | {
                   image: number | Media;
                   caption?: string | null;
+                  /**
+                   * Shown when the website is read in Nepali. Leave it empty to keep the English.
+                   */
+                  captionNe?: string | null;
                   id?: string | null;
                 }[]
               | null;
@@ -840,8 +1259,20 @@ export interface Page {
           }
         | {
             heading: string;
+            /**
+             * Shown when the website is read in Nepali. Leave it empty to keep the English.
+             */
+            headingNe?: string | null;
             body?: string | null;
+            /**
+             * Shown when the website is read in Nepali. Leave it empty to keep the English.
+             */
+            bodyNe?: string | null;
             buttonLabel: string;
+            /**
+             * Shown when the website is read in Nepali. Leave it empty to keep the English.
+             */
+            buttonLabelNe?: string | null;
             buttonHref: string;
             id?: string | null;
             blockName?: string | null;
@@ -849,6 +1280,10 @@ export interface Page {
           }
         | {
             heading?: string | null;
+            /**
+             * Shown when the website is read in Nepali. Leave it empty to keep the English.
+             */
+            headingNe?: string | null;
             source?: ('featured' | 'all') | null;
             limit?: number | null;
             id?: string | null;
@@ -857,6 +1292,10 @@ export interface Page {
           }
         | {
             heading?: string | null;
+            /**
+             * Shown when the website is read in Nepali. Leave it empty to keep the English.
+             */
+            headingNe?: string | null;
             type?: ('news' | 'blog' | 'commentary' | 'investigation' | 'any') | null;
             limit?: number | null;
             id?: string | null;
@@ -865,6 +1304,10 @@ export interface Page {
           }
         | {
             heading?: string | null;
+            /**
+             * Shown when the website is read in Nepali. Leave it empty to keep the English.
+             */
+            headingNe?: string | null;
             limit?: number | null;
             id?: string | null;
             blockName?: string | null;
@@ -1335,7 +1778,7 @@ export interface Review {
   createdAt: string;
 }
 /**
- * Questions and answers. Each one picks the pages it belongs to, and search engines can show them as rich results.
+ * Questions and answers. Each one picks the pages it belongs to, and search engines can show them as rich results. Every line is written twice: English on the left, Nepali on the right. Anything typed into a Nepali box is shown exactly as written; leaving it empty keeps the English, translated as before.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "faqs".
@@ -1343,7 +1786,15 @@ export interface Review {
 export interface Faq {
   id: number;
   question: string;
+  /**
+   * Shown when the website is read in Nepali. Leave it empty to keep the English.
+   */
+  questionNe?: string | null;
   answer: string;
+  /**
+   * Shown when the website is read in Nepali. Leave it empty to keep the English.
+   */
+  answerNe?: string | null;
   /**
    * Choose the pages this question is published on. Leave it empty to show it on every page that carries a questions band.
    */
@@ -1435,7 +1886,7 @@ export interface SocialResponsibility {
   createdAt: string;
 }
 /**
- * Photo albums and YouTube films from our social work, shown together on /social-work. Add an entry, upload its photographs, paste its video links, and publish.
+ * Photo albums and YouTube films from our social work. /social-work shows one card per entry, and each card opens the entry's own page. Add an entry, upload its photographs, paste its video links, and publish.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "social-work".
@@ -1952,9 +2403,13 @@ export interface PagesSelect<T extends boolean = true> {
           | T
           | {
               eyebrow?: T;
+              eyebrowNe?: T;
               heading?: T;
+              headingNe?: T;
               description?: T;
+              descriptionNe?: T;
               ctaLabel?: T;
+              ctaLabelNe?: T;
               ctaHref?: T;
               ctaExternal?: T;
               category?: T;
@@ -1965,16 +2420,22 @@ export interface PagesSelect<T extends boolean = true> {
           | T
           | {
               kicker?: T;
+              kickerNe?: T;
               heading?: T;
+              headingNe?: T;
               description?: T;
+              descriptionNe?: T;
               lead?: T;
+              leadNe?: T;
               paragraphs?:
                 | T
                 | {
                     text?: T;
+                    textNe?: T;
                     id?: T;
                   };
               linkLabel?: T;
+              linkLabelNe?: T;
               linkHref?: T;
               tone?: T;
               id?: T;
@@ -1984,17 +2445,24 @@ export interface PagesSelect<T extends boolean = true> {
           | T
           | {
               panelQuote?: T;
+              panelQuoteNe?: T;
               kicker?: T;
+              kickerNe?: T;
               heading?: T;
+              headingNe?: T;
               description?: T;
+              descriptionNe?: T;
               lead?: T;
+              leadNe?: T;
               paragraphs?:
                 | T
                 | {
                     text?: T;
+                    textNe?: T;
                     id?: T;
                   };
               linkLabel?: T;
+              linkLabelNe?: T;
               linkHref?: T;
               id?: T;
               blockName?: T;
@@ -2003,8 +2471,11 @@ export interface PagesSelect<T extends boolean = true> {
           | T
           | {
               kicker?: T;
+              kickerNe?: T;
               heading?: T;
+              headingNe?: T;
               description?: T;
+              descriptionNe?: T;
               style?: T;
               tone?: T;
               cards?:
@@ -2012,14 +2483,18 @@ export interface PagesSelect<T extends boolean = true> {
                 | {
                     icon?: T;
                     title?: T;
+                    titleNe?: T;
                     text?: T;
+                    textNe?: T;
                     points?:
                       | T
                       | {
                           text?: T;
+                          textNe?: T;
                           id?: T;
                         };
                     linkLabel?: T;
+                    linkLabelNe?: T;
                     linkHref?: T;
                     id?: T;
                   };
@@ -2027,6 +2502,7 @@ export interface PagesSelect<T extends boolean = true> {
                 | T
                 | {
                     text?: T;
+                    textNe?: T;
                     id?: T;
                   };
               id?: T;
@@ -2036,13 +2512,18 @@ export interface PagesSelect<T extends boolean = true> {
           | T
           | {
               kicker?: T;
+              kickerNe?: T;
               heading?: T;
+              headingNe?: T;
               description?: T;
+              descriptionNe?: T;
               steps?:
                 | T
                 | {
                     title?: T;
+                    titleNe?: T;
                     text?: T;
+                    textNe?: T;
                     id?: T;
                   };
               tone?: T;
@@ -2053,14 +2534,19 @@ export interface PagesSelect<T extends boolean = true> {
           | T
           | {
               kicker?: T;
+              kickerNe?: T;
               heading?: T;
+              headingNe?: T;
               description?: T;
+              descriptionNe?: T;
               placement?: T;
               items?:
                 | T
                 | {
                     question?: T;
+                    questionNe?: T;
                     answer?: T;
+                    answerNe?: T;
                     id?: T;
                   };
               tone?: T;
@@ -2071,8 +2557,11 @@ export interface PagesSelect<T extends boolean = true> {
           | T
           | {
               kicker?: T;
+              kickerNe?: T;
               heading?: T;
+              headingNe?: T;
               description?: T;
+              descriptionNe?: T;
               source?: T;
               category?: T;
               slugs?:
@@ -2104,8 +2593,11 @@ export interface PagesSelect<T extends boolean = true> {
           | {
               mediaKey?: T;
               heading?: T;
+              headingNe?: T;
               kicker?: T;
+              kickerNe?: T;
               description?: T;
+              descriptionNe?: T;
               id?: T;
               blockName?: T;
             };
@@ -2113,8 +2605,11 @@ export interface PagesSelect<T extends boolean = true> {
           | T
           | {
               kicker?: T;
+              kickerNe?: T;
               heading?: T;
+              headingNe?: T;
               description?: T;
+              descriptionNe?: T;
               id?: T;
               blockName?: T;
             };
@@ -2122,8 +2617,11 @@ export interface PagesSelect<T extends boolean = true> {
           | T
           | {
               kicker?: T;
+              kickerNe?: T;
               heading?: T;
+              headingNe?: T;
               description?: T;
+              descriptionNe?: T;
               source?: T;
               limit?: T;
               tone?: T;
@@ -2134,8 +2632,11 @@ export interface PagesSelect<T extends boolean = true> {
           | T
           | {
               kicker?: T;
+              kickerNe?: T;
               heading?: T;
+              headingNe?: T;
               description?: T;
+              descriptionNe?: T;
               tone?: T;
               id?: T;
               blockName?: T;
@@ -2144,10 +2645,12 @@ export interface PagesSelect<T extends boolean = true> {
           | T
           | {
               heading?: T;
+              headingNe?: T;
               partners?:
                 | T
                 | {
                     name?: T;
+                    nameNe?: T;
                     logo?: T;
                     href?: T;
                     id?: T;
@@ -2160,8 +2663,11 @@ export interface PagesSelect<T extends boolean = true> {
           | T
           | {
               kicker?: T;
+              kickerNe?: T;
               heading?: T;
+              headingNe?: T;
               description?: T;
+              descriptionNe?: T;
               id?: T;
               blockName?: T;
             };
@@ -2169,8 +2675,11 @@ export interface PagesSelect<T extends boolean = true> {
           | T
           | {
               kicker?: T;
+              kickerNe?: T;
               heading?: T;
+              headingNe?: T;
               description?: T;
+              descriptionNe?: T;
               emptyNote?: T;
               id?: T;
               blockName?: T;
@@ -2179,10 +2688,15 @@ export interface PagesSelect<T extends boolean = true> {
           | T
           | {
               kicker?: T;
+              kickerNe?: T;
               heading?: T;
+              headingNe?: T;
               description?: T;
+              descriptionNe?: T;
               note?: T;
+              noteNe?: T;
               linkLabel?: T;
+              linkLabelNe?: T;
               linkHref?: T;
               showForm?: T;
               id?: T;
@@ -2192,7 +2706,9 @@ export interface PagesSelect<T extends boolean = true> {
           | T
           | {
               heading?: T;
+              headingNe?: T;
               description?: T;
+              descriptionNe?: T;
               service?: T;
               id?: T;
               blockName?: T;
@@ -2201,12 +2717,18 @@ export interface PagesSelect<T extends boolean = true> {
           | T
           | {
               kicker?: T;
+              kickerNe?: T;
               heading?: T;
+              headingNe?: T;
               description?: T;
+              descriptionNe?: T;
               body?: T;
+              bodyNe?: T;
               primaryLabel?: T;
+              primaryLabelNe?: T;
               primaryHref?: T;
               secondaryLabel?: T;
+              secondaryLabelNe?: T;
               secondaryHref?: T;
               id?: T;
               blockName?: T;
@@ -2215,10 +2737,14 @@ export interface PagesSelect<T extends boolean = true> {
           | T
           | {
               kicker?: T;
+              kickerNe?: T;
               heading?: T;
+              headingNe?: T;
               description?: T;
+              descriptionNe?: T;
               limit?: T;
               emptyText?: T;
+              emptyTextNe?: T;
               id?: T;
               blockName?: T;
             };
@@ -2226,10 +2752,14 @@ export interface PagesSelect<T extends boolean = true> {
           | T
           | {
               kicker?: T;
+              kickerNe?: T;
               heading?: T;
+              headingNe?: T;
               description?: T;
+              descriptionNe?: T;
               limit?: T;
               emptyText?: T;
+              emptyTextNe?: T;
               id?: T;
               blockName?: T;
             };
@@ -2237,6 +2767,7 @@ export interface PagesSelect<T extends boolean = true> {
           | T
           | {
               secondaryLabel?: T;
+              secondaryLabelNe?: T;
               showMediaSystem?: T;
               id?: T;
               blockName?: T;
@@ -2245,8 +2776,10 @@ export interface PagesSelect<T extends boolean = true> {
           | T
           | {
               linkLabel?: T;
+              linkLabelNe?: T;
               linkHref?: T;
               captionTitle?: T;
+              captionTitleNe?: T;
               id?: T;
               blockName?: T;
             };
@@ -2282,8 +2815,11 @@ export interface PagesSelect<T extends boolean = true> {
           | T
           | {
               kicker?: T;
+              kickerNe?: T;
               heading?: T;
+              headingNe?: T;
               description?: T;
+              descriptionNe?: T;
               id?: T;
               blockName?: T;
             };
@@ -2291,6 +2827,7 @@ export interface PagesSelect<T extends boolean = true> {
           | T
           | {
               note?: T;
+              noteNe?: T;
               id?: T;
               blockName?: T;
             };
@@ -2298,13 +2835,17 @@ export interface PagesSelect<T extends boolean = true> {
           | T
           | {
               kicker?: T;
+              kickerNe?: T;
               heading?: T;
+              headingNe?: T;
               subheading?: T;
+              subheadingNe?: T;
               background?: T;
               actions?:
                 | T
                 | {
                     label?: T;
+                    labelNe?: T;
                     href?: T;
                     style?: T;
                     id?: T;
@@ -2316,6 +2857,7 @@ export interface PagesSelect<T extends boolean = true> {
           | T
           | {
               heading?: T;
+              headingNe?: T;
               content?: T;
               id?: T;
               blockName?: T;
@@ -2324,13 +2866,18 @@ export interface PagesSelect<T extends boolean = true> {
           | T
           | {
               kicker?: T;
+              kickerNe?: T;
               heading?: T;
+              headingNe?: T;
               intro?: T;
+              introNe?: T;
               cards?:
                 | T
                 | {
                     title?: T;
+                    titleNe?: T;
                     description?: T;
+                    descriptionNe?: T;
                     href?: T;
                     image?: T;
                     id?: T;
@@ -2342,11 +2889,13 @@ export interface PagesSelect<T extends boolean = true> {
           | T
           | {
               heading?: T;
+              headingNe?: T;
               images?:
                 | T
                 | {
                     image?: T;
                     caption?: T;
+                    captionNe?: T;
                     id?: T;
                   };
               id?: T;
@@ -2356,8 +2905,11 @@ export interface PagesSelect<T extends boolean = true> {
           | T
           | {
               heading?: T;
+              headingNe?: T;
               body?: T;
+              bodyNe?: T;
               buttonLabel?: T;
+              buttonLabelNe?: T;
               buttonHref?: T;
               id?: T;
               blockName?: T;
@@ -2366,6 +2918,7 @@ export interface PagesSelect<T extends boolean = true> {
           | T
           | {
               heading?: T;
+              headingNe?: T;
               source?: T;
               limit?: T;
               id?: T;
@@ -2375,6 +2928,7 @@ export interface PagesSelect<T extends boolean = true> {
           | T
           | {
               heading?: T;
+              headingNe?: T;
               type?: T;
               limit?: T;
               id?: T;
@@ -2384,6 +2938,7 @@ export interface PagesSelect<T extends boolean = true> {
           | T
           | {
               heading?: T;
+              headingNe?: T;
               limit?: T;
               id?: T;
               blockName?: T;
@@ -2545,7 +3100,9 @@ export interface ReviewsSelect<T extends boolean = true> {
  */
 export interface FaqsSelect<T extends boolean = true> {
   question?: T;
+  questionNe?: T;
   answer?: T;
+  answerNe?: T;
   placements?: T;
   order?: T;
   updatedAt?: T;
@@ -2834,7 +3391,7 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   createdAt?: T;
 }
 /**
- * Written copy for the front page and for three pages that grew out of it. Each tab says which address it appears at, and each carries an optional Nepali version.
+ * Written copy for the front page and for three pages that grew out of it. Each tab says which address it appears at, and every line is written twice: English on the left, Nepali beside it on the right.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "homepage".
@@ -2842,47 +3399,70 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
 export interface Homepage {
   id: number;
   heroKicker?: string | null;
-  heroHeading: string;
-  heroBody?: string | null;
-  /**
-   * Full-bleed background photograph.
-   */
-  heroImage?: (number | null) | Media;
-  heroCtaLabel?: string | null;
-  heroCtaHref?: string | null;
-  /**
-   * The ring of keywords under the hero. Each one can carry a Nepali version; leaving that empty keeps the English.
-   */
-  brandPillars?:
-    | {
-        label: string;
-        labelNe?: string | null;
-        id?: string | null;
-      }[]
-    | null;
   /**
    * Shown when the website is read in Nepali. Leave it empty to keep the English.
    */
   heroKickerNe?: string | null;
+  heroHeading: string;
   /**
    * Shown when the website is read in Nepali. Leave it empty to keep the English.
    */
   heroHeadingNe?: string | null;
+  heroBody?: string | null;
   /**
    * Shown when the website is read in Nepali. Leave it empty to keep the English.
    */
   heroBodyNe?: string | null;
   /**
+   * Full-bleed background photograph.
+   */
+  heroImage?: (number | null) | Media;
+  heroCtaLabel?: string | null;
+  /**
    * Shown when the website is read in Nepali. Leave it empty to keep the English.
    */
   heroCtaLabelNe?: string | null;
+  heroCtaHref?: string | null;
+  /**
+   * The ring of keywords under the hero. Every line is written twice: English on the left, Nepali on the right. Anything typed into a Nepali box is shown exactly as written; leaving it empty keeps the English, translated as before.
+   */
+  brandPillars?:
+    | {
+        label: string;
+        /**
+         * Shown when the website is read in Nepali. Leave it empty to keep the English.
+         */
+        labelNe?: string | null;
+        id?: string | null;
+      }[]
+    | null;
   aboutEyebrow?: string | null;
+  /**
+   * Shown when the website is read in Nepali. Leave it empty to keep the English.
+   */
+  aboutEyebrowNe?: string | null;
   aboutHeading?: string | null;
+  /**
+   * Shown when the website is read in Nepali. Leave it empty to keep the English.
+   */
+  aboutHeadingNe?: string | null;
   aboutQuote?: string | null;
+  /**
+   * Shown when the website is read in Nepali. Leave it empty to keep the English.
+   */
+  aboutQuoteNe?: string | null;
   aboutBody?: string | null;
+  /**
+   * Shown when the website is read in Nepali. Leave it empty to keep the English.
+   */
+  aboutBodyNe?: string | null;
   aboutBodySecondary?: string | null;
   /**
-   * Anything after the second paragraph. Drag to reorder; they read in this order. Each one can carry a Nepali version of itself.
+   * Shown when the website is read in Nepali. Leave it empty to keep the English.
+   */
+  aboutBodySecondaryNe?: string | null;
+  /**
+   * Anything after the second paragraph. Drag to reorder; they read in this order. Every line is written twice: English on the left, Nepali on the right. Anything typed into a Nepali box is shown exactly as written; leaving it empty keeps the English, translated as before.
    */
   aboutParagraphs?:
     | {
@@ -2895,35 +3475,18 @@ export interface Homepage {
       }[]
     | null;
   /**
-   * The keywords under the introduction. Each one can carry a Nepali version; leaving that empty keeps the English.
+   * The keywords under the introduction. Every line is written twice: English on the left, Nepali on the right. Anything typed into a Nepali box is shown exactly as written; leaving it empty keeps the English, translated as before.
    */
   aboutCapabilities?:
     | {
         label: string;
+        /**
+         * Shown when the website is read in Nepali. Leave it empty to keep the English.
+         */
         labelNe?: string | null;
         id?: string | null;
       }[]
     | null;
-  /**
-   * Shown when the website is read in Nepali. Leave it empty to keep the English.
-   */
-  aboutEyebrowNe?: string | null;
-  /**
-   * Shown when the website is read in Nepali. Leave it empty to keep the English.
-   */
-  aboutHeadingNe?: string | null;
-  /**
-   * Shown when the website is read in Nepali. Leave it empty to keep the English.
-   */
-  aboutQuoteNe?: string | null;
-  /**
-   * Shown when the website is read in Nepali. Leave it empty to keep the English.
-   */
-  aboutBodyNe?: string | null;
-  /**
-   * Shown when the website is read in Nepali. Leave it empty to keep the English.
-   */
-  aboutBodySecondaryNe?: string | null;
   leadershipKicker?: string | null;
   /**
    * Shown when the website is read in Nepali. Leave it empty to keep the English.
@@ -2938,40 +3501,64 @@ export interface Homepage {
    */
   leadershipHeadingNe?: string | null;
   /**
-   * Shown one at a time on the homepage. The carousel moves on every five seconds, and visitors can step through with the arrows. Each message brings its own heading with it, so the heading changes as the carousel moves.
+   * Shown one at a time on the homepage. The carousel moves on every five seconds, and visitors can step through with the arrows. Each message brings its own heading with it, so the heading changes as the carousel moves. A message is never machine-translated - somebody's own words are not something to guess at - so a Nepali box left empty here falls back to the English exactly as written.
    */
   leadershipMessages?:
     | {
         role: string;
+        /**
+         * Shown when the website is read in Nepali.
+         */
+        roleNe?: string | null;
         name: string;
+        /**
+         * Shown when the website is read in Nepali.
+         */
+        nameNe?: string | null;
         /**
          * Replaces the leadership heading above while this message is on screen. Leave it empty to keep that one.
          */
         heading?: string | null;
         /**
-         * Leave a blank line between paragraphs.
+         * Shown when the website is read in Nepali.
          */
-        message: string;
-        photo?: (number | null) | Media;
-        roleNe?: string | null;
-        nameNe?: string | null;
         headingNe?: string | null;
         /**
          * Leave a blank line between paragraphs.
          */
+        message: string;
+        /**
+         * Shown when the website is read in Nepali, exactly as written. Leave a blank line between paragraphs.
+         */
         messageNe?: string | null;
+        photo?: (number | null) | Media;
         id?: string | null;
       }[]
     | null;
   servicesKicker?: string | null;
+  /**
+   * Shown when the website is read in Nepali. Leave it empty to keep the English.
+   */
+  servicesKickerNe?: string | null;
   servicesHeading?: string | null;
+  /**
+   * Shown when the website is read in Nepali. Leave it empty to keep the English.
+   */
+  servicesHeadingNe?: string | null;
   servicesIntro?: string | null;
   /**
-   * Drag to reorder the service cards.
+   * Shown when the website is read in Nepali. Leave it empty to keep the English.
+   */
+  servicesIntroNe?: string | null;
+  /**
+   * Drag to reorder the service cards. Every line is written twice: English on the left, Nepali on the right. Anything typed into a Nepali box is shown exactly as written; leaving it empty keeps the English, translated as before.
    */
   services?:
     | {
         name: string;
+        /**
+         * Shown when the website is read in Nepali. Leave it empty to keep the English.
+         */
         nameNe?: string | null;
         icon?:
           | (
@@ -2993,58 +3580,49 @@ export interface Homepage {
         id?: string | null;
       }[]
     | null;
-  /**
-   * Shown when the website is read in Nepali. Leave it empty to keep the English.
-   */
-  servicesKickerNe?: string | null;
-  /**
-   * Shown when the website is read in Nepali. Leave it empty to keep the English.
-   */
-  servicesHeadingNe?: string | null;
-  /**
-   * Shown when the website is read in Nepali. Leave it empty to keep the English.
-   */
-  servicesIntroNe?: string | null;
   productionChip?: string | null;
-  productionHeading?: string | null;
-  productionBody?: string | null;
-  productionCtaLabel?: string | null;
   /**
    * Shown when the website is read in Nepali. Leave it empty to keep the English.
    */
   productionChipNe?: string | null;
+  productionHeading?: string | null;
   /**
    * Shown when the website is read in Nepali. Leave it empty to keep the English.
    */
   productionHeadingNe?: string | null;
+  productionBody?: string | null;
   /**
    * Shown when the website is read in Nepali. Leave it empty to keep the English.
    */
   productionBodyNe?: string | null;
+  productionCtaLabel?: string | null;
   /**
    * Shown when the website is read in Nepali. Leave it empty to keep the English.
    */
   productionCtaLabelNe?: string | null;
   sancharHeading?: string | null;
-  sancharIntro?: string | null;
-  /**
-   * The keywords printed on the portal card. Each one can carry a Nepali version; leaving that empty keeps the English.
-   */
-  sancharTopics?:
-    | {
-        label: string;
-        labelNe?: string | null;
-        id?: string | null;
-      }[]
-    | null;
   /**
    * Shown when the website is read in Nepali. Leave it empty to keep the English.
    */
   sancharHeadingNe?: string | null;
+  sancharIntro?: string | null;
   /**
    * Shown when the website is read in Nepali. Leave it empty to keep the English.
    */
   sancharIntroNe?: string | null;
+  /**
+   * The keywords printed on the portal card. Every line is written twice: English on the left, Nepali on the right. Anything typed into a Nepali box is shown exactly as written; leaving it empty keeps the English, translated as before.
+   */
+  sancharTopics?:
+    | {
+        label: string;
+        /**
+         * Shown when the website is read in Nepali. Leave it empty to keep the English.
+         */
+        labelNe?: string | null;
+        id?: string | null;
+      }[]
+    | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -3264,10 +3842,14 @@ export interface SiteSetting {
  */
 export interface HomepageSelect<T extends boolean = true> {
   heroKicker?: T;
+  heroKickerNe?: T;
   heroHeading?: T;
+  heroHeadingNe?: T;
   heroBody?: T;
+  heroBodyNe?: T;
   heroImage?: T;
   heroCtaLabel?: T;
+  heroCtaLabelNe?: T;
   heroCtaHref?: T;
   brandPillars?:
     | T
@@ -3276,15 +3858,16 @@ export interface HomepageSelect<T extends boolean = true> {
         labelNe?: T;
         id?: T;
       };
-  heroKickerNe?: T;
-  heroHeadingNe?: T;
-  heroBodyNe?: T;
-  heroCtaLabelNe?: T;
   aboutEyebrow?: T;
+  aboutEyebrowNe?: T;
   aboutHeading?: T;
+  aboutHeadingNe?: T;
   aboutQuote?: T;
+  aboutQuoteNe?: T;
   aboutBody?: T;
+  aboutBodyNe?: T;
   aboutBodySecondary?: T;
+  aboutBodySecondaryNe?: T;
   aboutParagraphs?:
     | T
     | {
@@ -3299,11 +3882,6 @@ export interface HomepageSelect<T extends boolean = true> {
         labelNe?: T;
         id?: T;
       };
-  aboutEyebrowNe?: T;
-  aboutHeadingNe?: T;
-  aboutQuoteNe?: T;
-  aboutBodyNe?: T;
-  aboutBodySecondaryNe?: T;
   leadershipKicker?: T;
   leadershipKickerNe?: T;
   leadershipHeading?: T;
@@ -3312,19 +3890,22 @@ export interface HomepageSelect<T extends boolean = true> {
     | T
     | {
         role?: T;
-        name?: T;
-        heading?: T;
-        message?: T;
-        photo?: T;
         roleNe?: T;
+        name?: T;
         nameNe?: T;
+        heading?: T;
         headingNe?: T;
+        message?: T;
         messageNe?: T;
+        photo?: T;
         id?: T;
       };
   servicesKicker?: T;
+  servicesKickerNe?: T;
   servicesHeading?: T;
+  servicesHeadingNe?: T;
   servicesIntro?: T;
+  servicesIntroNe?: T;
   services?:
     | T
     | {
@@ -3334,19 +3915,18 @@ export interface HomepageSelect<T extends boolean = true> {
         href?: T;
         id?: T;
       };
-  servicesKickerNe?: T;
-  servicesHeadingNe?: T;
-  servicesIntroNe?: T;
   productionChip?: T;
-  productionHeading?: T;
-  productionBody?: T;
-  productionCtaLabel?: T;
   productionChipNe?: T;
+  productionHeading?: T;
   productionHeadingNe?: T;
+  productionBody?: T;
   productionBodyNe?: T;
+  productionCtaLabel?: T;
   productionCtaLabelNe?: T;
   sancharHeading?: T;
+  sancharHeadingNe?: T;
   sancharIntro?: T;
+  sancharIntroNe?: T;
   sancharTopics?:
     | T
     | {
@@ -3354,8 +3934,6 @@ export interface HomepageSelect<T extends boolean = true> {
         labelNe?: T;
         id?: T;
       };
-  sancharHeadingNe?: T;
-  sancharIntroNe?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

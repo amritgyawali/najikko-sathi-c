@@ -1,5 +1,6 @@
 import type { Block } from "payload";
 
+import { BILINGUAL_NOTE, bilingual } from "./bilingual";
 import { sectionBlocks } from "./sections";
 
 /**
@@ -12,22 +13,27 @@ import { sectionBlocks } from "./sections";
  * built from, so those pages can be edited in exactly the same way. Both are
  * offered on every page, and both render through
  * app/(frontend)/_components/PageSections.tsx.
+ *
+ * Like the website's own sections, every line of copy here is written twice -
+ * English beside Nepali in the same row (cms/bilingual.ts). A Nepali box left
+ * empty keeps the English, translated against the phrase book.
  */
 
 export const HeroBlock: Block = {
   slug: "hero",
   labels: { singular: "Hero", plural: "Heroes" },
   fields: [
-    { name: "kicker", type: "text" },
-    { name: "heading", type: "text", required: true },
-    { name: "subheading", type: "textarea" },
+    bilingual({ name: "kicker", label: "Kicker" }),
+    bilingual({ name: "heading", label: "Heading", required: true }),
+    bilingual({ name: "subheading", type: "textarea", label: "Subheading" }),
     { name: "background", type: "upload", relationTo: "media" },
     {
       name: "actions",
       type: "array",
       maxRows: 2,
+      admin: { description: BILINGUAL_NOTE },
       fields: [
-        { name: "label", type: "text", required: true },
+        bilingual({ name: "label", label: "Button text", required: true }),
         { name: "href", type: "text", required: true },
         {
           name: "style",
@@ -47,7 +53,7 @@ export const RichTextBlock: Block = {
   slug: "richText",
   labels: { singular: "Text section", plural: "Text sections" },
   fields: [
-    { name: "heading", type: "text" },
+    bilingual({ name: "heading", label: "Heading" }),
     { name: "content", type: "richText", required: true },
   ],
 };
@@ -56,16 +62,17 @@ export const CardGridBlock: Block = {
   slug: "cardGrid",
   labels: { singular: "Card grid", plural: "Card grids" },
   fields: [
-    { name: "kicker", type: "text" },
-    { name: "heading", type: "text" },
-    { name: "intro", type: "textarea" },
+    bilingual({ name: "kicker", label: "Kicker" }),
+    bilingual({ name: "heading", label: "Heading" }),
+    bilingual({ name: "intro", type: "textarea", label: "Introduction" }),
     {
       name: "cards",
       type: "array",
       minRows: 1,
+      admin: { description: BILINGUAL_NOTE },
       fields: [
-        { name: "title", type: "text", required: true },
-        { name: "description", type: "textarea" },
+        bilingual({ name: "title", label: "Title", required: true }),
+        bilingual({ name: "description", type: "textarea", label: "Description" }),
         { name: "href", type: "text" },
         { name: "image", type: "upload", relationTo: "media" },
       ],
@@ -77,14 +84,15 @@ export const GalleryBlock: Block = {
   slug: "gallery",
   labels: { singular: "Gallery", plural: "Galleries" },
   fields: [
-    { name: "heading", type: "text" },
+    bilingual({ name: "heading", label: "Heading" }),
     {
       name: "images",
       type: "array",
       minRows: 1,
+      admin: { description: BILINGUAL_NOTE },
       fields: [
         { name: "image", type: "upload", relationTo: "media", required: true },
-        { name: "caption", type: "text" },
+        bilingual({ name: "caption", label: "Caption" }),
       ],
     },
   ],
@@ -94,9 +102,9 @@ export const CtaBlock: Block = {
   slug: "cta",
   labels: { singular: "Call to action", plural: "Calls to action" },
   fields: [
-    { name: "heading", type: "text", required: true },
-    { name: "body", type: "textarea" },
-    { name: "buttonLabel", type: "text", required: true },
+    bilingual({ name: "heading", label: "Heading", required: true }),
+    bilingual({ name: "body", type: "textarea", label: "Body" }),
+    bilingual({ name: "buttonLabel", label: "Button text", required: true }),
     { name: "buttonHref", type: "text", required: true },
   ],
 };
@@ -105,7 +113,7 @@ export const ReviewsBlock: Block = {
   slug: "reviewsBlock",
   labels: { singular: "Reviews", plural: "Reviews" },
   fields: [
-    { name: "heading", type: "text", defaultValue: "What our clients say" },
+    bilingual({ name: "heading", label: "Heading", defaultValue: "What our clients say" }),
     {
       name: "source",
       type: "select",
@@ -123,7 +131,7 @@ export const PostsBlock: Block = {
   slug: "postsBlock",
   labels: { singular: "Post list", plural: "Post lists" },
   fields: [
-    { name: "heading", type: "text" },
+    bilingual({ name: "heading", label: "Heading" }),
     {
       name: "type",
       type: "select",
@@ -144,7 +152,7 @@ export const OffersBlock: Block = {
   slug: "offersBlock",
   labels: { singular: "Offer list", plural: "Offer lists" },
   fields: [
-    { name: "heading", type: "text", defaultValue: "Current offers" },
+    bilingual({ name: "heading", label: "Heading", defaultValue: "Current offers" }),
     { name: "limit", type: "number", defaultValue: 3, min: 1, max: 24 },
   ],
 };

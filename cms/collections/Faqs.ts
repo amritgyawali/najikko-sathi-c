@@ -1,5 +1,6 @@
 import type { CollectionConfig } from "payload";
 import { isEditor } from "../access";
+import { BILINGUAL_NOTE, bilingual } from "../bilingual";
 import { placementsField } from "../fields";
 import { revalidateDoc, revalidateDocAfterDelete } from "../hooks/revalidate";
 
@@ -20,7 +21,8 @@ export const Faqs: CollectionConfig = {
     defaultColumns: ["question", "placements", "order"],
     group: "Content",
     description:
-      "Questions and answers. Each one picks the pages it belongs to, and search engines can show them as rich results.",
+      "Questions and answers. Each one picks the pages it belongs to, and search engines can show them as rich results. " +
+      BILINGUAL_NOTE,
     listSearchableFields: ["question", "answer"],
   },
   access: { read: () => true, create: isEditor, update: isEditor, delete: isEditor },
@@ -29,8 +31,8 @@ export const Faqs: CollectionConfig = {
     afterDelete: [revalidateDocAfterDelete("", ["/", "/services", "/our-work", "/contact", "/training", "/production"])],
   },
   fields: [
-    { name: "question", type: "text", required: true },
-    { name: "answer", type: "textarea", required: true },
+    bilingual({ name: "question", label: "Question", required: true }),
+    bilingual({ name: "answer", type: "textarea", label: "Answer", required: true }),
     placementsField({
       thing: "question",
       everywhere: "on every page that carries a questions band",
