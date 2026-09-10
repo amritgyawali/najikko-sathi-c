@@ -56,6 +56,14 @@ advertisement - each link to that discipline's page, and the company logo
 uploaded in **Site → Site Settings** sits at its centre. Until a logo is
 uploaded the centre falls back to the initials mark.
 
+The wheel's movement is deliberately quiet: the petals settle into the ring one
+after another when the page opens, and pointing at one lifts it a little way out
+while its neighbours step back and dim. Nothing circles it, nothing is thrown
+off it, and nothing keeps moving once it has settled — the shape and its colours
+carry the band, and the animation only marks whichever petal is being read.
+Someone who has asked their browser for less motion gets the wheel with none of
+it.
+
 The service grid, the production band, and the Right Sanchar band used to sit
 on the homepage as well. They now open `/services`, `/production`, and
 `/right-sanchar` respectively, and still read their copy from
@@ -87,6 +95,17 @@ this message** section — role, name, heading and body — and so do the kicker
 the fallback heading above them. Anything left empty falls back to the English
 rather than to a machine translation, so a blank field is a visible "not written
 yet", never a wrong sentence.
+
+Every other band in **Site → Homepage & page copy** now works the same way. Each
+tab — the hero, the introduction, the service grid, the production band, the
+Right Sanchar band — ends in a folded-away **Nepali version of this section**,
+and the keyword lists (brand pillars, core capabilities, portal topics) carry a
+Nepali box beside each English one. None of it is required. A field you fill in
+is shown exactly as you typed it and never machine-translated; a field you leave
+empty behaves precisely as it did before — the English is shown, translated
+against the phrase book — so you can hand-write as much or as little Nepali as
+you have time for, one line at a time, and the page reads correctly at every
+point in between.
 
 The English and the Nepali are two halves of one message, not two messages.
 Pressing ने changes the language of what a visitor is reading; it does not move
@@ -321,12 +340,29 @@ An entry can be both, or either one on its own. Entries are ordered by the
 between Our Work and Contact. One entry is one project, and everything about it
 is uploaded here:
 
-- a **title** and a description of the work,
+- a **title**, a **short description** for its card, and the full description of
+  the work,
 - an optional **cover photograph**,
 - **photographs** - as many as you like, each with its own caption, dragged into
   the order they should read in,
 - **videos** - as many YouTube links as you like, each with its own title and
   description, embedded as players on the page.
+
+`/social-work` shows one **card** per entry — the cover photograph, the title,
+the short description, and how much there is inside it ("18 photographs", "2
+films") — laid out in a grid that goes from three across on a desktop to one on
+a phone. Opening a card goes to that entry's own page at
+`/social-work/<address>`, and that is where the full description, every
+photograph and every film are. Before this the page printed every entry in full,
+one under another, so reaching the fourth album meant scrolling past three
+complete ones; now the whole of the work is visible at once and a visitor
+chooses what to go into.
+
+The address is generated from the title when you save, and can be overridden in
+the sidebar. Entries that existed before addresses did were given one from their
+title automatically. On an entry's page, clicking any photograph opens it full
+size, with the arrows and the ← → keys stepping through the album and Escape
+closing it.
 
 Paste an ordinary watch or share link and the film is embedded; anything that is
 not a YouTube link is refused when you save, rather than leaving an empty player
@@ -541,6 +577,15 @@ and commit it:
 npm run migrate:create my_change
 npm run generate:types
 ```
+
+### Running a schema change by hand
+
+`database/` holds the same changes as plain SQL, one file per change, for
+pasting into the Supabase SQL editor when you would rather apply a change
+yourself and see it land before anything ships. Each file is wrapped in a
+transaction, is safe to run twice, and records itself in `payload_migrations`
+so the next deploy does not repeat it. `database/README.md` explains the
+convention; run the files in filename order.
 
 ## Troubleshooting
 
@@ -791,6 +836,7 @@ API live in `app/(payload)/`.
 - `lib/services.ts` - One shape for a service, whether it came from the CMS or the fallback
 - `proxy.ts` - Applies the redirects managed in the dashboard
 - `migrations/` - Database migrations (commit these)
+- `database/` - The same changes as plain SQL, one file per change, for running by hand in Supabase
 - `payload.config.ts` - CMS configuration
 - `scripts/check-pages.ts` - Fails when the routes and `lib/site-map.ts` disagree
 - `scripts/check-site.mjs` - Production route and browser verification

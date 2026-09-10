@@ -22,6 +22,7 @@ import { getMediaSlot, type BusinessInfo } from "@/lib/content";
 import { slotPhoto } from "@/lib/page-media";
 import type { ServiceView } from "@/lib/services";
 import { rightSancharTopics } from "../_data/site";
+import { Written } from "./written";
 
 /**
  * Three bands that used to sit on the homepage and now open the page each one
@@ -52,8 +53,16 @@ const iconByName = {
   graduationCap: GraduationCap,
 } as const;
 
-const labels = (rows: { label: string }[] | null | undefined, fallback: readonly string[]): string[] =>
-  rows && rows.length > 0 ? rows.map((row) => row.label) : [...fallback];
+/** A keyword list in both languages; an unwritten Nepali half keeps the English. */
+type Label = { en: string; ne: string };
+
+const labels = (
+  rows: { label: string; labelNe?: string | null }[] | null | undefined,
+  fallback: readonly string[],
+): Label[] =>
+  rows && rows.length > 0
+    ? rows.map((row) => ({ en: row.label, ne: row.labelNe ?? "" }))
+    : fallback.map((label) => ({ en: label, ne: "" }));
 
 export function ServicesGrid({ home, services }: { home: Homepage | null; services: ServiceView[] }) {
   // The service portfolio drives this grid by default, so each card links to a
@@ -73,16 +82,16 @@ export function ServicesGrid({ home, services }: { home: Homepage | null; servic
       <div className="site-container verticals-content">
         <div className="verticals-intro">
           <div>
-            <span className="section-kicker">{home?.servicesKicker || "Our Services"}</span>
-            {home?.servicesHeading ? (
-              <h2>{home.servicesHeading}</h2>
-            ) : (
-              <h2>One Media House.<br />Many Ways to Communicate.</h2>
-            )}
-            <p>
+            <Written as="span" className="section-kicker" ne={home?.servicesKickerNe}>
+              {home?.servicesKicker || "Our Services"}
+            </Written>
+            <Written as="h2" ne={home?.servicesHeadingNe}>
+              {home?.servicesHeading || <>One Media House.<br />Many Ways to Communicate.</>}
+            </Written>
+            <Written as="p" ne={home?.servicesIntroNe}>
               {home?.servicesIntro ||
                 "From verified information to cinematic storytelling, every service is built around clarity, truth, and impact."}
-            </p>
+            </Written>
           </div>
           <Link className="outline-button" href="/production">Explore Production <ArrowUpRight aria-hidden="true" /></Link>
         </div>
@@ -93,7 +102,7 @@ export function ServicesGrid({ home, services }: { home: Homepage | null; servic
                 return (
                   <Link className="vertical-card" href={row.href || "/services"} key={row.name}>
                     <Icon aria-hidden="true" />
-                    <strong>{row.name}</strong>
+                    <Written as="strong" ne={row.nameNe}>{row.name}</Written>
                     <ArrowRight className="card-arrow" aria-hidden="true" />
                   </Link>
                 );
@@ -137,18 +146,21 @@ export async function ProductionBand({ business, home }: { business: BusinessInf
           </div>
         ) : null}
         <div className="foundation-copy">
-          <span className="foundation-chip">{home?.productionChip || "Production"}</span>
-          {home?.productionHeading ? (
-            <h2>{home.productionHeading}</h2>
-          ) : (
-            <h2>Stories Brought to Life<br /><em>With Cinematic Craft</em></h2>
-          )}
-          <p>
+          <Written as="span" className="foundation-chip" ne={home?.productionChipNe}>
+            {home?.productionChip || "Production"}
+          </Written>
+          <Written as="h2" ne={home?.productionHeadingNe}>
+            {home?.productionHeading || <>Stories Brought to Life<br /><em>With Cinematic Craft</em></>}
+          </Written>
+          <Written as="p" ne={home?.productionBodyNe}>
             {home?.productionBody ||
               "We turn ideas, lives, and real events into compelling visual experiences. Our team produces biography videos, documentaries, advertisements, and social or corporate films through research, scriptwriting, cinematography, and cinematic editing."}
-          </p>
+          </Written>
           <a className="primary-button" href={`mailto:${business.email}?subject=Production%20Inquiry`}>
-            {home?.productionCtaLabel || "Start a Production"} <ArrowRight aria-hidden="true" />
+            <Written ne={home?.productionCtaLabelNe}>
+              {home?.productionCtaLabel || "Start a Production"}
+            </Written>{" "}
+            <ArrowRight aria-hidden="true" />
           </a>
         </div>
       </div>
@@ -163,11 +175,13 @@ export function SancharBand({ business, home }: { business: BusinessInfo; home: 
     <section className="value-section" id="right-sanchar">
       <div className="site-container value-content">
         <div className="value-heading">
-          <h2>{home?.sancharHeading || "Right Information. Right Time. Right Perspective."}</h2>
-          <p>
+          <Written as="h2" ne={home?.sancharHeadingNe}>
+            {home?.sancharHeading || "Right Information. Right Time. Right Perspective."}
+          </Written>
+          <Written as="p" ne={home?.sancharIntroNe}>
             {home?.sancharIntro ||
               "Right Sanchar delivers accurate, truthful, and unbiased information on issues that matter to the public."}
-          </p>
+          </Written>
         </div>
         <a className="logo-cloud-card" href={business.rightSanchar} target="_blank" rel="noreferrer" aria-label="Visit Right Sanchar">
           <div className="right-sanchar-card">
@@ -179,7 +193,9 @@ export function SancharBand({ business, home }: { business: BusinessInfo; home: 
               <span className="portal-action">Visit the portal <ArrowUpRight aria-hidden="true" /></span>
             </div>
             <div className="topic-cloud">
-              {topics.map((topic) => <span key={topic}>{topic}</span>)}
+              {topics.map((topic) => (
+                <Written ne={topic.ne} key={topic.en}>{topic.en}</Written>
+              ))}
             </div>
           </div>
         </a>

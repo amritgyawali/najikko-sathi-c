@@ -106,9 +106,14 @@ export function liveTargetFor({
             where: "The social responsibility section of Our Work.",
           };
     case "social-work":
-      return chosen
-        ? { path: chosen.path, where: `The social work band on ${chosen.named}.` }
-        : { path: "/social-work", where: "The Social Work page." };
+      // The entry has a page of its own now, so that is what "view live" opens.
+      // Until it has an address, the band that lists it is the next best thing.
+      return {
+        path: slug ? `/social-work/${slug}` : (chosen?.path ?? "/social-work"),
+        where: chosen
+          ? `Its own page, and the social work band on ${chosen.named}.`
+          : "Its own page, and the Social Work page that lists it.",
+      };
     case "team":
       return chosen
         ? { path: chosen.path, where: `The team band on ${chosen.named}.` }

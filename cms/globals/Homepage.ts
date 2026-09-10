@@ -1,4 +1,4 @@
-import type { GlobalConfig } from "payload";
+import type { Field, GlobalConfig } from "payload";
 import { revalidateSite } from "../hooks/revalidate";
 import { isEditor } from "../access";
 
@@ -10,14 +10,61 @@ import { isEditor } from "../access";
  * page names a visitor sees in the navbar. Three of these bands started life on
  * the front page and now open pages of their own; the fields kept their names
  * so nothing anyone had written was lost when they moved.
+ *
+ * Every band carries a Nepali half, folded away under the English it belongs
+ * to. None of it is required: a Nepali field that is filled in is shown exactly
+ * as written, and one left empty leaves the band as it always was - English,
+ * turned into Nepali against the phrase book.
  */
 /**
  * Said under every Nepali field: the site is authored in English and translated
- * against a phrase book, but the leadership band is exempt from that, so these
- * are the only Nepali it will ever show.
+ * against a phrase book, but anything written here is exempt from that.
  */
 const NEPALI_NOTE =
   "Shown when the website is read in Nepali. Leave it empty to keep the English.";
+
+/** Said at the top of every folded-away Nepali half of a band. */
+const NEPALI_SECTION_NOTE =
+  "Optional. Anything written here is what a visitor reads after pressing ने - shown " +
+  "exactly as typed, never machine-translated. Every field left empty falls back to the " +
+  "English above, translated against the phrase book as before, so you can write as much " +
+  "or as little Nepali as you like.";
+
+/** One Nepali counterpart of an English field. */
+const nepali = (name: string, label: string, type: "text" | "textarea" = "text"): Field =>
+  ({ name, type, label, admin: { description: NEPALI_NOTE } }) as Field;
+
+/** The folded-away Nepali half of a band. */
+const nepaliVersion = (fields: Field[]): Field => ({
+  type: "collapsible",
+  label: "Nepali version of this section",
+  admin: { initCollapsed: true, description: NEPALI_SECTION_NOTE },
+  fields,
+});
+
+/**
+ * A keyword list where each entry can be written twice. The Nepali sits beside
+ * the English rather than in the folded section below, because a list is read
+ * as pairs and splitting it would mean counting rows in two places.
+ */
+const bilingualLabels = (name: string, label: string, description: string): Field => ({
+  name,
+  type: "array",
+  label,
+  admin: {
+    description:
+      `${description} Each one can carry a Nepali version; leaving that empty keeps the English.`,
+  },
+  fields: [
+    {
+      type: "row",
+      fields: [
+        { name: "label", type: "text", required: true, admin: { width: "50%" } },
+        { name: "labelNe", type: "text", label: "In Nepali", admin: { width: "50%" } },
+      ],
+    },
+  ],
+});
 
 export const Homepage: GlobalConfig = {
   slug: "homepage",
@@ -26,7 +73,7 @@ export const Homepage: GlobalConfig = {
     group: "Site",
     description:
       "Written copy for the front page and for three pages that grew out of it. " +
-      "Each tab says which address it appears at.",
+      "Each tab says which address it appears at, and each carries an optional Nepali version.",
   },
   access: { read: () => true, update: isEditor },
   hooks: { afterChange: [revalidateSite] },
@@ -59,13 +106,13 @@ export const Homepage: GlobalConfig = {
                 { name: "heroCtaHref", type: "text", defaultValue: "/services", admin: { width: "50%" } },
               ],
             },
-            {
-              name: "brandPillars",
-              type: "array",
-              label: "Brand pillars",
-              admin: { description: "The ring of keywords under the hero." },
-              fields: [{ name: "label", type: "text", required: true }],
-            },
+            bilingualLabels("brandPillars", "Brand pillars", "The ring of keywords under the hero."),
+            nepaliVersion([
+              nepali("heroKickerNe", "Kicker in Nepali"),
+              nepali("heroHeadingNe", "Heading in Nepali", "textarea"),
+              nepali("heroBodyNe", "Body in Nepali", "textarea"),
+              nepali("heroCtaLabelNe", "Button text in Nepali"),
+            ]),
           ],
         },
         {
@@ -84,15 +131,27 @@ export const Homepage: GlobalConfig = {
               labels: { singular: "Paragraph", plural: "Paragraphs" },
               admin: {
                 description:
-                  "Anything after the second paragraph. Drag to reorder; they read in this order.",
+                  "Anything after the second paragraph. Drag to reorder; they read in this order. " +
+                  "Each one can carry a Nepali version of itself.",
               },
-              fields: [{ name: "text", type: "textarea", required: true }],
+              fields: [
+                { name: "text", type: "textarea", required: true },
+                {
+                  name: "textNe",
+                  type: "textarea",
+                  label: "This paragraph in Nepali",
+                  admin: { description: NEPALI_NOTE },
+                },
+              ],
             },
-            {
-              name: "aboutCapabilities",
-              type: "array",
-              fields: [{ name: "label", type: "text", required: true }],
-            },
+            bilingualLabels("aboutCapabilities", "Core capabilities", "The keywords under the introduction."),
+            nepaliVersion([
+              nepali("aboutEyebrowNe", "Eyebrow in Nepali"),
+              nepali("aboutHeadingNe", "Heading in Nepali", "textarea"),
+              nepali("aboutQuoteNe", "Quotation in Nepali", "textarea"),
+              nepali("aboutBodyNe", "First paragraph in Nepali", "textarea"),
+              nepali("aboutBodySecondaryNe", "Second paragraph in Nepali", "textarea"),
+            ]),
           ],
         },
         {
@@ -234,7 +293,13 @@ export const Homepage: GlobalConfig = {
               type: "array",
               admin: { description: "Drag to reorder the service cards." },
               fields: [
-                { name: "name", type: "text", required: true },
+                {
+                  type: "row",
+                  fields: [
+                    { name: "name", type: "text", required: true, admin: { width: "50%" } },
+                    { name: "nameNe", type: "text", label: "Name in Nepali", admin: { width: "50%" } },
+                  ],
+                },
                 {
                   name: "icon",
                   type: "select",
@@ -248,6 +313,11 @@ export const Homepage: GlobalConfig = {
                 { name: "href", type: "text", defaultValue: "/production" },
               ],
             },
+            nepaliVersion([
+              nepali("servicesKickerNe", "Kicker in Nepali"),
+              nepali("servicesHeadingNe", "Heading in Nepali", "textarea"),
+              nepali("servicesIntroNe", "Introduction in Nepali", "textarea"),
+            ]),
           ],
         },
         {
@@ -258,6 +328,12 @@ export const Homepage: GlobalConfig = {
             { name: "productionHeading", type: "text" },
             { name: "productionBody", type: "textarea" },
             { name: "productionCtaLabel", type: "text", defaultValue: "Start a Production" },
+            nepaliVersion([
+              nepali("productionChipNe", "Label in Nepali"),
+              nepali("productionHeadingNe", "Heading in Nepali", "textarea"),
+              nepali("productionBodyNe", "Body in Nepali", "textarea"),
+              nepali("productionCtaLabelNe", "Button text in Nepali"),
+            ]),
           ],
         },
         {
@@ -266,11 +342,11 @@ export const Homepage: GlobalConfig = {
           fields: [
             { name: "sancharHeading", type: "text" },
             { name: "sancharIntro", type: "textarea" },
-            {
-              name: "sancharTopics",
-              type: "array",
-              fields: [{ name: "label", type: "text", required: true }],
-            },
+            bilingualLabels("sancharTopics", "Topics", "The keywords printed on the portal card."),
+            nepaliVersion([
+              nepali("sancharHeadingNe", "Heading in Nepali", "textarea"),
+              nepali("sancharIntroNe", "Introduction in Nepali", "textarea"),
+            ]),
           ],
         },
       ],

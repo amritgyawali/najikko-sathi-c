@@ -23,6 +23,8 @@ import * as migration_20260908_021604_add_nepali_leadership from './20260908_021
 import * as migration_20260908_022000_fold_nepali_leadership_message from './20260908_022000_fold_nepali_leadership_message';
 import * as migration_20260908_030000_media_band_on_every_page from './20260908_030000_media_band_on_every_page';
 import * as migration_20260908_210000_sync_website_pages from './20260908_210000_sync_website_pages';
+import * as migration_20260910_120000_add_nepali_page_copy from './20260910_120000_add_nepali_page_copy';
+import * as migration_20260910_121000_social_work_pages from './20260910_121000_social_work_pages';
 
 export const migrations = [
   {
@@ -149,5 +151,15 @@ export const migrations = [
     up: migration_20260908_210000_sync_website_pages.up,
     down: migration_20260908_210000_sync_website_pages.down,
     name: '20260908_210000_sync_website_pages',
+  },
+  {
+    up: migration_20260910_120000_add_nepali_page_copy.up,
+    down: migration_20260910_120000_add_nepali_page_copy.down,
+    name: '20260910_120000_add_nepali_page_copy',
+  },
+  {
+    up: migration_20260910_121000_social_work_pages.up,
+    down: migration_20260910_121000_social_work_pages.down,
+    name: '20260910_121000_social_work_pages'
   },
 ];
