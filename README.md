@@ -281,6 +281,15 @@ the same word is always the same colour. A picture column shows the picture
 documents have no public address - enquiries, users, reviews, page views - is
 spared the "Link" column rather than being given a row of dashes.
 
+**Every row carries its own controls.** Beside the tick box, on every row of
+every list, sit four small buttons: edit, publish, unpublish and delete
+(`cms/components/RowActionsCell.tsx`). Taking a post off the website is one
+click from the list rather than four screens. They are drawn in the same order
+everywhere, and the two that change publication are dimmed - not removed - on a
+collection that has no published state, so a row never changes shape from one
+screen to the next. A review's **Approved** tick is what makes it public, so
+those same two buttons drive it. Delete asks first.
+
 **A document is a sheet.** The fields sit on a bounded white surface with one
 rhythm of spacing, the save bar follows the page down so Save is always
 reachable, and a form long enough to need sections gets tabs drawn as a
