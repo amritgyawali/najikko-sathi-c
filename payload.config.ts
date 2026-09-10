@@ -94,6 +94,39 @@ const withLiveLink = (config: CollectionConfig): CollectionConfig => (PRIVATE_CO
   fields: [...config.fields, liveLinkColumn],
 });
 
+/**
+ * Edit, publish, unpublish and delete on every row, next to the tick box.
+ *
+ * The column is declared first so it lands immediately after the selection
+ * checkbox, which is where a row's own controls belong: the eye reaches them
+ * before it has read the row, and they stay in the same place on every screen.
+ *
+ * Holds no data, so like the address column it needs no migration. The traffic
+ * log is left out - its rows are records of what happened, not things to edit.
+ */
+const ROW_ACTIONS_CELL = "/cms/components/RowActionsCell#RowActionsCell";
+
+const rowActionsColumn: Field = {
+  name: "rowActions",
+  type: "ui",
+  label: "Actions",
+  admin: { components: { Cell: ROW_ACTIONS_CELL } },
+};
+
+const NO_ROW_ACTIONS = new Set(["pageviews"]);
+
+const withRowActions = (config: CollectionConfig): CollectionConfig => (NO_ROW_ACTIONS.has(config.slug) ? config : {
+  ...config,
+  admin: {
+    ...config.admin,
+    // A collection that names its columns would otherwise hide the new one.
+    ...(config.admin?.defaultColumns
+      ? { defaultColumns: [rowActionsColumn.name!, ...config.admin.defaultColumns] }
+      : {}),
+  },
+  fields: [...config.fields, rowActionsColumn],
+});
+
 const withGlobalLiveLink = (config: GlobalConfig): GlobalConfig => ({
   ...config,
   admin: {
@@ -162,7 +195,7 @@ export default buildConfig({
     Users,
     PageViews,
     Backups,
-  ].map(withLiveLink),
+  ].map(withLiveLink).map(withRowActions),
   globals: [Homepage, Navigation, Announcement, Appearance, Footer, SiteSettings].map(withGlobalLiveLink),
   // The dashboard's "add the website's pages" button posts here, and so do the
   // daily backup schedule, the restore button, and the dashboard's own toolbox:
