@@ -30,6 +30,7 @@ import { BackupNowButton as BackupNowButton_6d206b79e65e5bae25d706cf7e658037 } f
 import { RestoreBackup as RestoreBackup_c39d1c0b6558e36324f8ed049deb6f4d } from '../../../cms/components/RestoreBackup'
 import { CommandPalette as CommandPalette_a16a3a2df81066b39288ec8e9376f8bc } from '../../../cms/components/dashboard/CommandPalette'
 import { ThemeToggle as ThemeToggle_03e2855782842afd8d454d76720a31ec } from '../../../cms/components/ThemeToggle'
+import { GlobalSearch as GlobalSearch_965a671efd80d2925fe8a506a99763fe } from '../../../cms/components/GlobalSearch'
 import { LoginSignupLink as LoginSignupLink_4ecb88133f73eab493d10ad23060fd42 } from '../../../cms/components/LoginSignupLink'
 import { DashboardHome as DashboardHome_b100ff2e91005655d7ea828d85a2707e } from '../../../cms/components/dashboard/DashboardHome'
 import { NavDashboardLink as NavDashboardLink_890d30fb0fa4343fca3dfba76ff31891 } from '../../../cms/components/NavDashboardLink'
@@ -69,6 +70,7 @@ export const importMap = {
   "/cms/components/RestoreBackup#RestoreBackup": RestoreBackup_c39d1c0b6558e36324f8ed049deb6f4d,
   "/cms/components/dashboard/CommandPalette#CommandPalette": CommandPalette_a16a3a2df81066b39288ec8e9376f8bc,
   "/cms/components/ThemeToggle#ThemeToggle": ThemeToggle_03e2855782842afd8d454d76720a31ec,
+  "/cms/components/GlobalSearch#GlobalSearch": GlobalSearch_965a671efd80d2925fe8a506a99763fe,
   "/cms/components/LoginSignupLink#LoginSignupLink": LoginSignupLink_4ecb88133f73eab493d10ad23060fd42,
   "/cms/components/dashboard/DashboardHome#DashboardHome": DashboardHome_b100ff2e91005655d7ea828d85a2707e,
   "/cms/components/NavDashboardLink#NavDashboardLink": NavDashboardLink_890d30fb0fa4343fca3dfba76ff31891,

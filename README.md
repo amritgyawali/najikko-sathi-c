@@ -240,6 +240,34 @@ Destinations and jobs match in the browser, so the list answers every keystroke
 with no request at all; content is searched through `/api/site-tools/search`,
 which is one call rather than sixteen.
 
+### Finding the words on a page
+
+The palette above finds a document by its **name**. The bar across the top of
+every dashboard screen finds a **sentence inside** one. Press `/`, or click it,
+and type any word: it matches anywhere in the site's content, the way
+`LIKE '%word%'` would, so `direct` finds every page, block, question, menu label
+and rich-text paragraph that says "Director".
+
+Each result names the collection, the document and the page it appears on, shows
+the sentence with the keyword in full colour and the rest of it faded, and names
+the field it is written in - "Photo & film band > Heading". Opening one goes
+straight to that field, scrolls to it, flashes it and puts the cursor in it. `↑`
+and `↓` move, `↵` opens, `esc` closes, and the `↗` beside a result opens that
+page on the website instead.
+
+Two words narrow the search rather than widening it: both have to appear in the
+same document. Accents are ignored, and when nothing matches outright a second
+pass forgives a typo, so `diretor` still finds the director.
+
+The mechanics are in `cms/search/`. `extract.ts` walks a document alongside its
+field configuration rather than walking the raw data, which is how a match
+inside a block or an array row can name itself and how the result knows the
+field's own id to link to. `match.ts` does the matching, ranking and snippets.
+`engine.ts` keeps a short-lived snapshot of the site per signed-in user, built
+with that user's own access rules, and asks `cms/live-urls.ts` where each
+document appears so search and the "On the website" link always agree. Saving
+anything drops the snapshot, so a word just changed is searchable immediately.
+
 ### How the dashboard itself is put together
 
 Three conventions run through every section, so a screen an editor has not seen
@@ -736,6 +764,7 @@ API live in `app/(payload)/`.
 - `cms/dashboard/insights.ts` - Everything the dashboard home knows: traffic, what is waiting, the audits, the health checks
 - `cms/components/dashboard/` - The dashboard home: its panels, the page studio, the command palette and the tabs
 - `cms/endpoints/site-tools.ts` - One search across every collection, "rebuild the website", and the spreadsheet exports
+- `cms/search/` - The keyword search behind the bar at the top of the dashboard: flattening documents, matching, and the snapshot it searches
 - `app/(payload)/dashboard.css` - The dashboard home's own styling; `custom.css` retunes Payload itself
 - `lib/site-map.ts` - The one list of the site's pages: menu order, sub-pages, and where each is edited
 - `lib/page-defaults.ts` - The sections and copy each built-in page ships with, and what the dashboard imports
