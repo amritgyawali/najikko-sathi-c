@@ -20,9 +20,7 @@ export function MediaSystem({ business }: { business: BusinessInfo }) {
       <noscript>
         <style
           dangerouslySetInnerHTML={{
-            __html:
-              ".media-petal svg{opacity:1!important;transform:none!important}" +
-              ".media-petal span{opacity:1!important;transform:translate(-50%,-50%)!important}",
+            __html: ".media-petal{opacity:1!important;transform:none!important}",
           }}
         />
       </noscript>

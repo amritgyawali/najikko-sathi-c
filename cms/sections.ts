@@ -1,5 +1,6 @@
 import type { Block, Field } from "payload";
 
+import { BILINGUAL_NOTE, bilingual, bilingualFields } from "./bilingual";
 import { placementOptions } from "../lib/placements";
 import { sectionIcons } from "../lib/section-icons";
 
@@ -15,22 +16,36 @@ import { sectionIcons } from "../lib/section-icons";
  * app/(frontend)/_components/PageSections.tsx renders each of these, and
  * lib/page-defaults.ts holds the sections every built-in page ships with, so a
  * page reads identically before and after it is imported into the dashboard.
+ *
+ * Every line of copy in every section is written twice, English beside Nepali
+ * in the same row of the form (cms/bilingual.ts). Nothing is folded away and
+ * nothing is required: a Nepali box left empty keeps the English, translated
+ * against the phrase book exactly as it was before.
  */
 
-/** Every heading band starts the same way: a small kicker, then a title. */
-const headingFields: Field[] = [
-  { name: "kicker", type: "text", admin: { description: "The small label above the heading." } },
-  { name: "heading", type: "text" },
-  { name: "description", type: "textarea", admin: { description: "One or two lines under the heading." } },
-];
+/**
+ * Every heading band starts the same way: a small kicker, then a title, then a
+ * line or two under it - each of them in both languages, side by side.
+ */
+const headingFields: Field[] = bilingualFields(
+  { name: "kicker", label: "Kicker", description: "The small label above the heading." },
+  { name: "heading", label: "Heading" },
+  {
+    name: "description",
+    type: "textarea",
+    label: "Description",
+    description: "One or two lines under the heading.",
+  },
+);
 
-const linkFields = (label = "Link"): Field => ({
-  type: "row",
-  fields: [
-    { name: "linkLabel", type: "text", label: `${label} text`, admin: { width: "50%" } },
-    { name: "linkHref", type: "text", label: `${label} address`, admin: { width: "50%" } },
-  ],
-});
+/**
+ * A link: its words in both languages, then the address it points at. The
+ * address is the same in either language, so it is not paired.
+ */
+const linkFields = (label = "Link"): Field[] => [
+  bilingual({ name: "linkLabel", label: `${label} text` }),
+  { name: "linkHref", type: "text", label: `${label} address` },
+];
 
 const iconField: Field = {
   name: "icon",
@@ -43,30 +58,33 @@ const iconField: Field = {
 export const PageHeroSection: Block = {
   slug: "pageHero",
   fields: [
-    { name: "eyebrow", type: "text", required: true, admin: { description: "The line above the title." } },
-    {
-      name: "heading",
-      type: "text",
+    bilingual({
+      name: "eyebrow",
+      label: "Line above the title",
       required: true,
-      // The photograph beside the title is a Page media entry rather than a
-      // field here, so it can be changed without opening the page's sections.
-      admin: {
-        description:
-          'A photograph can be put beside the title from Content → Page media, in this page\'s "-hero" entry. Without one the words span the whole band.',
-      },
-    },
-    { name: "description", type: "textarea" },
+      description: "The line above the title.",
+    }),
+    // The photograph beside the title is a Page media entry rather than a
+    // field here, so it can be changed without opening the page's sections.
+    bilingual({
+      name: "heading",
+      label: "Title",
+      required: true,
+      description:
+        'A photograph can be put beside the title from Content → Page media, in this page\'s "-hero" entry. Without one the words span the whole band.',
+    }),
+    bilingual({ name: "description", type: "textarea", label: "Description" }),
+    bilingual({ name: "ctaLabel", label: "Button text" }),
     {
       type: "row",
       fields: [
-        { name: "ctaLabel", type: "text", label: "Button text", admin: { width: "40%" } },
-        { name: "ctaHref", type: "text", label: "Button address", admin: { width: "40%" } },
+        { name: "ctaHref", type: "text", label: "Button address", admin: { width: "60%" } },
         {
           name: "ctaExternal",
           type: "checkbox",
           label: "Opens another site",
           admin: {
-            width: "20%",
+            width: "40%",
             description:
               "Leave the address empty as well to send people to the Right Sanchar address in Site settings.",
           },
@@ -90,14 +108,20 @@ export const ProseSection: Block = {
   labels: { singular: "Written section", plural: "Written sections" },
   fields: [
     ...headingFields,
-    { name: "lead", type: "textarea", admin: { description: "The opening paragraph, set larger." } },
+    bilingual({
+      name: "lead",
+      type: "textarea",
+      label: "Opening paragraph",
+      description: "The opening paragraph, set larger.",
+    }),
     {
       name: "paragraphs",
       type: "array",
       labels: { singular: "Paragraph", plural: "Paragraphs" },
-      fields: [{ name: "text", type: "textarea", required: true }],
+      admin: { description: BILINGUAL_NOTE },
+      fields: [bilingual({ name: "text", type: "textarea", label: "Paragraph", required: true })],
     },
-    linkFields(),
+    ...linkFields(),
     {
       name: "tone",
       type: "select",
@@ -116,20 +140,22 @@ export const IdentityStorySection: Block = {
   slug: "identityStory",
   labels: { singular: "Identity & story", plural: "Identity & story" },
   fields: [
-    {
+    bilingual({
       name: "panelQuote",
       type: "textarea",
-      admin: { description: "The quotation inside the panel. The company name and address come from Site settings." },
-    },
+      label: "Quotation in the panel",
+      description: "The quotation inside the panel. The company name and address come from Site settings.",
+    }),
     ...headingFields,
-    { name: "lead", type: "textarea" },
+    bilingual({ name: "lead", type: "textarea", label: "Opening paragraph" }),
     {
       name: "paragraphs",
       type: "array",
       labels: { singular: "Paragraph", plural: "Paragraphs" },
-      fields: [{ name: "text", type: "textarea", required: true }],
+      admin: { description: BILINGUAL_NOTE },
+      fields: [bilingual({ name: "text", type: "textarea", label: "Paragraph", required: true })],
     },
-    linkFields(),
+    ...linkFields(),
   ],
 };
 
@@ -165,18 +191,19 @@ export const FeatureCardsSection: Block = {
       type: "array",
       minRows: 1,
       labels: { singular: "Card", plural: "Cards" },
+      admin: { description: BILINGUAL_NOTE },
       fields: [
         iconField,
-        { name: "title", type: "text", required: true },
-        { name: "text", type: "textarea" },
+        bilingual({ name: "title", label: "Title", required: true }),
+        bilingual({ name: "text", type: "textarea", label: "Text" }),
         {
           name: "points",
           type: "array",
           labels: { singular: "Tick", plural: "Ticks" },
           admin: { description: "Shown as a ticked list on the discipline style." },
-          fields: [{ name: "text", type: "text", required: true }],
+          fields: [bilingual({ name: "text", label: "Tick", required: true })],
         },
-        linkFields("Card link"),
+        ...linkFields("Card link"),
       ],
     },
     {
@@ -184,7 +211,8 @@ export const FeatureCardsSection: Block = {
       type: "array",
       label: "Keywords under the cards",
       labels: { singular: "Keyword", plural: "Keywords" },
-      fields: [{ name: "text", type: "text", required: true }],
+      admin: { description: BILINGUAL_NOTE },
+      fields: [bilingual({ name: "text", label: "Keyword", required: true })],
     },
   ],
 };
@@ -200,9 +228,10 @@ export const ProcessStepsSection: Block = {
       type: "array",
       minRows: 1,
       labels: { singular: "Step", plural: "Steps" },
+      admin: { description: BILINGUAL_NOTE },
       fields: [
-        { name: "title", type: "text", required: true },
-        { name: "text", type: "textarea", required: true },
+        bilingual({ name: "title", label: "Step title", required: true }),
+        bilingual({ name: "text", type: "textarea", label: "Step text", required: true }),
       ],
     },
     {
@@ -239,9 +268,10 @@ export const FaqSection: Block = {
       name: "items",
       type: "array",
       labels: { singular: "Question", plural: "Questions" },
+      admin: { description: BILINGUAL_NOTE },
       fields: [
-        { name: "question", type: "text", required: true },
-        { name: "answer", type: "textarea", required: true },
+        bilingual({ name: "question", label: "Question", required: true }),
+        bilingual({ name: "answer", type: "textarea", label: "Answer", required: true }),
       ],
     },
     {
@@ -311,23 +341,24 @@ export const MediaShowcaseSection: Block = {
       required: true,
       admin: { description: 'The Page media entry to show, for example "about".' },
     },
-    { name: "heading", type: "text", admin: { description: "Names the band: “<title> in pictures & film”." } },
-    {
+    bilingual({
+      name: "heading",
+      label: "Heading",
+      description: "Names the band: “<title> in pictures & film”.",
+    }),
+    bilingual({
       name: "kicker",
-      type: "text",
-      admin: {
-        description:
-          "The small label above the heading. Left empty, the page uses its own wording rather than one label shared by every page.",
-      },
-    },
-    {
+      label: "Kicker",
+      description:
+        "The small label above the heading. Left empty, the page uses its own wording rather than one label shared by every page.",
+    }),
+    bilingual({
       name: "description",
       type: "textarea",
-      admin: {
-        description:
-          "One line under the heading, saying what is in this page's pictures. Left empty, the page uses its own wording; a page with none prints no line at all.",
-      },
-    },
+      label: "Description",
+      description:
+        "One line under the heading, saying what is in this page's pictures. Left empty, the page uses its own wording; a page with none prints no line at all.",
+    }),
   ],
 };
 
@@ -336,8 +367,8 @@ export const ContactCtaSection: Block = {
   slug: "contactCta",
   labels: { singular: "Closing call to action", plural: "Closing calls to action" },
   fields: [
-    { name: "heading", type: "text", required: true },
-    { name: "description", type: "textarea" },
+    bilingual({ name: "heading", label: "Heading", required: true }),
+    bilingual({ name: "description", type: "textarea", label: "Description" }),
     {
       name: "service",
       type: "text",
@@ -352,12 +383,13 @@ export const ContactDetailsSection: Block = {
   labels: { singular: "Contact details & form", plural: "Contact details & forms" },
   fields: [
     ...headingFields,
-    {
+    bilingual({
       name: "note",
       type: "textarea",
-      admin: { description: "The line under the company name and VAT number." },
-    },
-    linkFields("Map link"),
+      label: "Note",
+      description: "The line under the company name and VAT number.",
+    }),
+    ...linkFields("Map link"),
     { name: "showForm", type: "checkbox", defaultValue: true, label: "Show the enquiry form" },
   ],
 };
@@ -428,12 +460,12 @@ export const PartnerMarqueeSection: Block = {
   slug: "partnerMarquee",
   labels: { singular: "Partner logos", plural: "Partner logo bands" },
   fields: [
-    {
+    bilingual({
       name: "heading",
-      type: "text",
+      label: "Heading",
       defaultValue: "We worked with",
-      admin: { description: "The line above the logos." },
-    },
+      description: "The line above the logos.",
+    }),
     {
       name: "partners",
       type: "array",
@@ -443,7 +475,7 @@ export const PartnerMarqueeSection: Block = {
           "Drag to reorder. The row slides on by itself and pauses when a visitor points at it.",
       },
       fields: [
-        { name: "name", type: "text", required: true },
+        bilingual({ name: "name", label: "Name", required: true }),
         {
           name: "logo",
           type: "upload",
@@ -546,17 +578,14 @@ export const HomeHeroSection: Block = {
   slug: "homeHero",
   labels: { singular: "Front page hero", plural: "Front page heroes" },
   fields: [
-    {
+    bilingual({
       name: "secondaryLabel",
-      type: "text",
       label: "Second button",
-      admin: {
-        description:
-          "Leave this empty and the hero carries one button. Write a label and a second " +
-          "button appears beside it, pointing at the Right Sanchar link in Site settings. " +
-          globalCopyNote("Home - hero"),
-      },
-    },
+      description:
+        "Leave this empty and the hero carries one button. Write a label and a second " +
+        "button appears beside it, pointing at the Right Sanchar link in Site settings. " +
+        globalCopyNote("Home - hero"),
+    }),
     { name: "showMediaSystem", type: "checkbox", defaultValue: true, label: "Show the media system wheel" },
   ],
 };
@@ -565,14 +594,12 @@ export const HomeAboutSection: Block = {
   slug: "homeAbout",
   labels: { singular: "Front page introduction", plural: "Front page introductions" },
   fields: [
-    linkFields(),
-    {
+    ...linkFields(),
+    bilingual({
       name: "captionTitle",
-      type: "text",
-      admin: {
-        description: `The caption on the photograph beside the introduction, shown only once one has been uploaded into the "home-about" Page media entry. ${globalCopyNote("Home - about")}`,
-      },
-    },
+      label: "Photograph caption",
+      description: `The caption on the photograph beside the introduction, shown only once one has been uploaded into the "home-about" Page media entry. ${globalCopyNote("Home - about")}`,
+    }),
   ],
 };
 
@@ -634,25 +661,16 @@ export const PortalLinksSection: Block = {
   labels: { singular: "Portal links", plural: "Portal links" },
   fields: [
     ...headingFields,
-    { name: "body", type: "textarea" },
+    bilingual({ name: "body", type: "textarea", label: "Body" }),
+    bilingual({ name: "primaryLabel", label: "First button text" }),
     {
-      type: "row",
-      fields: [
-        { name: "primaryLabel", type: "text", admin: { width: "50%" } },
-        {
-          name: "primaryHref",
-          type: "text",
-          admin: { width: "50%", description: "Leave empty to use the Right Sanchar address from Site settings." },
-        },
-      ],
+      name: "primaryHref",
+      type: "text",
+      label: "First button address",
+      admin: { description: "Leave empty to use the Right Sanchar address from Site settings." },
     },
-    {
-      type: "row",
-      fields: [
-        { name: "secondaryLabel", type: "text", admin: { width: "50%" } },
-        { name: "secondaryHref", type: "text", admin: { width: "50%" } },
-      ],
-    },
+    bilingual({ name: "secondaryLabel", label: "Second button text" }),
+    { name: "secondaryHref", type: "text", label: "Second button address" },
   ],
 };
 
@@ -663,11 +681,12 @@ export const PostListSection: Block = {
   fields: [
     ...headingFields,
     { name: "limit", type: "number", defaultValue: 60, min: 1, max: 200 },
-    {
+    bilingual({
       name: "emptyText",
       type: "textarea",
-      admin: { description: "Shown while nothing has been published." },
-    },
+      label: "Text when the list is empty",
+      description: "Shown while nothing has been published.",
+    }),
   ],
 };
 
@@ -678,7 +697,12 @@ export const OfferListSection: Block = {
   fields: [
     ...headingFields,
     { name: "limit", type: "number", defaultValue: 40, min: 1, max: 200 },
-    { name: "emptyText", type: "textarea", admin: { description: "Shown while no offer is running." } },
+    bilingual({
+      name: "emptyText",
+      type: "textarea",
+      label: "Text when the list is empty",
+      description: "Shown while no offer is running.",
+    }),
   ],
 };
 
@@ -693,7 +717,7 @@ export const SearchSection: Block = {
 export const SignupSection: Block = {
   slug: "signupSection",
   labels: { singular: "Sign-up form", plural: "Sign-up forms" },
-  fields: [{ name: "note", type: "textarea", label: "Note above the form" }],
+  fields: [bilingual({ name: "note", type: "textarea", label: "Note above the form" })],
 };
 
 /**

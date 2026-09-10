@@ -1113,20 +1113,39 @@ footer li a:hover {
   padding: 18px 20px 26px;
 }
 
+/*
+ * The wheel is a stage rather than a drawing: the petals are turned in three
+ * dimensions inside it, so it needs a viewing distance for that to have any
+ * depth to it. A short one would fish-eye the ring; this is far enough back to
+ * read as a solid object seen straight on.
+ */
 .media-system-wheel {
   position: relative;
   width: min(520px, 100%);
   margin-inline: auto;
   aspect-ratio: 1;
+  perspective: 1100px;
+  perspective-origin: 50% 50%;
 }
 
 /*
  * Each petal covers the whole wheel, so only the drawn shape and its label
- * take the pointer and every link matches the petal a visitor can see.
+ * take the pointer and every link matches the petal a visitor can see. The
+ * slab, its label and its shadow are all inside the one element, so a petal
+ * swings up towards the reader in one piece.
  */
 .media-petal {
   position: absolute;
   inset: 0;
+  pointer-events: none;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.media-petal-link {
+  position: absolute;
+  inset: 0;
+  display: block;
   pointer-events: none;
 }
 
@@ -1134,8 +1153,8 @@ footer li a:hover {
   width: 100%;
   height: 100%;
   overflow: visible;
-  filter: drop-shadow(0 8px 16px rgb(6 43 92 / 14%));
-  transition: filter .28s ease;
+  filter: drop-shadow(0 8px 16px rgb(6 43 92 / 16%));
+  transition: filter .3s ease;
 }
 
 .media-petal path {
@@ -1143,17 +1162,17 @@ footer li a:hover {
   pointer-events: auto;
 }
 
-/* The wedge being read is lifted off the page, and its neighbours settle back. */
+/* The wedge being read is thrown off the page, and its neighbours settle back. */
 .media-petal.is-active {
-  z-index: 1;
+  z-index: 2;
 }
 
 .media-petal.is-active svg {
-  filter: drop-shadow(0 14px 26px rgb(6 43 92 / 24%));
+  filter: drop-shadow(0 22px 34px rgb(6 43 92 / 30%));
 }
 
 .media-petal.is-away svg {
-  filter: drop-shadow(0 5px 12px rgb(6 43 92 / 10%));
+  filter: drop-shadow(0 4px 10px rgb(6 43 92 / 10%));
 }
 
 .media-petal span {
@@ -1167,15 +1186,29 @@ footer li a:hover {
   line-height: 1.2;
   letter-spacing: -.01em;
   text-align: center;
-  text-shadow: 0 1px 2px rgb(0 0 0 / 20%);
+  text-shadow: 0 1px 3px rgb(0 0 0 / 32%);
   transform: translate(-50%, -50%);
+}
+
+/*
+ * Everything thrown by a petal, over the ring. It takes no pointer, so a
+ * shard crossing the petal underneath cannot interrupt the link.
+ */
+.media-system-burst {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
 }
 
 .media-system-core {
   position: absolute;
   top: 50%;
   left: 50%;
-  z-index: 3;
+  z-index: 4;
   display: grid;
   place-items: center;
   width: 30%;

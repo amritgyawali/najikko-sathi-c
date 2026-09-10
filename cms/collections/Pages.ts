@@ -133,7 +133,9 @@ export const Pages: CollectionConfig = {
       blocks: layoutBlocks,
       admin: {
         description:
-          "Everything on the page, top to bottom. Add, reorder, rewrite or remove a section and the website follows.",
+          "Everything on the page, top to bottom. Add, reorder, rewrite or remove a section and " +
+          "the website follows. Every line in every section is written twice: English on the " +
+          "left, Nepali beside it on the right. A Nepali box left empty keeps the English.",
       },
     },
     pageSeoField,

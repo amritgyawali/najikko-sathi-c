@@ -3,10 +3,18 @@ import Image from "next/image";
 import type { PageSection } from "@/lib/page-defaults";
 import { mediaAlt, mediaUrl } from "@/lib/media";
 import { PARTNER_HEADING, partners as defaultPartners } from "@/lib/partners";
+import { Written } from "./written";
 
 type Block = Extract<PageSection, { blockType: "partnerMarquee" }>;
 
-type Partner = { name: string; logoUrl: string | null; logoAlt: string; href: string | null };
+type Partner = {
+  name: string;
+  /** The name in Nepali, for a partner whose name has been written twice. */
+  nameNe?: string | null;
+  logoUrl: string | null;
+  logoAlt: string;
+  href: string | null;
+};
 
 /**
  * The "We worked with" band: a row of client logos sliding across the page.
@@ -25,6 +33,7 @@ export function PartnerMarquee({ block }: { block: Block }) {
     .filter((row) => row.name)
     .map((row) => ({
       name: row.name,
+      nameNe: row.nameNe,
       logoUrl: mediaUrl(row.logo),
       logoAlt: mediaAlt(row.logo, row.name),
       href: row.href?.trim() || null,
@@ -51,9 +60,9 @@ export function PartnerMarquee({ block }: { block: Block }) {
       aria-labelledby="partner-marquee-heading"
     >
       <div className="site-container">
-        <h2 className="partner-heading" id="partner-marquee-heading">
+        <Written as="h2" className="partner-heading" id="partner-marquee-heading" ne={block.headingNe}>
           {heading}
-        </h2>
+        </Written>
       </div>
       <div className="partner-marquee">
         <div className="partner-track">
@@ -82,7 +91,9 @@ function PartnerLogo({ partner }: { partner: Partner }) {
     <Image src={partner.logoUrl} alt={partner.logoAlt} width={220} height={90} />
   ) : (
     // No artwork uploaded yet: the name stands in for the logo.
-    <span className="partner-name">{partner.name}</span>
+    <Written className="partner-name" ne={partner.nameNe}>
+      {partner.name}
+    </Written>
   );
 
   return partner.href ? (

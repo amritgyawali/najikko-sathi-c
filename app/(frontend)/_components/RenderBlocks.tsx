@@ -6,6 +6,7 @@ import type { Page } from "@/payload-types";
 import { getCollection } from "@/lib/content";
 import { mediaAlt, mediaUrl } from "@/lib/media";
 import { onPage, placementKeyFor } from "@/lib/placements";
+import { Written } from "./written";
 
 type Block = NonNullable<Page["layout"]>[number];
 
@@ -18,9 +19,19 @@ function Hero({ block }: { block: Extract<Block, { blockType: "hero" }> }) {
       ) : null}
       <div className="cms-hero-overlay" />
       <div className="site-container cms-hero-content">
-        {block.kicker ? <span className="hero-kicker"><i /> {block.kicker}</span> : null}
-        <h1>{block.heading}</h1>
-        {block.subheading ? <p>{block.subheading}</p> : null}
+        {block.kicker ? (
+          <span className="hero-kicker">
+            <i /> <Written ne={block.kickerNe}>{block.kicker}</Written>
+          </span>
+        ) : null}
+        <Written as="h1" ne={block.headingNe}>
+          {block.heading}
+        </Written>
+        {block.subheading ? (
+          <Written as="p" ne={block.subheadingNe}>
+            {block.subheading}
+          </Written>
+        ) : null}
         {block.actions?.length ? (
           <div className="hero-actions">
             {block.actions.map((action) => (
@@ -29,7 +40,7 @@ function Hero({ block }: { block: Extract<Block, { blockType: "hero" }> }) {
                 className={action.style === "secondary" ? "hero-secondary" : "hero-cta"}
                 href={action.href}
               >
-                {action.label} <ArrowRight aria-hidden="true" />
+                <Written ne={action.labelNe}>{action.label}</Written> <ArrowRight aria-hidden="true" />
               </a>
             ))}
           </div>
@@ -43,9 +54,21 @@ function CardGrid({ block }: { block: Extract<Block, { blockType: "cardGrid" }> 
   return (
     <section className="cms-section">
       <div className="site-container">
-        {block.kicker ? <span className="section-kicker">{block.kicker}</span> : null}
-        {block.heading ? <h2>{block.heading}</h2> : null}
-        {block.intro ? <p className="cms-lead">{block.intro}</p> : null}
+        {block.kicker ? (
+          <Written className="section-kicker" ne={block.kickerNe}>
+            {block.kicker}
+          </Written>
+        ) : null}
+        {block.heading ? (
+          <Written as="h2" ne={block.headingNe}>
+            {block.heading}
+          </Written>
+        ) : null}
+        {block.intro ? (
+          <Written as="p" className="cms-lead" ne={block.introNe}>
+            {block.intro}
+          </Written>
+        ) : null}
         <div className="cms-card-grid">
           {block.cards?.map((cardItem) => {
             const src = mediaUrl(cardItem.image);
@@ -54,8 +77,14 @@ function CardGrid({ block }: { block: Extract<Block, { blockType: "cardGrid" }> 
                 {src ? (
                   <Image src={src} alt={mediaAlt(cardItem.image)} width={640} height={400} />
                 ) : null}
-                <strong>{cardItem.title}</strong>
-                {cardItem.description ? <p>{cardItem.description}</p> : null}
+                <Written as="strong" ne={cardItem.titleNe}>
+                  {cardItem.title}
+                </Written>
+                {cardItem.description ? (
+                  <Written as="p" ne={cardItem.descriptionNe}>
+                    {cardItem.description}
+                  </Written>
+                ) : null}
               </>
             );
             return cardItem.href ? (
@@ -74,7 +103,11 @@ function Gallery({ block }: { block: Extract<Block, { blockType: "gallery" }> })
   return (
     <section className="cms-section">
       <div className="site-container">
-        {block.heading ? <h2>{block.heading}</h2> : null}
+        {block.heading ? (
+          <Written as="h2" ne={block.headingNe}>
+            {block.heading}
+          </Written>
+        ) : null}
         <div className="cms-gallery">
           {block.images?.map((row, index) => {
             const src = mediaUrl(row.image);
@@ -82,7 +115,11 @@ function Gallery({ block }: { block: Extract<Block, { blockType: "gallery" }> })
             return (
               <figure key={`${src}-${index}`}>
                 <Image src={src} alt={mediaAlt(row.image)} width={800} height={600} />
-                {row.caption ? <figcaption>{row.caption}</figcaption> : null}
+                {row.caption ? (
+                  <Written as="figcaption" ne={row.captionNe}>
+                    {row.caption}
+                  </Written>
+                ) : null}
               </figure>
             );
           })}
@@ -114,7 +151,11 @@ async function Reviews({
   return (
     <section className="cms-section">
       <div className="site-container">
-        {block.heading ? <h2>{block.heading}</h2> : null}
+        {block.heading ? (
+          <Written as="h2" ne={block.headingNe}>
+            {block.heading}
+          </Written>
+        ) : null}
         <div className="cms-card-grid">
           {reviews.map((review) => (
             <blockquote className="cms-review" key={review.id}>
@@ -159,7 +200,11 @@ async function Posts({
   return (
     <section className="cms-section">
       <div className="site-container">
-        {block.heading ? <h2>{block.heading}</h2> : null}
+        {block.heading ? (
+          <Written as="h2" ne={block.headingNe}>
+            {block.heading}
+          </Written>
+        ) : null}
         <div className="cms-card-grid">
           {posts.map((post) => {
             const src = mediaUrl(post.coverImage);
@@ -196,7 +241,11 @@ async function Offers({
   return (
     <section className="cms-section">
       <div className="site-container">
-        {block.heading ? <h2>{block.heading}</h2> : null}
+        {block.heading ? (
+          <Written as="h2" ne={block.headingNe}>
+            {block.heading}
+          </Written>
+        ) : null}
         <div className="cms-card-grid">
           {offers.map((offer) => {
             const src = mediaUrl(offer.image);
@@ -240,7 +289,11 @@ export function RenderBlocks({ layout, path }: { layout: Page["layout"]; path?: 
             return (
               <section className="cms-section" key={key}>
                 <div className="site-container cms-prose">
-                  {block.heading ? <h2>{block.heading}</h2> : null}
+                  {block.heading ? (
+                    <Written as="h2" ne={block.headingNe}>
+                      {block.heading}
+                    </Written>
+                  ) : null}
                   <RichText data={block.content} />
                 </div>
               </section>
@@ -253,10 +306,17 @@ export function RenderBlocks({ layout, path }: { layout: Page["layout"]; path?: 
             return (
               <section className="cms-cta" key={key}>
                 <div className="site-container">
-                  <h2>{block.heading}</h2>
-                  {block.body ? <p>{block.body}</p> : null}
+                  <Written as="h2" ne={block.headingNe}>
+                    {block.heading}
+                  </Written>
+                  {block.body ? (
+                    <Written as="p" ne={block.bodyNe}>
+                      {block.body}
+                    </Written>
+                  ) : null}
                   <a className="primary-button" href={block.buttonHref}>
-                    {block.buttonLabel} <ArrowRight aria-hidden="true" />
+                    <Written ne={block.buttonLabelNe}>{block.buttonLabel}</Written>{" "}
+                    <ArrowRight aria-hidden="true" />
                   </a>
                 </div>
               </section>
