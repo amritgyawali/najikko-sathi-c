@@ -279,6 +279,15 @@ export const sitePages: SitePage[] = [
     edit: [collectionLink("posts", "Posts")],
   },
   {
+    path: "/social-work/[slug]",
+    label: "Social work entry",
+    summary:
+      "One page per entry, opened from a card on /social-work: the full description, every " +
+      "photograph and every film.",
+    dynamic: true,
+    edit: [collectionLink("social-work", "Social Work")],
+  },
+  {
     path: "/[slug]",
     label: "Pages built in the dashboard",
     summary: "Anything created in Content → Website pages goes live at its own address.",

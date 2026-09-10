@@ -1444,11 +1444,15 @@ export interface SocialWork {
   id: number;
   title: string;
   /**
-   * What the photographs and films below show. Printed under the title.
+   * The line or two printed on this entry's card on /social-work, under its title. Leave it empty and the opening of the full description below is used instead.
+   */
+  summary?: string | null;
+  /**
+   * The full account of it, printed on the entry's own page above the photographs and films.
    */
   description?: string | null;
   /**
-   * Optional. Leads the entry, and names it in the list here. The album below is used when this is left empty.
+   * Optional. The picture on this entry's card, and the one that leads its page. The first photograph in the album below stands in when this is left empty.
    */
   coverImage?: (number | null) | Media;
   /**
@@ -1484,6 +1488,10 @@ export interface SocialWork {
         id?: string | null;
       }[]
     | null;
+  /**
+   * Leave blank to generate this from the title.
+   */
+  slug?: string | null;
   date?: string | null;
   /**
    * Lower numbers appear first.
@@ -2571,6 +2579,7 @@ export interface SocialResponsibilitySelect<T extends boolean = true> {
  */
 export interface SocialWorkSelect<T extends boolean = true> {
   title?: T;
+  summary?: T;
   description?: T;
   coverImage?: T;
   photos?:
@@ -2588,6 +2597,7 @@ export interface SocialWorkSelect<T extends boolean = true> {
         description?: T;
         id?: T;
       };
+  slug?: T;
   date?: T;
   order?: T;
   status?: T;
@@ -2824,7 +2834,7 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   createdAt?: T;
 }
 /**
- * Written copy for the front page and for three pages that grew out of it. Each tab says which address it appears at.
+ * Written copy for the front page and for three pages that grew out of it. Each tab says which address it appears at, and each carries an optional Nepali version.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "homepage".
@@ -2841,34 +2851,79 @@ export interface Homepage {
   heroCtaLabel?: string | null;
   heroCtaHref?: string | null;
   /**
-   * The ring of keywords under the hero.
+   * The ring of keywords under the hero. Each one can carry a Nepali version; leaving that empty keeps the English.
    */
   brandPillars?:
     | {
         label: string;
+        labelNe?: string | null;
         id?: string | null;
       }[]
     | null;
+  /**
+   * Shown when the website is read in Nepali. Leave it empty to keep the English.
+   */
+  heroKickerNe?: string | null;
+  /**
+   * Shown when the website is read in Nepali. Leave it empty to keep the English.
+   */
+  heroHeadingNe?: string | null;
+  /**
+   * Shown when the website is read in Nepali. Leave it empty to keep the English.
+   */
+  heroBodyNe?: string | null;
+  /**
+   * Shown when the website is read in Nepali. Leave it empty to keep the English.
+   */
+  heroCtaLabelNe?: string | null;
   aboutEyebrow?: string | null;
   aboutHeading?: string | null;
   aboutQuote?: string | null;
   aboutBody?: string | null;
   aboutBodySecondary?: string | null;
   /**
-   * Anything after the second paragraph. Drag to reorder; they read in this order.
+   * Anything after the second paragraph. Drag to reorder; they read in this order. Each one can carry a Nepali version of itself.
    */
   aboutParagraphs?:
     | {
         text: string;
+        /**
+         * Shown when the website is read in Nepali. Leave it empty to keep the English.
+         */
+        textNe?: string | null;
         id?: string | null;
       }[]
     | null;
+  /**
+   * The keywords under the introduction. Each one can carry a Nepali version; leaving that empty keeps the English.
+   */
   aboutCapabilities?:
     | {
         label: string;
+        labelNe?: string | null;
         id?: string | null;
       }[]
     | null;
+  /**
+   * Shown when the website is read in Nepali. Leave it empty to keep the English.
+   */
+  aboutEyebrowNe?: string | null;
+  /**
+   * Shown when the website is read in Nepali. Leave it empty to keep the English.
+   */
+  aboutHeadingNe?: string | null;
+  /**
+   * Shown when the website is read in Nepali. Leave it empty to keep the English.
+   */
+  aboutQuoteNe?: string | null;
+  /**
+   * Shown when the website is read in Nepali. Leave it empty to keep the English.
+   */
+  aboutBodyNe?: string | null;
+  /**
+   * Shown when the website is read in Nepali. Leave it empty to keep the English.
+   */
+  aboutBodySecondaryNe?: string | null;
   leadershipKicker?: string | null;
   /**
    * Shown when the website is read in Nepali. Leave it empty to keep the English.
@@ -2917,6 +2972,7 @@ export interface Homepage {
   services?:
     | {
         name: string;
+        nameNe?: string | null;
         icon?:
           | (
               | 'newspaper'
@@ -2937,18 +2993,58 @@ export interface Homepage {
         id?: string | null;
       }[]
     | null;
+  /**
+   * Shown when the website is read in Nepali. Leave it empty to keep the English.
+   */
+  servicesKickerNe?: string | null;
+  /**
+   * Shown when the website is read in Nepali. Leave it empty to keep the English.
+   */
+  servicesHeadingNe?: string | null;
+  /**
+   * Shown when the website is read in Nepali. Leave it empty to keep the English.
+   */
+  servicesIntroNe?: string | null;
   productionChip?: string | null;
   productionHeading?: string | null;
   productionBody?: string | null;
   productionCtaLabel?: string | null;
+  /**
+   * Shown when the website is read in Nepali. Leave it empty to keep the English.
+   */
+  productionChipNe?: string | null;
+  /**
+   * Shown when the website is read in Nepali. Leave it empty to keep the English.
+   */
+  productionHeadingNe?: string | null;
+  /**
+   * Shown when the website is read in Nepali. Leave it empty to keep the English.
+   */
+  productionBodyNe?: string | null;
+  /**
+   * Shown when the website is read in Nepali. Leave it empty to keep the English.
+   */
+  productionCtaLabelNe?: string | null;
   sancharHeading?: string | null;
   sancharIntro?: string | null;
+  /**
+   * The keywords printed on the portal card. Each one can carry a Nepali version; leaving that empty keeps the English.
+   */
   sancharTopics?:
     | {
         label: string;
+        labelNe?: string | null;
         id?: string | null;
       }[]
     | null;
+  /**
+   * Shown when the website is read in Nepali. Leave it empty to keep the English.
+   */
+  sancharHeadingNe?: string | null;
+  /**
+   * Shown when the website is read in Nepali. Leave it empty to keep the English.
+   */
+  sancharIntroNe?: string | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -3177,8 +3273,13 @@ export interface HomepageSelect<T extends boolean = true> {
     | T
     | {
         label?: T;
+        labelNe?: T;
         id?: T;
       };
+  heroKickerNe?: T;
+  heroHeadingNe?: T;
+  heroBodyNe?: T;
+  heroCtaLabelNe?: T;
   aboutEyebrow?: T;
   aboutHeading?: T;
   aboutQuote?: T;
@@ -3188,14 +3289,21 @@ export interface HomepageSelect<T extends boolean = true> {
     | T
     | {
         text?: T;
+        textNe?: T;
         id?: T;
       };
   aboutCapabilities?:
     | T
     | {
         label?: T;
+        labelNe?: T;
         id?: T;
       };
+  aboutEyebrowNe?: T;
+  aboutHeadingNe?: T;
+  aboutQuoteNe?: T;
+  aboutBodyNe?: T;
+  aboutBodySecondaryNe?: T;
   leadershipKicker?: T;
   leadershipKickerNe?: T;
   leadershipHeading?: T;
@@ -3221,22 +3329,33 @@ export interface HomepageSelect<T extends boolean = true> {
     | T
     | {
         name?: T;
+        nameNe?: T;
         icon?: T;
         href?: T;
         id?: T;
       };
+  servicesKickerNe?: T;
+  servicesHeadingNe?: T;
+  servicesIntroNe?: T;
   productionChip?: T;
   productionHeading?: T;
   productionBody?: T;
   productionCtaLabel?: T;
+  productionChipNe?: T;
+  productionHeadingNe?: T;
+  productionBodyNe?: T;
+  productionCtaLabelNe?: T;
   sancharHeading?: T;
   sancharIntro?: T;
   sancharTopics?:
     | T
     | {
         label?: T;
+        labelNe?: T;
         id?: T;
       };
+  sancharHeadingNe?: T;
+  sancharIntroNe?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

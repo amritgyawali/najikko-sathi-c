@@ -17,6 +17,7 @@ import {
 import { missionParagraphs, missionQuote } from "@/lib/mission";
 import { LeadershipCarousel, type LeadershipMessage } from "./leadership-carousel";
 import { MediaSystem } from "./media-system";
+import { Written } from "./written";
 
 /**
  * The three bands that open the front page.
@@ -29,8 +30,19 @@ import { MediaSystem } from "./media-system";
 
 type Block<T extends PageSection["blockType"]> = Extract<PageSection, { blockType: T }>;
 
-const labels = (rows: { label: string }[] | null | undefined, fallback: readonly string[]): string[] =>
-  rows && rows.length > 0 ? rows.map((row) => row.label) : [...fallback];
+/**
+ * A keyword list, in both languages. A row an editor has not written in Nepali
+ * carries an empty second half, which `Written` reads as "keep the English".
+ */
+type Label = { en: string; ne: string };
+
+const labels = (
+  rows: { label: string; labelNe?: string | null }[] | null | undefined,
+  fallback: readonly string[],
+): Label[] =>
+  rows && rows.length > 0
+    ? rows.map((row) => ({ en: row.label, ne: row.labelNe ?? "" }))
+    : fallback.map((label) => ({ en: label, ne: "" }));
 
 export function HomeHero({
   block,
@@ -62,16 +74,24 @@ export function HomeHero({
         <div className="hero-overlay" />
         <div className="site-container hero-content">
           <span className="hero-kicker">
-            <i /> {home?.heroKicker || "Kathmandu-based media house"}
+            <i />{" "}
+            <Written ne={home?.heroKickerNe}>
+              {home?.heroKicker || "Kathmandu-based media house"}
+            </Written>
           </span>
-          <h1>{home?.heroHeading || "Media that stays close to what matters."}</h1>
-          <p>
+          <Written as="h1" ne={home?.heroHeadingNe}>
+            {home?.heroHeading || "Media that stays close to what matters."}
+          </Written>
+          <Written as="p" ne={home?.heroBodyNe}>
             {home?.heroBody ||
               "Honest information, meaningful entertainment, and socially responsible media - created in Nepal for people, organizations, and communities."}
-          </p>
+          </Written>
           <div className="hero-actions">
             <Link className="hero-cta" href={home?.heroCtaHref || "/services"}>
-              {home?.heroCtaLabel || "Explore our services"} <ArrowRight aria-hidden="true" />
+              <Written ne={home?.heroCtaLabelNe}>
+                {home?.heroCtaLabel || "Explore our services"}
+              </Written>{" "}
+              <ArrowRight aria-hidden="true" />
             </Link>
             {block.secondaryLabel ? (
               <a className="hero-secondary" href={business.rightSanchar} target="_blank" rel="noreferrer">
@@ -116,12 +136,18 @@ export async function HomeAbout({
   // The first two paragraphs have fields of their own and the rest are an
   // array, so an editor can write a mission of any length. Nothing saved in the
   // dashboard yet means the whole statement comes from lib/mission.ts.
-  const written = [
-    home?.aboutBody,
-    home?.aboutBodySecondary,
-    ...(home?.aboutParagraphs ?? []).map((row) => row.text),
-  ].filter((text): text is string => Boolean(text?.trim()));
-  const paragraphs = written.length > 0 ? written : [...missionParagraphs];
+  // Each paragraph carries its own Nepali, so an editor can translate the
+  // opening and leave the rest, or translate the whole statement, and either
+  // reads correctly. A missing Nepali paragraph falls back to its own English.
+  const written: Label[] = [
+    { en: home?.aboutBody, ne: home?.aboutBodyNe },
+    { en: home?.aboutBodySecondary, ne: home?.aboutBodySecondaryNe },
+    ...(home?.aboutParagraphs ?? []).map((row) => ({ en: row.text, ne: row.textNe })),
+  ]
+    .filter((row) => Boolean(row.en?.trim()))
+    .map((row) => ({ en: row.en as string, ne: row.ne ?? "" }));
+  const paragraphs: Label[] =
+    written.length > 0 ? written : missionParagraphs.map((text) => ({ en: text, ne: "" }));
 
   return (
     <section className="chairman-section" id="about">
@@ -141,16 +167,25 @@ export async function HomeAbout({
         ) : null}
         <div className="chairman-copy">
           <div className="eyebrow">
-            <i /> {home?.aboutEyebrow || "Who We Are"}
+            <i />{" "}
+            <Written ne={home?.aboutEyebrowNe}>{home?.aboutEyebrow || "Who We Are"}</Written>
           </div>
-          <h2>{home?.aboutHeading || business.legalName}</h2>
-          <blockquote>{home?.aboutQuote || missionQuote}</blockquote>
-          {paragraphs.map((text, index) => (
-            <p key={index}>{text}</p>
+          <Written as="h2" ne={home?.aboutHeadingNe}>
+            {home?.aboutHeading || business.legalName}
+          </Written>
+          <Written as="blockquote" ne={home?.aboutQuoteNe}>
+            {home?.aboutQuote || missionQuote}
+          </Written>
+          {paragraphs.map((paragraph, index) => (
+            <Written as="p" ne={paragraph.ne} key={index}>
+              {paragraph.en}
+            </Written>
           ))}
           <div className="about-capabilities" aria-label="Core capabilities">
             {capabilities.map((item) => (
-              <span key={item}>{item}</span>
+              <Written ne={item.ne} key={item.en}>
+                {item.en}
+              </Written>
             ))}
           </div>
           {block.linkLabel && block.linkHref ? (

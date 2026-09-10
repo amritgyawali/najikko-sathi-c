@@ -1120,44 +1120,6 @@ footer li a:hover {
   aspect-ratio: 1;
 }
 
-/* The slow ring of ticks the wheel turns inside. */
-.media-system-ring {
-  position: absolute;
-  inset: -3%;
-  pointer-events: none;
-}
-
-/* Where a petal's sparks are drawn: over everything, and out of the way of
-   every link, so a burst in flight can never take a click. */
-.media-system-fx {
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  overflow: visible;
-  pointer-events: none;
-}
-
-/* The colour the middle picks up from the petal being pointed at. */
-.media-system-glow {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 58%;
-  height: 58%;
-  /* Its resting strength, so the middle is not ringed in colour on a page
-     that never got to run the wheel. */
-  opacity: .14;
-  border-radius: 50%;
-  pointer-events: none;
-  filter: blur(6px);
-  transform: translate(-50%, -50%);
-}
-
-/*
- * Each petal is a square box on the ring. Only the drawn shape and its label
- * take the pointer, so the boxes may overlap at the corners without one petal
- * stealing a neighbour's click.
- */
 /*
  * Each petal covers the whole wheel, so only the drawn shape and its label
  * take the pointer and every link matches the petal a visitor can see.
@@ -1172,7 +1134,8 @@ footer li a:hover {
   width: 100%;
   height: 100%;
   overflow: visible;
-  filter: drop-shadow(0 9px 18px rgb(6 43 92 / 16%));
+  filter: drop-shadow(0 8px 16px rgb(6 43 92 / 14%));
+  transition: filter .28s ease;
 }
 
 .media-petal path {
@@ -1180,17 +1143,17 @@ footer li a:hover {
   pointer-events: auto;
 }
 
-/* The wedge being pointed at is lifted off the page as it is thrown. */
+/* The wedge being read is lifted off the page, and its neighbours settle back. */
 .media-petal.is-active {
   z-index: 1;
 }
 
 .media-petal.is-active svg {
-  filter: drop-shadow(0 16px 30px rgb(6 43 92 / 30%));
+  filter: drop-shadow(0 14px 26px rgb(6 43 92 / 24%));
 }
 
 .media-petal.is-away svg {
-  filter: drop-shadow(0 6px 14px rgb(6 43 92 / 12%));
+  filter: drop-shadow(0 5px 12px rgb(6 43 92 / 10%));
 }
 
 .media-petal span {

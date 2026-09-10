@@ -740,11 +740,16 @@ async function SearchResults({ block, page }: { block: Block<"searchSection">; p
   let hits: Hit[] = [];
 
   if (needle.length >= 2) {
-    const [services, posts, pages, offers] = await Promise.all([
+    const [services, posts, pages, offers, socialWork] = await Promise.all([
       getServiceViews(),
       getCollection("posts", { where: liveWhere(), limit: 200, depth: 0 }),
       getCollection("pages", { where: { status: { equals: "published" } }, limit: 200, depth: 0 }),
       getCollection("offers", { where: liveWhere(), limit: 200, depth: 0 }),
+      getCollection("social-work", {
+        where: { status: { equals: "published" } },
+        limit: 200,
+        depth: 0,
+      }),
     ]);
 
     hits = [
@@ -777,6 +782,16 @@ async function SearchResults({ block, page }: { block: Block<"searchSection">; p
       ...offers
         .filter((offer) => matches(needle, offer.title, offer.summary))
         .map((offer) => ({ title: offer.title, description: offer.summary, href: "/offers", kind: "Offer" })),
+      // Each entry has a page of its own, so a search lands on the work itself
+      // rather than on the band that lists it.
+      ...socialWork
+        .filter((entry) => entry.slug && matches(needle, entry.title, entry.summary, entry.description))
+        .map((entry) => ({
+          title: entry.title,
+          description: entry.summary ?? entry.description ?? "",
+          href: `/social-work/${entry.slug}`,
+          kind: "Social work",
+        })),
     ];
   }
 

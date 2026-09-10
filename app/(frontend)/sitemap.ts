@@ -13,12 +13,17 @@ export const dynamic = "force-dynamic";
  * the dashboard appears in the sitemap without a code change.
  */
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [nav, services, posts, pages, offers, hidden, unlisted] = await Promise.all([
+  const [nav, services, posts, pages, offers, socialWork, hidden, unlisted] = await Promise.all([
     getNavigation(),
     getServiceViews(),
     getCollection("posts", { where: liveWhere(), limit: 500, depth: 0 }),
     getCollection("pages", { where: { status: { equals: "published" } }, limit: 500, depth: 0 }),
     getCollection("offers", { where: liveWhere(), limit: 1, depth: 0 }),
+    getCollection("social-work", {
+      where: { status: { equals: "published" } },
+      limit: 200,
+      depth: 0,
+    }),
     getHiddenPaths(),
     getNoIndexPaths(),
   ]);
@@ -53,6 +58,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }
   for (const service of services) add(`/services/${service.slug}`);
   for (const post of posts) if (post.slug) add(`/posts/${post.slug}`, post.updatedAt);
+  // Each social work entry has a page of its own, at its own address.
+  for (const entry of socialWork) if (entry.slug) add(`/social-work/${entry.slug}`, entry.updatedAt);
   for (const page of pages) {
     const path = page.path || (page.slug ? `/${page.slug}` : null);
     if (path) add(path, page.updatedAt);

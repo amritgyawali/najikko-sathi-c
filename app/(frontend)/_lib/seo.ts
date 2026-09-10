@@ -4,8 +4,20 @@ import { business } from "../_data/site";
 export const siteUrl = business.website;
 export const absoluteUrl = (path: string) => new URL(path, `${siteUrl}/`).toString();
 
-export function pageMetadata(title: string, description: string, path: string): Metadata {
-  const image = `/social-preview?title=${encodeURIComponent(title)}`;
+/**
+ * A page's title, description and share card.
+ *
+ * The card is drawn from the title unless the page has a photograph of its own
+ * worth showing instead - a social work entry's cover, say, which says far more
+ * about the page than a generated card of its name would.
+ */
+export function pageMetadata(
+  title: string,
+  description: string,
+  path: string,
+  photo?: string,
+): Metadata {
+  const image = photo || `/social-preview?title=${encodeURIComponent(title)}`;
   return {
     title,
     description,

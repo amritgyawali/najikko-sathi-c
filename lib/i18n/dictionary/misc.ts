@@ -13,6 +13,16 @@ export const misc: Record<string, string> = {
   result: "नतिजा",
   results: "नतिजा",
 
+  // Social work: the cards on /social-work, and the album on an entry's page
+  "See the whole story": "पूरा कथा हेर्नुहोस्",
+  photograph: "तस्बिर",
+  photographs: "तस्बिर",
+  film: "फिल्म",
+  films: "फिल्म",
+  Close: "बन्द गर्नुहोस्",
+  "Previous photograph": "अघिल्लो तस्बिर",
+  "Next photograph": "अर्को तस्बिर",
+
   // 404
   "This address does not match a page on our website. Explore our service portfolio or return home.":
     "यो ठेगाना हाम्रो वेबसाइटको कुनै पृष्ठसँग मिल्दैन। हाम्रो सेवा पोर्टफोलियो हेर्नुहोस् वा गृहपृष्ठमा फर्कनुहोस्।",
@@ -101,6 +111,14 @@ export const patterns: [RegExp, (...parts: string[]) => string][] = [
   // Search results
   [/^Nothing matched "(.+)"\. Try a different word\.$/, (value) => `“${value}” सँग केही मिलेन। अर्को शब्द प्रयास गर्नुहोस्।`],
   [/^(\d+) results? for "(.+)"$/, (count, value) => `“${value}” का लागि ${count} नतिजा`],
+
+  // How much there is inside a social work entry, printed on its card.
+  [/^(\d+) photographs?$/, (count) => `${count} तस्बिर`],
+  [/^(\d+) films?$/, (count) => `${count} फिल्म`],
+  [
+    /^Open photograph (\d+) of (\d+)$/,
+    (index, total) => `${total} मध्ये ${index} नम्बर तस्बिर खोल्नुहोस्`,
+  ],
 
   // Offers and footer
   [/^Available until (.+)$/, (value) => `${translateMonths(value)} सम्म उपलब्ध`],

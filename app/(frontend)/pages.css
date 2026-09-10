@@ -179,20 +179,68 @@
 }
 
 .social-section { background: var(--surface); }
-.social-entries { display: grid; gap: 28px; }
+
+/* The social work band: one card per entry, three across on a desktop and one
+   on a phone. min() lets a card shrink below its own minimum on a narrow
+   screen rather than pushing the page sideways. */
+.social-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(310px, 100%), 1fr)); gap: 22px; }
+.social-card { display: flex; flex-direction: column; overflow: hidden; border: 1px solid var(--line); border-radius: 18px; background: #fff; color: inherit; text-decoration: none; transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease; }
+.social-card:hover, .social-card:focus-visible { transform: translateY(-4px); border-color: #cddffa; box-shadow: 0 18px 36px rgb(6 43 92 / 12%); }
+/* An entry with no page to open still gets a card; it just does not lift. */
+.social-card--flat:hover { transform: none; box-shadow: none; border-color: var(--line); }
+.social-card-media { position: relative; display: grid; place-items: center; aspect-ratio: 16 / 10; overflow: hidden; background: #eaf1fb; }
+.social-card-media img { width: 100%; height: 100%; object-fit: cover; transition: transform .35s ease; }
+.social-card:hover .social-card-media img { transform: scale(1.04); }
+.social-card-emblem { color: var(--secondary); opacity: .5; }
+.social-card-emblem svg { width: 44px; height: 44px; stroke-width: 1.4; }
+.social-card-body { display: flex; flex: 1; flex-direction: column; gap: 10px; padding: 22px 24px 24px; }
+.social-card-body h3 { margin: 0; color: var(--primary); font-size: 20px; font-weight: 650; line-height: 1.3; letter-spacing: -.02em; }
+.social-card-body p { margin: 0; color: var(--muted); font-size: 14.5px; line-height: 1.65; }
+/* What opening the card is worth: how many photographs, how many films. */
+.social-card-counts { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 2px; }
+.social-card-counts span { display: inline-flex; align-items: center; gap: 6px; padding: 5px 11px; border-radius: 999px; background: #eef4fd; color: var(--secondary); font-size: 12.5px; font-weight: 600; }
+.social-card-counts svg { width: 14px; height: 14px; stroke-width: 1.8; }
+.social-card-action { display: inline-flex; align-items: center; gap: 7px; margin-top: auto; padding-top: 14px; color: var(--secondary); font-size: 14px; font-weight: 650; }
+.social-card-action svg { width: 16px; height: 16px; transition: transform .25s ease; }
+.social-card:hover .social-card-action svg { transform: translateX(4px); }
+
 .social-entry { padding: 30px; border: 1px solid var(--line); border-radius: 18px; background: #fff; }
+/* On its own page the entry is the page, so it drops the card it sat in. */
+.social-entry--page { padding: 0; border: 0; border-radius: 0; background: none; }
 .social-entry-head { display: flex; align-items: flex-start; gap: 18px; margin-bottom: 24px; }
 .social-entry-icon { display: grid; place-items: center; flex-shrink: 0; width: 48px; height: 48px; border-radius: 12px; color: var(--secondary); background: #edf4fe; }
 .social-entry-icon svg { width: 24px; height: 24px; stroke-width: 1.5; }
+.social-entry h1 { margin: 0 0 8px; color: var(--primary); font-size: clamp(28px, 4vw, 38px); font-weight: 700; line-height: 1.15; letter-spacing: -.03em; }
 .social-entry h3 { margin: 0 0 8px; color: var(--primary); font-size: 24px; font-weight: 650; letter-spacing: -.02em; }
 .social-entry-head p { margin: 0; color: var(--muted); font-size: 15px; line-height: 1.7; }
+.social-entry-date { color: var(--muted); font-size: 14px; }
+.social-entry-copy { margin-bottom: 26px; max-width: 74ch; }
+.social-entry-copy p { margin: 0 0 14px; color: var(--muted); font-size: 16px; line-height: 1.8; }
+.social-entry-copy p:last-child { margin-bottom: 0; }
 .social-video { position: relative; overflow: hidden; aspect-ratio: 16 / 9; border-radius: 14px; background: #041d41; }
 .social-video iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
 .social-album { display: grid; grid-template-columns: repeat(auto-fill, minmax(215px, 1fr)); gap: 14px; margin-top: 22px; }
 .social-album figure { margin: 0; }
 .social-album img { display: block; width: 100%; height: 190px; object-fit: cover; border-radius: 12px; }
+/* The photograph is a button, so it is drawn as the photograph and nothing else. */
+.social-album-open { display: block; width: 100%; padding: 0; border: 0; border-radius: 12px; background: none; cursor: zoom-in; }
+.social-album-open img { transition: transform .3s ease, box-shadow .3s ease; }
+.social-album-open:hover img, .social-album-open:focus-visible img { transform: scale(1.02); box-shadow: 0 14px 28px rgb(6 43 92 / 18%); }
 .social-album figcaption { margin-top: 8px; color: var(--muted); font-size: 12.5px; line-height: 1.5; }
 .social-entry .text-link { margin-top: 20px; }
+
+/* One photograph, opened out of the album. */
+.photo-lightbox { position: fixed; inset: 0; z-index: 120; display: grid; place-items: center; padding: 5vh 5vw; background: rgb(3 18 40 / 88%); }
+.photo-lightbox-frame { max-width: min(1200px, 100%); text-align: center; }
+.photo-lightbox-frame img { display: block; width: auto; max-width: 100%; max-height: 78vh; height: auto; margin-inline: auto; border-radius: 10px; object-fit: contain; }
+.photo-lightbox-frame p { margin: 16px 0 0; color: #dbe6f6; font-size: 14.5px; line-height: 1.6; }
+.photo-lightbox-close, .photo-lightbox-step { position: absolute; display: grid; place-items: center; width: 44px; height: 44px; border: 1px solid rgb(255 255 255 / 22%); border-radius: 50%; background: rgb(255 255 255 / 10%); color: #fff; cursor: pointer; transition: background .2s ease; }
+.photo-lightbox-close:hover, .photo-lightbox-step:hover { background: rgb(255 255 255 / 22%); }
+.photo-lightbox-close { top: 20px; right: 20px; }
+.photo-lightbox-step { top: 50%; transform: translateY(-50%); }
+.photo-lightbox-step--back { left: 16px; }
+.photo-lightbox-step--on { right: 16px; }
+.photo-lightbox-count { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); color: #b9cbe4; font-size: 13px; letter-spacing: .06em; }
 
 /* Social work: a cover photograph, then the films, then the album. Each film
    carries its own title and description, so they are stacked rather than laid
@@ -201,7 +249,7 @@
 .social-cover img { display: block; width: 100%; height: auto; max-height: 420px; object-fit: cover; border-radius: 14px; }
 .social-videos { display: grid; gap: 30px; }
 .social-video-item { margin: 0; }
-.social-video-item h4 { margin: 0 0 12px; color: var(--primary); font-size: 18px; font-weight: 650; letter-spacing: -.01em; }
+.social-video-item h2, .social-video-item h4 { margin: 0 0 12px; color: var(--primary); font-size: 18px; font-weight: 650; letter-spacing: -.01em; }
 .social-video-item figcaption { margin-top: 12px; color: var(--muted); font-size: 14.5px; line-height: 1.7; }
 .social-video-item .text-link { margin-top: 12px; }
 .social-videos + .social-album { margin-top: 26px; }
@@ -307,6 +355,11 @@
   .leadership-copy p { font-size: 15.5px; }
   .discipline-grid, .topic-grid { grid-template-columns: 1fr; }
   .discipline-card, .social-entry { padding: 24px; }
+  .social-entry--page { padding: 0; }
+  .photo-lightbox { padding: 4vh 3vw; }
+  .photo-lightbox-step { width: 38px; height: 38px; }
+  .photo-lightbox-step--back { left: 6px; }
+  .photo-lightbox-step--on { right: 6px; }
   .review-card, .wisher-card { padding: 24px; }
   .wisher-grid { grid-template-columns: repeat(auto-fit, minmax(min(160px, 100%), 1fr)); }
   .wisher-card img, .wisher-initial { width: 76px; height: 76px; }
