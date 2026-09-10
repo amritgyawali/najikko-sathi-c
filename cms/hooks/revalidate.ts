@@ -6,6 +6,7 @@ import type {
 } from "payload";
 
 import { placementPath } from "../../lib/placements";
+import { invalidateSearchIndex } from "../search/engine";
 
 /**
  * Keeps the public site in step with the dashboard.
@@ -25,6 +26,11 @@ const outsideNextRequest = (error: unknown): boolean =>
   error instanceof Error && error.message.includes("static generation store");
 
 const purge = (paths: string[]) => {
+  // The dashboard search reads from a snapshot of the site's content. Drop it
+  // on every save, so an editor searching for a word they just changed finds
+  // the new wording rather than the old.
+  invalidateSearchIndex();
+
   // One service appears on the homepage, the services index, its own page and
   // the category pages, and a purge scoped to a single page does not clear the
   // fully prerendered routes. Purging the root layout clears everything under

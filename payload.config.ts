@@ -34,6 +34,7 @@ import { SiteSettings } from "./cms/globals/SiteSettings";
 import { sitePagesEndpoint } from "./cms/endpoints/site-pages";
 import { backupEndpoints } from "./cms/endpoints/backups";
 import { siteToolEndpoints } from "./cms/endpoints/site-tools";
+import { dashboardSearchEndpoint } from "./cms/search/endpoint";
 import { cloudinaryStorage } from "./cms/storage/cloudinary";
 import { databasePoolConfig } from "./cms/database";
 
@@ -137,6 +138,9 @@ export default buildConfig({
         "/cms/components/dashboard/CommandPalette#CommandPalette",
         "/cms/components/ThemeToggle#ThemeToggle",
       ],
+      // Above every screen: the box that looks for a word inside the content
+      // itself, rather than for a document by its name.
+      header: ["/cms/components/GlobalSearch#GlobalSearch"],
     },
   },
   collections: [
@@ -163,7 +167,7 @@ export default buildConfig({
   // The dashboard's "add the website's pages" button posts here, and so do the
   // daily backup schedule, the restore button, and the dashboard's own toolbox:
   // one search across every collection, "rebuild the website", and the exports.
-  endpoints: [sitePagesEndpoint, ...backupEndpoints, ...siteToolEndpoints],
+  endpoints: [sitePagesEndpoint, ...backupEndpoints, ...siteToolEndpoints, dashboardSearchEndpoint],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || "",
   db: postgresAdapter({
