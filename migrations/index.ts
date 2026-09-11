@@ -25,6 +25,7 @@ import * as migration_20260908_030000_media_band_on_every_page from './20260908_
 import * as migration_20260908_210000_sync_website_pages from './20260908_210000_sync_website_pages';
 import * as migration_20260910_120000_add_nepali_page_copy from './20260910_120000_add_nepali_page_copy';
 import * as migration_20260910_121000_social_work_pages from './20260910_121000_social_work_pages';
+import * as migration_20260911_090000_drop_hero_kicker from './20260911_090000_drop_hero_kicker';
 
 export const migrations = [
   {
@@ -161,5 +162,10 @@ export const migrations = [
     up: migration_20260910_121000_social_work_pages.up,
     down: migration_20260910_121000_social_work_pages.down,
     name: '20260910_121000_social_work_pages'
+  },
+  {
+    up: migration_20260911_090000_drop_hero_kicker.up,
+    down: migration_20260911_090000_drop_hero_kicker.down,
+    name: '20260911_090000_drop_hero_kicker',
   },
 ];

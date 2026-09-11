@@ -24,11 +24,20 @@ import { Written } from "./written";
  *
  * Their words are written in Site → Homepage & page copy, and the page they sit
  * on decides whether they appear at all and in what order (Content → Website pages →
- * Home). Everything they show has a fallback here, so the site reads correctly
- * before anyone has opened the dashboard.
+ * Home). Most of what they show has a fallback here, so the site reads correctly
+ * before anyone has opened the dashboard - but a line an editor has emptied
+ * stays empty, and is taken off the page rather than put back.
  */
 
 type Block<T extends PageSection["blockType"]> = Extract<PageSection, { blockType: T }>;
+
+/**
+ * What an optional line of the front page says. A field nobody has written in
+ * reads as null and gets the site's own wording; a field an editor cleared
+ * reads as "" and stays empty, so the line is left out.
+ */
+const said = (value: string | null | undefined, fallback: string): string =>
+  value == null ? fallback : value.trim();
 
 /**
  * A keyword list, in both languages. A row an editor has not written in Nepali
@@ -58,6 +67,14 @@ export function HomeHero({
     typeof home?.heroImage === "object" && home?.heroImage?.alt
       ? home.heroImage.alt
       : "Sunrise behind snow-covered Himalayan peaks in Nepal";
+  // The kicker has no wording of its own to fall back on: it is shown only
+  // while something is written for it.
+  const kicker = home?.heroKicker?.trim() ?? "";
+  const body = said(
+    home?.heroBody,
+    "Honest information, meaningful entertainment, and socially responsible media - created in Nepal for people, organizations, and communities.",
+  );
+  const ctaLabel = said(home?.heroCtaLabel, "Explore our services");
 
   return (
     <>
@@ -73,26 +90,26 @@ export function HomeHero({
         />
         <div className="hero-overlay" />
         <div className="site-container hero-content">
-          <span className="hero-kicker">
-            <i />{" "}
-            <Written ne={home?.heroKickerNe}>
-              {home?.heroKicker || "Kathmandu-based media house"}
-            </Written>
-          </span>
+          {kicker ? (
+            <span className="hero-kicker">
+              <i /> <Written ne={home?.heroKickerNe}>{kicker}</Written>
+            </span>
+          ) : null}
           <Written as="h1" ne={home?.heroHeadingNe}>
             {home?.heroHeading || "Media that stays close to what matters."}
           </Written>
-          <Written as="p" ne={home?.heroBodyNe}>
-            {home?.heroBody ||
-              "Honest information, meaningful entertainment, and socially responsible media - created in Nepal for people, organizations, and communities."}
-          </Written>
+          {body ? (
+            <Written as="p" ne={home?.heroBodyNe}>
+              {body}
+            </Written>
+          ) : null}
           <div className="hero-actions">
-            <Link className="hero-cta" href={home?.heroCtaHref || "/services"}>
-              <Written ne={home?.heroCtaLabelNe}>
-                {home?.heroCtaLabel || "Explore our services"}
-              </Written>{" "}
-              <ArrowRight aria-hidden="true" />
-            </Link>
+            {ctaLabel ? (
+              <Link className="hero-cta" href={home?.heroCtaHref || "/services"}>
+                <Written ne={home?.heroCtaLabelNe}>{ctaLabel}</Written>{" "}
+                <ArrowRight aria-hidden="true" />
+              </Link>
+            ) : null}
             {block.secondaryLabel ? (
               <a className="hero-secondary" href={business.rightSanchar} target="_blank" rel="noreferrer">
                 {block.secondaryLabel} <ArrowUpRight aria-hidden="true" />
@@ -148,6 +165,9 @@ export async function HomeAbout({
     .map((row) => ({ en: row.en as string, ne: row.ne ?? "" }));
   const paragraphs: Label[] =
     written.length > 0 ? written : missionParagraphs.map((text) => ({ en: text, ne: "" }));
+  const eyebrow = said(home?.aboutEyebrow, "Who We Are");
+  const heading = said(home?.aboutHeading, business.legalName);
+  const quote = said(home?.aboutQuote, missionQuote);
 
   return (
     <section className="chairman-section" id="about">
@@ -166,16 +186,21 @@ export async function HomeAbout({
           </div>
         ) : null}
         <div className="chairman-copy">
-          <div className="eyebrow">
-            <i />{" "}
-            <Written ne={home?.aboutEyebrowNe}>{home?.aboutEyebrow || "Who We Are"}</Written>
-          </div>
-          <Written as="h2" ne={home?.aboutHeadingNe}>
-            {home?.aboutHeading || business.legalName}
-          </Written>
-          <Written as="blockquote" ne={home?.aboutQuoteNe}>
-            {home?.aboutQuote || missionQuote}
-          </Written>
+          {eyebrow ? (
+            <div className="eyebrow">
+              <i /> <Written ne={home?.aboutEyebrowNe}>{eyebrow}</Written>
+            </div>
+          ) : null}
+          {heading ? (
+            <Written as="h2" ne={home?.aboutHeadingNe}>
+              {heading}
+            </Written>
+          ) : null}
+          {quote ? (
+            <Written as="blockquote" ne={home?.aboutQuoteNe}>
+              {quote}
+            </Written>
+          ) : null}
           {paragraphs.map((paragraph, index) => (
             <Written as="p" ne={paragraph.ne} key={index}>
               {paragraph.en}

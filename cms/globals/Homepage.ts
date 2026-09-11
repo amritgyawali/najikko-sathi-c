@@ -23,6 +23,13 @@ import { isEditor } from "../access";
 const NEPALI_NOTE =
   "Shown when the website is read in Nepali. Leave it empty to keep the English.";
 
+/**
+ * Said under every optional line of the front page. Emptying one of these takes
+ * it off the page; it does not bring back the wording the site started with.
+ */
+const HIDE_WHEN_EMPTY =
+  "Clear this field and save to take it off the homepage. It stays hidden until something is written here again.";
+
 /** Said at the top of every folded-away Nepali half of a band. */
 const NEPALI_SECTION_NOTE =
   "Optional. Anything written here is what a visitor reads after pressing ने - shown " +
@@ -85,14 +92,26 @@ export const Homepage: GlobalConfig = {
           label: "Home - hero",
           admin: { description: "The top of the front page, at /." },
           fields: [
-            { name: "heroKicker", type: "text", defaultValue: "Kathmandu-based media house" },
+            {
+              name: "heroKicker",
+              type: "text",
+              label: "Kicker",
+              admin: {
+                description:
+                  "The small line above the heading. Leave it empty and nothing is shown there.",
+              },
+            },
             {
               name: "heroHeading",
               type: "text",
               required: true,
               defaultValue: "Media that stays close to what matters.",
             },
-            { name: "heroBody", type: "textarea" },
+            {
+              name: "heroBody",
+              type: "textarea",
+              admin: { description: HIDE_WHEN_EMPTY },
+            },
             {
               name: "heroImage",
               type: "upload",
@@ -102,7 +121,12 @@ export const Homepage: GlobalConfig = {
             {
               type: "row",
               fields: [
-                { name: "heroCtaLabel", type: "text", defaultValue: "Explore our services", admin: { width: "50%" } },
+                {
+                  name: "heroCtaLabel",
+                  type: "text",
+                  defaultValue: "Explore our services",
+                  admin: { width: "50%", description: HIDE_WHEN_EMPTY },
+                },
                 { name: "heroCtaHref", type: "text", defaultValue: "/services", admin: { width: "50%" } },
               ],
             },
@@ -119,9 +143,14 @@ export const Homepage: GlobalConfig = {
           label: "Home - about",
           admin: { description: "The introduction on the front page, at /." },
           fields: [
-            { name: "aboutEyebrow", type: "text", defaultValue: "Who We Are" },
-            { name: "aboutHeading", type: "text" },
-            { name: "aboutQuote", type: "textarea" },
+            {
+              name: "aboutEyebrow",
+              type: "text",
+              defaultValue: "Who We Are",
+              admin: { description: HIDE_WHEN_EMPTY },
+            },
+            { name: "aboutHeading", type: "text", admin: { description: HIDE_WHEN_EMPTY } },
+            { name: "aboutQuote", type: "textarea", admin: { description: HIDE_WHEN_EMPTY } },
             { name: "aboutBody", type: "textarea", label: "First paragraph" },
             { name: "aboutBodySecondary", type: "textarea", label: "Second paragraph" },
             {

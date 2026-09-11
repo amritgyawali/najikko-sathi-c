@@ -111,7 +111,6 @@ async function seed() {
     slug: "homepage",
     overrideAccess: true,
     data: {
-      heroKicker: "Kathmandu-based media house",
       heroHeading: "Media that stays close to what matters.",
       heroBody:
         "Honest information, meaningful entertainment, and socially responsible media - " +
