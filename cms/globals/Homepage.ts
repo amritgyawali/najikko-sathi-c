@@ -22,6 +22,13 @@ import { BILINGUAL_NOTE, bilingual } from "../bilingual";
  */
 
 /**
+ * Said under every optional line of the front page. Emptying one of these takes
+ * it off the page; it does not bring back the wording the site started with.
+ */
+const HIDE_WHEN_EMPTY =
+  "Clear this field and save to take it off the homepage. It stays hidden until something is written here again.";
+
+/**
  * A keyword list where each entry is written twice, the Nepali beside the
  * English as everywhere else.
  */
@@ -53,21 +60,36 @@ export const Homepage: GlobalConfig = {
           label: "Home - hero",
           admin: { description: `The top of the front page, at /. ${BILINGUAL_NOTE}` },
           fields: [
-            bilingual({ name: "heroKicker", label: "Kicker", defaultValue: "Kathmandu-based media house" }),
+            bilingual({
+              name: "heroKicker",
+              label: "Kicker",
+              description:
+                "The small line above the heading. Leave it empty and nothing is shown there.",
+            }),
             bilingual({
               name: "heroHeading",
               label: "Heading",
               required: true,
               defaultValue: "Media that stays close to what matters.",
             }),
-            bilingual({ name: "heroBody", type: "textarea", label: "Body" }),
+            bilingual({
+              name: "heroBody",
+              type: "textarea",
+              label: "Body",
+              description: HIDE_WHEN_EMPTY,
+            }),
             {
               name: "heroImage",
               type: "upload",
               relationTo: "media",
               admin: { description: "Full-bleed background photograph." },
             },
-            bilingual({ name: "heroCtaLabel", label: "Button text", defaultValue: "Explore our services" }),
+            bilingual({
+              name: "heroCtaLabel",
+              label: "Button text",
+              defaultValue: "Explore our services",
+              description: HIDE_WHEN_EMPTY,
+            }),
             { name: "heroCtaHref", type: "text", label: "Button address", defaultValue: "/services" },
             bilingualLabels("brandPillars", "Brand pillars", "The ring of keywords under the hero."),
           ],
@@ -76,9 +98,19 @@ export const Homepage: GlobalConfig = {
           label: "Home - about",
           admin: { description: `The introduction on the front page, at /. ${BILINGUAL_NOTE}` },
           fields: [
-            bilingual({ name: "aboutEyebrow", label: "Eyebrow", defaultValue: "Who We Are" }),
-            bilingual({ name: "aboutHeading", label: "Heading" }),
-            bilingual({ name: "aboutQuote", type: "textarea", label: "Quotation" }),
+            bilingual({
+              name: "aboutEyebrow",
+              label: "Eyebrow",
+              defaultValue: "Who We Are",
+              description: HIDE_WHEN_EMPTY,
+            }),
+            bilingual({ name: "aboutHeading", label: "Heading", description: HIDE_WHEN_EMPTY }),
+            bilingual({
+              name: "aboutQuote",
+              type: "textarea",
+              label: "Quotation",
+              description: HIDE_WHEN_EMPTY,
+            }),
             bilingual({ name: "aboutBody", type: "textarea", label: "First paragraph" }),
             bilingual({ name: "aboutBodySecondary", type: "textarea", label: "Second paragraph" }),
             {

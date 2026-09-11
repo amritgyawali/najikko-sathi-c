@@ -58,21 +58,22 @@ uploaded the centre falls back to the initials mark.
 
 Each petal is a solid slab rather than a flat shape: a darkened copy of the
 wedge sits behind the face, offset outwards, and the sliver showing between the
-two is its side wall. A sheen runs down the face, and the whole ring stands on a
-perspective stage.
+two is its side wall. A sheen runs down the face and a thin lit edge runs round
+it.
 
-The petals bloom out of the middle one after another when the page opens.
-Pointing at one sets it off: the slab swings up out of the ring towards you,
-tipping about its own edge, deepening as it comes and picking up a white rim,
-while the wedge blows apart — a blast front in the petal's own outline running
-outwards, and darts, splinters and chips thrown off its outer edge in the
-petal's colour, tumbling as they go. Every piece is a shard; nothing round is
-ever thrown. The other five give way, dim and tip back into the page, and the
-logo in the middle picks up the colour of whichever petal is being read. A
-burst is played once and taken off the wheel, so leaving mid-flight lets it
-finish, and pointing at the same petal twice plays it twice. Someone who has
-asked their browser for less motion gets the wheel with none of it — the petals
-answer the pointer, and nothing is thrown.
+The movement is deliberately simple and lives in the stylesheet. The petals fade
+in one after another when the page opens, and pointing at one brightens it a
+little and sharpens its edge. Nothing moves out of the ring and nothing is
+thrown off it. The wheel is drawn on the server, so it arrives complete without
+any script, and someone who has asked their browser for less motion gets it with
+no fade at all.
+
+In **Site → Homepage & page copy**, the kicker above the hero heading has no
+wording of its own: it shows only while something is written in it. The hero
+body, the hero button, and the introduction's eyebrow, heading and quotation
+fall back to the site's own wording until they are first saved, but clearing
+any of them and saving takes that line off the homepage rather than bringing
+the old wording back.
 
 The service grid, the production band, and the Right Sanchar band used to sit
 on the homepage as well. They now open `/services`, `/production`, and
