@@ -12,11 +12,17 @@ import { useId, type CSSProperties } from "react";
  * and its label take the pointer, which gives every link a hit area matching
  * the petal a visitor can actually see.
  *
+ * Each petal is drawn as a solid slab rather than a flat shape: a darkened copy
+ * of the wedge sits behind the face, offset outwards, and the sliver showing
+ * between the two reads as its side wall. A sheen runs down the face and a thin
+ * lit edge runs round it.
+ *
  * The movement is kept simple and lives entirely in the stylesheet: the petals
  * fade in one after another when the page opens, and the one being pointed at
- * brightens a little. Nothing moves out of the ring and nothing springs back,
- * so the wheel holds its shape the whole time. Someone who has asked for less
- * motion gets the wheel with no fade at all.
+ * brightens a little and sharpens its edge. Nothing moves out of the ring,
+ * nothing is thrown off it, and nothing springs back, so the wheel holds its
+ * shape the whole time. Someone who has asked for less motion gets the wheel
+ * with no fade at all.
  */
 
 export type WheelPetal = { label: string; href: string; from: string; to: string };
@@ -30,6 +36,8 @@ const HALF_ANGLE = 26;
 const CORNER = 4;
 /** Where a petal's label sits, measured from the middle of the wheel. */
 const LABEL = (INNER + OUTER) / 2;
+/** How much of the side wall shows beyond the face. */
+const DEPTH = 1.1;
 
 const rad = (degrees: number) => (degrees * Math.PI) / 180;
 const round = (value: number) => Math.round(value * 100) / 100;
@@ -38,6 +46,17 @@ const point = (radius: number, degrees: number) =>
   [50 + radius * Math.cos(rad(degrees)), 50 + radius * Math.sin(rad(degrees))] as const;
 
 const at = (radius: number, degrees: number) => point(radius, degrees).map(round).join(" ");
+
+/** Darkens (negative) or lightens (positive) a colour from the wheel's data. */
+function shade(hex: string, amount: number): string {
+  const value = hex.replace("#", "");
+  const full = value.length === 3 ? value.replace(/(.)/g, "$1$1") : value;
+  const channels = [0, 2, 4].map((index) => parseInt(full.slice(index, index + 2), 16));
+  const mixed = channels.map((channel) =>
+    Math.max(0, Math.min(255, Math.round(amount < 0 ? channel * (1 + amount) : channel + (255 - channel) * amount))),
+  );
+  return `#${mixed.map((channel) => channel.toString(16).padStart(2, "0")).join("")}`;
+}
 
 /**
  * One petal: an arc along the outer edge, an arc back along the inner edge,
@@ -84,6 +103,8 @@ export function MediaWheel({
           const axis = -90 + (index * 360) / petals.length;
           const [labelX, labelY] = point(LABEL, axis);
           const shape = petalPath(axis);
+          const wallX = round(Math.cos(rad(axis)) * DEPTH);
+          const wallY = round(Math.sin(rad(axis)) * DEPTH);
 
           return (
             <Link
@@ -95,14 +116,34 @@ export function MediaWheel({
             >
               <svg viewBox="0 0 100 100" aria-hidden="true">
                 <defs>
-                  <linearGradient id={`${gradient}-${index}`} x1="0" y1="0" x2="0.55" y2="1">
+                  <linearGradient id={`${gradient}-face-${index}`} x1="0" y1="0" x2="0.55" y2="1">
                     <stop offset="0%" stopColor={petal.from} />
                     <stop offset="100%" stopColor={petal.to} />
                   </linearGradient>
+                  <linearGradient id={`${gradient}-gloss-${index}`} x1="0" y1="0" x2="0.35" y2="1">
+                    <stop offset="0%" stopColor="#fff" stopOpacity="0.42" />
+                    <stop offset="45%" stopColor="#fff" stopOpacity="0.06" />
+                    <stop offset="100%" stopColor="#000" stopOpacity="0.14" />
+                  </linearGradient>
                 </defs>
-                <path d={shape} fill={`url(#${gradient}-${index})`} />
+                {/* The side wall, pushed out behind the face. */}
+                <path
+                  d={shape}
+                  fill={shade(petal.to, -0.45)}
+                  transform={`translate(${wallX} ${wallY})`}
+                />
+                <path d={shape} fill={`url(#${gradient}-face-${index})`} />
+                <path d={shape} fill={`url(#${gradient}-gloss-${index})`} />
                 {/* Lightens the petal being pointed at. */}
                 <path className="media-petal-sheen" d={shape} fill="#fff" />
+                <path
+                  className="media-petal-rim"
+                  d={shape}
+                  fill="none"
+                  stroke="#fff"
+                  strokeWidth={0.6}
+                  strokeLinejoin="round"
+                />
               </svg>
               <span style={{ left: `${round(labelX)}%`, top: `${round(labelY)}%` }}>
                 {petal.label}

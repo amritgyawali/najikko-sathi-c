@@ -112,7 +112,8 @@ export function HomeHero({
             ) : null}
             {block.secondaryLabel ? (
               <a className="hero-secondary" href={business.rightSanchar} target="_blank" rel="noreferrer">
-                {block.secondaryLabel} <ArrowUpRight aria-hidden="true" />
+                <Written ne={block.secondaryLabelNe}>{block.secondaryLabel}</Written>{" "}
+                <ArrowUpRight aria-hidden="true" />
               </a>
             ) : null}
           </div>
@@ -180,7 +181,9 @@ export async function HomeAbout({
               <Image src={photo.src} alt={photo.alt} fill sizes="(max-width: 900px) 100vw, 400px" />
             </div>
             <div className="portrait-caption">
-              <strong>{block.captionTitle || "Your Media Partner"}</strong>
+              <Written as="strong" ne={block.captionTitleNe}>
+                {block.captionTitle || "Your Media Partner"}
+              </Written>
               <span>{business.address}</span>
             </div>
           </div>
@@ -215,7 +218,8 @@ export async function HomeAbout({
           </div>
           {block.linkLabel && block.linkHref ? (
             <Link className="text-link" href={block.linkHref}>
-              {block.linkLabel} <ArrowRight aria-hidden="true" />
+              <Written ne={block.linkLabelNe}>{block.linkLabel}</Written>{" "}
+              <ArrowRight aria-hidden="true" />
             </Link>
           ) : null}
         </div>

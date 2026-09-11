@@ -8,6 +8,7 @@ import {
 import { getAllFaqs, getServiceCategories, getServices } from "@/lib/content";
 import { appliesTo } from "@/lib/placements";
 import { mediaUrl } from "@/lib/media";
+import type { Question, Step } from "@/app/(frontend)/_components/page-content";
 
 /**
  * One shape for a service, whether it came from the CMS or from the static
@@ -23,8 +24,8 @@ export type ServiceView = {
   audience: string;
   preparation: string;
   deliverables: string[];
-  steps: [string, string][];
-  faq: [string, string][];
+  steps: Step[];
+  faq: Question[];
   imageUrl: string | null;
   category: CategoryView;
 };
@@ -67,8 +68,8 @@ const fallbackServiceViews = (): ServiceView[] => {
     audience: service.audience,
     preparation: service.preparation,
     deliverables: [...service.deliverables],
-    steps: service.steps.map(([title, description]) => [title, description] as [string, string]),
-    faq: service.faq.map(([question, answer]) => [question, answer] as [string, string]),
+    steps: service.steps.map(([title, text]) => ({ title, text })),
+    faq: service.faq.map(([question, answer]) => ({ question, answer })),
     imageUrl: null,
     category: byId.get(service.category)!,
   }));
@@ -111,8 +112,8 @@ export const getServiceViews = cache(async (): Promise<ServiceView[]> => {
       audience: row.audience ?? "",
       preparation: row.preparation ?? "",
       deliverables: (row.deliverables ?? []).map((entry) => entry.item),
-      steps: (row.steps ?? []).map((step) => [step.title, step.description] as [string, string]),
-      faq: (row.faq ?? []).map((entry) => [entry.question, entry.answer] as [string, string]),
+      steps: (row.steps ?? []).map((step) => ({ title: step.title, text: step.description })),
+      faq: (row.faq ?? []).map((entry) => ({ question: entry.question, answer: entry.answer })),
       imageUrl: mediaUrl(row.image),
       category,
     };
@@ -135,13 +136,17 @@ export const getServiceView = cache(async (slug: string): Promise<ServiceView | 
  * page now shows it there too. A question is only ever listed once.
  */
 export const getFaqPairs = cache(
-  async (
-    placements: string[],
-    fallback: [string, string][],
-  ): Promise<[string, string][]> => {
+  async (placements: string[], fallback: Question[]): Promise<Question[]> => {
     const all = await getAllFaqs();
     const rows = all.filter((row) => placements.some((placement) => appliesTo(row, placement)));
     if (rows.length === 0) return fallback;
-    return rows.map((row) => [row.question, row.answer] as [string, string]);
+    // A question written twice in Content → FAQs is shown in the language a
+    // visitor is reading; one written only in English is translated as before.
+    return rows.map((row) => ({
+      question: row.question,
+      questionNe: row.questionNe,
+      answer: row.answer,
+      answerNe: row.answerNe,
+    }));
   },
 );

@@ -56,13 +56,24 @@ advertisement - each link to that discipline's page, and the company logo
 uploaded in **Site → Site Settings** sits at its centre. Until a logo is
 uploaded the centre falls back to the initials mark.
 
-The wheel's movement is deliberately quiet: the petals settle into the ring one
-after another when the page opens, and pointing at one lifts it a little way out
-while its neighbours step back and dim. Nothing circles it, nothing is thrown
-off it, and nothing keeps moving once it has settled — the shape and its colours
-carry the band, and the animation only marks whichever petal is being read.
-Someone who has asked their browser for less motion gets the wheel with none of
+Each petal is a solid slab rather than a flat shape: a darkened copy of the
+wedge sits behind the face, offset outwards, and the sliver showing between the
+two is its side wall. A sheen runs down the face and a thin lit edge runs round
 it.
+
+The movement is deliberately simple and lives in the stylesheet. The petals fade
+in one after another when the page opens, and pointing at one brightens it a
+little and sharpens its edge. Nothing moves out of the ring and nothing is
+thrown off it. The wheel is drawn on the server, so it arrives complete without
+any script, and someone who has asked their browser for less motion gets it with
+no fade at all.
+
+In **Site → Homepage & page copy**, the kicker above the hero heading has no
+wording of its own: it shows only while something is written in it. The hero
+body, the hero button, and the introduction's eyebrow, heading and quotation
+fall back to the site's own wording until they are first saved, but clearing
+any of them and saving takes that line off the homepage rather than bringing
+the old wording back.
 
 The service grid, the production band, and the Right Sanchar band used to sit
 on the homepage as well. They now open `/services`, `/production`, and
@@ -90,22 +101,32 @@ under you.
 **Nepali.** The rest of the website is written in English and turned into Nepali
 against a phrase book, but a message in someone's own words is not something to
 guess at, so this band is exempt: it is marked "do not translate" and shows only
-what is written for it here. Every message therefore has a **Nepali version of
-this message** section — role, name, heading and body — and so do the kicker and
-the fallback heading above them. Anything left empty falls back to the English
-rather than to a machine translation, so a blank field is a visible "not written
-yet", never a wrong sentence.
+what is written for it here. Role, name, heading and body each have a Nepali box
+beside them, and so do the kicker and the fallback heading above them. Anything
+left empty falls back to the English rather than to a machine translation, so a
+blank field is a visible "not written yet", never a wrong sentence.
 
-Every other band in **Site → Homepage & page copy** now works the same way. Each
-tab — the hero, the introduction, the service grid, the production band, the
-Right Sanchar band — ends in a folded-away **Nepali version of this section**,
-and the keyword lists (brand pillars, core capabilities, portal topics) carry a
-Nepali box beside each English one. None of it is required. A field you fill in
-is shown exactly as you typed it and never machine-translated; a field you leave
-empty behaves precisely as it did before — the English is shown, translated
-against the phrase book — so you can hand-write as much or as little Nepali as
-you have time for, one line at a time, and the page reads correctly at every
-point in between.
+**Every section on every page works this way.** Wherever you can type a line of
+copy in the dashboard, the Nepali for it is the box immediately to its right:
+English on the left, Nepali on the right, in the same row of the form. That
+covers every tab of **Site → Homepage & page copy** and every one of the
+sections a page is built from in **Content → Website pages** — headings,
+kickers, the line under a heading, lead paragraphs, body paragraphs, card
+titles and text, tick lists, keyword chips, numbered steps, questions and
+answers, button text, captions, the line shown when a list is empty — plus the
+reusable questions in **Content → FAQs**. The Nepali box is tinted and set in
+Devanagari, so the two columns are told apart at a glance.
+
+None of it is required. A field you fill in is shown exactly as you typed it and
+never machine-translated; a field you leave empty behaves precisely as it did
+before — the English is shown, translated against the phrase book — so you can
+hand-write as much or as little Nepali as you have time for, one line at a time,
+and the page reads correctly at every point in between.
+
+The one place the phrase book still helps is the photo band, whose heading is a
+sentence built around what you wrote ("<name> in pictures & film"). There your
+Nepali is one part of a sentence the phrase book already knows how to turn
+round, so it is left to do that rather than printed as-is.
 
 The English and the Nepali are two halves of one message, not two messages.
 Pressing ने changes the language of what a visitor is reading; it does not move

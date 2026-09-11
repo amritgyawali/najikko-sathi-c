@@ -8,6 +8,7 @@ import { heroSlotKey } from "@/lib/site-map";
 import type { CategoryView, ServiceView } from "@/lib/services";
 import { absoluteUrl, siteUrl } from "../_lib/seo";
 import { StructuredData } from "./structured-data";
+import { Written } from "./written";
 
 /** Icon names come from the category record in the dashboard. */
 export const categoryIcons: Record<string, typeof Clapperboard> = {
@@ -39,7 +40,7 @@ export function Breadcrumbs({ items }: { items: { label: string; href: string }[
  * `mediaKey` is the page's Page media key - the page's own key, or a service's
  * slug. A page without one simply never carries a hero photograph.
  */
-export async function PageHero({ eyebrow, title, description, path, label, parent, category, mediaKey, children }: { eyebrow: string; title: string; description: string; path: string; label: string; parent?: { label: string; href: string }; category?: CategoryView; mediaKey?: string; children?: React.ReactNode }) {
+export async function PageHero({ eyebrow, eyebrowNe, title, titleNe, description, descriptionNe, path, label, parent, category, mediaKey, children }: { eyebrow: string; eyebrowNe?: string | null; title: string; titleNe?: string | null; description: string; descriptionNe?: string | null; path: string; label: string; parent?: { label: string; href: string }; category?: CategoryView; mediaKey?: string; children?: React.ReactNode }) {
   const photo = mediaKey ? slotPhoto(await getMediaSlot(heroSlotKey(mediaKey)), title) : null;
   return <section className={`page-hero${category ? ` page-hero-${category.id}` : ""}`}>
     <Image className="page-hero-image" src="/images/nepal-himalayas-dawn-4k.jpg" alt="Himalayan peaks at dawn in Nepal" fill sizes="100vw" priority quality={88} />
@@ -47,7 +48,7 @@ export async function PageHero({ eyebrow, title, description, path, label, paren
     <div className="site-container page-hero-inner">
       <Breadcrumbs items={[...(parent ? [parent] : []), { label, href: path }]} />
       <div className={`page-hero-grid${photo ? "" : " page-hero-grid--wide"}`}>
-        <div><span className="hero-kicker"><i />{eyebrow}</span><h1>{title}</h1><p>{description}</p>{children && <div className="hero-actions">{children}</div>}</div>
+        <div><span className="hero-kicker"><i /><Written ne={eyebrowNe}>{eyebrow}</Written></span><Written as="h1" ne={titleNe}>{title}</Written><Written as="p" ne={descriptionNe}>{description}</Written>{children && <div className="hero-actions">{children}</div>}</div>
         {photo ? <figure className="page-hero-photo">
           <div className="page-hero-photo-frame"><Image src={photo.src} alt={photo.alt} fill sizes="(max-width: 900px) 100vw, 260px" /></div>
           {photo.caption ? <figcaption>{photo.caption}</figcaption> : null}
@@ -57,8 +58,13 @@ export async function PageHero({ eyebrow, title, description, path, label, paren
   </section>;
 }
 
-export function SectionHeading({ kicker, title, description }: { kicker: string; title: string; description?: string }) {
-  return <div className="section-heading"><span className="eyebrow"><i />{kicker}</span><h2>{title}</h2>{description && <p>{description}</p>}</div>;
+/**
+ * A band's heading. Each of the three lines carries the Nepali written beside
+ * it in the dashboard; `translate` is for a title the page builds a sentence
+ * out of, where the phrase book still has the turn of phrase to supply.
+ */
+export function SectionHeading({ kicker, kickerNe, title, titleNe, translateTitle, description, descriptionNe }: { kicker: string; kickerNe?: string | null; title: string; titleNe?: string | null; translateTitle?: boolean; description?: string; descriptionNe?: string | null }) {
+  return <div className="section-heading"><span className="eyebrow"><i /><Written ne={kickerNe}>{kicker}</Written></span><Written as="h2" ne={titleNe} translate={translateTitle}>{title}</Written>{description && <Written as="p" ne={descriptionNe}>{description}</Written>}</div>;
 }
 
 export function ServiceCards({ services }: { services: ServiceView[] }) {
@@ -76,12 +82,18 @@ export function TopicGrid({ items }: { items: { title: string; text: string }[] 
   return <div className="topic-grid">{items.map(({ title, text }) => <article key={title}><h3>{title}</h3><p>{text}</p></article>)}</div>;
 }
 
-export function ProcessSteps({ steps }: { steps: [string, string][] }) {
-  return <ol className="process-list">{steps.map(([title, description], index) => <li key={title}><span className="process-number">{String(index + 1).padStart(2, "0")}</span><h3>{title}</h3><p>{description}</p></li>)}</ol>;
+/** One numbered step, and the Nepali written beside each half of it. */
+export type Step = { title: string; titleNe?: string | null; text: string; textNe?: string | null };
+
+export function ProcessSteps({ steps }: { steps: Step[] }) {
+  return <ol className="process-list">{steps.map((step, index) => <li key={step.title}><span className="process-number">{String(index + 1).padStart(2, "0")}</span><Written as="h3" ne={step.titleNe}>{step.title}</Written><Written as="p" ne={step.textNe}>{step.text}</Written></li>)}</ol>;
 }
 
-export function Questions({ items }: { items: [string, string][] }) {
-  return <div className="faq-list">{items.map(([question, answer]) => <details key={question}><summary>{question}</summary><p>{answer}</p></details>)}</div>;
+/** One question and its answer, each with the Nepali written beside it. */
+export type Question = { question: string; questionNe?: string | null; answer: string; answerNe?: string | null };
+
+export function Questions({ items }: { items: Question[] }) {
+  return <div className="faq-list">{items.map((item) => <details key={item.question}><summary><Written ne={item.questionNe}>{item.question}</Written></summary><Written as="p" ne={item.answerNe}>{item.answer}</Written></details>)}</div>;
 }
 
 /**
@@ -175,7 +187,10 @@ export async function MediaShowcase({
   title,
   placement = null,
   kicker,
+  kickerNe,
+  headingNe,
   description,
+  descriptionNe,
   service,
 }: {
   mediaKey: string;
@@ -183,8 +198,12 @@ export async function MediaShowcase({
   placement?: string | null;
   /** Overrides the label above the heading, from the dashboard. */
   kicker?: string | null;
+  /** The Nepali written beside each of them, where somebody has written it. */
+  kickerNe?: string | null;
+  headingNe?: string | null;
   /** Overrides the line under the heading, from the dashboard. */
   description?: string | null;
+  descriptionNe?: string | null;
   /** A service page's short title, which its band describes itself from. */
   service?: string;
 }) {
@@ -205,8 +224,15 @@ export async function MediaShowcase({
   return <section className="content-section media-section"><div className="site-container">
     <SectionHeading
       kicker={kicker?.trim() || copy.kicker}
+      kickerNe={kickerNe}
+      // The band names itself after the page. A Nepali heading is one part of
+      // that sentence rather than the whole of it, so the phrase book is left
+      // to turn the sentence round - it knows "X in pictures & film" already.
       title={`${title} in pictures & film`}
+      titleNe={headingNe?.trim() ? `${headingNe.trim()} in pictures & film` : null}
+      translateTitle
       description={description?.trim() || copy.description}
+      descriptionNe={descriptionNe}
     />
     {frames > 0 ? <div className={`media-showcase-grid${frames === 1 ? " media-showcase-grid--one" : ""}`}>
       {image ? <figure className="media-frame">
@@ -224,6 +250,6 @@ export async function MediaShowcase({
   </div></section>;
 }
 
-export function ContactCta({ title = "Let’s make something meaningful.", description = "Tell us about your audience, your idea, and what you want to communicate.", service }: { title?: string; description?: string; service?: string }) {
-  return <section className="contact-cta"><div className="site-container contact-cta-inner"><div><span className="section-kicker">Your next step</span><h2>{title}</h2><p>{description}</p></div><Link className="hero-cta" prefetch={false} href={service ? `/contact?service=${encodeURIComponent(service)}` : "/contact"}>Start a conversation <ArrowUpRight aria-hidden="true" /></Link></div></section>;
+export function ContactCta({ title = "Let’s make something meaningful.", titleNe, description = "Tell us about your audience, your idea, and what you want to communicate.", descriptionNe, service }: { title?: string; titleNe?: string | null; description?: string; descriptionNe?: string | null; service?: string }) {
+  return <section className="contact-cta"><div className="site-container contact-cta-inner"><div><span className="section-kicker">Your next step</span><Written as="h2" ne={titleNe}>{title}</Written><Written as="p" ne={descriptionNe}>{description}</Written></div><Link className="hero-cta" prefetch={false} href={service ? `/contact?service=${encodeURIComponent(service)}` : "/contact"}>Start a conversation <ArrowUpRight aria-hidden="true" /></Link></div></section>;
 }

@@ -1719,3 +1719,30 @@ html[data-theme="dark"] .ns-dsearch__mark {
   width: 1%;
   white-space: nowrap;
 }
+
+
+/*
+ * The Nepali half of a line of copy.
+ *
+ * Every section is written twice - English on the left of a row, Nepali on the
+ * right (cms/bilingual.ts). Both halves are ordinary fields, so on a long form
+ * the two columns run together and an editor has to read the labels to know
+ * which is which. A tint down the Nepali side and its own typeface make the
+ * split visible from across the screen, and the field itself behaves exactly
+ * as any other.
+ */
+.ns-nepali {
+  padding: 6px 8px 2px;
+  border-left: 2px solid var(--ns-blue, #1e63b8);
+  border-radius: 0 6px 6px 0;
+  background: color-mix(in srgb, var(--ns-blue, #1e63b8) 5%, transparent);
+}
+
+.ns-nepali .field-label {
+  color: var(--ns-blue, #1e63b8);
+}
+
+.ns-nepali input,
+.ns-nepali textarea {
+  font-family: "Noto Sans Devanagari", var(--font-body), sans-serif;
+}

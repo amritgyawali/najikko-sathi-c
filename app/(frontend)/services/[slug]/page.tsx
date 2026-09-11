@@ -43,7 +43,7 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
     <ContactCta service={service.title} title={`Let’s talk about ${service.shortTitle.toLowerCase()}.`} />
     <StructuredData data={[
       { "@context": "https://schema.org", "@type": "Service", "@id": `${absoluteUrl(`/services/${service.slug}`)}#service`, name: service.title, description: service.description, url: absoluteUrl(`/services/${service.slug}`), serviceType: category.title, areaServed: { "@type": "Country", name: "Nepal" }, provider: { "@id": `${siteUrl}/#organization` } },
-      ...(service.faq.length > 0 ? [{ "@context": "https://schema.org", "@type": "FAQPage", mainEntity: service.faq.map(([question, answer]) => ({ "@type": "Question", name: question, acceptedAnswer: { "@type": "Answer", text: answer } })) }] : []),
+      ...(service.faq.length > 0 ? [{ "@context": "https://schema.org", "@type": "FAQPage", mainEntity: service.faq.map(({ question, answer }) => ({ "@type": "Question", name: question, acceptedAnswer: { "@type": "Answer", text: answer } })) }] : []),
     ]} />
   </>;
 }

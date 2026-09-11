@@ -17,13 +17,20 @@ import { StructuredData } from "./structured-data";
  */
 export async function SocialResponsibilitySection({
   kicker,
+  kickerNe,
   heading,
+  headingNe,
   description,
+  descriptionNe,
   placement,
 }: {
   kicker?: string | null;
   heading?: string | null;
   description?: string | null;
+  /** The Nepali written beside each of them, where somebody has written it. */
+  kickerNe?: string | null;
+  headingNe?: string | null;
+  descriptionNe?: string | null;
   /** The page this band is on, so entries published elsewhere stay there. */
   placement?: string | null;
 } = {}) {
@@ -35,7 +42,10 @@ export async function SocialResponsibilitySection({
       <div className="site-container">
         <SectionHeading
           kicker={kicker || "Social responsibility"}
+          kickerNe={kickerNe}
           title={heading || "The work we do beyond our clients."}
+          titleNe={headingNe}
+          descriptionNe={descriptionNe}
           description={
             description ||
             "Films and photographs from the community work we take part in, alongside the organizations and people it is made with."

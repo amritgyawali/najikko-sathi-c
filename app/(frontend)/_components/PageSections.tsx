@@ -32,6 +32,7 @@ import { PartnerMarquee } from "./partner-marquee";
 import { RenderBlocks } from "./RenderBlocks";
 import { SectionIcon } from "./section-icons";
 import { ProductionBand, SancharBand, ServicesGrid } from "./site-sections";
+import { Written } from "./written";
 import { SocialResponsibilitySection } from "./social-responsibility";
 import { SocialWorkSection } from "./social-work";
 
@@ -66,19 +67,36 @@ type Block<T extends PageSection["blockType"]> = Extract<PageSection, { blockTyp
 const band = (tone?: string | null, extra = ""): string =>
   ["content-section", tone === "tinted" ? "related-section" : "", extra].filter(Boolean).join(" ");
 
-/** A heading band, drawn only when something has been written in it. */
+/**
+ * A heading band, drawn only when something has been written in it.
+ *
+ * Every section hands its whole heading over at once - kicker, title, the line
+ * underneath, and the Nepali written beside each of them in the dashboard - so
+ * a band reads in whichever language a visitor has chosen without every
+ * section having to say so three times over.
+ */
 function Heading({
-  kicker,
-  heading,
-  description,
+  block,
 }: {
-  kicker?: string | null;
-  heading?: string | null;
-  description?: string | null;
+  block: {
+    kicker?: string | null;
+    kickerNe?: string | null;
+    heading?: string | null;
+    headingNe?: string | null;
+    description?: string | null;
+    descriptionNe?: string | null;
+  };
 }) {
-  if (!kicker && !heading) return null;
+  if (!block.kicker && !block.heading) return null;
   return (
-    <SectionHeading kicker={kicker ?? ""} title={heading ?? ""} description={description ?? undefined} />
+    <SectionHeading
+      kicker={block.kicker ?? ""}
+      kickerNe={block.kickerNe}
+      title={block.heading ?? ""}
+      titleNe={block.headingNe}
+      description={block.description ?? undefined}
+      descriptionNe={block.descriptionNe}
+    />
   );
 }
 
@@ -88,13 +106,15 @@ function HeroAction({ block, business }: { block: Block<"pageHero">; business: B
   const href = block.ctaHref || (block.ctaExternal ? business.rightSanchar : "");
   if (!href) return null;
 
+  const label = <Written ne={block.ctaLabelNe}>{block.ctaLabel}</Written>;
+
   return block.ctaExternal ? (
     <a className="hero-cta" href={href} target="_blank" rel="noopener noreferrer">
-      {block.ctaLabel} <ArrowUpRight aria-hidden="true" />
+      {label} <ArrowUpRight aria-hidden="true" />
     </a>
   ) : (
     <Link className="hero-cta" prefetch={false} href={href}>
-      {block.ctaLabel} <ArrowRight aria-hidden="true" />
+      {label} <ArrowRight aria-hidden="true" />
     </Link>
   );
 }
@@ -108,8 +128,11 @@ async function Hero({ block, page }: { block: Block<"pageHero">; page: SectionCo
   return (
     <PageHero
       eyebrow={block.eyebrow}
+      eyebrowNe={block.eyebrowNe}
       title={block.heading}
+      titleNe={block.headingNe}
       description={block.description ?? ""}
+      descriptionNe={block.descriptionNe}
       path={page.path}
       label={page.label}
       parent={page.parent ?? undefined}
@@ -125,14 +148,20 @@ function Prose({ block }: { block: Block<"prose"> }) {
   return (
     <section className={band(block.tone)}>
       <div className="site-container prose">
-        <Heading kicker={block.kicker} heading={block.heading} description={block.description} />
-        {block.lead ? <p className="lead-copy">{block.lead}</p> : null}
+        <Heading block={block} />
+        {block.lead ? (
+          <Written as="p" className="lead-copy" ne={block.leadNe}>
+            {block.lead}
+          </Written>
+        ) : null}
         {(block.paragraphs ?? []).map((row, index) => (
-          <p key={row.id ?? index}>{row.text}</p>
+          <Written as="p" key={row.id ?? index} ne={row.textNe}>
+            {row.text}
+          </Written>
         ))}
         {block.linkLabel && block.linkHref ? (
           <Link className="text-link" href={block.linkHref}>
-            {block.linkLabel} <ArrowRight aria-hidden="true" />
+            <Written ne={block.linkLabelNe}>{block.linkLabel}</Written> <ArrowRight aria-hidden="true" />
           </Link>
         ) : null}
       </div>
@@ -144,6 +173,7 @@ function Prose({ block }: { block: Block<"prose"> }) {
 async function IdentityStory({ block }: { block: Block<"identityStory"> }) {
   const business = await getBusiness();
   const quote = (block.panelQuote ?? "").split("\n").filter(Boolean);
+  const quoteNe = (block.panelQuoteNe ?? "").split("\n").filter(Boolean);
 
   return (
     <section className="content-section">
@@ -158,21 +188,27 @@ async function IdentityStory({ block }: { block: Block<"identityStory"> }) {
               {quote.map((line, index) => (
                 <span key={line}>
                   {index > 0 ? <br /> : null}
-                  {line}
+                  <Written ne={quoteNe[index]}>{line}</Written>
                 </span>
               ))}
             </blockquote>
           ) : null}
         </div>
         <div className="prose">
-          <Heading kicker={block.kicker} heading={block.heading} description={block.description} />
-          {block.lead ? <p className="lead-copy">{block.lead}</p> : null}
+          <Heading block={block} />
+          {block.lead ? (
+            <Written as="p" className="lead-copy" ne={block.leadNe}>
+              {block.lead}
+            </Written>
+          ) : null}
           {(block.paragraphs ?? []).map((row, index) => (
-            <p key={row.id ?? index}>{row.text}</p>
+            <Written as="p" key={row.id ?? index} ne={row.textNe}>
+              {row.text}
+            </Written>
           ))}
           {block.linkLabel && block.linkHref ? (
             <Link className="text-link" href={block.linkHref}>
-              {block.linkLabel} <ArrowRight aria-hidden="true" />
+              <Written ne={block.linkLabelNe}>{block.linkLabel}</Written> <ArrowRight aria-hidden="true" />
             </Link>
           ) : null}
         </div>
@@ -192,21 +228,27 @@ function FeatureCards({ block }: { block: Block<"featureCards"> }) {
             <span className="service-card-icon">
               <SectionIcon name={card.icon} />
             </span>
-            <h3>{card.title}</h3>
-            {card.text ? <p>{card.text}</p> : null}
+            <Written as="h3" ne={card.titleNe}>
+              {card.title}
+            </Written>
+            {card.text ? (
+              <Written as="p" ne={card.textNe}>
+                {card.text}
+              </Written>
+            ) : null}
             {card.points?.length ? (
               <ul>
                 {card.points.map((point, index) => (
                   <li key={point.id ?? index}>
                     <Check aria-hidden="true" />
-                    {point.text}
+                    <Written ne={point.textNe}>{point.text}</Written>
                   </li>
                 ))}
               </ul>
             ) : null}
             {card.linkLabel && card.linkHref ? (
               <Link className="text-link" href={card.linkHref}>
-                {card.linkLabel} <ArrowRight aria-hidden="true" />
+                <Written ne={card.linkLabelNe}>{card.linkLabel}</Written> <ArrowRight aria-hidden="true" />
               </Link>
             ) : null}
           </article>
@@ -216,8 +258,14 @@ function FeatureCards({ block }: { block: Block<"featureCards"> }) {
       <div className="topic-grid">
         {cards.map((card) => (
           <article key={card.id ?? card.title}>
-            <h3>{card.title}</h3>
-            {card.text ? <p>{card.text}</p> : null}
+            <Written as="h3" ne={card.titleNe}>
+              {card.title}
+            </Written>
+            {card.text ? (
+              <Written as="p" ne={card.textNe}>
+                {card.text}
+              </Written>
+            ) : null}
           </article>
         ))}
       </div>
@@ -228,11 +276,17 @@ function FeatureCards({ block }: { block: Block<"featureCards"> }) {
             <span className="service-card-icon">
               <SectionIcon name={card.icon} />
             </span>
-            <h3>{card.title}</h3>
-            {card.text ? <p>{card.text}</p> : null}
+            <Written as="h3" ne={card.titleNe}>
+              {card.title}
+            </Written>
+            {card.text ? (
+              <Written as="p" ne={card.textNe}>
+                {card.text}
+              </Written>
+            ) : null}
             {card.linkLabel ? (
               <span className="service-card-action">
-                {card.linkLabel} <ArrowRight aria-hidden="true" />
+                <Written ne={card.linkLabelNe}>{card.linkLabel}</Written> <ArrowRight aria-hidden="true" />
               </span>
             ) : null}
           </Link>
@@ -243,8 +297,14 @@ function FeatureCards({ block }: { block: Block<"featureCards"> }) {
         {cards.map((card) => (
           <article key={card.id ?? card.title}>
             <SectionIcon name={card.icon} />
-            <h3>{card.title}</h3>
-            {card.text ? <p>{card.text}</p> : null}
+            <Written as="h3" ne={card.titleNe}>
+              {card.title}
+            </Written>
+            {card.text ? (
+              <Written as="p" ne={card.textNe}>
+                {card.text}
+              </Written>
+            ) : null}
           </article>
         ))}
       </div>
@@ -253,12 +313,14 @@ function FeatureCards({ block }: { block: Block<"featureCards"> }) {
   return (
     <section className={band(block.tone)}>
       <div className="site-container">
-        <Heading kicker={block.kicker} heading={block.heading} description={block.description} />
+        <Heading block={block} />
         {grid}
         {block.chips?.length ? (
           <div className="about-capabilities">
             {block.chips.map((chip, index) => (
-              <span key={chip.id ?? index}>{chip.text}</span>
+              <Written key={chip.id ?? index} ne={chip.textNe}>
+                {chip.text}
+              </Written>
             ))}
           </div>
         ) : null}
@@ -271,8 +333,8 @@ function Steps({ block }: { block: Block<"processSteps"> }) {
   return (
     <section className={band(block.tone)}>
       <div className="site-container">
-        <Heading kicker={block.kicker} heading={block.heading} description={block.description} />
-        <ProcessSteps steps={(block.steps ?? []).map((step) => [step.title, step.text])} />
+        <Heading block={block} />
+        <ProcessSteps steps={block.steps ?? []} />
       </div>
     </section>
   );
@@ -284,7 +346,7 @@ function Steps({ block }: { block: Block<"processSteps"> }) {
  * section, so an editor can reword them in either place.
  */
 async function Faq({ block, page }: { block: Block<"faqSection">; page: SectionContext }) {
-  const written = (block.items ?? []).map((item) => [item.question, item.answer] as [string, string]);
+  const written = block.items ?? [];
   const wanted = [placementKeyFor(page.path), block.placement].filter(
     (key): key is string => Boolean(key),
   );
@@ -294,7 +356,7 @@ async function Faq({ block, page }: { block: Block<"faqSection">; page: SectionC
   return (
     <section className={band(block.tone)}>
       <div className="site-container faq-grid">
-        <Heading kicker={block.kicker} heading={block.heading} description={block.description} />
+        <Heading block={block} />
         <Questions items={items} />
       </div>
     </section>
@@ -319,7 +381,7 @@ async function Services({ block }: { block: Block<"serviceCards"> }) {
   return (
     <section className={band(block.tone)}>
       <div className="site-container">
-        <Heading kicker={block.kicker} heading={block.heading} description={block.description} />
+        <Heading block={block} />
         <ServiceCards services={chosen} />
       </div>
     </section>
@@ -382,9 +444,12 @@ async function Showcase({ block, page }: { block: Block<"mediaShowcase">; page: 
     <MediaShowcase
       mediaKey={block.mediaKey}
       title={block.heading || business.shortName}
+      headingNe={block.headingNe}
       placement={placementKeyFor(page.path)}
       kicker={block.kicker}
+      kickerNe={block.kickerNe}
       description={block.description}
+      descriptionNe={block.descriptionNe}
     />
   );
 }
@@ -400,7 +465,7 @@ async function TeamGrid({ block, page }: { block: Block<"teamSection">; page: Se
   return (
     <section className="content-section">
       <div className="site-container">
-        <Heading kicker={block.kicker} heading={block.heading} description={block.description} />
+        <Heading block={block} />
         <div className="team-grid">
           {team.map((member) => {
             const photo = mediaUrl(member.photo);
@@ -452,7 +517,7 @@ async function ReviewWall({ block, page }: { block: Block<"reviewsSection">; pag
   return (
     <section className={band(block.tone)}>
       <div className="site-container">
-        <Heading kicker={block.kicker} heading={block.heading} description={block.description} />
+        <Heading block={block} />
         <div className="review-grid">
           {reviews.map((review) => {
             const avatar = mediaUrl(review.avatar);
@@ -509,7 +574,7 @@ async function WellWisherWall({
   return (
     <section className={band(block.tone)}>
       <div className="site-container">
-        <Heading kicker={block.kicker} heading={block.heading} description={block.description} />
+        <Heading block={block} />
         <div className="wisher-grid">
           {wishers.map((wisher) => {
             const photo = mediaUrl(wisher.photo);
@@ -547,7 +612,7 @@ async function ContactDetails({ block }: { block: Block<"contactDetails"> }) {
     <section className="content-section">
       <div className="site-container contact-grid">
         <div>
-          <Heading kicker={block.kicker} heading={block.heading} description={block.description} />
+          <Heading block={block} />
           <address className="contact-methods">
             <div>
               <Mail aria-hidden="true" />
@@ -574,7 +639,8 @@ async function ContactDetails({ block }: { block: Block<"contactDetails"> }) {
                 {business.address}, Nepal
                 {block.linkLabel && block.linkHref ? (
                   <a className="text-link" href={block.linkHref} target="_blank" rel="noopener noreferrer">
-                    {block.linkLabel} <ArrowUpRight aria-hidden="true" />
+                    <Written ne={block.linkLabelNe}>{block.linkLabel}</Written>{" "}
+                    <ArrowUpRight aria-hidden="true" />
                   </a>
                 ) : null}
               </span>
@@ -583,7 +649,11 @@ async function ContactDetails({ block }: { block: Block<"contactDetails"> }) {
           <div className="contact-legal">
             <strong>{business.legalName}</strong>
             <span>VAT {business.vat}</span>
-            {block.note ? <p>{block.note}</p> : null}
+            {block.note ? (
+              <Written as="p" ne={block.noteNe}>
+                {block.note}
+              </Written>
+            ) : null}
           </div>
         </div>
         {block.showForm === false ? null : (
@@ -611,18 +681,24 @@ async function PortalLinks({ block }: { block: Block<"portalLinks"> }) {
     <section className="content-section">
       <div className="site-container portal-next">
         <div>
-          <Heading kicker={block.kicker} heading={block.heading} description={block.description} />
-          {block.body ? <p>{block.body}</p> : null}
+          <Heading block={block} />
+          {block.body ? (
+            <Written as="p" ne={block.bodyNe}>
+              {block.body}
+            </Written>
+          ) : null}
         </div>
         <div className="stacked-actions">
           {block.primaryLabel ? (
             <a className="primary-button" href={primaryHref} target="_blank" rel="noopener noreferrer">
-              {block.primaryLabel} <ArrowUpRight aria-hidden="true" />
+              <Written ne={block.primaryLabelNe}>{block.primaryLabel}</Written>{" "}
+              <ArrowUpRight aria-hidden="true" />
             </a>
           ) : null}
           {block.secondaryLabel && block.secondaryHref ? (
             <Link className="text-link" prefetch={false} href={block.secondaryHref}>
-              {block.secondaryLabel} <ArrowRight aria-hidden="true" />
+              <Written ne={block.secondaryLabelNe}>{block.secondaryLabel}</Written>{" "}
+              <ArrowRight aria-hidden="true" />
             </Link>
           ) : null}
         </div>
@@ -651,9 +727,11 @@ async function PostList({ block, page }: { block: Block<"postList">; page: Secti
   return (
     <section className="content-section">
       <div className="site-container">
-        <Heading kicker={block.kicker} heading={block.heading} description={block.description} />
+        <Heading block={block} />
         {posts.length === 0 ? (
-          <p className="page-lead">{block.emptyText || "Nothing has been published yet."}</p>
+          <Written as="p" className="page-lead" ne={block.emptyTextNe}>
+            {block.emptyText || "Nothing has been published yet."}
+          </Written>
         ) : (
           <div className="cms-card-grid">
             {posts.map((post) => {
@@ -692,9 +770,11 @@ async function OfferList({ block, page }: { block: Block<"offerList">; page: Sec
   return (
     <section className="content-section">
       <div className="site-container">
-        <Heading kicker={block.kicker} heading={block.heading} description={block.description} />
+        <Heading block={block} />
         {offers.length === 0 ? (
-          <p className="page-lead">{block.emptyText || "There are no offers running at the moment."}</p>
+          <Written as="p" className="page-lead" ne={block.emptyTextNe}>
+            {block.emptyText || "There are no offers running at the moment."}
+          </Written>
         ) : (
           <div className="cms-card-grid">
             {offers.map((offer) => {
@@ -799,7 +879,9 @@ async function SearchResults({ block, page }: { block: Block<"searchSection">; p
     <section className="content-section">
       <div className="site-container">
         <form className="search-form" action="/search" role="search">
-          <label htmlFor="q">{block.heading || "Search this website"}</label>
+          <label htmlFor="q">
+            <Written ne={block.headingNe}>{block.heading || "Search this website"}</Written>
+          </label>
           <div className="search-field">
             <SearchIcon aria-hidden="true" />
             <input
@@ -824,6 +906,7 @@ async function SearchResults({ block, page }: { block: Block<"searchSection">; p
           <>
             <SectionHeading
               kicker={block.kicker || "Results"}
+              kickerNe={block.kickerNe}
               title={`${hits.length} ${hits.length === 1 ? "result" : "results"} for “${query}”`}
             />
             <div className="search-results">
@@ -880,8 +963,11 @@ async function Section({ block, page }: { block: PageSection; page: SectionConte
       return (
         <SocialResponsibilitySection
           kicker={block.kicker}
+          kickerNe={block.kickerNe}
           heading={block.heading}
+          headingNe={block.headingNe}
           description={block.description}
+          descriptionNe={block.descriptionNe}
           placement={placementKeyFor(page.path)}
         />
       );
@@ -889,8 +975,11 @@ async function Section({ block, page }: { block: PageSection; page: SectionConte
       return (
         <SocialWorkSection
           kicker={block.kicker}
+          kickerNe={block.kickerNe}
           heading={block.heading}
+          headingNe={block.headingNe}
           description={block.description}
+          descriptionNe={block.descriptionNe}
           placement={placementKeyFor(page.path)}
         />
       );
@@ -900,7 +989,9 @@ async function Section({ block, page }: { block: PageSection; page: SectionConte
       return (
         <ContactCta
           title={block.heading}
+          titleNe={block.headingNe}
           description={block.description ?? undefined}
+          descriptionNe={block.descriptionNe}
           service={block.service ?? undefined}
         />
       );
@@ -941,7 +1032,11 @@ async function Section({ block, page }: { block: PageSection; page: SectionConte
       return (
         <section className="content-section">
           <div className="site-container signup-grid">
-            {block.note ? <p className="page-lead">{block.note}</p> : null}
+            {block.note ? (
+              <Written as="p" className="page-lead" ne={block.noteNe}>
+                {block.note}
+              </Written>
+            ) : null}
             <SignupForm />
           </div>
         </section>

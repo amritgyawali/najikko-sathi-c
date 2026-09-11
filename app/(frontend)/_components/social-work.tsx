@@ -65,13 +65,20 @@ function filmsOf(entry: SocialWork) {
 
 export async function SocialWorkSection({
   kicker,
+  kickerNe,
   heading,
+  headingNe,
   description,
+  descriptionNe,
   placement,
 }: {
   kicker?: string | null;
   heading?: string | null;
   description?: string | null;
+  /** The Nepali written beside each of them, where somebody has written it. */
+  kickerNe?: string | null;
+  headingNe?: string | null;
+  descriptionNe?: string | null;
   /** The page this band is on, so entries published elsewhere stay there. */
   placement?: string | null;
 } = {}) {
@@ -83,7 +90,10 @@ export async function SocialWorkSection({
       <div className="site-container">
         <SectionHeading
           kicker={kicker || "Social work"}
+          kickerNe={kickerNe}
           title={heading || "The work we do beside our communities."}
+          titleNe={headingNe}
+          descriptionNe={descriptionNe}
           description={
             description ||
             "Photographs and films from the social work we take part in, alongside the people and organizations it is done with."
