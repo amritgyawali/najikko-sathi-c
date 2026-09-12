@@ -208,7 +208,7 @@ export interface Page {
    */
   summary?: string | null;
   /**
-   * Everything on the page, top to bottom. Add, reorder, rewrite or remove a section and the website follows.
+   * Everything on the page, top to bottom. Add, reorder, rewrite or remove a section and the website follows. Every line in every section is written twice: English on the left, Nepali beside it on the right. A Nepali box left empty keeps the English.
    */
   layout?:
     | (
@@ -3398,6 +3398,9 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
  */
 export interface Homepage {
   id: number;
+  /**
+   * The small line above the heading. Leave it empty and nothing is shown there.
+   */
   heroKicker?: string | null;
   /**
    * Shown when the website is read in Nepali. Leave it empty to keep the English.
@@ -3408,6 +3411,9 @@ export interface Homepage {
    * Shown when the website is read in Nepali. Leave it empty to keep the English.
    */
   heroHeadingNe?: string | null;
+  /**
+   * Clear this field and save to take it off the homepage. It stays hidden until something is written here again.
+   */
   heroBody?: string | null;
   /**
    * Shown when the website is read in Nepali. Leave it empty to keep the English.
@@ -3417,6 +3423,9 @@ export interface Homepage {
    * Full-bleed background photograph.
    */
   heroImage?: (number | null) | Media;
+  /**
+   * Clear this field and save to take it off the homepage. It stays hidden until something is written here again.
+   */
   heroCtaLabel?: string | null;
   /**
    * Shown when the website is read in Nepali. Leave it empty to keep the English.
@@ -3436,16 +3445,25 @@ export interface Homepage {
         id?: string | null;
       }[]
     | null;
+  /**
+   * Clear this field and save to take it off the homepage. It stays hidden until something is written here again.
+   */
   aboutEyebrow?: string | null;
   /**
    * Shown when the website is read in Nepali. Leave it empty to keep the English.
    */
   aboutEyebrowNe?: string | null;
+  /**
+   * Clear this field and save to take it off the homepage. It stays hidden until something is written here again.
+   */
   aboutHeading?: string | null;
   /**
    * Shown when the website is read in Nepali. Leave it empty to keep the English.
    */
   aboutHeadingNe?: string | null;
+  /**
+   * Clear this field and save to take it off the homepage. It stays hidden until something is written here again.
+   */
   aboutQuote?: string | null;
   /**
    * Shown when the website is read in Nepali. Leave it empty to keep the English.
@@ -3779,7 +3797,7 @@ export interface Footer {
   createdAt?: string | null;
 }
 /**
- * Company name, contact details and identity.
+ * Who the company is, how to reach it, how the website is set and sized, and the tools that work on all of it at once.
  *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "site-settings".
@@ -3833,6 +3851,192 @@ export interface SiteSetting {
      */
     image?: (number | null) | Media;
   };
+  seo?: {
+    /**
+     * Words describing the company, separated by commas. Most search engines ignore these now; some social tools still read them.
+     */
+    keywords?: string | null;
+    /**
+     * With the @, for example "@najikkosathi".
+     */
+    twitterHandle?: string | null;
+    /**
+     * The value from Google's "HTML tag" verification method.
+     */
+    googleVerification?: string | null;
+    bingVerification?: string | null;
+    /**
+     * Leave empty and no tracking script is loaded at all. The site counts its own visits either way - see Traffic on the dashboard.
+     */
+    analyticsId?: string | null;
+    /**
+     * For a site that is not ready to be found yet. Remember to turn it off on the day you launch.
+     */
+    noindex?: boolean | null;
+  };
+  typography?: {
+    /**
+     * Used for every heading on the site.
+     */
+    headingFont?:
+      ('hanken' | 'inter' | 'heading' | 'system' | 'serif' | 'mono' | 'devanagari' | 'custom' | 'alt') | null;
+    /**
+     * Used for paragraphs, lists and captions.
+     */
+    bodyFont?: ('hanken' | 'inter' | 'heading' | 'system' | 'serif' | 'mono' | 'devanagari' | 'custom' | 'alt') | null;
+    /**
+     * The size a plain paragraph is set at. 16 is the browser's own.
+     */
+    baseSize?: number | null;
+    /**
+     * 100 leaves every size as designed. 110 makes all the reading matter a tenth larger, headings included.
+     */
+    scale?: number | null;
+    /**
+     * How far apart the lines of a paragraph sit. 1.7 is comfortable for English; Nepali reads better nearer 1.8.
+     */
+    bodyLineHeight?: number | null;
+    headingWeight?: ('300' | '400' | '500' | '600' | '700' | '800') | null;
+    /**
+     * Negative draws the letters together, which suits large headings. Try -0.03.
+     */
+    headingLetterSpacing?: number | null;
+    /**
+     * Devanagari has no upper case, so the Nepali half of the site already sets these as written.
+     */
+    kickerCase?: ('none' | 'uppercase' | 'lowercase' | 'capitalize') | null;
+    /**
+     * Spelled exactly as the stylesheet names it, for example Poppins.
+     */
+    customFontFamily?: string | null;
+    /**
+     * An https address, for example https://fonts.googleapis.com/css2?family=Poppins&display=swap.
+     */
+    customFontUrl?: string | null;
+    altFontFamily?: string | null;
+    altFontUrl?: string | null;
+  };
+  /**
+   * A part with no row here is drawn exactly as the site was designed. Two rows for the same part are both applied, the lower one winning where they disagree.
+   */
+  sectionStyles?:
+    | {
+        /**
+         * Everything under this heading applies wherever that band appears - on every page that uses it.
+         */
+        area:
+          | 'global'
+          | 'header'
+          | 'utility'
+          | 'announcement'
+          | 'footer'
+          | 'pageHero'
+          | 'prose'
+          | 'identityStory'
+          | 'featureCards'
+          | 'processSteps'
+          | 'faqSection'
+          | 'serviceCards'
+          | 'categoryBar'
+          | 'categoryGroups'
+          | 'mediaShowcase'
+          | 'teamSection'
+          | 'reviewsSection'
+          | 'wellWishersSection'
+          | 'partnerMarquee'
+          | 'socialResponsibilitySection'
+          | 'socialWorkSection'
+          | 'contactDetails'
+          | 'contactCta'
+          | 'portalLinks'
+          | 'postList'
+          | 'offerList'
+          | 'homeHero'
+          | 'homeAbout'
+          | 'leadershipSection'
+          | 'productionBand'
+          | 'sancharBand'
+          | 'servicesBand'
+          | 'searchSection'
+          | 'signupSection';
+        headingFont?:
+          ('hanken' | 'inter' | 'heading' | 'system' | 'serif' | 'mono' | 'devanagari' | 'custom' | 'alt') | null;
+        /**
+         * Shrinks by itself on a narrow screen.
+         */
+        headingSize?: number | null;
+        headingWeight?: ('300' | '400' | '500' | '600' | '700' | '800') | null;
+        headingLineHeight?: number | null;
+        headingLetterSpacing?: number | null;
+        headingTransform?: ('none' | 'uppercase' | 'lowercase' | 'capitalize') | null;
+        headingColor?: string | null;
+        bodyFont?:
+          ('hanken' | 'inter' | 'heading' | 'system' | 'serif' | 'mono' | 'devanagari' | 'custom' | 'alt') | null;
+        bodySize?: number | null;
+        bodyWeight?: ('300' | '400' | '500' | '600' | '700' | '800') | null;
+        bodyLineHeight?: number | null;
+        bodyColor?: string | null;
+        kickerFont?:
+          ('hanken' | 'inter' | 'heading' | 'system' | 'serif' | 'mono' | 'devanagari' | 'custom' | 'alt') | null;
+        kickerSize?: number | null;
+        kickerTransform?: ('none' | 'uppercase' | 'lowercase' | 'capitalize') | null;
+        kickerColor?: string | null;
+        actionSize?: number | null;
+        align?: ('left' | 'center' | 'right') | null;
+        /**
+         * What the whole band sits on.
+         */
+        background?: string | null;
+        paddingTop?: number | null;
+        paddingBottom?: number | null;
+        /**
+         * It stays written in the dashboard and stops being drawn. Useful for retiring a band without deleting anyone's words.
+         */
+        hide?: boolean | null;
+        id?: string | null;
+      }[]
+    | null;
+  layout?: {
+    /**
+     * How wide the content runs before it stops growing. The site was drawn at 1200.
+     */
+    containerWidth?: number | null;
+    /**
+     * 72 by design. Lower packs the page tighter.
+     */
+    sectionSpacing?: number | null;
+    cardGap?: number | null;
+    /**
+     * Panels and cards. 18 by design; 0 is square.
+     */
+    radius?: number | null;
+    imageRadius?: number | null;
+    /**
+     * 999 makes a button a pill.
+     */
+    buttonRadius?: number | null;
+    /**
+     * How much the cards lift off the page. 10 by design; 0 removes the shadow.
+     */
+    shadow?: number | null;
+    stickyHeader?: boolean | null;
+    /**
+     * Turn this off and a jump link moves straight there.
+     */
+    smoothScroll?: boolean | null;
+    /**
+     * Everything appears already in place. A reader whose own machine asks for less movement gets this anyway.
+     */
+    reduceMotion?: boolean | null;
+    /**
+     * Easier to see, and easier to tell from plain text.
+     */
+    underlineLinks?: boolean | null;
+  };
+  /**
+   * Added after everything else, so it settles any argument with the rest of this screen. Written straight into the page: a mistake here shows on the website, and clearing the box undoes it.
+   */
+  customCss?: string | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -4062,6 +4266,76 @@ export interface SiteSettingsSelect<T extends boolean = true> {
         description?: T;
         image?: T;
       };
+  seo?:
+    | T
+    | {
+        keywords?: T;
+        twitterHandle?: T;
+        googleVerification?: T;
+        bingVerification?: T;
+        analyticsId?: T;
+        noindex?: T;
+      };
+  typography?:
+    | T
+    | {
+        headingFont?: T;
+        bodyFont?: T;
+        baseSize?: T;
+        scale?: T;
+        bodyLineHeight?: T;
+        headingWeight?: T;
+        headingLetterSpacing?: T;
+        kickerCase?: T;
+        customFontFamily?: T;
+        customFontUrl?: T;
+        altFontFamily?: T;
+        altFontUrl?: T;
+      };
+  sectionStyles?:
+    | T
+    | {
+        area?: T;
+        headingFont?: T;
+        headingSize?: T;
+        headingWeight?: T;
+        headingLineHeight?: T;
+        headingLetterSpacing?: T;
+        headingTransform?: T;
+        headingColor?: T;
+        bodyFont?: T;
+        bodySize?: T;
+        bodyWeight?: T;
+        bodyLineHeight?: T;
+        bodyColor?: T;
+        kickerFont?: T;
+        kickerSize?: T;
+        kickerTransform?: T;
+        kickerColor?: T;
+        actionSize?: T;
+        align?: T;
+        background?: T;
+        paddingTop?: T;
+        paddingBottom?: T;
+        hide?: T;
+        id?: T;
+      };
+  layout?:
+    | T
+    | {
+        containerWidth?: T;
+        sectionSpacing?: T;
+        cardGap?: T;
+        radius?: T;
+        imageRadius?: T;
+        buttonRadius?: T;
+        shadow?: T;
+        stickyHeader?: T;
+        smoothScroll?: T;
+        reduceMotion?: T;
+        underlineLinks?: T;
+      };
+  customCss?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

@@ -2,6 +2,7 @@ import Link from "next/link";
 import React from "react";
 
 import type { Audit, Change, Check, Health, Inbox, Scheduled, Traffic } from "../../dashboard/insights";
+import { AdvancedTools } from "../AdvancedTools";
 import { RunButton } from "./Actions";
 import { Bars, Empty, Icon, Panel, Ring, Tag, ago, nf, when } from "./ui";
 
@@ -426,6 +427,16 @@ export function Toolbox({ backupHint }: { backupHint: string }) {
         <p className="ns-note">
           Files are CSV, which Excel, Numbers and Google Sheets all open directly.
         </p>
+      </Panel>
+
+      <Panel
+        title="The advanced toolbox"
+        icon="tools"
+        accent={1}
+        wide
+        intro="Twelve jobs that read or change the whole website at once: the links that go nowhere, what is missing, the files nobody uses, how much reads in Nepali, a wording changed everywhere, a whole look tried in one click. The same shelf is on Site Settings → Advanced."
+      >
+        <AdvancedTools />
       </Panel>
 
       <Panel title="Getting around quickly" icon="bolt" accent={3} wide>

@@ -37,7 +37,7 @@ export async function generateMetadata({ params }: Args): Promise<Metadata> {
   if (!entry) return {};
 
   const cover = mediaUrl(entry.coverImage);
-  return pageMetadata(
+  return await pageMetadata(
     entry.title,
     describe(entry.summary, entry.description, entry.title),
     `/social-work/${entry.slug}`,

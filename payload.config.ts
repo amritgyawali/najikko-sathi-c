@@ -34,6 +34,7 @@ import { SiteSettings } from "./cms/globals/SiteSettings";
 import { sitePagesEndpoint } from "./cms/endpoints/site-pages";
 import { backupEndpoints } from "./cms/endpoints/backups";
 import { siteToolEndpoints } from "./cms/endpoints/site-tools";
+import { advancedToolsEndpoint } from "./cms/endpoints/advanced-tools";
 import { dashboardSearchEndpoint } from "./cms/search/endpoint";
 import { cloudinaryStorage } from "./cms/storage/cloudinary";
 import { databasePoolConfig } from "./cms/database";
@@ -198,9 +199,16 @@ export default buildConfig({
   ].map(withLiveLink).map(withRowActions),
   globals: [Homepage, Navigation, Announcement, Appearance, Footer, SiteSettings].map(withGlobalLiveLink),
   // The dashboard's "add the website's pages" button posts here, and so do the
-  // daily backup schedule, the restore button, and the dashboard's own toolbox:
-  // one search across every collection, "rebuild the website", and the exports.
-  endpoints: [sitePagesEndpoint, ...backupEndpoints, ...siteToolEndpoints, dashboardSearchEndpoint],
+  // daily backup schedule, the restore button, the dashboard's own toolbox -
+  // one search across every collection, "rebuild the website", the exports -
+  // and the twelve advanced jobs that read or change the whole site at once.
+  endpoints: [
+    sitePagesEndpoint,
+    ...backupEndpoints,
+    ...siteToolEndpoints,
+    advancedToolsEndpoint,
+    dashboardSearchEndpoint,
+  ],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || "",
   db: postgresAdapter({

@@ -25,7 +25,7 @@ export async function generateMetadata({ params }: Args): Promise<Metadata> {
   const page = await getPageAt(`/${slug}`);
   if (!page || page.hidden) return {};
 
-  const meta = pageMetadata(
+  const meta = await pageMetadata(
     page.seo.title || page.title,
     page.seo.description ||
       `${page.title} - Najikko Sathi Media Pvt. Ltd., a media house in Anamnagar, Kathmandu, Nepal.`,

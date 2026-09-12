@@ -26,6 +26,7 @@ import type {
 } from "@/payload-types";
 import { mediaAlt, mediaUrl } from "@/lib/media";
 import { NEPALI_FONT_FAMILY, NEPALI_FONT_URL, cssFontFamily, safeFontUrl } from "@/lib/fonts";
+import { buildSiteCss, customFontUrls } from "@/lib/typography";
 import {
   business as fallbackBusiness,
   footerGroups as fallbackFooterGroups,
@@ -201,6 +202,73 @@ export const getTheme = cache(async (): Promise<Record<string, string>> => {
   return Object.fromEntries(
     Object.entries(tokens).filter(([, value]) => typeof value === "string" && value.length > 0),
   ) as Record<string, string>;
+});
+
+/**
+ * The type, spacing and motion saved in Site Settings, as a stylesheet.
+ *
+ * `css` is put in the document's head by the root layout and `fontUrls` are the
+ * stylesheets the two custom faces are fetched from. Both are empty on a site
+ * where nobody has opened Site Settings → Typography, which is what makes this
+ * safe to have on every page: an untouched site pays nothing for it and looks
+ * exactly as it was designed.
+ */
+export type SiteStyles = { css: string; fontUrls: string[] };
+
+export const getSiteStyles = cache(async (): Promise<SiteStyles> => {
+  const settings = await readGlobal<SiteSetting>("site-settings");
+  if (!settings) return { css: "", fontUrls: [] };
+
+  return {
+    css: buildSiteCss({
+      typography: settings.typography,
+      layout: settings.layout,
+      sectionStyles: settings.sectionStyles,
+      customCss: settings.customCss,
+    }),
+    fontUrls: customFontUrls(settings.typography),
+  };
+});
+
+/** What search engines and social networks are told about the site as a whole. */
+export type SeoSettings = {
+  keywords: string[];
+  twitterHandle: string | null;
+  googleVerification: string | null;
+  bingVerification: string | null;
+  /** A Google measurement id, or null when no tracking script should be loaded. */
+  analyticsId: string | null;
+  /** True while the whole site is asking search engines to stay away. */
+  noindex: boolean;
+};
+
+/**
+ * Codes and ids typed into a form end up in the document's head, so each one is
+ * checked against the shape it is meant to have rather than trusted: a
+ * measurement id that is not a measurement id loads no script at all.
+ */
+const verificationCode = (value: unknown): string | null => {
+  const code = typeof value === "string" ? value.trim() : "";
+  return /^[\w.:@=/+-]{8,128}$/.test(code) ? code : null;
+};
+
+export const getSeoSettings = cache(async (): Promise<SeoSettings> => {
+  const settings = await readGlobal<SiteSetting>("site-settings");
+  const seo = settings?.seo ?? null;
+  const handle = (seo?.twitterHandle ?? "").trim();
+  const analytics = (seo?.analyticsId ?? "").trim();
+
+  return {
+    keywords: (seo?.keywords ?? "")
+      .split(",")
+      .map((word) => word.trim())
+      .filter(Boolean),
+    twitterHandle: handle ? (handle.startsWith("@") ? handle : `@${handle}`) : null,
+    googleVerification: verificationCode(seo?.googleVerification),
+    bingVerification: verificationCode(seo?.bingVerification),
+    analyticsId: /^(G|UA|GTM)-[A-Z0-9-]{4,20}$/i.test(analytics) ? analytics : null,
+    noindex: Boolean(seo?.noindex),
+  };
 });
 
 /** The face the site is set in while it is being read in Nepali. */

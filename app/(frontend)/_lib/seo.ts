@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { business } from "../_data/site";
+import { getSeoSettings } from "@/lib/content";
 
 export const siteUrl = business.website;
 export const absoluteUrl = (path: string) => new URL(path, `${siteUrl}/`).toString();
@@ -10,20 +11,32 @@ export const absoluteUrl = (path: string) => new URL(path, `${siteUrl}/`).toStri
  * The card is drawn from the title unless the page has a photograph of its own
  * worth showing instead - a social work entry's cover, say, which says far more
  * about the page than a generated card of its name would.
+ *
+ * The X handle is read from Site Settings here rather than being left to the
+ * root layout: Next replaces the whole `twitter` object when a page declares
+ * one, and every page here declares one, so a handle set only in the layout
+ * would never reach a single page.
  */
-export function pageMetadata(
+export async function pageMetadata(
   title: string,
   description: string,
   path: string,
   photo?: string,
-): Metadata {
+): Promise<Metadata> {
   const image = photo || `/social-preview?title=${encodeURIComponent(title)}`;
+  const { twitterHandle } = await getSeoSettings();
   return {
     title,
     description,
     alternates: { canonical: path },
     openGraph: { type: "website", locale: "en_NP", siteName: business.legalName, title, description, url: path, images: [{ url: image, width: 1200, height: 630, alt: `${title} | ${business.shortName}` }] },
-    twitter: { card: "summary_large_image", title, description, images: [image] },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [image],
+      ...(twitterHandle ? { site: twitterHandle, creator: twitterHandle } : {}),
+    },
   };
 }
 
