@@ -23,6 +23,15 @@
   box-sizing: border-box;
 }
 
+/* Every band on every page is wrapped in one of these, carrying the kind of
+   band it is as `data-section`, which is what Site Settings -> Section styles
+   addresses (lib/typography.ts). `display: contents` means the wrapper is in
+   the document but not in the layout: the band is still the direct child of
+   whatever held it before, so nothing about the page's arrangement changes. */
+.section-scope {
+  display: contents;
+}
+
 html {
   scroll-behavior: smooth;
   min-width: 320px;

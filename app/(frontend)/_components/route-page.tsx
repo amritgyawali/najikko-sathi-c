@@ -20,7 +20,7 @@ export async function routeMetadata(path: string): Promise<Metadata> {
   const page = await getPageAt(path);
   if (!page) return {};
 
-  const meta = pageMetadata(page.seo.title, page.seo.description, path);
+  const meta = await pageMetadata(page.seo.title, page.seo.description, path);
   return page.noindex ? { ...meta, robots: { index: false, follow: false } } : meta;
 }
 

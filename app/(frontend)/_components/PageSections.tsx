@@ -30,6 +30,7 @@ import {
 } from "./page-content";
 import { PartnerMarquee } from "./partner-marquee";
 import { RenderBlocks } from "./RenderBlocks";
+import { SectionScope } from "./section-scope";
 import { SectionIcon } from "./section-icons";
 import { ProductionBand, SancharBand, ServicesGrid } from "./site-sections";
 import { Written } from "./written";
@@ -928,8 +929,23 @@ async function SearchResults({ block, page }: { block: Block<"searchSection">; p
   );
 }
 
-/** One section. Anything this does not know is left to the page builder. */
+/**
+ * One section, marked with what kind of section it is.
+ *
+ * The mark is what Site Settings → Section styles hangs its type, colour and
+ * spacing off: choosing a face for "Written section" in the dashboard reaches
+ * every written band on the site through this attribute and nothing else.
+ */
 async function Section({ block, page }: { block: PageSection; page: SectionContext }) {
+  return (
+    <SectionScope kind={block.blockType}>
+      <SectionBody block={block} page={page} />
+    </SectionScope>
+  );
+}
+
+/** Anything this does not know is left to the page builder. */
+async function SectionBody({ block, page }: { block: PageSection; page: SectionContext }) {
   switch (block.blockType) {
     case "pageHero":
       return <Hero block={block} page={page} />;

@@ -38,6 +38,13 @@ Content is managed through a full admin dashboard powered by
 | Navbar links, order and header button | Site → Navigation | Every page |
 | Site-wide notice, with a schedule | Site → Announcement bar | Every page |
 | Website colours, corner radius, heading font | Site → Appearance | Every page |
+| The faces the site is set in, the base text size, and one percentage that makes every word larger or smaller | Site → Site Settings → Typography | Every page |
+| Two web fonts of your own, fetched from a stylesheet | Site → Site Settings → Typography → Bring your own font | Every page |
+| Type, colour, alignment, background and air for **one band at a time** - the hero, the written sections, the cards, the footer, and thirty more | Site → Site Settings → Section styles | Everywhere that band appears |
+| Page width, section spacing, corner rounding, shadow strength, sticky header, and how much the site moves | Site → Site Settings → Layout & motion | Every page |
+| Keywords, the X handle, Google and Bing verification, a Google Analytics id, and "leave the whole site alone" for search engines | Site → Site Settings → Search results | Every page |
+| CSS of your own, written last so it settles any argument | Site → Site Settings → Advanced | Every page |
+| Twelve jobs that read or change the whole website at once | Site → Site Settings → Advanced, and Dashboard home → Tools | - |
 | The Nepali face, and where it is fetched from | Site → Appearance → Nepali type | Every page, while the site is read in Nepali |
 | "We worked with": the client logos that slide across the front page | Content → Website pages → Home → Partner logos | `/` |
 | Footer columns and links | Site → Footer | Every page |
@@ -398,6 +405,93 @@ rebuild and no cache to clear.
 Two more tools sit on the dashboard home: **Download backup**, which exports every
 collection and global as one JSON file (administrators only), and the **search page**
 at `/search`, which searches services, writing, offers, and pages.
+
+### Setting the type, band by band
+
+**Site → Site Settings → Typography** sets the faces and the size of the whole
+website; **Section styles**, the tab beside it, sets them for one band at a
+time.
+
+A band is any of the thirty-odd sections a page is built from - the hero, a
+written section, the card grid, the numbered steps, the questions, the closing
+call to action - plus the chrome around them: the header, the footer, the
+contact strip and the announcement bar. Add a row, choose the part, and set only
+what you want changed:
+
+- **Headings** - face, size, weight, line spacing, letter spacing, case, colour.
+- **Reading matter** - face, size, weight, line spacing, colour.
+- **Small labels, badges and buttons** - face, size, case, colour.
+- **The band itself** - alignment, background, the air above and below it, and
+  "take this band off every page".
+
+Every field is optional and none has a default. **An empty field changes
+nothing**, which is what makes the screen safe to open on a site nobody has
+restyled: it is all blank, and blank leaves the design exactly as it was drawn.
+
+Two things happen behind that:
+
+1. The renderer marks every band with what kind of band it is
+   (`data-section="prose"` and so on, from `SectionScope` in
+   `_components/section-scope.tsx`). The marker sits on a wrapper that draws
+   nothing - it is `display: contents`, so no layout changes - and everything on
+   this screen is addressed through it. Pages built from sections get theirs in
+   `PageSections.tsx`; the service detail pages, which compose the same bands by
+   hand, mark each of theirs too.
+2. `lib/typography.ts` turns what is saved into a stylesheet, which the root
+   layout puts in the document's head. A size is written as
+   `min(<chosen>px, <cap>vw)`, so a 64px heading chosen on a desktop still fits
+   a 320px phone rather than running off the side of it.
+
+Nothing is trusted on its way there: a colour has to be a hex colour, a length
+has to be a number inside its range, a face has to be one of the faces offered,
+and a family name is quoted with anything that could end the declaration
+removed.
+
+**Everything larger or smaller (%)** is the one control that reaches the whole
+site at once: 110 makes every piece of reading matter a tenth larger, headings
+included, against the sizes the design uses.
+
+**Bring your own font** takes a family name and an https stylesheet address -
+Google Fonts, or anywhere else - and the face then appears in every face menu on
+the screen. A stylesheet that fails to load leaves the site's own face doing the
+work rather than leaving the page blank.
+
+Colours for the site as a whole are still **Site → Appearance**; the per-band
+colours here sit on top of them.
+
+### The advanced toolbox
+
+Twelve jobs that read or change the whole website at once. They are on
+**Dashboard home → Tools** and on **Site → Site Settings → Advanced**, and each
+card says whether it only reads the site or also changes it.
+
+Reading only, and safe to run at any time (editors and administrators):
+
+| Tool | What it answers |
+| --- | --- |
+| Links that go nowhere | Every internal address written anywhere in the dashboard, checked against the addresses the website answers to |
+| What is missing | Pages with no description, posts with no picture, services with a bare card, two pages sharing a name, anything written but never published |
+| The file library, looked over | Which files nothing points at, which have no description for a screen reader, which are heavy enough to slow a page down |
+| How much reads in Nepali | The English/Nepali pairs where the Nepali half is still empty, page by page |
+| Settings, as text | Every site-wide screen as one snapshot to keep, or to carry to another site |
+
+Changing the website (administrators only):
+
+| Tool | What it does |
+| --- | --- |
+| Change a wording everywhere | A phone number, a title, a name written three ways - found in every page, post, service and question, listed first and only changed on the second button |
+| Try a whole look | Four sets of type and spacing applied to the Typography and Layout tabs in one go, and "as designed" to clear the lot |
+| Publish, or unpublish, in bulk | Everything waiting in one collection put on the website at once, or everything live taken off it |
+| Add redirects in bulk | Old addresses pasted a line at a time, skipping any already redirected |
+| Copy a page | A page and every section in it, copied under a new name as a draft |
+| Put settings back | A snapshot from above, applied to the screens named in it |
+| Rebuild one page | One address built again from what is saved, rather than the whole website |
+| Trim the traffic log | Visit records older than the chosen window, removed |
+
+All of them go through `POST /api/site-tools/advanced`, which checks the
+signed-in person's role rather than anything in the request. Take a copy of the
+website before running one that writes - **Dashboard home → Tools → Back up
+now** - and any of them can be undone by restoring it.
 
 ### The Nepali face
 
@@ -839,6 +933,11 @@ API live in `app/(payload)/`.
 - `cms/dashboard/insights.ts` - Everything the dashboard home knows: traffic, what is waiting, the audits, the health checks
 - `cms/components/dashboard/` - The dashboard home: its panels, the page studio, the command palette and the tabs
 - `cms/endpoints/site-tools.ts` - One search across every collection, "rebuild the website", and the spreadsheet exports
+- `cms/endpoints/advanced-tools.ts` - The twelve jobs that read or change the whole website at once, and who may run each
+- `cms/components/AdvancedTools.tsx` - Those twelve as cards, on the dashboard's Tools tab and on Site Settings → Advanced
+- `cms/globals/site-style-fields.ts` - The Typography, Section styles, Layout & motion and Advanced tabs of Site Settings
+- `app/(frontend)/_components/section-scope.tsx` - The marker every band carries, so Section styles can address it
+- `lib/typography.ts` - Every part of the site that can be given type of its own, and the stylesheet the dashboard writes
 - `cms/search/` - The keyword search behind the bar at the top of the dashboard: flattening documents, matching, and the snapshot it searches
 - `app/(payload)/dashboard.css` - The dashboard home's own styling; `custom.css` retunes Payload itself
 - `lib/site-map.ts` - The one list of the site's pages: menu order, sub-pages, and where each is edited

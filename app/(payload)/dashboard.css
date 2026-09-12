@@ -1908,3 +1908,216 @@ kbd {
     margin-left: 0;
   }
 }
+
+/* ======================================================== advanced toolbox */
+
+/*
+ * The twelve jobs that act on the whole website at once
+ * (cms/components/AdvancedTools.tsx). They appear twice - the Tools tab here and
+ * the Advanced tab of Site Settings - so the shelf is styled rather than the
+ * place it sits in, and both look the same.
+ *
+ * The only colour with meaning is the left edge of a card: blue for a job that
+ * reads the site, amber for one that changes it. Everything else is the same
+ * card, because a toolbox where every tool looks different is a toolbox nobody
+ * reads twice.
+ */
+
+.ns-toolshelf {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 12px;
+  align-items: start;
+}
+
+.ns-toolshelf__intro {
+  margin: 0 0 12px;
+  color: var(--ns-muted);
+  font-size: 0.82rem;
+  line-height: 1.6;
+}
+
+.ns-toolshelf-wrap {
+  margin-bottom: 24px;
+}
+
+.ns-tool {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  padding: 14px 15px;
+  border: 1px solid var(--ns-line);
+  border-left: 3px solid var(--ns-blue);
+  border-radius: var(--ns-radius);
+  background: var(--ns-card);
+  box-shadow: var(--ns-shadow-sm);
+}
+
+.ns-tool--change {
+  border-left-color: var(--ns-warn);
+}
+
+.ns-tool__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.ns-tool__title {
+  margin: 0;
+  color: var(--ns-ink);
+  font-size: 0.92rem;
+  font-weight: 650;
+}
+
+.ns-tool__blurb {
+  margin: 0;
+  color: var(--ns-muted);
+  font-size: 0.79rem;
+  line-height: 1.6;
+}
+
+.ns-tool__field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--ns-ink);
+}
+
+.ns-tool__field em {
+  color: var(--ns-muted);
+  font-size: 0.72rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+.ns-tool__field input[type="text"],
+.ns-tool__field input[type="number"],
+.ns-tool__field select,
+.ns-tool__field textarea {
+  width: 100%;
+  padding: 7px 9px;
+  border: 1px solid var(--ns-line);
+  border-radius: var(--ns-radius-sm);
+  background: var(--ns-raised);
+  color: var(--ns-ink);
+  font: inherit;
+  font-weight: 400;
+}
+
+.ns-tool__field textarea {
+  resize: vertical;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.74rem;
+  line-height: 1.55;
+}
+
+/* A set of tick boxes reads as one control, so it keeps one label above it and
+   its own boxes stay on the weight of ordinary text. */
+.ns-tool__checks {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 2px 10px;
+}
+
+.ns-tool__checks label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.74rem;
+  font-weight: 400;
+  color: var(--ns-muted);
+}
+
+.ns-tool__caution {
+  margin: 0;
+  padding: 8px 10px;
+  border-radius: var(--ns-radius-sm);
+  background: var(--ns-warn-soft);
+  color: var(--ns-warn);
+  font-size: 0.74rem;
+  font-weight: 600;
+  line-height: 1.55;
+}
+
+/* ------------------------------------------------------------- the answer */
+
+.ns-answer {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  padding-top: 10px;
+  border-top: 1px dashed var(--ns-line);
+}
+
+.ns-answer__title {
+  color: var(--ns-ink);
+  font-size: 0.82rem;
+  font-weight: 650;
+}
+
+.ns-answer__summary {
+  margin: 0;
+  color: var(--ns-muted);
+  font-size: 0.78rem;
+  line-height: 1.6;
+}
+
+.ns-answer__text {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid var(--ns-line);
+  border-radius: var(--ns-radius-sm);
+  background: var(--ns-raised);
+  color: var(--ns-ink);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.7rem;
+  line-height: 1.5;
+  resize: vertical;
+}
+
+/* A findings list can run to eighty rows, so it scrolls inside the card rather
+   than pushing everything below it off the screen. */
+.ns-answer__rows {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  max-height: 320px;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  list-style: none;
+}
+
+.ns-answer__rows li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px;
+  font-size: 0.75rem;
+}
+
+.ns-answer__rows a {
+  color: var(--ns-blue);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.ns-answer__rows a:hover {
+  text-decoration: underline;
+}
+
+.ns-answer__label {
+  color: var(--ns-ink);
+  font-weight: 600;
+}
+
+.ns-answer__rows em {
+  color: var(--ns-muted);
+  font-style: normal;
+  line-height: 1.5;
+}

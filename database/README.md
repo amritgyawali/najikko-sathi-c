@@ -48,3 +48,4 @@ existing rules cover them.
 | `20260910_120000_add_nepali_page_copy.sql` | The optional Nepali half of every band in Site → Homepage & page copy |
 | `20260910_121000_social_work_pages.sql` | An address and a short description for every social work entry, so each one gets a page of its own |
 | `20260910_140000_bilingual_sections.sql` | A Nepali column beside every English one in every page section, and in Content → FAQs |
+| `20260912_090000_site_settings_typography.sql` | Type, layout, motion and search-engine details for the whole site in Site Settings, plus a row per band for the parts given type of their own |

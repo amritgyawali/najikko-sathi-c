@@ -1,12 +1,25 @@
 import type { GlobalConfig } from "payload";
 import { revalidateSite } from "../hooks/revalidate";
 import { isAdminField, isEditor } from "../access";
+import { advancedTab, layoutTab, sectionStylesTab, typographyTab } from "./site-style-fields";
 
-/** Company identity and contact details used across every page. */
+/**
+ * The one screen the whole website answers to.
+ *
+ * It began as the company's name and telephone number, and it is now also where
+ * the site's type, spacing, motion, search-engine details and the tools that act
+ * on everything at once live - so an owner has one place to look rather than
+ * six. The colours are the exception: they have a screen of their own in
+ * Site → Appearance, and keeping them there keeps one value in one place.
+ */
 export const SiteSettings: GlobalConfig = {
   slug: "site-settings",
   label: "Site Settings",
-  admin: { group: "Site", description: "Company name, contact details and identity." },
+  admin: {
+    group: "Site",
+    description:
+      "Who the company is, how to reach it, how the website is set and sized, and the tools that work on all of it at once.",
+  },
   access: { read: () => true, update: isEditor },
   hooks: { afterChange: [revalidateSite] },
   fields: [
@@ -127,8 +140,89 @@ export const SiteSettings: GlobalConfig = {
                 },
               ],
             },
+            {
+              name: "seo",
+              type: "group",
+              label: "Search engines and social networks",
+              access: { update: isAdminField },
+              fields: [
+                {
+                  type: "row",
+                  fields: [
+                    {
+                      name: "keywords",
+                      type: "text",
+                      admin: {
+                        width: "50%",
+                        description:
+                          "Words describing the company, separated by commas. Most search engines ignore these now; some social tools still read them.",
+                      },
+                    },
+                    {
+                      name: "twitterHandle",
+                      type: "text",
+                      label: "X / Twitter handle",
+                      admin: { width: "50%", description: 'With the @, for example "@najikkosathi".' },
+                    },
+                  ],
+                },
+                {
+                  type: "row",
+                  fields: [
+                    {
+                      name: "googleVerification",
+                      type: "text",
+                      label: "Google Search Console code",
+                      admin: {
+                        width: "50%",
+                        description: 'The value from Google\'s "HTML tag" verification method.',
+                      },
+                    },
+                    {
+                      name: "bingVerification",
+                      type: "text",
+                      label: "Bing Webmaster code",
+                      admin: { width: "50%" },
+                    },
+                  ],
+                },
+                {
+                  type: "row",
+                  fields: [
+                    {
+                      name: "analyticsId",
+                      type: "text",
+                      label: "Google Analytics measurement id",
+                      validate: (value: unknown) =>
+                        !value || (typeof value === "string" && /^(G|UA|GTM)-[A-Z0-9-]{4,20}$/i.test(value.trim()))
+                          ? true
+                          : "That is not a measurement id. They look like G-XXXXXXX.",
+                      admin: {
+                        width: "50%",
+                        description:
+                          "Leave empty and no tracking script is loaded at all. The site counts its own visits either way - see Traffic on the dashboard.",
+                      },
+                    },
+                    {
+                      name: "noindex",
+                      type: "checkbox",
+                      label: "Ask search engines to leave the whole site alone",
+                      admin: {
+                        width: "50%",
+                        description:
+                          "For a site that is not ready to be found yet. Remember to turn it off on the day you launch.",
+                      },
+                    },
+                  ],
+                },
+              ],
+            },
           ],
         },
+        typographyTab,
+        sectionStylesTab,
+        layoutTab,
+        advancedTab,
       ],
     },
   ],
