@@ -13,7 +13,7 @@ export const Users: CollectionConfig = {
   admin: {
     useAsTitle: "name",
     defaultColumns: ["avatar", "name", "email", "role", "approved"],
-    group: "Administration",
+    group: "Behind the scenes",
     description:
       "People who can sign in to this dashboard. A new sign-up waits here until an administrator approves it.",
     listSearchableFields: ["name", "email"],

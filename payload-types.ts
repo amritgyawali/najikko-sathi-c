@@ -69,22 +69,22 @@ export interface Config {
   collections: {
     pages: Page;
     posts: Post;
+    enquiries: Enquiry;
     services: Service;
     'service-categories': ServiceCategory;
     offers: Offer;
     reviews: Review;
     faqs: Faq;
-    'social-responsibility': SocialResponsibility;
-    'social-work': SocialWork;
     team: Team;
     'well-wishers': WellWisher;
-    enquiries: Enquiry;
+    'social-work': SocialWork;
+    'social-responsibility': SocialResponsibility;
     media: Media;
     'media-slots': MediaSlot;
-    redirects: Redirect;
     users: User;
-    pageviews: Pageview;
+    redirects: Redirect;
     backups: Backup;
+    pageviews: Pageview;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -94,22 +94,22 @@ export interface Config {
   collectionsSelect: {
     pages: PagesSelect<false> | PagesSelect<true>;
     posts: PostsSelect<false> | PostsSelect<true>;
+    enquiries: EnquiriesSelect<false> | EnquiriesSelect<true>;
     services: ServicesSelect<false> | ServicesSelect<true>;
     'service-categories': ServiceCategoriesSelect<false> | ServiceCategoriesSelect<true>;
     offers: OffersSelect<false> | OffersSelect<true>;
     reviews: ReviewsSelect<false> | ReviewsSelect<true>;
     faqs: FaqsSelect<false> | FaqsSelect<true>;
-    'social-responsibility': SocialResponsibilitySelect<false> | SocialResponsibilitySelect<true>;
-    'social-work': SocialWorkSelect<false> | SocialWorkSelect<true>;
     team: TeamSelect<false> | TeamSelect<true>;
     'well-wishers': WellWishersSelect<false> | WellWishersSelect<true>;
-    enquiries: EnquiriesSelect<false> | EnquiriesSelect<true>;
+    'social-work': SocialWorkSelect<false> | SocialWorkSelect<true>;
+    'social-responsibility': SocialResponsibilitySelect<false> | SocialResponsibilitySelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     'media-slots': MediaSlotsSelect<false> | MediaSlotsSelect<true>;
-    redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
-    pageviews: PageviewsSelect<false> | PageviewsSelect<true>;
+    redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     backups: BackupsSelect<false> | BackupsSelect<true>;
+    pageviews: PageviewsSelect<false> | PageviewsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -1543,6 +1543,41 @@ export interface User {
   collection: 'users';
 }
 /**
+ * Messages sent through the website contact form. Private: nothing here is ever published.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "enquiries".
+ */
+export interface Enquiry {
+  id: number;
+  name: string;
+  email: string;
+  phone?: string | null;
+  /**
+   * The service the visitor was looking at when they wrote in.
+   */
+  service?: string | null;
+  message: string;
+  /**
+   * Where this message has got to.
+   */
+  state?: ('new' | 'in-progress' | 'replied' | 'closed' | 'spam') | null;
+  /**
+   * Whoever is answering this one.
+   */
+  assignedTo?: (number | null) | User;
+  /**
+   * For the team only. Never shown on the website and never sent to the sender.
+   */
+  notes?: string | null;
+  /**
+   * The page the enquiry was sent from.
+   */
+  sourcePath?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * Everything the company offers, one document per service. Each published one gets its own page.
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1825,43 +1860,80 @@ export interface Faq {
   createdAt: string;
 }
 /**
- * Films and photo albums from our social responsibility work, shown together on /our-work.
+ * The people introduced on the about page, in the order set here.
  *
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "social-responsibility".
+ * via the `definition` "team".
  */
-export interface SocialResponsibility {
+export interface Team {
   id: number;
-  title: string;
+  name: string;
   /**
-   * A short description shown under the title.
+   * Their title, as it should read on the page.
    */
-  summary?: string | null;
+  role: string;
   /**
-   * Paste the YouTube link, for example https://www.youtube.com/watch?v=XXXXXXXXXXX. Leave blank for a photo-only album.
+   * Optional. One or two sentences.
    */
-  youtubeUrl?: string | null;
-  /**
-   * Upload as many photographs as you like and drag to reorder them.
-   */
-  photos?:
-    | {
-        image: number | Media;
-        caption?: string | null;
-        id?: string | null;
-      }[]
-    | null;
-  date?: string | null;
+  bio?: string | null;
+  photo?: (number | null) | Media;
+  email?: string | null;
   /**
    * Lower numbers appear first.
    */
   order?: number | null;
   /**
-   * Publishing puts this on the website; a draft stays here.
+   * Choose the pages this person is published on. Leave it empty to show it on every page that carries a team band.
    */
-  status: 'draft' | 'published';
+  placements?:
+    | (
+        | 'home'
+        | 'services'
+        | 'our-work'
+        | 'social-work'
+        | 'contact'
+        | 'about'
+        | 'production'
+        | 'social-media-handling'
+        | 'training'
+        | 'research'
+        | 'it'
+        | 'advertisement'
+        | 'right-sanchar'
+        | 'posts'
+        | 'offers'
+      )[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Advisers, patrons and friends of the house, in the order set here.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "well-wishers".
+ */
+export interface WellWisher {
+  id: number;
+  name: string;
   /**
-   * Choose the pages this entry is published on. Leave it empty to show it on every page that carries a social responsibility band.
+   * Their title or organisation, as it should read on the page.
+   */
+  role?: string | null;
+  /**
+   * Optional. A sentence or two of goodwill.
+   */
+  message?: string | null;
+  /**
+   * Optional. Their initials are drawn in its place while there is none.
+   */
+  photo?: (number | null) | Media;
+  /**
+   * Lower numbers appear first.
+   */
+  order?: number | null;
+  /**
+   * Choose the pages this well-wisher is published on. Leave it empty to show it on every page that carries a well-wishers band.
    */
   placements?:
     | (
@@ -1978,30 +2050,43 @@ export interface SocialWork {
   createdAt: string;
 }
 /**
- * The people introduced on the about page, in the order set here.
+ * Films and photo albums from our social responsibility work, shown together on /our-work.
  *
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "team".
+ * via the `definition` "social-responsibility".
  */
-export interface Team {
+export interface SocialResponsibility {
   id: number;
-  name: string;
+  title: string;
   /**
-   * Their title, as it should read on the page.
+   * A short description shown under the title.
    */
-  role: string;
+  summary?: string | null;
   /**
-   * Optional. One or two sentences.
+   * Paste the YouTube link, for example https://www.youtube.com/watch?v=XXXXXXXXXXX. Leave blank for a photo-only album.
    */
-  bio?: string | null;
-  photo?: (number | null) | Media;
-  email?: string | null;
+  youtubeUrl?: string | null;
+  /**
+   * Upload as many photographs as you like and drag to reorder them.
+   */
+  photos?:
+    | {
+        image: number | Media;
+        caption?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  date?: string | null;
   /**
    * Lower numbers appear first.
    */
   order?: number | null;
   /**
-   * Choose the pages this person is published on. Leave it empty to show it on every page that carries a team band.
+   * Publishing puts this on the website; a draft stays here.
+   */
+  status: 'draft' | 'published';
+  /**
+   * Choose the pages this entry is published on. Leave it empty to show it on every page that carries a social responsibility band.
    */
   placements?:
     | (
@@ -2022,91 +2107,6 @@ export interface Team {
         | 'offers'
       )[]
     | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * Advisers, patrons and friends of the house, in the order set here.
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "well-wishers".
- */
-export interface WellWisher {
-  id: number;
-  name: string;
-  /**
-   * Their title or organisation, as it should read on the page.
-   */
-  role?: string | null;
-  /**
-   * Optional. A sentence or two of goodwill.
-   */
-  message?: string | null;
-  /**
-   * Optional. Their initials are drawn in its place while there is none.
-   */
-  photo?: (number | null) | Media;
-  /**
-   * Lower numbers appear first.
-   */
-  order?: number | null;
-  /**
-   * Choose the pages this well-wisher is published on. Leave it empty to show it on every page that carries a well-wishers band.
-   */
-  placements?:
-    | (
-        | 'home'
-        | 'services'
-        | 'our-work'
-        | 'social-work'
-        | 'contact'
-        | 'about'
-        | 'production'
-        | 'social-media-handling'
-        | 'training'
-        | 'research'
-        | 'it'
-        | 'advertisement'
-        | 'right-sanchar'
-        | 'posts'
-        | 'offers'
-      )[]
-    | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * Messages sent through the website contact form. Private: nothing here is ever published.
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "enquiries".
- */
-export interface Enquiry {
-  id: number;
-  name: string;
-  email: string;
-  phone?: string | null;
-  /**
-   * The service the visitor was looking at when they wrote in.
-   */
-  service?: string | null;
-  message: string;
-  /**
-   * Where this message has got to.
-   */
-  state?: ('new' | 'in-progress' | 'replied' | 'closed' | 'spam') | null;
-  /**
-   * Whoever is answering this one.
-   */
-  assignedTo?: (number | null) | User;
-  /**
-   * For the team only. Never shown on the website and never sent to the sender.
-   */
-  notes?: string | null;
-  /**
-   * The page the enquiry was sent from.
-   */
-  sourcePath?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -2193,20 +2193,6 @@ export interface Redirect {
   createdAt: string;
 }
 /**
- * The raw traffic log behind the dashboard overview. No cookies, no personal data, no third party.
- *
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "pageviews".
- */
-export interface Pageview {
-  id: number;
-  path: string;
-  referrer?: string | null;
-  device?: ('desktop' | 'mobile' | 'tablet') | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
  * A copy of everything in the dashboard, taken once a day. Open one to put the site back to how it was.
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -2245,6 +2231,20 @@ export interface Backup {
   createdAt: string;
 }
 /**
+ * The raw traffic log behind the dashboard overview. No cookies, no personal data, no third party.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pageviews".
+ */
+export interface Pageview {
+  id: number;
+  path: string;
+  referrer?: string | null;
+  device?: ('desktop' | 'mobile' | 'tablet') | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
@@ -2277,6 +2277,10 @@ export interface PayloadLockedDocument {
         value: number | Post;
       } | null)
     | ({
+        relationTo: 'enquiries';
+        value: number | Enquiry;
+      } | null)
+    | ({
         relationTo: 'services';
         value: number | Service;
       } | null)
@@ -2297,14 +2301,6 @@ export interface PayloadLockedDocument {
         value: number | Faq;
       } | null)
     | ({
-        relationTo: 'social-responsibility';
-        value: number | SocialResponsibility;
-      } | null)
-    | ({
-        relationTo: 'social-work';
-        value: number | SocialWork;
-      } | null)
-    | ({
         relationTo: 'team';
         value: number | Team;
       } | null)
@@ -2313,8 +2309,12 @@ export interface PayloadLockedDocument {
         value: number | WellWisher;
       } | null)
     | ({
-        relationTo: 'enquiries';
-        value: number | Enquiry;
+        relationTo: 'social-work';
+        value: number | SocialWork;
+      } | null)
+    | ({
+        relationTo: 'social-responsibility';
+        value: number | SocialResponsibility;
       } | null)
     | ({
         relationTo: 'media';
@@ -2325,20 +2325,20 @@ export interface PayloadLockedDocument {
         value: number | MediaSlot;
       } | null)
     | ({
-        relationTo: 'redirects';
-        value: number | Redirect;
-      } | null)
-    | ({
         relationTo: 'users';
         value: number | User;
       } | null)
     | ({
-        relationTo: 'pageviews';
-        value: number | Pageview;
+        relationTo: 'redirects';
+        value: number | Redirect;
       } | null)
     | ({
         relationTo: 'backups';
         value: number | Backup;
+      } | null)
+    | ({
+        relationTo: 'pageviews';
+        value: number | Pageview;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -2993,6 +2993,23 @@ export interface PostsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "enquiries_select".
+ */
+export interface EnquiriesSelect<T extends boolean = true> {
+  name?: T;
+  email?: T;
+  phone?: T;
+  service?: T;
+  message?: T;
+  state?: T;
+  assignedTo?: T;
+  notes?: T;
+  sourcePath?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "services_select".
  */
 export interface ServicesSelect<T extends boolean = true> {
@@ -3110,22 +3127,29 @@ export interface FaqsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "social-responsibility_select".
+ * via the `definition` "team_select".
  */
-export interface SocialResponsibilitySelect<T extends boolean = true> {
-  title?: T;
-  summary?: T;
-  youtubeUrl?: T;
-  photos?:
-    | T
-    | {
-        image?: T;
-        caption?: T;
-        id?: T;
-      };
-  date?: T;
+export interface TeamSelect<T extends boolean = true> {
+  name?: T;
+  role?: T;
+  bio?: T;
+  photo?: T;
+  email?: T;
   order?: T;
-  status?: T;
+  placements?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "well-wishers_select".
+ */
+export interface WellWishersSelect<T extends boolean = true> {
+  name?: T;
+  role?: T;
+  message?: T;
+  photo?: T;
+  order?: T;
   placements?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -3164,47 +3188,23 @@ export interface SocialWorkSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "team_select".
+ * via the `definition` "social-responsibility_select".
  */
-export interface TeamSelect<T extends boolean = true> {
-  name?: T;
-  role?: T;
-  bio?: T;
-  photo?: T;
-  email?: T;
+export interface SocialResponsibilitySelect<T extends boolean = true> {
+  title?: T;
+  summary?: T;
+  youtubeUrl?: T;
+  photos?:
+    | T
+    | {
+        image?: T;
+        caption?: T;
+        id?: T;
+      };
+  date?: T;
   order?: T;
+  status?: T;
   placements?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "well-wishers_select".
- */
-export interface WellWishersSelect<T extends boolean = true> {
-  name?: T;
-  role?: T;
-  message?: T;
-  photo?: T;
-  order?: T;
-  placements?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "enquiries_select".
- */
-export interface EnquiriesSelect<T extends boolean = true> {
-  name?: T;
-  email?: T;
-  phone?: T;
-  service?: T;
-  message?: T;
-  state?: T;
-  assignedTo?: T;
-  notes?: T;
-  sourcePath?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -3289,17 +3289,6 @@ export interface MediaSlotsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "redirects_select".
- */
-export interface RedirectsSelect<T extends boolean = true> {
-  from?: T;
-  to?: T;
-  permanent?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users_select".
  */
 export interface UsersSelect<T extends boolean = true> {
@@ -3326,12 +3315,12 @@ export interface UsersSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "pageviews_select".
+ * via the `definition` "redirects_select".
  */
-export interface PageviewsSelect<T extends boolean = true> {
-  path?: T;
-  referrer?: T;
-  device?: T;
+export interface RedirectsSelect<T extends boolean = true> {
+  from?: T;
+  to?: T;
+  permanent?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -3347,6 +3336,17 @@ export interface BackupsSelect<T extends boolean = true> {
   documents?: T;
   problems?: T;
   data?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pageviews_select".
+ */
+export interface PageviewsSelect<T extends boolean = true> {
+  path?: T;
+  referrer?: T;
+  device?: T;
   updatedAt?: T;
   createdAt?: T;
 }

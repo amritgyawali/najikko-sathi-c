@@ -10,7 +10,7 @@ export const TeamMembers: CollectionConfig = {
   admin: {
     useAsTitle: "name",
     defaultColumns: ["photo", "name", "role", "order", "placements"],
-    group: "Content",
+    group: "People & words",
     description: "The people introduced on the about page, in the order set here.",
     listSearchableFields: ["name", "role"],
   },

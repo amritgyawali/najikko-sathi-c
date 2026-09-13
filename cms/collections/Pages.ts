@@ -44,7 +44,7 @@ export const Pages: CollectionConfig = {
   admin: {
     useAsTitle: "title",
     defaultColumns: ["title", "path", "kind", "status", "updatedAt"],
-    group: "Content",
+    group: "Pages & posts",
     description:
       "Every page on the website - Home, Services, Our Work, Contact, About and the rest. Open one to change its words and sections, build a new one, or take one off the site.",
   },

@@ -9,7 +9,7 @@ export const Offers: CollectionConfig = {
   admin: {
     useAsTitle: "title",
     defaultColumns: ["image", "title", "status", "startsAt", "endsAt"],
-    group: "Content",
+    group: "What we offer",
     description:
       "Promotions, packages and limited-time offers. A published offer inside its dates appears at /offers.",
     listSearchableFields: ["title", "summary"],

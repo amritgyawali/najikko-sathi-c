@@ -20,7 +20,7 @@ export const Backups: CollectionConfig = {
   admin: {
     useAsTitle: "label",
     defaultColumns: ["label", "takenAt", "reason", "summary", "documents"],
-    group: "Administration",
+    group: "Behind the scenes",
     description:
       "A copy of everything in the dashboard, taken once a day. Open one to put the site back to how it was.",
     components: {

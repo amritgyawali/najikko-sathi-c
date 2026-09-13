@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import React from "react";
 
 /**
- * The twelve jobs that act on the whole website at once.
+ * The jobs that act on the whole website at once.
  *
  * They live behind one address (cms/endpoints/advanced-tools.ts) and are drawn
  * here as one card each: what it does, the one or two things it needs to know,
@@ -49,6 +49,8 @@ type Input =
 type Card = {
   tool: string;
   title: string;
+  /** One line, shown on the closed row: what this does, in a breath. */
+  summary: string;
   blurb: string;
   /** "look" reads the site; "change" writes to it. */
   act: "look" | "change";
@@ -77,6 +79,7 @@ const CONTENT_COLLECTIONS = [
 const CARDS: Card[] = [
   {
     tool: "link-check",
+    summary: "Finds internal links that lead to a page that is not there.",
     title: "Links that go nowhere",
     blurb:
       "Reads every internal address written anywhere in the dashboard - in a page's own words, in the menu, in the footer - and reports the ones the website will answer with a 404.",
@@ -85,6 +88,7 @@ const CARDS: Card[] = [
   },
   {
     tool: "content-audit",
+    summary: "Lists what is missing: descriptions, pictures, duplicate names.",
     title: "What is missing",
     blurb:
       "Pages with no description, posts with no picture, services with nothing written on the card, two pages sharing a name, and anything written but never published.",
@@ -93,6 +97,7 @@ const CARDS: Card[] = [
   },
   {
     tool: "media-audit",
+    summary: "Files nobody uses, files with no description, files that are too heavy.",
     title: "The file library, looked over",
     blurb:
       "Which files nothing points at, which have no description for a screen reader, and which are heavy enough to slow a page down.",
@@ -101,6 +106,7 @@ const CARDS: Card[] = [
   },
   {
     tool: "translation-report",
+    summary: "Counts the lines that have English but no Nepali.",
     title: "How much reads in Nepali",
     blurb:
       "Every line on the site is written twice. This counts the pairs where the English is there and the Nepali is not, page by page.",
@@ -109,6 +115,7 @@ const CARDS: Card[] = [
   },
   {
     tool: "find-replace",
+    summary: "Swap a phone number, a name or a title across the whole site.",
     title: "Change a wording everywhere",
     blurb:
       "A telephone number, a person's title, a name written three ways - changed in every page, post, service and question at once.",
@@ -130,6 +137,7 @@ const CARDS: Card[] = [
   },
   {
     tool: "style-preset",
+    summary: "Apply one of four ready-made looks to the whole website.",
     title: "Try a whole look",
     blurb:
       "Four sets of type and spacing, applied to the Typography and Layout tabs in one go. Every value can still be changed by hand afterwards, and “as designed” clears the lot.",
@@ -152,6 +160,7 @@ const CARDS: Card[] = [
   },
   {
     tool: "bulk-status",
+    summary: "Publish everything waiting, or take a whole collection off the site.",
     title: "Publish, or unpublish, in bulk",
     blurb:
       "Everything in one collection that is waiting, put on the website at once - or everything that is live, taken off it.",
@@ -184,6 +193,7 @@ const CARDS: Card[] = [
   },
   {
     tool: "redirect-import",
+    summary: "Point a list of old addresses at new ones, all at once.",
     title: "Add redirects in bulk",
     blurb:
       "Old addresses that should send people somewhere new, a line at a time. Anything already redirected is left alone.",
@@ -201,6 +211,7 @@ const CARDS: Card[] = [
   },
   {
     tool: "duplicate-page",
+    summary: "Copy a page and all its sections as a new draft.",
     title: "Copy a page",
     blurb:
       "A page and every section in it, copied under a new name as a draft. The way to build a page that is almost like one you already have.",
@@ -213,6 +224,7 @@ const CARDS: Card[] = [
   },
   {
     tool: "settings-snapshot",
+    summary: "Read every site-wide setting out as text you can keep.",
     title: "Settings, as text",
     blurb:
       "Every site-wide screen - identity, contact, typography, layout, menu, footer, announcement - as one piece of text to keep or to carry to another site.",
@@ -221,6 +233,7 @@ const CARDS: Card[] = [
   },
   {
     tool: "settings-restore",
+    summary: "Put settings back from that text.",
     title: "Put settings back",
     blurb: "The text from above, applied. Only the screens named in it are touched.",
     act: "change",
@@ -230,6 +243,7 @@ const CARDS: Card[] = [
   },
   {
     tool: "purge-path",
+    summary: "Refresh one page that looks older than what is saved here.",
     title: "Rebuild one page",
     blurb:
       "When a single page looks older than what is saved here. Cheaper than rebuilding the whole website, and the same effect for that one address.",
@@ -239,6 +253,7 @@ const CARDS: Card[] = [
   },
   {
     tool: "prune-traffic",
+    summary: "Delete visit records older than a window you choose.",
     title: "Trim the traffic log",
     blurb:
       "The site records a row per visit and reads them back as totals. Anything older than the window below is of no further use.",
@@ -286,7 +301,17 @@ function Answer({ result }: { result: Result }) {
   );
 }
 
-function ToolCard({ card, api }: { card: Card; api: string }) {
+function ToolCard({
+  card,
+  api,
+  open,
+  onToggle,
+}: {
+  card: Card;
+  api: string;
+  open: boolean;
+  onToggle: () => void;
+}) {
   const router = useRouter();
   const [values, setValues] = React.useState<Record<string, unknown>>(() => {
     const initial: Record<string, unknown> = {};
@@ -324,120 +349,208 @@ function ToolCard({ card, api }: { card: Card; api: string }) {
     }
   };
 
+  const bodyId = `ns-tool-body-${card.tool}`;
+
   return (
-    <section className={`ns-tool ns-tool--${card.act}`}>
-      <header className="ns-tool__head">
-        <h4 className="ns-tool__title">{card.title}</h4>
-        <span className={`ns-tag ns-tag--${card.act === "look" ? "info" : "warn"}`}>
-          {card.act === "look" ? "reads only" : "changes the site"}
+    <section className={`ns-tool ns-tool--${card.act}${open ? " is-open" : ""}`}>
+      <button className="ns-tool__head" type="button" onClick={onToggle} aria-expanded={open} aria-controls={bodyId}>
+        <span className="ns-tool__chevron" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="m9 6 6 6-6 6" />
+          </svg>
         </span>
-      </header>
-      <p className="ns-tool__blurb">{card.blurb}</p>
+        <span className="ns-tool__heading">
+          <span className="ns-tool__title">{card.title}</span>
+          <span className="ns-tool__one">{card.summary}</span>
+        </span>
+        <span className={`ns-tag ns-tag--${card.act === "look" ? "info" : "warn"}`}>
+          {card.act === "look" ? "safe" : "changes the site"}
+        </span>
+      </button>
 
-      {card.inputs?.map((input) => (
-        <label className="ns-tool__field" key={input.name}>
-          <span>{input.label}</span>
-          {input.kind === "area" ? (
-            <textarea
-              rows={4}
-              placeholder={input.placeholder}
-              value={String(values[input.name] ?? "")}
-              onChange={(event) => set(input.name, event.target.value)}
-            />
-          ) : input.kind === "number" ? (
-            <input
-              type="number"
-              min={input.min}
-              max={input.max}
-              value={Number(values[input.name] ?? input.fallback)}
-              onChange={(event) => set(input.name, Number(event.target.value))}
-            />
-          ) : input.kind === "choice" ? (
-            <select
-              value={String(values[input.name] ?? "")}
-              onChange={(event) => set(input.name, event.target.value)}
-            >
-              {input.options.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
-          ) : input.kind === "many" ? (
-            <span className="ns-tool__checks">
-              {input.options.map((option) => {
-                const chosen = Array.isArray(values[input.name])
-                  ? (values[input.name] as string[])
-                  : [];
-                return (
-                  <label key={option.value}>
-                    <input
-                      type="checkbox"
-                      checked={chosen.includes(option.value)}
-                      onChange={(event) =>
-                        set(
-                          input.name,
-                          event.target.checked
-                            ? [...chosen, option.value]
-                            : chosen.filter((value) => value !== option.value),
-                        )
-                      }
-                    />
+      {/* Hidden rather than unmounted, so a half-filled form and its answer
+          survive a look at the tool next to it. */}
+      <div className="ns-tool__body" id={bodyId} hidden={!open}>
+        <p className="ns-tool__blurb">{card.blurb}</p>
+
+        {card.inputs?.map((input) => (
+          <label className="ns-tool__field" key={input.name}>
+            <span>{input.label}</span>
+            {input.kind === "area" ? (
+              <textarea
+                rows={4}
+                placeholder={input.placeholder}
+                value={String(values[input.name] ?? "")}
+                onChange={(event) => set(input.name, event.target.value)}
+              />
+            ) : input.kind === "number" ? (
+              <input
+                type="number"
+                min={input.min}
+                max={input.max}
+                value={Number(values[input.name] ?? input.fallback)}
+                onChange={(event) => set(input.name, Number(event.target.value))}
+              />
+            ) : input.kind === "choice" ? (
+              <select
+                value={String(values[input.name] ?? "")}
+                onChange={(event) => set(input.name, event.target.value)}
+              >
+                {input.options.map((option) => (
+                  <option key={option.value} value={option.value}>
                     {option.label}
-                  </label>
-                );
-              })}
-            </span>
-          ) : (
-            <input
-              type="text"
-              placeholder={input.placeholder}
-              value={String(values[input.name] ?? "")}
-              onChange={(event) => set(input.name, event.target.value)}
-            />
-          )}
-          {"note" in input && input.note ? <em>{input.note}</em> : null}
-        </label>
-      ))}
+                  </option>
+                ))}
+              </select>
+            ) : input.kind === "many" ? (
+              <span className="ns-tool__checks">
+                {input.options.map((option) => {
+                  const chosen = Array.isArray(values[input.name])
+                    ? (values[input.name] as string[])
+                    : [];
+                  return (
+                    <label key={option.value}>
+                      <input
+                        type="checkbox"
+                        checked={chosen.includes(option.value)}
+                        onChange={(event) =>
+                          set(
+                            input.name,
+                            event.target.checked
+                              ? [...chosen, option.value]
+                              : chosen.filter((value) => value !== option.value),
+                          )
+                        }
+                      />
+                      {option.label}
+                    </label>
+                  );
+                })}
+              </span>
+            ) : (
+              <input
+                type="text"
+                placeholder={input.placeholder}
+                value={String(values[input.name] ?? "")}
+                onChange={(event) => set(input.name, event.target.value)}
+              />
+            )}
+            {"note" in input && input.note ? <em>{input.note}</em> : null}
+          </label>
+        ))}
 
-      {card.caution ? <p className="ns-tool__caution">{card.caution}</p> : null}
+        {card.caution ? <p className="ns-tool__caution">{card.caution}</p> : null}
 
-      <div className="ns-tools">
-        <button
-          type="button"
-          className={`ns-btn${card.act === "look" || card.applyButton ? "" : " ns-btn--primary"}`}
-          disabled={busy}
-          onClick={() => void run(false)}
-        >
-          {busy ? "Working…" : card.button}
-        </button>
-        {card.applyButton ? (
+        <div className="ns-tools">
           <button
             type="button"
-            className="ns-btn ns-btn--primary"
+            className={`ns-btn${card.act === "look" || card.applyButton ? "" : " ns-btn--primary"}`}
             disabled={busy}
-            onClick={() => void run(true)}
+            onClick={() => void run(false)}
           >
-            {card.applyButton}
+            {busy ? "Working…" : card.button}
           </button>
-        ) : null}
-      </div>
+          {card.applyButton ? (
+            <button
+              type="button"
+              className="ns-btn ns-btn--primary"
+              disabled={busy}
+              onClick={() => void run(true)}
+            >
+              {card.applyButton}
+            </button>
+          ) : null}
+        </div>
 
-      {result ? <Answer result={result} /> : null}
+        {result ? <Answer result={result} /> : null}
+      </div>
     </section>
   );
 }
 
-/** All twelve, in a grid. */
+/** Which half of the shelf is being looked at. */
+type Only = "all" | "look" | "change";
+
+const FILTERS: { value: Only; label: string }[] = [
+  { value: "all", label: "Everything" },
+  { value: "look", label: "Safe to run" },
+  { value: "change", label: "Changes the site" },
+];
+
+/**
+ * The shelf: a line each, and the one you want opened.
+ *
+ * Twelve forms on the screen at once is a wall, and a wall is read as "this is
+ * for somebody else". So each job is a line saying what it does, the box at the
+ * top narrows the twelve to the one being looked for, and only the job actually
+ * opened shows its form. Opening one closes the last, which keeps the shelf the
+ * length of a shelf however long a job's answer runs.
+ */
 export function AdvancedTools() {
   const { config } = useConfig();
   const api = config?.routes?.api || "/api";
 
+  const [opened, setOpened] = React.useState<string | null>(null);
+  const [filter, setFilter] = React.useState("");
+  const [only, setOnly] = React.useState<Only>("all");
+
+  const shown = React.useMemo(() => {
+    const words = filter.trim().toLowerCase().split(/\s+/).filter(Boolean);
+    return CARDS.filter((card) => {
+      if (only !== "all" && card.act !== only) return false;
+      if (words.length === 0) return true;
+      const haystack = `${card.title} ${card.summary} ${card.blurb}`.toLowerCase();
+      return words.every((word) => haystack.includes(word));
+    });
+  }, [filter, only]);
+
   return (
-    <div className="ns-toolshelf">
-      {CARDS.map((card) => (
-        <ToolCard api={api} card={card} key={card.tool} />
-      ))}
+    <div className="ns-shelf">
+      <div className="ns-shelf__bar">
+        <label className="ns-shelf__find">
+          <span className="u-visually-hidden">Find a job</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true">
+            <circle cx="11" cy="11" r="6.5" />
+            <path d="m16 16 4.5 4.5" />
+          </svg>
+          <input
+            type="search"
+            value={filter}
+            placeholder="What do you want to do? e.g. links, backup, Nepali"
+            onChange={(event) => setFilter(event.target.value)}
+          />
+        </label>
+
+        <div className="ns-seg" role="group" aria-label="Which jobs to show">
+          {FILTERS.map((option) => (
+            <button
+              key={option.value}
+              type="button"
+              className={`ns-seg__item${only === option.value ? " is-on" : ""}`}
+              aria-pressed={only === option.value}
+              onClick={() => setOnly(option.value)}
+            >
+              {option.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {shown.length === 0 ? (
+        <p className="ns-empty">No job matches that. Try a single word, or choose “Everything”.</p>
+      ) : (
+        <div className="ns-shelf__list">
+          {shown.map((card) => (
+            <ToolCard
+              api={api}
+              card={card}
+              key={card.tool}
+              open={opened === card.tool}
+              onToggle={() => setOpened((current) => (current === card.tool ? null : card.tool))}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 }
@@ -452,9 +565,9 @@ export function AdvancedTools() {
 export function AdvancedToolsField() {
   return (
     <div className="ns-toolshelf-wrap field-type">
-      <p className="ns-toolshelf__intro">
-        Twelve jobs that read or change the whole website at once. The ones marked “reads only” are safe to
-        run at any time; the others say what they will change before they do it.
+      <p className="ns-shelf__intro">
+        {CARDS.length} jobs that read or change the whole website at once. The ones marked “safe” only
+        look; the others say what they will change before they do it. Click one to open it.
       </p>
       <AdvancedTools />
     </div>

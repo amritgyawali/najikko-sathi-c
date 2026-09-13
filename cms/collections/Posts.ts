@@ -13,7 +13,7 @@ export const Posts: CollectionConfig = {
   admin: {
     useAsTitle: "title",
     defaultColumns: ["coverImage", "title", "type", "status", "publishedAt"],
-    group: "Content",
+    group: "Pages & posts",
     description:
       "News, blogs, commentary and investigative pieces. Published ones appear at /posts, newest first.",
     listSearchableFields: ["title", "excerpt"],

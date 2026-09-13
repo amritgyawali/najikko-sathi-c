@@ -348,10 +348,10 @@ export function TrafficDetail({ traffic }: { traffic: Traffic }) {
 /* ------------------------------------------------------------------- toolbox */
 
 const EXPORTS: [slug: string, label: string][] = [
-  ["enquiries", "Enquiries"],
+  ["enquiries", "Enquiries - everyone who wrote in"],
   ["reviews", "Reviews"],
   ["posts", "Posts"],
-  ["pages", "Pages"],
+  ["pages", "Website pages"],
   ["services", "Services"],
   ["offers", "Offers"],
   ["team-members", "Team"],
@@ -367,7 +367,7 @@ export function Toolbox({ backupHint }: { backupHint: string }) {
         title="Keep the website in step"
         icon="bolt"
         accent={5}
-        intro="Every save already updates the website by itself. These are for the times you want to be certain: after a deploy, or when a page looks older than what is saved here."
+        intro="Saving already updates the website. These are for being certain."
       >
         <div className="ns-tools">
           <RunButton
@@ -380,15 +380,15 @@ export function Toolbox({ backupHint }: { backupHint: string }) {
             Open the website
           </a>
           <a className="ns-btn" href="/sitemap.xml" target="_blank" rel="noreferrer">
-            View the sitemap
+            Sitemap
           </a>
           <a className="ns-btn" href="/robots.txt" target="_blank" rel="noreferrer">
-            View robots.txt
+            robots.txt
           </a>
         </div>
         <p className="ns-note">
-          The sitemap is what a search engine reads to find every page. It is written from the pages that
-          are live, so publishing a page adds it and taking one off removes it.
+          The sitemap is the list a search engine reads to find every page. It writes itself from whatever
+          is live, so publishing a page adds it and taking one off removes it.
         </p>
       </Panel>
 
@@ -397,7 +397,7 @@ export function Toolbox({ backupHint }: { backupHint: string }) {
         icon="shield"
         accent={6}
         meta={backupHint}
-        intro="A copy holds every word, setting, question, review and link on the site. Restoring one puts all of it back, and takes a copy of the present state first so a restore can itself be undone."
+        intro="A copy holds every word and setting on the site. Restoring one puts all of it back - and takes a copy of today first, so a restore can itself be undone."
       >
         <div className="ns-tools">
           <RunButton job="backup" label="Back up now" primary hint="Takes a copy of the whole website." />
@@ -410,59 +410,47 @@ export function Toolbox({ backupHint }: { backupHint: string }) {
         </div>
       </Panel>
 
+      {/* An ordinary GET form, so choosing and downloading is one control and
+          no JavaScript - the browser builds the same address the nine separate
+          buttons here used to hard-code. */}
       <Panel
         title="Take the data out"
         icon="tools"
         accent={4}
-        wide
-        intro="Any of these opens as a spreadsheet. Useful for a mailing list, a report, or simply keeping a record somewhere other than this website."
+        intro="Choose a list and download it as a spreadsheet. Excel, Numbers and Google Sheets all open it."
       >
-        <div className="ns-tools">
-          {EXPORTS.map(([slug, label]) => (
-            <a className="ns-btn" key={slug} href={`/api/site-tools/export?collection=${slug}`}>
-              {label} <span aria-hidden="true">↓</span>
-            </a>
-          ))}
-        </div>
-        <p className="ns-note">
-          Files are CSV, which Excel, Numbers and Google Sheets all open directly.
-        </p>
+        <form className="ns-export" action="/api/site-tools/export" method="get">
+          <label className="ns-export__field">
+            <span className="u-visually-hidden">What to download</span>
+            <select name="collection" defaultValue="enquiries">
+              {EXPORTS.map(([slug, label]) => (
+                <option key={slug} value={slug}>
+                  {label}
+                </option>
+              ))}
+            </select>
+          </label>
+          <button className="ns-btn ns-btn--primary" type="submit">
+            Download as a spreadsheet
+          </button>
+        </form>
       </Panel>
 
-      <Panel
-        title="The advanced toolbox"
-        icon="tools"
-        accent={1}
-        wide
-        intro="Twelve jobs that read or change the whole website at once: the links that go nowhere, what is missing, the files nobody uses, how much reads in Nepali, a wording changed everywhere, a whole look tried in one click. The same shelf is on Site Settings → Advanced."
-      >
-        <AdvancedTools />
-      </Panel>
-
-      <Panel title="Getting around quickly" icon="bolt" accent={3} wide>
+      <Panel title="Getting around quickly" icon="bolt" accent={3}>
         <ul className="ns-keys">
           <li>
             <kbd>⌘</kbd>
             <kbd>K</kbd>
-            <span>Search everything, or type what you want to do. Works on every screen.</span>
+            <span>Search everything, or type what you want to do. On Windows, <kbd>Ctrl</kbd> <kbd>K</kbd>.</span>
           </li>
           <li>
-            <kbd>Ctrl</kbd>
-            <kbd>K</kbd>
-            <span>The same, on Windows.</span>
+            <kbd>/</kbd>
+            <span>The same box, one key.</span>
           </li>
           <li>
             <kbd>↑</kbd>
             <kbd>↓</kbd>
-            <span>Move through the results.</span>
-          </li>
-          <li>
-            <kbd>↵</kbd>
-            <span>Open what is selected, or run the job.</span>
-          </li>
-          <li>
-            <kbd>esc</kbd>
-            <span>Close the search.</span>
+            <span>Move through the results, <kbd>↵</kbd> to open one.</span>
           </li>
           <li>
             <kbd>←</kbd>
@@ -470,6 +458,16 @@ export function Toolbox({ backupHint }: { backupHint: string }) {
             <span>Move between the tabs above, once one of them has focus.</span>
           </li>
         </ul>
+      </Panel>
+
+      <Panel
+        title="The advanced toolbox"
+        icon="tools"
+        accent={1}
+        wide
+        intro="Jobs that read or change the whole website at once: links that go nowhere, what is missing, files nobody uses, how much reads in Nepali, a wording changed everywhere, a whole look tried in one click. The same shelf is on Site Settings → Advanced."
+      >
+        <AdvancedTools />
       </Panel>
     </div>
   );

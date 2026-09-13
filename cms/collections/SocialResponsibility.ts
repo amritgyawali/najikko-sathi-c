@@ -17,7 +17,7 @@ export const SocialResponsibility: CollectionConfig = {
   admin: {
     useAsTitle: "title",
     defaultColumns: ["title", "status", "date", "order", "placements"],
-    group: "Content",
+    group: "People & words",
     description:
       "Films and photo albums from our social responsibility work, shown together on /our-work.",
     listSearchableFields: ["title", "summary"],

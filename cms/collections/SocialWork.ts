@@ -39,7 +39,7 @@ export const SocialWork: CollectionConfig = {
   admin: {
     useAsTitle: "title",
     defaultColumns: ["coverImage", "title", "slug", "status", "date", "order"],
-    group: "Content",
+    group: "People & words",
     description:
       "Photo albums and YouTube films from our social work. /social-work shows one card per " +
       "entry, and each card opens the entry's own page. Add an entry, upload its photographs, " +

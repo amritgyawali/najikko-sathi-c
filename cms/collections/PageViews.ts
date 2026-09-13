@@ -12,7 +12,7 @@ export const PageViews: CollectionConfig = {
   admin: {
     useAsTitle: "path",
     defaultColumns: ["path", "referrer", "device", "createdAt"],
-    group: "Analytics",
+    group: "Behind the scenes",
     description:
       "The raw traffic log behind the dashboard overview. No cookies, no personal data, no third party.",
   },

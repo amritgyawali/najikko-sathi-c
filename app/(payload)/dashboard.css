@@ -186,6 +186,37 @@
   100% { box-shadow: 0 0 0 0 transparent; }
 }
 
+/* The one shortcut worth knowing, said once where it will be read. */
+.ns-hero__hint {
+  flex-basis: 100%;
+  margin: 2px 0 0;
+  font-size: 0.76rem;
+  color: var(--ns-muted);
+}
+
+.ns-hero__hint kbd {
+  padding: 1px 5px;
+  border: 1px solid var(--ns-line);
+  border-radius: 4px;
+  background: var(--ns-card);
+  font-family: inherit;
+  font-size: 0.7rem;
+  color: var(--ns-ink);
+}
+
+/* Said to a screen reader, drawn for nobody: a label a sighted reader gets
+   from the shape of the control itself. */
+.u-visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
 /* ================================================================== buttons */
 
 .ns-btn {
@@ -536,13 +567,20 @@
   gap: 16px;
 }
 
+/* The strip follows the page. The panels under it run to several screens -
+   every page of the website, every job in the toolbox - and having to scroll
+   back to the top to change tab is what made them feel like separate pages. */
 .ns-work__tabs {
+  position: sticky;
+  top: 8px;
+  z-index: 5;
   display: flex;
   gap: 4px;
   padding: 5px;
   border-radius: 999px;
   border: 1px solid var(--ns-line);
-  background: var(--ns-card);
+  background: color-mix(in srgb, var(--ns-card) 94%, transparent);
+  backdrop-filter: blur(8px);
   box-shadow: var(--ns-shadow-sm);
   overflow-x: auto;
   scrollbar-width: none;
@@ -1493,14 +1531,6 @@ a.ns-studio__path:hover {
   margin-top: 2px;
 }
 
-.ns-studio__changelabel {
-  font-size: 0.68rem;
-  font-weight: 700;
-  letter-spacing: 0.07em;
-  text-transform: uppercase;
-  color: var(--ns-muted);
-}
-
 .ns-studio__change {
   display: inline-flex;
   align-items: baseline;
@@ -1525,6 +1555,77 @@ a.ns-studio__path:hover {
   font-size: 0.68rem;
   font-weight: 500;
   opacity: 0.72;
+}
+
+/* -------------------------------------------- folding a page's own links */
+
+/*
+ * A page is two lines until it is asked to be more. The links for changing it
+ * are all still here - they are simply behind the one line that says how many
+ * there are, which is what turned forty pages from a wall back into a list.
+ */
+
+.ns-studio__more,
+.ns-studio__fold {
+  margin-top: 8px;
+}
+
+.ns-studio__more > summary,
+.ns-studio__fold > summary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: fit-content;
+  padding: 3px 10px 3px 4px;
+  border-radius: 999px;
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: var(--ns-accent-ink);
+  cursor: pointer;
+  list-style: none;
+}
+
+.ns-studio__more > summary::-webkit-details-marker,
+.ns-studio__fold > summary::-webkit-details-marker {
+  display: none;
+}
+
+.ns-studio__more > summary::before,
+.ns-studio__fold > summary::before {
+  content: "›";
+  display: inline-block;
+  width: 14px;
+  text-align: center;
+  font-size: 1rem;
+  line-height: 1;
+  transition: transform 0.16s var(--ns-ease);
+}
+
+.ns-studio__more[open] > summary::before,
+.ns-studio__fold[open] > summary::before {
+  transform: rotate(90deg);
+}
+
+.ns-studio__more > summary:hover,
+.ns-studio__fold > summary:hover {
+  background: var(--ns-info-soft);
+}
+
+.ns-studio__morecount {
+  padding: 0 6px;
+  border-radius: 999px;
+  background: var(--ns-info-soft);
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--ns-accent-ink);
+}
+
+.ns-studio__fold {
+  margin-top: 18px;
+}
+
+.ns-studio__fold > summary {
+  font-size: 0.82rem;
 }
 
 /* ================================================================ picture slots */
@@ -1592,6 +1693,41 @@ a.ns-studio__path:hover {
 
 /* ==================================================================== tools */
 
+/*
+ * Nine download buttons became one question and one button: an ordinary GET
+ * form, so the browser builds the address and nothing here needs JavaScript.
+ */
+
+.ns-export {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.ns-export__field {
+  flex: 1 1 220px;
+  min-width: 0;
+}
+
+.ns-export select {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid var(--ns-line);
+  border-radius: var(--ns-radius-sm);
+  background: var(--ns-card);
+  color: var(--ns-ink);
+  font: inherit;
+  font-size: 0.84rem;
+}
+
+.ns-export select:focus-visible {
+  outline: 2px solid var(--ns-blue);
+  outline-offset: 1px;
+}
+
+
+
 .ns-tools {
   display: flex;
   flex-wrap: wrap;
@@ -1636,10 +1772,18 @@ kbd {
   font-weight: 650;
 }
 
-/* ========================================================= command palette */
+/* ================================================================== search */
 
-/* The header button. Below a phone's width the label goes and the magnifier
-   stays, because the header has to hold the account menu too. */
+/*
+ * One box for everything: the button in the header, and the panel it opens.
+ *
+ * It replaced two search boxes that answered different halves of the same
+ * question, so the panel's whole job is to keep four kinds of answer - a job, a
+ * new thing, a place, a document, a sentence inside one - legible in one list.
+ * The headings do that work: a row is never read without the word above it
+ * saying what sort of thing it is.
+ */
+
 .ns-omni {
   display: inline-flex;
   align-items: center;
@@ -1685,45 +1829,42 @@ kbd {
   }
 }
 
-.ns-palette {
+.ns-find {
   position: fixed;
   inset: 0;
-  z-index: 200;
+  z-index: 120;
   display: flex;
+  align-items: flex-start;
   justify-content: center;
-  padding: 10vh 16px 16px;
+  padding: min(12vh, 96px) 16px 24px;
 }
 
-.ns-palette__scrim {
+.ns-find__scrim {
   position: absolute;
   inset: 0;
   border: 0;
   padding: 0;
-  background: rgb(4 12 26 / 46%);
-  backdrop-filter: blur(3px);
   cursor: default;
+  background: color-mix(in srgb, #0b1220 55%, transparent);
+  backdrop-filter: blur(3px);
+  animation: ns-fade 0.16s var(--ns-ease);
 }
 
-.ns-palette__panel {
+.ns-find__panel {
   position: relative;
+  width: min(680px, 100%);
+  max-height: min(70vh, 620px);
   display: flex;
   flex-direction: column;
-  width: min(660px, 100%);
-  max-height: 72vh;
-  border-radius: var(--ns-radius-lg);
-  border: 1px solid var(--ns-line);
-  background: var(--ns-card);
-  box-shadow: var(--ns-shadow-lg);
   overflow: hidden;
-  animation: ns-pop 0.16s var(--ns-ease);
+  background: var(--ns-card);
+  border: 1px solid var(--ns-line);
+  border-radius: var(--ns-radius-lg);
+  box-shadow: 0 28px 70px rgb(11 18 32 / 34%);
+  animation: ns-rise 0.18s var(--ns-ease);
 }
 
-@keyframes ns-pop {
-  from { opacity: 0; transform: translateY(-8px) scale(0.985); }
-  to { opacity: 1; transform: none; }
-}
-
-.ns-palette__field {
+.ns-find__field {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -1731,134 +1872,217 @@ kbd {
   border-bottom: 1px solid var(--ns-line);
 }
 
-.ns-palette__field svg {
-  width: 17px;
-  height: 17px;
-  color: var(--ns-muted);
+.ns-find__field svg {
+  width: 18px;
+  height: 18px;
   flex: none;
+  color: var(--ns-muted);
 }
 
-.ns-palette__field input {
+.ns-find__field input {
   flex: 1;
   min-width: 0;
   border: 0;
-  background: transparent;
+  background: none;
+  font: inherit;
+  font-size: 1rem;
   color: var(--ns-ink);
-  font-size: 0.96rem;
-  font-family: inherit;
-}
-
-.ns-palette__field input:focus {
   outline: none;
 }
 
-.ns-palette__field input::placeholder {
+.ns-find__field input::placeholder {
   color: var(--ns-muted);
 }
 
-.ns-palette__message {
+/* Something is on its way; never a reason to hide what is already listed. */
+.ns-find__spinner {
+  width: 14px;
+  height: 14px;
+  flex: none;
+  border: 2px solid color-mix(in srgb, var(--ns-blue) 28%, transparent);
+  border-top-color: var(--ns-blue);
+  border-radius: 50%;
+  animation: ns-spin 0.7s linear infinite;
+}
+
+.ns-find__said {
   margin: 0;
   padding: 10px 16px;
-  border-bottom: 1px solid var(--ns-line);
-  background: var(--ns-blue-soft);
+  font-size: 0.82rem;
   color: var(--ns-accent-ink);
-  font-size: 0.8rem;
-  font-weight: 600;
+  background: var(--ns-info-soft);
+  border-bottom: 1px solid var(--ns-line);
 }
 
-.ns-palette__list {
-  margin: 0;
-  padding: 6px;
-  list-style: none;
-  overflow-y: auto;
-  flex: 1;
+.ns-find__said.is-bad {
+  color: var(--ns-bad);
+  background: var(--ns-bad-soft);
 }
 
-.ns-palette__group {
-  padding: 10px 10px 4px;
-  font-size: 0.66rem;
+.ns-find__recents {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 16px 2px;
+}
+
+.ns-find__recentlabel {
+  font-size: 0.68rem;
   font-weight: 700;
-  letter-spacing: 0.09em;
+  letter-spacing: 0.07em;
   text-transform: uppercase;
   color: var(--ns-muted);
 }
 
-.ns-palette__item {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: baseline;
-  gap: 2px 12px;
+.ns-find__list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px;
+  scrollbar-width: thin;
+}
+
+.ns-find__group {
+  margin: 10px 0 4px;
+  padding: 0 10px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--ns-muted);
+}
+
+.ns-find__group:first-child {
+  margin-top: 2px;
+}
+
+.ns-find__row {
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
   padding: 9px 10px;
   border: 0;
   border-radius: var(--ns-radius-sm);
-  background: transparent;
+  background: none;
   text-align: left;
   cursor: pointer;
+  color: inherit;
+  font: inherit;
 }
 
-.ns-palette__item.is-active {
-  background: var(--ns-blue-soft);
+.ns-find__row[data-active="true"] {
+  background: var(--ns-info-soft);
 }
 
-.ns-palette__item:disabled {
-  opacity: 0.6;
+.ns-find__row:disabled {
+  opacity: 0.55;
   cursor: progress;
 }
 
-.ns-palette__title {
-  font-size: 0.87rem;
-  font-weight: 620;
-  color: var(--ns-ink);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.ns-palette__detail {
-  grid-column: 1;
-  font-size: 0.74rem;
-  color: var(--ns-muted);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.ns-palette__kind {
-  grid-row: 1;
-  grid-column: 2;
-  font-size: 0.68rem;
-  font-weight: 650;
-  color: var(--ns-muted);
-}
-
-.ns-palette__none {
-  padding: 26px 16px;
-  text-align: center;
-  font-size: 0.84rem;
-  color: var(--ns-muted);
-}
-
-.ns-palette__foot {
+.ns-find__top {
   display: flex;
-  gap: 16px;
-  padding: 9px 16px;
+  align-items: center;
+  gap: 8px;
+}
+
+.ns-find__title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--ns-ink);
+}
+
+.ns-find__badge {
+  padding: 1px 6px;
+  border-radius: 999px;
+  background: var(--ns-warn-soft);
+  color: var(--ns-warn);
+  font-size: 0.64rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.ns-find__out {
+  color: var(--ns-muted);
+  font-size: 0.8rem;
+}
+
+.ns-find__detail {
+  font-size: 0.76rem;
+  color: var(--ns-muted);
+}
+
+/* A sentence out of the site, with what was typed left in full colour. */
+.ns-find__snippet {
+  font-size: 0.78rem;
+  line-height: 1.5;
+  color: var(--ns-muted);
+}
+
+.ns-find__snippet mark {
+  padding: 0 1px;
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--ns-warn) 32%, transparent);
+  color: var(--ns-ink);
+  font-weight: 600;
+}
+
+.ns-find__none {
+  margin: 0;
+  padding: 22px 16px;
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--ns-muted);
+}
+
+.ns-find__foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px;
+  padding: 8px 14px;
   border-top: 1px solid var(--ns-line);
-  background: var(--ns-raised);
+  background: var(--ns-sunk);
   font-size: 0.7rem;
   color: var(--ns-muted);
 }
 
-.ns-palette__foot span {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
+.ns-find__foot kbd {
+  padding: 1px 5px;
+  border: 1px solid var(--ns-line);
+  border-radius: 4px;
+  background: var(--ns-card);
+  font-family: inherit;
+  font-size: 0.68rem;
 }
 
-.ns-palette__foot kbd {
-  min-width: 18px;
-  padding: 1px 5px;
-  font-size: 0.66rem;
+.ns-find__tip {
+  margin-left: auto;
+}
+
+@keyframes ns-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes ns-rise {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes ns-spin {
+  to { transform: rotate(360deg); }
+}
+
+@media (max-width: 640px) {
+  .ns-find {
+    padding: 8vh 10px 16px;
+  }
+
+  .ns-find__tip {
+    display: none;
+  }
 }
 
 /* ================================================================== motion */
@@ -1866,7 +2090,9 @@ kbd {
 @media (prefers-reduced-motion: reduce) {
   .ns-pulse__dot,
   .ns-work__panel,
-  .ns-palette__panel {
+  .ns-find__panel,
+  .ns-find__scrim,
+  .ns-find__spinner {
     animation: none;
   }
 
@@ -1912,56 +2138,218 @@ kbd {
 /* ======================================================== advanced toolbox */
 
 /*
- * The twelve jobs that act on the whole website at once
+ * The jobs that act on the whole website at once
  * (cms/components/AdvancedTools.tsx). They appear twice - the Tools tab here and
  * the Advanced tab of Site Settings - so the shelf is styled rather than the
  * place it sits in, and both look the same.
  *
- * The only colour with meaning is the left edge of a card: blue for a job that
- * reads the site, amber for one that changes it. Everything else is the same
- * card, because a toolbox where every tool looks different is a toolbox nobody
- * reads twice.
+ * Thirteen open forms was a wall, and a wall reads as "this is for somebody
+ * else", so a job is one line until it is clicked. The only colour with meaning
+ * is the left edge: blue for a job that reads the site, amber for one that
+ * changes it. Everything else is the same row, because a toolbox where every
+ * tool looks different is a toolbox nobody reads twice.
  */
 
-.ns-toolshelf {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+.ns-shelf {
+  display: flex;
+  flex-direction: column;
   gap: 12px;
-  align-items: start;
 }
 
-.ns-toolshelf__intro {
+.ns-shelf__intro {
   margin: 0 0 12px;
   color: var(--ns-muted);
   font-size: 0.82rem;
   line-height: 1.6;
 }
 
+.ns-shelf__list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
 .ns-toolshelf-wrap {
   margin-bottom: 24px;
 }
 
-.ns-tool {
+/* ------------------------------------------------- narrowing a long list */
+
+/*
+ * The bar above a long list: a box to type into and a row of buttons for the
+ * two or three questions actually asked of it. Shared by the toolbox and the
+ * page list, so the two behave the same way and are learnt once.
+ */
+
+.ns-shelf__bar {
   display: flex;
-  flex-direction: column;
-  gap: 9px;
-  padding: 14px 15px;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.ns-shelf__find {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1 1 260px;
+  padding: 0 12px;
+  border: 1px solid var(--ns-line);
+  border-radius: 999px;
+  background: var(--ns-sunk);
+  transition: border-color 0.15s var(--ns-ease), background 0.15s var(--ns-ease);
+}
+
+.ns-shelf__find:focus-within {
+  border-color: var(--ns-blue);
+  background: var(--ns-card);
+}
+
+.ns-shelf__find svg {
+  width: 15px;
+  height: 15px;
+  flex: none;
+  color: var(--ns-muted);
+}
+
+.ns-shelf__find input {
+  flex: 1;
+  min-width: 0;
+  padding: 8px 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: 0.84rem;
+  color: var(--ns-ink);
+  outline: none;
+}
+
+.ns-shelf__find input::placeholder {
+  color: var(--ns-muted);
+}
+
+.ns-seg {
+  display: inline-flex;
+  padding: 2px;
+  border: 1px solid var(--ns-line);
+  border-radius: 999px;
+  background: var(--ns-sunk);
+}
+
+.ns-seg__item {
+  padding: 6px 12px;
+  border: 0;
+  border-radius: 999px;
+  background: none;
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--ns-muted);
+  cursor: pointer;
+  transition: background 0.15s var(--ns-ease), color 0.15s var(--ns-ease);
+}
+
+.ns-seg__item:hover {
+  color: var(--ns-ink);
+}
+
+.ns-seg__item.is-on {
+  background: var(--ns-card);
+  color: var(--ns-ink);
+  box-shadow: var(--ns-shadow-sm);
+}
+
+.ns-seg__item:focus-visible {
+  outline: 2px solid var(--ns-blue);
+  outline-offset: 1px;
+}
+
+/* How many rows the narrowing left, and the way back to all of them. */
+.ns-shelf__count {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 10px;
+  font-size: 0.78rem;
+  color: var(--ns-muted);
+}
+
+.ns-shelf__clear {
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: 0.78rem;
+  color: var(--ns-accent-ink);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* --------------------------------------------------------------- one job */
+
+.ns-tool {
   border: 1px solid var(--ns-line);
   border-left: 3px solid var(--ns-blue);
   border-radius: var(--ns-radius);
   background: var(--ns-card);
   box-shadow: var(--ns-shadow-sm);
+  overflow: hidden;
 }
 
 .ns-tool--change {
   border-left-color: var(--ns-warn);
 }
 
+.ns-tool.is-open {
+  box-shadow: var(--ns-shadow);
+}
+
 .ns-tool__head {
+  width: 100%;
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: 10px;
+  padding: 12px 14px;
+  border: 0;
+  background: none;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.ns-tool__head:hover {
+  background: var(--ns-sunk);
+}
+
+.ns-tool__head:focus-visible {
+  outline: 2px solid var(--ns-blue);
+  outline-offset: -2px;
+}
+
+.ns-tool__chevron {
+  display: flex;
+  flex: none;
+  color: var(--ns-muted);
+  transition: transform 0.18s var(--ns-ease);
+}
+
+.ns-tool__chevron svg {
+  width: 15px;
+  height: 15px;
+}
+
+.ns-tool.is-open .ns-tool__chevron {
+  transform: rotate(90deg);
+}
+
+.ns-tool__heading {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  flex: 1;
 }
 
 .ns-tool__title {
@@ -1969,6 +2357,26 @@ kbd {
   color: var(--ns-ink);
   font-size: 0.92rem;
   font-weight: 650;
+}
+
+/* The one line that has to be enough to choose by. */
+.ns-tool__one {
+  font-size: 0.77rem;
+  line-height: 1.5;
+  color: var(--ns-muted);
+}
+
+.ns-tool__body {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  padding: 2px 14px 14px 30px;
+}
+
+/* A display of its own would otherwise beat the browser's own rule for a
+   hidden element, and every job would sit open however the chevron pointed. */
+.ns-tool__body[hidden] {
+  display: none;
 }
 
 .ns-tool__blurb {

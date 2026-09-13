@@ -12,7 +12,7 @@ export const Enquiries: CollectionConfig = {
   admin: {
     useAsTitle: "name",
     defaultColumns: ["name", "service", "state", "createdAt"],
-    group: "Enquiries",
+    group: "Messages",
     description:
       "Messages sent through the website contact form. Private: nothing here is ever published.",
     listSearchableFields: ["name", "email", "message"],
