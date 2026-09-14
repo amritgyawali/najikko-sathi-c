@@ -31,6 +31,8 @@ import { BackupNowButton as BackupNowButton_6d206b79e65e5bae25d706cf7e658037 } f
 import { RestoreBackup as RestoreBackup_c39d1c0b6558e36324f8ed049deb6f4d } from '../../../cms/components/RestoreBackup'
 import { SectionStyleRowLabel as SectionStyleRowLabel_5dc8d5dbf0a219287286830dbaf4d3bc } from '../../../cms/components/SectionStyleRowLabel'
 import { AdvancedToolsField as AdvancedToolsField_0f6fcbdf2ef6ef2ff8208df79e3783c5 } from '../../../cms/components/AdvancedTools'
+import { BrandIcon as BrandIcon_de6fd9a985d02e462534f3e357afb521 } from '../../../cms/components/BrandGraphic'
+import { BrandLogo as BrandLogo_de6fd9a985d02e462534f3e357afb521 } from '../../../cms/components/BrandGraphic'
 import { OmniSearch as OmniSearch_638cbef8afa49d463f7eb26db363cacd } from '../../../cms/components/dashboard/OmniSearch'
 import { ThemeToggle as ThemeToggle_03e2855782842afd8d454d76720a31ec } from '../../../cms/components/ThemeToggle'
 import { LoginSignupLink as LoginSignupLink_4ecb88133f73eab493d10ad23060fd42 } from '../../../cms/components/LoginSignupLink'
@@ -73,6 +75,8 @@ export const importMap = {
   "/cms/components/RestoreBackup#RestoreBackup": RestoreBackup_c39d1c0b6558e36324f8ed049deb6f4d,
   "/cms/components/SectionStyleRowLabel#SectionStyleRowLabel": SectionStyleRowLabel_5dc8d5dbf0a219287286830dbaf4d3bc,
   "/cms/components/AdvancedTools#AdvancedToolsField": AdvancedToolsField_0f6fcbdf2ef6ef2ff8208df79e3783c5,
+  "/cms/components/BrandGraphic#BrandIcon": BrandIcon_de6fd9a985d02e462534f3e357afb521,
+  "/cms/components/BrandGraphic#BrandLogo": BrandLogo_de6fd9a985d02e462534f3e357afb521,
   "/cms/components/dashboard/OmniSearch#OmniSearch": OmniSearch_638cbef8afa49d463f7eb26db363cacd,
   "/cms/components/ThemeToggle#ThemeToggle": ThemeToggle_03e2855782842afd8d454d76720a31ec,
   "/cms/components/LoginSignupLink#LoginSignupLink": LoginSignupLink_4ecb88133f73eab493d10ad23060fd42,

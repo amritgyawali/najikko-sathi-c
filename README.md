@@ -34,7 +34,7 @@ Content is managed through a full admin dashboard powered by
 | Front page copy and imagery | Site → Homepage & page copy → Home | `/` |
 | Chairman and director messages | Site → Homepage & page copy → Home - leadership | `/` |
 | Headings above the service grid, the production band, the Right Sanchar band | Site → Homepage & page copy | `/services`, `/production`, `/right-sanchar` |
-| Company logo, shown in the header and the media system wheel | Site → Site Settings | Every page |
+| The one company logo - every mark on the site and in this dashboard is drawn from it | Site → Site Settings → Logo | Every page, the browser tab, phone home screens, shared links, and the dashboard |
 | Navbar links, order and header button | Site → Navigation | Every page |
 | Site-wide notice, with a schedule | Site → Announcement bar | Every page |
 | Website colours, corner radius, heading font | Site → Appearance | Every page |
@@ -63,17 +63,42 @@ advertisement - each link to that discipline's page, and the company logo
 uploaded in **Site → Site Settings** sits at its centre. Until a logo is
 uploaded the centre falls back to the initials mark.
 
-Each petal is a solid slab rather than a flat shape: a darkened copy of the
-wedge sits behind the face, offset outwards, and the sliver showing between the
-two is its side wall. A sheen runs down the face and a thin lit edge runs round
-it.
+The wheel's movement is deliberately quiet: the petals settle into the ring one
+after another when the page opens, and pointing at one lifts it a little way out
+while its neighbours step back and dim. Nothing circles it, nothing is thrown
+off it, and nothing keeps moving once it has settled - the shape and its colours
+carry the band, and the animation only marks whichever petal is being read. With
+no script to run it the petals are simply drawn where they belong, and someone
+who has asked their browser for less motion gets the wheel with none of it.
 
-The movement is deliberately simple and lives in the stylesheet. The petals fade
-in one after another when the page opens, and pointing at one brightens it a
-little and sharpens its edge. Nothing moves out of the ring and nothing is
-thrown off it. The wheel is drawn on the server, so it arrives complete without
-any script, and someone who has asked their browser for less motion gets it with
-no fade at all.
+### One logo, everywhere
+
+There is a single logo on the site, uploaded at **Site → Site Settings → Logo**.
+Replacing that one file changes every mark at once, with nothing else to
+remember and no second copy to keep in step:
+
+| Where | What it shows |
+| --- | --- |
+| The header, on every page | The logo, in place of the initials mark |
+| The footer, above the company description | The same logo, linking home |
+| The media system wheel on the front page | The logo at its centre |
+| The about page's identity panel | The logo above the company name |
+| The browser tab and bookmarks | The logo as the site's icon |
+| A phone's home screen | The logo, drawn onto the company blue at 180x180 - a home screen icon has to be an opaque square, so it is composed rather than linked |
+| A link shared on a social network | The logo in the corner of the card |
+| Google and other search engines | The logo, in the site's structured data |
+| This dashboard | The logo beside the menu and above the sign-in form, and as the dashboard's own tab icon |
+
+Every one of those reads `lib/branding.ts`, which is the only place the mark is
+resolved. A square PNG of about 512x512 suits all of them. Until a logo has been
+uploaded they fall back to the initials from **Site → Site Settings**, or to the
+drawing checked in at `public/brand-mark.svg` where a file rather than a drawn
+mark is needed. The change takes effect on the next request, like every other
+setting - it is a save, not a deploy.
+
+An SVG works everywhere except the two places that are drawn on the server
+rather than linked - the home screen icon and the share card - which fall back
+to the initials, because the drawing tool cannot read an SVG from an address.
 
 In **Site → Homepage & page copy**, the kicker above the hero heading has no
 wording of its own: it shows only while something is written in it. The hero

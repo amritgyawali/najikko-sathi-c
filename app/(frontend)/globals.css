@@ -968,6 +968,39 @@ footer h3 {
   font-weight: 600;
 }
 
+/*
+ * The company's mark at the top of the footer's first column - the same logo
+ * the header and the browser tab use, uploaded once in Site Settings.
+ */
+.footer-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 22px;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.footer-brand img {
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.footer-brand .brand-mark {
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  font-size: 16px;
+}
+
+.footer-brand:hover {
+  color: #d7e2ff;
+}
+
 .footer-about p,
 footer li {
   color: rgb(216 226 255 / 72%);
@@ -1143,19 +1176,8 @@ footer li a:hover {
   width: 100%;
   height: 100%;
   overflow: visible;
-  filter: drop-shadow(0 8px 16px rgb(6 43 92 / 16%));
-  transition: filter .25s ease;
-}
-
-.media-petal svg,
-.media-petal span {
-  animation: media-petal-in .5s ease-out both;
-  animation-delay: calc(var(--petal-index, 0) * 70ms);
-}
-
-@keyframes media-petal-in {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  filter: drop-shadow(0 8px 16px rgb(6 43 92 / 14%));
+  transition: filter .28s ease;
 }
 
 .media-petal path {
@@ -1163,48 +1185,17 @@ footer li a:hover {
   pointer-events: auto;
 }
 
-.media-petal-sheen {
-  opacity: 0;
-  transition: opacity .25s ease;
-}
-
-/* The lit edge round each petal, which sharpens on the one being read. */
-.media-petal-rim {
-  opacity: .14;
-  transition: opacity .25s ease;
-}
-
-.media-petal:hover .media-petal-rim,
-.media-petal:focus-visible .media-petal-rim {
-  opacity: .6;
-}
-
-/* The wedge being read brightens in place; nothing around it moves. */
-.media-petal:hover,
-.media-petal:focus-visible {
+/* The wedge being read is lifted off the page, and its neighbours settle back. */
+.media-petal.is-active {
   z-index: 1;
-  outline: none;
 }
 
-.media-petal:hover .media-petal-sheen {
-  opacity: .14;
+.media-petal.is-active svg {
+  filter: drop-shadow(0 14px 26px rgb(6 43 92 / 24%));
 }
 
-.media-petal:focus-visible .media-petal-sheen {
-  opacity: .22;
-}
-
-.media-petal:hover svg,
-.media-petal:focus-visible svg {
-  filter: drop-shadow(0 12px 22px rgb(6 43 92 / 22%));
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .media-petal svg,
-  .media-petal span { animation: none; }
-  .media-petal svg,
-  .media-petal-sheen,
-  .media-petal-rim { transition: none; }
+.media-petal.is-away svg {
+  filter: drop-shadow(0 5px 12px rgb(6 43 92 / 10%));
 }
 
 .media-petal span {
@@ -1218,7 +1209,7 @@ footer li a:hover {
   line-height: 1.2;
   letter-spacing: -.01em;
   text-align: center;
-  text-shadow: 0 1px 3px rgb(0 0 0 / 32%);
+  text-shadow: 0 1px 2px rgb(0 0 0 / 20%);
   transform: translate(-50%, -50%);
 }
 
@@ -1226,7 +1217,7 @@ footer li a:hover {
   position: absolute;
   top: 50%;
   left: 50%;
-  z-index: 4;
+  z-index: 3;
   display: grid;
   place-items: center;
   width: 30%;

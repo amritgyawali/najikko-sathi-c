@@ -97,6 +97,8 @@
 .about-story-grid { display: grid; grid-template-columns: .8fr 1.2fr; align-items: start; gap: 70px; }
 .identity-panel { padding: 42px; border: 1px solid var(--line); border-radius: 22px; background: var(--surface); }
 .identity-panel .brand-mark { width: 72px; height: 72px; margin-bottom: 36px; font-size: 28px; }
+/* The uploaded logo stands where the initials mark otherwise does. */
+.identity-logo { display: block; width: auto; height: 72px; max-width: 190px; margin-bottom: 36px; object-fit: contain; object-position: left center; }
 .identity-panel h2 { margin: 0; color: var(--primary); font-size: 35px; line-height: 1.15; font-weight: 600; letter-spacing: -.03em; }
 .identity-panel p { color: var(--muted); font-size: 15px; line-height: 1.6; }
 .identity-rule { display: block; width: 42px; height: 3px; margin-block: 38px; background: var(--signal); }
