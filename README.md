@@ -63,17 +63,13 @@ advertisement - each link to that discipline's page, and the company logo
 uploaded in **Site → Site Settings** sits at its centre. Until a logo is
 uploaded the centre falls back to the initials mark.
 
-Each petal is a solid slab rather than a flat shape: a darkened copy of the
-wedge sits behind the face, offset outwards, and the sliver showing between the
-two is its side wall. A sheen runs down the face and a thin lit edge runs round
-it.
-
-The movement is deliberately simple and lives in the stylesheet. The petals fade
-in one after another when the page opens, and pointing at one brightens it a
-little and sharpens its edge. Nothing moves out of the ring and nothing is
-thrown off it. The wheel is drawn on the server, so it arrives complete without
-any script, and someone who has asked their browser for less motion gets it with
-no fade at all.
+The wheel's movement is deliberately quiet: the petals settle into the ring one
+after another when the page opens, and pointing at one lifts it a little way out
+while its neighbours step back and dim. Nothing circles it, nothing is thrown
+off it, and nothing keeps moving once it has settled - the shape and its colours
+carry the band, and the animation only marks whichever petal is being read. With
+no script to run it the petals are simply drawn where they belong, and someone
+who has asked their browser for less motion gets the wheel with none of it.
 
 In **Site → Homepage & page copy**, the kicker above the hero heading has no
 wording of its own: it shows only while something is written in it. The hero

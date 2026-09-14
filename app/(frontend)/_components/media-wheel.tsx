@@ -1,6 +1,9 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
-import { useId, type CSSProperties } from "react";
+import { motion, useReducedMotion, type Transition } from "framer-motion";
+import { useCallback, useEffect, useId, useState } from "react";
 
 /**
  * The media system wheel: six petals around the company logo, one for each
@@ -12,17 +15,13 @@ import { useId, type CSSProperties } from "react";
  * and its label take the pointer, which gives every link a hit area matching
  * the petal a visitor can actually see.
  *
- * Each petal is drawn as a solid slab rather than a flat shape: a darkened copy
- * of the wedge sits behind the face, offset outwards, and the sliver showing
- * between the two reads as its side wall. A sheen runs down the face and a thin
- * lit edge runs round it.
- *
- * The movement is kept simple and lives entirely in the stylesheet: the petals
- * fade in one after another when the page opens, and the one being pointed at
- * brightens a little and sharpens its edge. Nothing moves out of the ring,
- * nothing is thrown off it, and nothing springs back, so the wheel holds its
- * shape the whole time. Someone who has asked for less motion gets the wheel
- * with no fade at all.
+ * The movement is deliberately quiet. The petals settle into the ring one after
+ * another when the page opens, and pointing at one lifts it a little way out
+ * while its neighbours step back and dim. Nothing is thrown off it, nothing
+ * circles it, and nothing keeps moving once the wheel has settled - the shape
+ * and its colours carry the band, and the animation only points at whichever
+ * petal the visitor is reading. Someone who has asked for less motion gets the
+ * wheel with none of it.
  */
 
 export type WheelPetal = { label: string; href: string; from: string; to: string };
@@ -36,8 +35,14 @@ const HALF_ANGLE = 26;
 const CORNER = 4;
 /** Where a petal's label sits, measured from the middle of the wheel. */
 const LABEL = (INNER + OUTER) / 2;
-/** How much of the side wall shows beyond the face. */
-const DEPTH = 1.1;
+
+/** How far out of the ring the pointed-at petal is lifted. */
+const LIFT = 2.4;
+/** How far the other five step back while it is out. */
+const RECOIL = 0.9;
+/** How much bigger the lifted petal is, and how much smaller the others. */
+const GROW = 1.05;
+const SHRINK = 0.975;
 
 const rad = (degrees: number) => (degrees * Math.PI) / 180;
 const round = (value: number) => Math.round(value * 100) / 100;
@@ -46,17 +51,6 @@ const point = (radius: number, degrees: number) =>
   [50 + radius * Math.cos(rad(degrees)), 50 + radius * Math.sin(rad(degrees))] as const;
 
 const at = (radius: number, degrees: number) => point(radius, degrees).map(round).join(" ");
-
-/** Darkens (negative) or lightens (positive) a colour from the wheel's data. */
-function shade(hex: string, amount: number): string {
-  const value = hex.replace("#", "");
-  const full = value.length === 3 ? value.replace(/(.)/g, "$1$1") : value;
-  const channels = [0, 2, 4].map((index) => parseInt(full.slice(index, index + 2), 16));
-  const mixed = channels.map((channel) =>
-    Math.max(0, Math.min(255, Math.round(amount < 0 ? channel * (1 + amount) : channel + (255 - channel) * amount))),
-  );
-  return `#${mixed.map((channel) => channel.toString(16).padStart(2, "0")).join("")}`;
-}
 
 /**
  * One petal: an arc along the outer edge, an arc back along the inner edge,
@@ -94,71 +88,128 @@ export function MediaWheel({
   initials: string;
 }) {
   const gradient = useId().replace(/[^a-zA-Z0-9-]/g, "");
+  const still = useReducedMotion();
+
+  const [hovered, setHovered] = useState<number | null>(null);
+  // The petals settle into the ring on load; after that they answer the
+  // pointer at once, without the entrance delay still standing in the way.
+  const [entered, setEntered] = useState(false);
+
+  useEffect(() => {
+    const settled = window.setTimeout(() => setEntered(true), 400 + petals.length * 80);
+    return () => window.clearTimeout(settled);
+  }, [petals.length]);
+
+  const enter = useCallback((index: number) => setHovered(index), []);
+
+  // Guarded by index, so moving straight from one petal to the next cannot
+  // leave the wheel thinking nothing is pointed at.
+  const leave = useCallback(
+    (index: number) => setHovered((current) => (current === index ? null : current)),
+    [],
+  );
+  const leaveAll = useCallback(() => setHovered(null), []);
+
+  const settle: Transition = still
+    ? { duration: 0 }
+    : { type: "spring", stiffness: 260, damping: 26, mass: 0.6 };
 
   return (
     <div className="media-system" role="group" aria-label="Our media system">
-      <div className="media-system-wheel">
+      <div className="media-system-wheel" onMouseLeave={leaveAll}>
         {petals.map((petal, index) => {
           // Clockwise from the top, which in SVG coordinates starts at -90°.
           const axis = -90 + (index * 360) / petals.length;
-          const [labelX, labelY] = point(LABEL, axis);
+          const active = hovered === index;
+          const away = hovered !== null && !active;
+          const shift = active ? LIFT : away ? -RECOIL : 0;
+          const scale = active ? GROW : away ? SHRINK : 1;
+          // The label rides the petal: the wedge grows about the middle of the
+          // wheel, so the label's distance from it grows by the same amount.
+          const [labelX, labelY] = point(LABEL * scale + shift, axis);
+          // Where it sits at rest. Written as plain styles as well, so the
+          // label is in the right place in the page the server sends, before
+          // any of this has been asked to run.
+          const [restX, restY] = point(LABEL, axis);
           const shape = petalPath(axis);
-          const wallX = round(Math.cos(rad(axis)) * DEPTH);
-          const wallY = round(Math.sin(rad(axis)) * DEPTH);
+
+          const flight: Transition =
+            entered || still
+              ? settle
+              : { duration: 0.55, ease: [0.16, 1, 0.3, 1], delay: 0.08 * index };
 
           return (
             <Link
-              className="media-petal"
+              className={`media-petal${active ? " is-active" : ""}${away ? " is-away" : ""}`}
               href={petal.href}
               key={petal.label}
-              // Read by the stylesheet to fade the petals in one after another.
-              style={{ "--petal-index": index } as CSSProperties}
+              onMouseEnter={() => enter(index)}
+              onMouseLeave={() => leave(index)}
+              onFocus={() => enter(index)}
+              onBlur={() => leave(index)}
             >
-              <svg viewBox="0 0 100 100" aria-hidden="true">
+              <motion.svg
+                viewBox="0 0 100 100"
+                aria-hidden="true"
+                initial={still ? false : { scale: 0.94, opacity: 0, x: "0%", y: "0%" }}
+                animate={{
+                  scale,
+                  opacity: away ? 0.72 : 1,
+                  x: `${round(Math.cos(rad(axis)) * shift)}%`,
+                  y: `${round(Math.sin(rad(axis)) * shift)}%`,
+                }}
+                transition={flight}
+              >
                 <defs>
-                  <linearGradient id={`${gradient}-face-${index}`} x1="0" y1="0" x2="0.55" y2="1">
+                  <linearGradient id={`${gradient}-${index}`} x1="0" y1="0" x2="0.55" y2="1">
                     <stop offset="0%" stopColor={petal.from} />
                     <stop offset="100%" stopColor={petal.to} />
                   </linearGradient>
-                  <linearGradient id={`${gradient}-gloss-${index}`} x1="0" y1="0" x2="0.35" y2="1">
-                    <stop offset="0%" stopColor="#fff" stopOpacity="0.42" />
-                    <stop offset="45%" stopColor="#fff" stopOpacity="0.06" />
-                    <stop offset="100%" stopColor="#000" stopOpacity="0.14" />
-                  </linearGradient>
                 </defs>
-                {/* The side wall, pushed out behind the face. */}
-                <path
+                <path d={shape} fill={`url(#${gradient}-${index})`} />
+                {/* The wedge being read lightens, so the eye lands on it
+                    without anything having to move across the page. */}
+                <motion.path
                   d={shape}
-                  fill={shade(petal.to, -0.45)}
-                  transform={`translate(${wallX} ${wallY})`}
+                  fill="#fff"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: active ? 0.14 : 0 }}
+                  transition={{ duration: 0.28, ease: "easeOut" }}
                 />
-                <path d={shape} fill={`url(#${gradient}-face-${index})`} />
-                <path d={shape} fill={`url(#${gradient}-gloss-${index})`} />
-                {/* Lightens the petal being pointed at. */}
-                <path className="media-petal-sheen" d={shape} fill="#fff" />
-                <path
-                  className="media-petal-rim"
-                  d={shape}
-                  fill="none"
-                  stroke="#fff"
-                  strokeWidth={0.6}
-                  strokeLinejoin="round"
-                />
-              </svg>
-              <span style={{ left: `${round(labelX)}%`, top: `${round(labelY)}%` }}>
+              </motion.svg>
+              <motion.span
+                style={{ left: `${round(restX)}%`, top: `${round(restY)}%` }}
+                initial={still ? false : { opacity: 0, x: "-50%", y: "-50%" }}
+                animate={{
+                  left: `${round(labelX)}%`,
+                  top: `${round(labelY)}%`,
+                  opacity: away ? 0.78 : 1,
+                  scale: active ? 1.06 : 1,
+                  x: "-50%",
+                  y: "-50%",
+                }}
+                transition={flight}
+              >
                 {petal.label}
-              </span>
+              </motion.span>
             </Link>
           );
         })}
 
-        <span className="media-system-core">
+        {/* Centred by half its own width, which framer motion has to be told
+            about: it writes the whole transform, so a translate left in the
+            stylesheet would simply be overwritten. */}
+        <motion.span
+          className="media-system-core"
+          animate={{ scale: hovered === null ? 1 : 1.04, x: "-50%", y: "-50%" }}
+          transition={{ type: "spring", stiffness: 260, damping: 24 }}
+        >
           {logoUrl ? (
             <Image src={logoUrl} alt={logoAlt} width={220} height={220} />
           ) : (
             <strong>{initials}</strong>
           )}
-        </span>
+        </motion.span>
       </div>
     </div>
   );
