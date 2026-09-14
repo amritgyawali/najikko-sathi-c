@@ -968,6 +968,39 @@ footer h3 {
   font-weight: 600;
 }
 
+/*
+ * The company's mark at the top of the footer's first column - the same logo
+ * the header and the browser tab use, uploaded once in Site Settings.
+ */
+.footer-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 22px;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.footer-brand img {
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.footer-brand .brand-mark {
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  font-size: 16px;
+}
+
+.footer-brand:hover {
+  color: #d7e2ff;
+}
+
 .footer-about p,
 footer li {
   color: rgb(216 226 255 / 72%);

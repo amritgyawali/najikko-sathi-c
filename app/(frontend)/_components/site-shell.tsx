@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, LogIn, Mail, MapPin, Phone, Share2 } from "lucide-react";
 import { getBusiness, getFooter, getNavigation } from "@/lib/content";
+import { brandingOf } from "@/lib/branding";
 import { adminUrl } from "../_data/site";
 import { LanguageToggle } from "./language-toggle";
 import { Navigation } from "./navigation";
@@ -72,11 +73,22 @@ export async function Header() {
 
 export async function Footer() {
   const [business, footer] = await Promise.all([getBusiness(), getFooter()]);
+  const branding = brandingOf(business);
 
   return (
     <footer id="contact">
       <div className="site-container footer-grid">
         <div className="footer-about">
+          {/* The same mark as the header and the tab icon, from the one logo
+              uploaded in Site Settings. Until there is one, the initials. */}
+          <Link className="footer-brand" href="/" aria-label={`${business.shortName} home`}>
+            {branding.uploaded ? (
+              <Image src={branding.url} alt="" width={132} height={132} />
+            ) : (
+              <span className="brand-mark" aria-hidden="true">{business.initials}</span>
+            )}
+            <span>{business.legalName}</span>
+          </Link>
           <h3>Company Info</h3>
           <p>
             {footer.about ||

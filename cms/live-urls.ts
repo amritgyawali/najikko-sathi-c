@@ -56,7 +56,7 @@ const globalTargets: Record<string, LiveTarget> = {
   footer: { path: "/", where: "The footer at the bottom of every page." },
   announcement: { path: "/", where: "The notice bar above the header, on every page." },
   appearance: { path: "/", where: "Colours and type on every page." },
-  "site-settings": { path: "/", where: "Company details, the logo and contact information, on every page." },
+  "site-settings": { path: "/", where: "Company details, the one logo every mark on the site is drawn from, and contact information, on every page." },
 };
 
 const text = (value: unknown): string => (typeof value === "string" ? value.trim() : "");

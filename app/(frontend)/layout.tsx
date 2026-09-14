@@ -8,8 +8,9 @@ import { Footer, Header } from "./_components/site-shell";
 import { LanguageProvider } from "./_components/language-provider";
 import { StructuredData } from "./_components/structured-data";
 import { TrackPageView } from "./_components/TrackPageView";
-import { organization, siteUrl } from "./_lib/seo";
+import { organizationSchema, siteUrl } from "./_lib/seo";
 import { getBusiness, getNepaliFont, getSeoSettings, getSiteStyles, getTheme } from "@/lib/content";
+import { brandingOf, iconsFor } from "@/lib/branding";
 import { LANGUAGE_COOKIE, normalizeLanguage } from "@/lib/i18n/config";
 
 const hanken = Hanken_Grotesk({
@@ -74,7 +75,9 @@ export async function generateMetadata(): Promise<Metadata> {
             "max-video-preview": -1,
           },
         },
-    icons: { icon: "/brand-mark.svg" },
+    // The tab icon is the logo uploaded in Site Settings, so there is one
+    // file to replace rather than a favicon to remember separately.
+    icons: iconsFor(brandingOf(business)),
   };
 }
 
@@ -124,7 +127,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
         </LanguageProvider>
         <StructuredData
           data={[
-            organization,
+            organizationSchema(brandingOf(business).url),
             {
               "@context": "https://schema.org",
               "@type": "WebSite",

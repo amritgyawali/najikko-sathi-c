@@ -24,7 +24,7 @@ import type {
   Team,
   WellWisher,
 } from "@/payload-types";
-import { mediaAlt, mediaUrl } from "@/lib/media";
+import { mediaAlt, mediaMimeType, mediaUrl } from "@/lib/media";
 import { NEPALI_FONT_FAMILY, NEPALI_FONT_URL, cssFontFamily, safeFontUrl } from "@/lib/fonts";
 import { buildSiteCss, customFontUrls } from "@/lib/typography";
 import {
@@ -97,6 +97,8 @@ export type BusinessInfo = {
   /** The logo uploaded in Site Settings, or null while none has been. */
   logoUrl: string | null;
   logoAlt: string;
+  /** What kind of file that logo is, so the browser tab icon can be labelled. */
+  logoType: string | null;
 };
 
 export const getBusiness = cache(async (): Promise<BusinessInfo> => {
@@ -106,6 +108,7 @@ export const getBusiness = cache(async (): Promise<BusinessInfo> => {
     phones: [...fallbackBusiness.phones],
     logoUrl: null,
     logoAlt: fallbackBusiness.legalName,
+    logoType: null,
   };
   if (!settings) return base;
 
@@ -125,9 +128,12 @@ export const getBusiness = cache(async (): Promise<BusinessInfo> => {
     rightSanchar: or(settings.rightSanchar, base.rightSanchar),
     rightSancharLabel: or(settings.rightSancharLabel, base.rightSancharLabel),
     // A logo uploaded in the dashboard replaces the initials mark everywhere
-    // it appears: the header, the media system wheel, and the footer.
+    // one is drawn - the header, the media system wheel, the footer, the about
+    // page's identity panel, the browser tab, the phone home screen, the share
+    // card and the dashboard itself. See lib/branding.ts.
     logoUrl: mediaUrl(settings.logo),
     logoAlt: mediaAlt(settings.logo, or(settings.legalName, base.legalName)),
+    logoType: mediaMimeType(settings.logo),
   };
 });
 

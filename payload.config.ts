@@ -157,6 +157,13 @@ export default buildConfig({
     // renders a broken image whenever that request is blocked.
     avatar: "default",
     components: {
+      // The dashboard wears the company's own mark - the one logo uploaded in
+      // Site → Site Settings. Replacing that file changes the sidebar, the
+      // sign-in screen, the website and the browser tab together.
+      graphics: {
+        Icon: "/cms/components/BrandGraphic#BrandIcon",
+        Logo: "/cms/components/BrandGraphic#BrandLogo",
+      },
       // The whole dashboard home: traffic and what is waiting, every page with
       // one link per thing that can be changed on it, every place a picture
       // goes, what a search engine makes of the site, whether it is set up

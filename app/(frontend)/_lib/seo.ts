@@ -40,15 +40,22 @@ export async function pageMetadata(
   };
 }
 
-export const organization = {
+/**
+ * What a search engine is told the company is, including its mark.
+ *
+ * The logo is passed in rather than fixed here so it is the one uploaded in
+ * Site Settings - the same file the tab icon and the header use.
+ */
+export const organizationSchema = (logo: string) => ({
   "@context": "https://schema.org",
   "@type": "Organization",
   "@id": `${siteUrl}/#organization`,
   name: business.legalName,
   url: siteUrl,
-  logo: absoluteUrl("/brand-mark.svg"),
+  // Cloudinary hands back a full address; the checked-in mark needs one built.
+  logo: logo.startsWith("http") ? logo : absoluteUrl(logo),
   email: business.email,
   telephone: `+977${business.phones[0]}`,
   address: { "@type": "PostalAddress", streetAddress: "Anamnagar", addressLocality: "Kathmandu", addressCountry: "NP" },
   contactPoint: business.phones.map((phone) => ({ "@type": "ContactPoint", telephone: `+977${phone}`, contactType: "customer service" })),
-};
+});

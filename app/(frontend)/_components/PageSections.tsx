@@ -180,7 +180,12 @@ async function IdentityStory({ block }: { block: Block<"identityStory"> }) {
     <section className="content-section">
       <div className="site-container about-story-grid">
         <div className="identity-panel">
-          <span className="brand-mark">{business.initials}</span>
+          {/* The uploaded logo, the same one the header and the tab icon use. */}
+          {business.logoUrl ? (
+            <Image className="identity-logo" src={business.logoUrl} alt={business.logoAlt} width={160} height={160} />
+          ) : (
+            <span className="brand-mark">{business.initials}</span>
+          )}
           <h2>{business.legalName}</h2>
           <p>{business.address}, Nepal</p>
           <span className="identity-rule" />

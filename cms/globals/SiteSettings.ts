@@ -51,12 +51,18 @@ export const SiteSettings: GlobalConfig = {
               ],
             },
             {
+              // One upload, read everywhere a mark is shown. See lib/branding.ts.
               name: "logo",
               type: "upload",
               relationTo: "media",
               admin: {
                 description:
-                  "Replaces the initials mark in the header, the media system wheel and the footer.",
+                  "The only logo on the site. Uploading one here changes it everywhere at once: " +
+                  "the header, the footer, the media system wheel, the about page, the browser " +
+                  "tab icon, the icon a phone saves to its home screen, the picture shown when a " +
+                  "link is shared, the logo search engines are given, and this dashboard's own " +
+                  "sign-in screen and sidebar. A square PNG of about 512x512 suits every one of " +
+                  "them. Until one is uploaded, the initials above are drawn instead.",
               },
             },
           ],

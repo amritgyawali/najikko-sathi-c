@@ -1558,3 +1558,37 @@ html[data-theme="dark"] .ns-page__flag {
     scroll-snap-align: center;
   }
 }
+
+/*
+ * The company's own mark in the dashboard - beside the menu and above the
+ * sign-in form. It is the logo uploaded in Site → Site Settings, the same file
+ * the website's header and the browser tab icon use, so there is one picture
+ * to replace rather than several.
+ */
+.ns-brand-graphic {
+  display: block;
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+}
+
+.ns-brand-graphic--large {
+  width: 88px;
+  height: 88px;
+}
+
+/* Drawn rather than loaded, for as long as no logo has been uploaded. */
+.ns-brand-graphic--initials {
+  display: grid;
+  place-items: center;
+  border-radius: 50% 50% 50% 14%;
+  color: #fff;
+  background: linear-gradient(145deg, #1268d3, #062b5c);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: -.03em;
+}
+
+.ns-brand-graphic--large.ns-brand-graphic--initials {
+  font-size: 30px;
+}
