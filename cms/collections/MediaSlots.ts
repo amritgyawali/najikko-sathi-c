@@ -34,7 +34,7 @@ export const MediaSlots: CollectionConfig = {
   admin: {
     useAsTitle: "key",
     defaultColumns: ["image", "key", "updatedAt"],
-    group: "Content",
+    group: "Photos & files",
     description:
       "The photographs and films on each page. Open a row, upload a picture or a film, and save. An empty row is drawn nowhere.",
   },

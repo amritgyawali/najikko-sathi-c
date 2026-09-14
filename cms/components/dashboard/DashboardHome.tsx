@@ -143,17 +143,25 @@ export async function DashboardHome({ payload, user }: Props) {
     },
     {
       key: "traffic",
-      label: "Traffic",
+      label: "Visitors",
       icon: <Icon name="compass" />,
       panel: <TrafficDetail traffic={traffic} />,
     },
     {
-      key: "found",
-      label: "Being found",
-      icon: <Icon name="search" />,
-      badge: seo.findings.filter((finding) => finding.severity === "high").length,
+      /**
+       * "Being found" and "Health" asked the same question of an owner - is
+       * anything wrong? - and answered it in two places, so neither was opened.
+       * They are one tab now, worst first, with the schedule under them.
+       */
+      key: "checks",
+      label: "Check-up",
+      icon: <Icon name="shield" />,
+      badge:
+        seo.findings.filter((finding) => finding.severity === "high").length +
+        health.checks.filter((check) => check.state !== "ok").length,
       panel: (
         <>
+          <SiteHealth health={health} />
           <Findings
             audit={seo}
             title="How this website looks in a search result"
@@ -165,13 +173,6 @@ export async function DashboardHome({ payload, user }: Props) {
           <Calendar entries={calendar} />
         </>
       ),
-    },
-    {
-      key: "health",
-      label: "Health",
-      icon: <Icon name="shield" />,
-      badge: health.checks.filter((check) => check.state !== "ok").length,
-      panel: <SiteHealth health={health} />,
     },
     {
       key: "tools",
@@ -221,6 +222,10 @@ export async function DashboardHome({ payload, user }: Props) {
           <a className="ns-btn" href="/" target="_blank" rel="noreferrer">
             View website
           </a>
+          <p className="ns-hero__hint">
+            Looking for something else? Press <kbd>⌘</kbd>
+            <kbd>K</kbd> - or just <kbd>/</kbd> - and type it.
+          </p>
         </div>
       </header>
 

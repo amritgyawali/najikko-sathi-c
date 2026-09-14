@@ -165,15 +165,20 @@ export async function MediaStudio({ payload, report }: Props) {
             <Empty>Every place on the website has a picture in it.</Empty>
           )}
 
+          {/* What is done is worth being able to reach, and not worth scrolling
+              past on the way to what is not. */}
           {filled.length > 0 ? (
-            <>
-              <h4 className="ns-studio__heading">Already filled</h4>
+            <details className="ns-studio__fold">
+              <summary>
+                Places that already have a picture
+                <span className="ns-studio__morecount">{filled.length}</span>
+              </summary>
               <ul className="ns-slots">
                 {filled.map((row) => (
                   <SlotRow key={row.key} row={row} />
                 ))}
               </ul>
-            </>
+            </details>
           ) : null}
 
           <p className="ns-note">

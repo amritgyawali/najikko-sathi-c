@@ -166,36 +166,41 @@ export default buildConfig({
       afterLogin: ["/cms/components/LoginSignupLink#LoginSignupLink"],
       // Back to the overview, and out to the public site, above the menu.
       beforeNavLinks: ["/cms/components/NavDashboardLink#NavDashboardLink"],
-      // In the header, on every screen: the search box that reaches everything
-      // by name, and the light / dark switch.
+      // In the header, on every screen: one box that finds a page, a document,
+      // a sentence written inside one, or the job you want done - and the
+      // light / dark switch beside it.
       actions: [
-        "/cms/components/dashboard/CommandPalette#CommandPalette",
+        "/cms/components/dashboard/OmniSearch#OmniSearch",
         "/cms/components/ThemeToggle#ThemeToggle",
       ],
-      // Above every screen: the box that looks for a word inside the content
-      // itself, rather than for a document by its name.
-      header: ["/cms/components/GlobalSearch#GlobalSearch"],
     },
   },
+  /**
+   * The order here is the order of the menu down the side, and the groups are
+   * named the way the people using them would say them out loud: "pages and
+   * posts", "messages", "photos and files". Payload places a group where its
+   * first collection appears, so the list runs from what is opened daily to
+   * what is opened once a year - messages second, the plumbing last.
+   */
   collections: [
     Pages,
     Posts,
+    Enquiries,
     Services,
     ServiceCategories,
     Offers,
     Reviews,
     Faqs,
-    SocialResponsibility,
-    SocialWork,
     TeamMembers,
     WellWishers,
-    Enquiries,
+    SocialWork,
+    SocialResponsibility,
     Media,
     MediaSlots,
-    Redirects,
     Users,
-    PageViews,
+    Redirects,
     Backups,
+    PageViews,
   ].map(withLiveLink).map(withRowActions),
   globals: [Homepage, Navigation, Announcement, Appearance, Footer, SiteSettings].map(withGlobalLiveLink),
   // The dashboard's "add the website's pages" button posts here, and so do the

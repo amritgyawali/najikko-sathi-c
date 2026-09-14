@@ -12,7 +12,7 @@ export const Reviews: CollectionConfig = {
   admin: {
     useAsTitle: "name",
     defaultColumns: ["avatar", "name", "role", "rating", "approved", "placements"],
-    group: "Content",
+    group: "People & words",
     description:
       "Client testimonials. Nothing here reaches the website until it is approved.",
     listSearchableFields: ["name", "quote"],

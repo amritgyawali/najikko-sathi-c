@@ -18,7 +18,7 @@ export const WellWishers: CollectionConfig = {
   admin: {
     useAsTitle: "name",
     defaultColumns: ["photo", "name", "role", "order", "placements"],
-    group: "Content",
+    group: "People & words",
     description: "Advisers, patrons and friends of the house, in the order set here.",
     listSearchableFields: ["name", "role", "message"],
   },

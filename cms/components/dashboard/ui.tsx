@@ -168,6 +168,7 @@ export function Panel({
   actions,
   intro,
   wide,
+  className,
   children,
 }: {
   title: string;
@@ -177,10 +178,12 @@ export function Panel({
   actions?: React.ReactNode;
   intro?: React.ReactNode;
   wide?: boolean;
+  /** For the handful of panels that belong to one kind of screen. */
+  className?: string;
   children: React.ReactNode;
 }) {
   return (
-    <section className={cx("ns-card", accent && `ns-card--c${accent}`, wide && "ns-card--wide")}>
+    <section className={cx("ns-card", accent && `ns-card--c${accent}`, wide && "ns-card--wide", className)}>
       <header className="ns-card__head">
         <h3 className="ns-card__title">
           {icon ? <Icon name={icon} className="ns-card__icon" /> : null}

@@ -12,7 +12,7 @@ export const Redirects: CollectionConfig = {
   admin: {
     useAsTitle: "from",
     defaultColumns: ["from", "to", "permanent"],
-    group: "Administration",
+    group: "Behind the scenes",
     description:
       "Send an old address to a new one, so a link published elsewhere keeps working.",
   },

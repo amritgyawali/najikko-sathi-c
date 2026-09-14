@@ -19,7 +19,7 @@ export const Faqs: CollectionConfig = {
   admin: {
     useAsTitle: "question",
     defaultColumns: ["question", "placements", "order"],
-    group: "Content",
+    group: "People & words",
     description:
       "Questions and answers. Each one picks the pages it belongs to, and search engines can show them as rich results. " +
       BILINGUAL_NOTE,

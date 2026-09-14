@@ -13,7 +13,7 @@ export const ServiceCategories: CollectionConfig = {
   admin: {
     useAsTitle: "label",
     defaultColumns: ["label", "title", "order"],
-    group: "Services",
+    group: "What we offer",
     description: "The sections the services page is grouped into.",
   },
   access: { read: () => true, create: isEditor, update: isEditor, delete: isEditor },

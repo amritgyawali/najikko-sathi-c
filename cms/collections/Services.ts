@@ -14,7 +14,7 @@ export const Services: CollectionConfig = {
   admin: {
     useAsTitle: "title",
     defaultColumns: ["image", "title", "category", "status", "order"],
-    group: "Services",
+    group: "What we offer",
     description:
       "Everything the company offers, one document per service. Each published one gets its own page.",
     listSearchableFields: ["title", "shortTitle", "description"],
