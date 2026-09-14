@@ -635,7 +635,19 @@ export function OmniSearch() {
                 spellCheck={false}
               />
               {waiting ? <span className="ns-find__spinner" aria-hidden="true" /> : null}
-              <kbd className="ns-omni__key">esc</kbd>
+              {/* A phone has no Escape key and the panel covers the screen it
+                  would otherwise be tapped past, so the way out is a button.
+                  It says "esc" where there is a key to press and shows a cross
+                  where there is not. */}
+              <button
+                className="ns-find__close"
+                type="button"
+                onClick={() => setOpen(false)}
+                aria-label="Close search"
+              >
+                <span className="ns-find__closekey" aria-hidden="true">esc</span>
+                <span className="ns-find__closex" aria-hidden="true">✕</span>
+              </button>
             </div>
 
             {said ? (
@@ -716,16 +728,19 @@ export function OmniSearch() {
             </div>
 
             <footer className="ns-find__foot">
-              <span>
-                <kbd>↑</kbd>
-                <kbd>↓</kbd> move
+              <span className="ns-find__keys">
+                <span>
+                  <kbd>↑</kbd>
+                  <kbd>↓</kbd> move
+                </span>
+                <span>
+                  <kbd>↵</kbd> open
+                </span>
+                <span>
+                  <kbd>esc</kbd> close
+                </span>
               </span>
-              <span>
-                <kbd>↵</kbd> open
-              </span>
-              <span>
-                <kbd>esc</kbd> close
-              </span>
+              <span className="ns-find__touch">Tap a result to open it.</span>
               <span className="ns-find__tip">Tip: press / anywhere to search</span>
             </footer>
           </div>

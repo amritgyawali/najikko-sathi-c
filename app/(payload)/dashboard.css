@@ -31,21 +31,28 @@
   gap: 14px;
 }
 
+/*
+ * Every one of these is written as minmax(min(N, 100%), 1fr) rather than
+ * minmax(N, 1fr). A bare minimum wider than the screen is a minimum the grid
+ * honours anyway, which is how a 340px card came to hang 36px off the right of
+ * a 320px telephone. min() caps the minimum at the width actually available,
+ * so the columns collapse instead of overflowing, at any width, for good.
+ */
 .ns-grid--tiles {
-  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(190px, 100%), 1fr));
 }
 
 .ns-grid--mini {
-  grid-template-columns: repeat(auto-fit, minmax(118px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(118px, 100%), 1fr));
   gap: 10px;
 }
 
 .ns-grid--two {
-  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(340px, 100%), 1fr));
 }
 
 .ns-grid--three {
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
 }
 
 /* A wide panel beside a narrow one: the chart and what is waiting, the pictures
@@ -1905,6 +1912,44 @@ kbd {
   animation: ns-spin 0.7s linear infinite;
 }
 
+/* "esc" where there is a key to press; a cross where there is a thumb. */
+.ns-find__close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 34px;
+  min-height: 28px;
+  padding: 2px 7px;
+  border: 1px solid var(--ns-line);
+  border-radius: 6px;
+  background: var(--ns-sunk);
+  font: inherit;
+  font-size: 0.68rem;
+  color: var(--ns-muted);
+  cursor: pointer;
+}
+
+.ns-find__close:hover {
+  color: var(--ns-ink);
+  border-color: var(--ns-blue);
+}
+
+.ns-find__closex {
+  display: none;
+}
+
+.ns-find__keys {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px;
+}
+
+/* Said instead of the key hints where there are no keys. */
+.ns-find__touch {
+  display: none;
+}
+
 .ns-find__said {
   margin: 0;
   padding: 10px 16px;
@@ -2075,13 +2120,354 @@ kbd {
   to { transform: rotate(360deg); }
 }
 
+
+/* =================================================================== phone */
+
+/*
+ * The dashboard on a telephone.
+ *
+ * The panel is used from one at least as often as from a desk - an owner checks
+ * the messages waiting on them between other things - so the small screen is
+ * not a fallback here, it is the other half of the design. Four rules shape all
+ * of it:
+ *
+ * - Nothing that needs a keyboard is offered to a screen that has none. The
+ *   shortcut line under the hero, the keyboard panel in Tools and the key hints
+ *   under the search all go, and the way out of the search becomes a button.
+ * - Anything that is tapped is at least 40px tall. A 30px chip is a miss.
+ * - Two figures to a row, not one. Six full-width tiles is six screens of
+ *   scrolling before the first thing worth reading.
+ * - Every field is 16px, because anything smaller makes an iPhone zoom the
+ *   whole page in the moment it is tapped, and nothing zooms it back out.
+ */
+
 @media (max-width: 640px) {
-  .ns-find {
-    padding: 8vh 10px 16px;
+  .ns-home {
+    gap: 14px;
   }
 
+  /* ------------------------------------------------------------------ hero */
+
+  .ns-hero {
+    gap: 14px;
+    padding: 18px 16px 20px;
+  }
+
+  .ns-hero__title {
+    font-size: 1.35rem;
+  }
+
+  .ns-hero__sub {
+    font-size: 0.85rem;
+  }
+
+  /* Four buttons in two columns, each one a comfortable target. */
+  .ns-hero__actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    width: 100%;
+  }
+
+  .ns-hero__actions .ns-btn {
+    justify-content: center;
+    width: 100%;
+    min-height: 44px;
+    padding: 10px 12px;
+  }
+
+  /* There is no key to press here. */
+  .ns-hero__hint,
+  .ns-card--keyboard {
+    display: none;
+  }
+
+  /* ----------------------------------------------------------- the figures */
+
+  .ns-grid--tiles {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .ns-grid--mini {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .ns-tile {
+    padding: 12px 13px 11px;
+  }
+
+  .ns-tile__value {
+    font-size: 1.4rem;
+  }
+
+  .ns-tile__label {
+    font-size: 0.62rem;
+  }
+
+  /* The line still says rising or falling at half the height. */
+  .ns-spark {
+    height: 20px;
+    margin-top: 4px;
+  }
+
+  /* ------------------------------------------------------------------ tabs */
+
+  .ns-work__tabs {
+    top: 4px;
+    padding: 4px;
+    scroll-snap-type: x proximity;
+    /* The strip runs past both edges; fading them says so without a scrollbar. */
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 14px, #000 calc(100% - 14px), transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 14px, #000 calc(100% - 14px), transparent);
+  }
+
+  .ns-work__tab {
+    min-height: 40px;
+    scroll-snap-align: center;
+  }
+
+  .ns-work__panel {
+    padding-top: 4px;
+  }
+
+  /* ---------------------------------------------------------------- panels */
+
+  .ns-card {
+    padding: 15px 14px 16px;
+  }
+
+  .ns-card__head {
+    gap: 8px;
+  }
+
+  .ns-card__actions {
+    flex-wrap: wrap;
+  }
+
+  /* ------------------------------------------------------ buttons & chips */
+
+  .ns-btn {
+    min-height: 40px;
+    padding: 9px 14px;
+  }
+
+  .ns-chip {
+    min-height: 34px;
+    padding: 6px 12px;
+    font-size: 0.78rem;
+  }
+
+  .ns-tools {
+    gap: 8px;
+  }
+
+  /* ------------------------------------------------ narrowing a long list */
+
+  .ns-shelf__bar {
+    gap: 8px;
+  }
+
+  .ns-shelf__find {
+    flex: 1 1 100%;
+  }
+
+  .ns-shelf__find input {
+    /* 16px, so tapping it does not zoom the page in. */
+    font-size: 1rem;
+    padding: 11px 0;
+  }
+
+  /* The filters scroll rather than squeeze: three legible words beat four
+     unreadable ones. */
+  .ns-seg {
+    width: 100%;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .ns-seg::-webkit-scrollbar {
+    display: none;
+  }
+
+  .ns-seg__item {
+    flex: 0 0 auto;
+    min-height: 38px;
+  }
+
+  .ns-shelf__count {
+    flex-wrap: wrap;
+  }
+
+  /* ------------------------------------------------------------- the pages */
+
+  .ns-studio__page {
+    padding: 13px 13px 14px;
+  }
+
+  /* A child page keeps its edge but gives back most of the indent - width is
+     the scarcest thing on this screen. */
+  .ns-studio__page.is-child {
+    margin-left: 10px;
+  }
+
+  .ns-studio__top {
+    gap: 6px;
+  }
+
+  .ns-studio__actions {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .ns-studio__more > summary,
+  .ns-studio__fold > summary {
+    min-height: 40px;
+  }
+
+  .ns-studio__change {
+    width: 100%;
+  }
+
+  /* -------------------------------------------------------------- the jobs */
+
+  .ns-tool__head {
+    align-items: flex-start;
+    padding: 12px 12px 12px 10px;
+  }
+
+  .ns-tool__body {
+    padding: 2px 12px 14px 12px;
+  }
+
+  .ns-tool__field input,
+  .ns-tool__field select,
+  .ns-tool__field textarea {
+    font-size: 1rem;
+    min-height: 44px;
+  }
+
+  .ns-tool__checks {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    display: grid;
+    gap: 4px;
+  }
+
+  .ns-tool__checks label {
+    min-height: 36px;
+  }
+
+  /* A job's own buttons carry long labels ("Show what would change"), so they
+     take the full width rather than wrapping into a ragged pair. */
+  .ns-tool__body .ns-tools .ns-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .ns-export select {
+    font-size: 1rem;
+    min-height: 44px;
+  }
+
+  .ns-export .ns-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* ---------------------------------------------------------- the searches */
+
+  /* A sheet rather than a dialogue: the whole screen is the search, and the
+     way out is the button in the corner. */
+  .ns-find {
+    padding: 0;
+    align-items: stretch;
+  }
+
+  .ns-find__panel {
+    width: 100%;
+    max-height: none;
+    height: 100%;
+    border: 0;
+    border-radius: 0;
+  }
+
+  .ns-find__field {
+    padding: 12px 12px 12px 14px;
+  }
+
+  .ns-find__field input {
+    font-size: 1rem;
+  }
+
+  .ns-find__close {
+    min-width: 40px;
+    min-height: 40px;
+    border-radius: 999px;
+    font-size: 1rem;
+  }
+
+  .ns-find__closekey {
+    display: none;
+  }
+
+  .ns-find__closex {
+    display: block;
+  }
+
+  .ns-find__row {
+    padding: 11px 10px;
+    min-height: 48px;
+    justify-content: center;
+  }
+
+  .ns-find__keys,
   .ns-find__tip {
     display: none;
+  }
+
+  .ns-find__touch {
+    display: inline;
+  }
+
+  /* ------------------------------------------------------------- the rest */
+
+  .ns-scorerow {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .ns-check {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .ns-keys {
+    display: none;
+  }
+
+  /* A link sitting inside a sentence cannot be 40px tall without breaking the
+     sentence, so it takes the room above and below the words instead. */
+  .ns-finding__title,
+  .ns-check__label a,
+  .ns-note a {
+    display: inline-block;
+    padding-block: 6px;
+  }
+
+  .ns-hours__col {
+    min-width: 0;
+  }
+}
+
+/* One column is the only honest layout below this. */
+@media (max-width: 380px) {
+  .ns-grid--tiles,
+  .ns-grid--mini {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .ns-hero__actions {
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 

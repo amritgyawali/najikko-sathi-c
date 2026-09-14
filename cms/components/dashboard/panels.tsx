@@ -436,7 +436,8 @@ export function Toolbox({ backupHint }: { backupHint: string }) {
         </form>
       </Panel>
 
-      <Panel title="Getting around quickly" icon="bolt" accent={3}>
+      {/* Nothing in here can be done with a thumb, so a phone is not shown it. */}
+      <Panel title="Getting around quickly" icon="bolt" accent={3} className="ns-card--keyboard">
         <ul className="ns-keys">
           <li>
             <kbd>⌘</kbd>
