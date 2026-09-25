@@ -135,7 +135,7 @@ function EntryCard({ entry }: { entry: SocialWork }) {
     <>
       <div className="social-card-media">
         {cover ? (
-          <Image src={cover} alt={coverAlt} fill sizes="(max-width: 700px) 100vw, (max-width: 1080px) 50vw, 33vw" />
+          <Image src={cover} alt={coverAlt} width={1200} height={750} sizes="(max-width: 700px) 100vw, (max-width: 1080px) 50vw, 33vw" />
         ) : (
           <span className="social-card-emblem" aria-hidden="true">
             <HeartHandshake />

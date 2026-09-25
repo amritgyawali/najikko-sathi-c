@@ -1266,16 +1266,17 @@ footer li a:hover {
   display: grid;
   place-items: center;
   width: 240px;
-  height: 240px;
+  height: auto;
+  min-height: 240px;
   overflow: hidden;
   border-radius: 50% 50% 50% 16%;
   background: linear-gradient(145deg, var(--secondary), var(--primary));
 }
 
 .leadership-portrait img {
+  display: block;
   width: 100%;
-  height: 100%;
-  object-fit: cover;
+  height: auto;
 }
 
 .leadership-quote-mark {
@@ -1408,14 +1409,15 @@ footer li a:hover {
   position: relative;
   z-index: 1;
   width: 100%;
-  aspect-ratio: 1;
   overflow: hidden;
   border-radius: 23px;
   box-shadow: 0 22px 36px rgb(0 39 93 / 20%);
 }
 
 .media-visual img {
-  object-fit: cover;
+  display: block;
+  width: 100%;
+  height: auto;
 }
 
 /* The photograph beside the production band's words, on the same terms. */
@@ -1423,14 +1425,15 @@ footer li a:hover {
   position: relative;
   z-index: 1;
   width: 100%;
-  aspect-ratio: 16 / 9;
   overflow: hidden;
   border-radius: 22px;
   box-shadow: 0 20px 38px rgb(0 39 93 / 14%);
 }
 
 .production-visual img {
-  object-fit: cover;
+  display: block;
+  width: 100%;
+  height: auto;
 }
 
 .right-sanchar-card {
@@ -1784,8 +1787,7 @@ a.cms-card:hover {
 
 .cms-card img {
   width: 100%;
-  height: 190px;
-  object-fit: cover;
+  height: auto;
   border-radius: calc(var(--radius) - 8px);
 }
 
@@ -1825,9 +1827,9 @@ a.cms-card:hover {
 }
 
 .cms-gallery img {
+  display: block;
   width: 100%;
-  height: 240px;
-  object-fit: cover;
+  height: auto;
   border-radius: var(--radius);
 }
 

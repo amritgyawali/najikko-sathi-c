@@ -178,7 +178,7 @@ export async function HomeAbout({
           <div className="portrait-wrap">
             <div className="portrait-glow" aria-hidden="true" />
             <div className="media-visual">
-              <Image src={photo.src} alt={photo.alt} fill sizes="(max-width: 900px) 100vw, 400px" />
+              <Image src={photo.src} alt={photo.alt} width={1200} height={1200} sizes="(max-width: 900px) 100vw, 400px" />
             </div>
             <div className="portrait-caption">
               <Written as="strong" ne={block.captionTitleNe}>
