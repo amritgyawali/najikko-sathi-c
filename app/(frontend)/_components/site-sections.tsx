@@ -140,7 +140,7 @@ export async function ProductionBand({ business, home }: { business: BusinessInf
           <div className="foundation-image-wrap">
             <div className="foundation-backplate" aria-hidden="true" />
             <div className="production-visual">
-              <Image src={photo.src} alt={photo.alt} fill sizes="(max-width: 900px) 100vw, 520px" />
+              <Image src={photo.src} alt={photo.alt} width={1600} height={900} sizes="(max-width: 900px) 100vw, 520px" />
             </div>
             <div className="legacy-badge"><strong>4</strong><span>Complete Stages</span></div>
           </div>

@@ -50,7 +50,7 @@ export async function PageHero({ eyebrow, eyebrowNe, title, titleNe, description
       <div className={`page-hero-grid${photo ? "" : " page-hero-grid--wide"}`}>
         <div><span className="hero-kicker"><i /><Written ne={eyebrowNe}>{eyebrow}</Written></span><Written as="h1" ne={titleNe}>{title}</Written><Written as="p" ne={descriptionNe}>{description}</Written>{children && <div className="hero-actions">{children}</div>}</div>
         {photo ? <figure className="page-hero-photo">
-          <div className="page-hero-photo-frame"><Image src={photo.src} alt={photo.alt} fill sizes="(max-width: 900px) 100vw, 260px" /></div>
+          <div className="page-hero-photo-frame"><Image src={photo.src} alt={photo.alt} width={1200} height={900} sizes="(max-width: 900px) 100vw, 260px" /></div>
           {photo.caption ? <figcaption>{photo.caption}</figcaption> : null}
         </figure> : null}
       </div>
@@ -236,7 +236,7 @@ export async function MediaShowcase({
     />
     {frames > 0 ? <div className={`media-showcase-grid${frames === 1 ? " media-showcase-grid--one" : ""}`}>
       {image ? <figure className="media-frame">
-        <div className="media-photo"><Image src={image.src} alt={image.alt} fill sizes="(max-width: 760px) 100vw, 50vw" /></div>
+        <div className="media-photo"><Image src={image.src} alt={image.alt} width={1600} height={900} sizes="(max-width: 760px) 100vw, 50vw" /></div>
         {image.caption ? <figcaption>{image.caption}</figcaption> : null}
       </figure> : null}
       {film ? <figure className="media-frame">
